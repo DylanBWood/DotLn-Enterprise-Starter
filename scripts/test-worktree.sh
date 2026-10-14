@@ -1,0 +1,832 @@
+#!/usr/bin/env bash
+set -euo pipefail
+unset DOTLN_ACCOUNT_LABEL # Fixtures declare their own actors.
+unset CLAUDE_EFFORT # Fixtures attest their own sessions; the host's selected effort would refuse them (WO-157 VER-001 F3).
+
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+source "$script_dir/test-temp-root.sh"
+tmp_base="${TMPDIR:-/tmp}"
+tmp_base="$(resolve_test_tmp_base "$tmp_base")"
+test_root_prefix="dotln-worktree-test"
+create_test_temp_root "$tmp_base" "$test_root_prefix"
+test_root="$test_temp_root_result"
+install_test_temp_root_traps "$tmp_base" "$test_root" "$test_root_prefix"
+node_bin="$(node -p 'process.execPath')"
+real_git="$(command -v git)"
+u202f="$(printf '\342\200\257')"
+assert_u202f() {
+  "$node_bin" -e 'if (!Buffer.from(process.argv[1], "utf8").toString("hex").includes("e280af")) process.exit(1)' "$1"
+}
+test "$("$node_bin" -e 'process.stdout.write(Buffer.from(process.argv[1], "utf8").toString("hex"))' "$u202f")" = e280af
+
+git init --bare "$test_root/origin.git" >/dev/null
+git clone "$test_root/origin.git" "$test_root/project" >/dev/null 2>&1
+main="$test_root/project"
+git -C "$main" config user.email dylanwoodconsulting@gmail.com
+git -C "$main" config user.name "Dylan Wood"
+git -C "$main" config core.quotePath true
+github_repo="dotln-fixture/worktree"
+github_origin="https://github.com/$github_repo.git"
+git -C "$main" config "url.$test_root/origin.git.insteadOf" "$github_origin"
+git -C "$main" remote set-url origin "$github_origin"
+git -C "$main" switch -c main >/dev/null 2>&1
+mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control" "$main/docs/discovery" "$main/packages/kernel"
+cp "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$script_dir/release.mjs" "$script_dir/license-surfaces.mjs" "$script_dir/siblings.mjs" "$main/scripts/"
+cp -R "$script_dir/lib" "$main/scripts/lib"
+# The copied helpers resolve the launchpad's installed Markdown parser as the
+# launchpad does: through a node_modules above them.
+mkdir -p "$test_root/node_modules"
+ln -sfn "$script_dir/../node_modules/prettier" "$test_root/node_modules/prettier"
+node "$script_dir/test-beacon-fixture.mjs" "$main"
+if grep -Fq 'current.md' "$main/scripts/worktree.mjs"; then
+  printf 'error: worktree lifecycle parses the Markdown control projection\n' >&2
+  exit 1
+fi
+printf '# WO-099 — worktree fixture, v0.2.1\n\n**Model:** fixture-model.\n**Effort:** executor any; verifier any; reviewer any.\n\n**Objective:** Exercise publication.\n\n**Non-goals:** No release.\n' >"$main/docs/work-orders/WO-099-fixture.md"
+printf '%s\n' \
+  '{"effortReadbackProbe":{"harnesses":{"codex-cli":{"versions":[{"classification":"observed","value":"fixture"}],"persistedEffortSelector":{"classification":"observed","value":"xhigh"}},"claude-code":{"versions":[{"classification":"observed","value":"fixture"}],"sessionEffortSelector":{"classification":"documented locally","values":["xhigh"]}}}}}' >"$main/docs/discovery/environment.json"
+printf '%s\n' \
+  '# Fixture repository' \
+  '' \
+  '<!-- DOTLN-RELEASE-BEGIN -->' \
+  '' \
+  'This source prepares DotLn `v0.2.1`.' \
+  '<!-- DOTLN-RELEASE-END -->' >"$main/README.md"
+printf '{"private":true,"scripts":{"release":"node scripts/release.mjs"}}\n' >"$main/package.json"
+printf '{"name":"@dotln/kernel","version":"0.1.0"}\n' >"$main/packages/kernel/package.json"
+node "$script_dir/test-license-fixture.mjs" "$main"
+cp "$script_dir/../.gitignore" "$main/.gitignore"
+printf 'EXAMPLE=tracked\n' >"$main/.env.example"
+printf '%s\n' 'import {mkdirSync,writeFileSync} from "node:fs"; mkdirSync(".runtime",{recursive:true}); writeFileSync(".runtime/bootstrap-ready", "prepared before launch");' >"$main/scripts/bootstrap.mjs"
+mkdir -p "$main/docs/siblings"
+printf '%s\n' '{"schemaVersion":1,"siblings":[{"id":"starter-fixture","purpose":"Fixture export","relation":{"kind":"export","coreCommit":null},"capabilityRows":[]}]}' >"$main/docs/siblings/siblings.json"
+git -C "$main" add .
+git -C "$main" commit -m initial >/dev/null
+git -C "$main" push -u origin main >/dev/null 2>&1
+finish_worktree() {
+  (cd "$main" && node "$main/scripts/worktree.mjs" finish "$@")
+}
+
+if node "$main/scripts/worktree.mjs" start XX-098 docs/work-orders/WO-099-fixture.md >/dev/null 2>&1; then printf 'error: invalid id accepted\n' >&2; exit 1; fi
+test ! -e "$test_root/project-wo098"
+test "$(git -C "$main" branch --list wo-098)" = ""
+
+mkdir -p "$test_root/bin"
+printf '%s\n' \
+  '#!/bin/bash' \
+  'set -euo pipefail' \
+  "real_git='$real_git'" \
+  'original_args=("$@")' \
+  'if [[ "${1:-}" == "-C" ]]; then' \
+  '  target_root="$2"; shift 2' \
+  '  while [[ "${1:-}" == "-c" ]]; do shift 2; done' \
+  '  set -- -C "$target_root" "$@"' \
+  'fi' \
+  'if [[ "$#" -eq 6 && "$1" == "-C" && "$3" == "remote" && "$4" == "get-url" && "$5" == "--all" && "$6" == "origin" ]]; then' \
+  '  $real_git -C "$2" config --get-all remote.origin.url' \
+  '  exit 0' \
+  'fi' \
+  'if [[ "$#" -eq 7 && "$1" == "-C" && "$3" == "remote" && "$4" == "get-url" && "$5" == "--push" && "$6" == "--all" && "$7" == "origin" ]]; then' \
+  '  urls="$($real_git -C "$2" config --get-all remote.origin.pushurl || true)"' \
+  '  if [[ -z "$urls" ]]; then urls="$($real_git -C "$2" config --get-all remote.origin.url)"; fi' \
+  '  printf "%s\\n" "$urls"' \
+  '  exit 0' \
+  'fi' \
+  'exec "$real_git" "${original_args[@]}"' >"$test_root/bin/git"
+chmod +x "$test_root/bin/git"
+printf '#!/usr/bin/env bash\nprintf invoked >"%s"\n' "$test_root/codex-invoked" >"$test_root/bin/codex"
+chmod +x "$test_root/bin/codex"
+# Malformed pending evidence refuses before a branch or worktree is created.
+pending_lane="$main/docs/control/local/sibling-receipts/starter-fixture"
+mkdir -p "$pending_lane"
+printf '{}\n' >"$pending_lane/2026-10-13T12-00-00-000Z.json"
+if malformed_output="$(node "$main/scripts/worktree.mjs" start WO-099 docs/work-orders/WO-099-fixture.md 2>&1)"; then
+  printf 'malformed pending receipt was admitted\n' >&2; exit 1
+fi
+grep -Fq 'exactly sibling' <<<"$malformed_output"
+test ! -d "$test_root/project-wo099"
+test -z "$(git -C "$main" branch --list wo-099)"
+"$node_bin" - "$pending_lane/2026-10-13T12-00-00-000Z.json" "$(git -C "$main" rev-parse HEAD)" <<'JS'
+const fs=require('node:fs');fs.writeFileSync(process.argv[2],JSON.stringify({sibling:'starter-fixture',coreCommit:process.argv[3],manifestHash:`sha256:${'1'.repeat(64)}`,buildHash:'fnv1a64:1234567890abcdef',date:'2026-10-13T12:00:00.000Z'})+'\n');
+JS
+start_output="$(PATH="$test_root/bin:$PATH" node "$main/scripts/worktree.mjs" start WO-099 docs/work-orders/WO-099-fixture.md)"
+subject="$test_root/project-wo099"
+test -d "$subject"
+test -f "$subject/.runtime/bootstrap-ready"
+grep -q '"workOrderId":"WO-099"' "$subject/docs/control/orders/WO-099.jsonl"
+grep -Fq "cd '$subject'" <<<"$start_output"
+grep -Fq '  codex' <<<"$start_output"
+grep -Fq 'resume: next' <<<"$start_output"
+grep -Fq 'Carried sibling receipts:' <<<"$start_output"
+test -f "$subject/docs/evidence/siblings/starter-fixture/2026-10-13T12-00-00-000Z.json"
+test ! -f "$pending_lane/2026-10-13T12-00-00-000Z.json"
+(cd "$subject" && node scripts/siblings.mjs index --check)
+test -z "$(git -C "$main" status --porcelain --untracked-files=all)"
+# The carried files belong to this order's reviewed change, alongside control.
+git -C "$subject" add docs/evidence/siblings docs/siblings
+test ! -e "$test_root/codex-invoked"
+if wrong_root_output="$(node "$main/scripts/worktree.mjs" finish WO-099 2>&1)"; then printf 'error: finish accepted a foreign invocation root\n' >&2; exit 1; fi
+grep -Fq "run finish from the main control-plane checkout: $main" <<<"$wrong_root_output"
+if finish_worktree WO-099 >/dev/null 2>&1; then printf 'error: unfinished worktree merged\n' >&2; exit 1; fi
+
+git -C "$subject" add docs/control
+git -C "$subject" commit -m 'active control fixture' >/dev/null
+cp "$subject/docs/control/orders/WO-099.jsonl" "$test_root/committed-active-resume.jsonl"
+cp "$subject/docs/control/current.md" "$test_root/committed-active-current.md"
+git -C "$subject" update-index --assume-unchanged docs/control/orders/WO-099.jsonl docs/control/current.md
+printf '%s\n' '{"schemaVersion":1,"type":"FinalReviewCompleted","workOrderId":"WO-099","finalReviewId":"FINAL-001","reportPath":"docs/final-reviews/WO-099/FINAL-001.md","verdict":"pass"}' >>"$subject/docs/control/orders/WO-099.jsonl"
+printf '%s\n' \
+  '# Current control state' \
+  '' \
+  '- Work order: WO-099' \
+  '- Work-order path: docs/work-orders/WO-099-fixture.md' \
+  '- Phase: closed' >"$subject/docs/control/current.md"
+if hidden_control_output="$(PATH="$test_root/bin:$PATH" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file missing.md 2>&1)"; then
+  printf 'error: hidden working control state bypassed the committed phase gate\n' >&2
+  exit 1
+fi
+grep -Fq 'committed surface check requires closed WO-099 control state; observed WO-099 in phase active' <<<"$hidden_control_output"
+if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: hidden working control state reached the remote\n' >&2; exit 1; fi
+cp "$test_root/committed-active-resume.jsonl" "$subject/docs/control/orders/WO-099.jsonl"
+cp "$test_root/committed-active-current.md" "$subject/docs/control/current.md"
+git -C "$subject" update-index --no-assume-unchanged docs/control/orders/WO-099.jsonl docs/control/current.md
+
+node "$subject/scripts/resume.mjs" implementation-ready \
+  --harness codex-cli \
+  --harness-version fixture \
+  --model fixture-model \
+  --effort xhigh \
+  --source self-reported >/dev/null
+node "$subject/scripts/resume.mjs" verify >/dev/null
+mkdir -p "$subject/docs/verifications/WO-099"
+printf '%s\n' \
+  '# verification pass' \
+  '' \
+  '**Process cost:** unknown; cause no-session' \
+  '**Actor attestation:** {"harness":"claude-code","harnessVersion":"fixture","model":"fixture-model","effort":"xhigh","source":"self-reported"}' >"$subject/docs/verifications/WO-099/VER-001.md"
+node "$subject/scripts/resume.mjs" verification-result pass \
+  --harness claude-code \
+  --harness-version fixture \
+  --model fixture-model \
+  --effort xhigh \
+  --source self-reported >/dev/null
+node "$subject/scripts/resume.mjs" final-review >/dev/null
+mkdir -p "$subject/docs/final-reviews/WO-099"
+printf '%s\n' \
+  '# final pass' \
+  '' \
+  '**Process cost:** unknown; cause no-session' \
+  '**Actor attestation:** {"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"}' >"$subject/docs/final-reviews/WO-099/FINAL-001.md"
+node "$subject/scripts/resume.mjs" final-review-result pass \
+  --harness human \
+  --harness-version not-applicable \
+  --model human \
+  --effort unknown \
+  --source operator-attested >/dev/null
+printf 'done\n' >"$subject/result.txt"
+printf '%s\n' 'This reviewed PR body stays on one physical source line even though it is longer than eighty characters, leaving visual wrapping to the reader.' >"$subject/pr-body.md"
+printf '%s\n' '- A code example `` [sample](file.md) ` literal `` keeps its bytes and an [empty]() link becomes its text.' >>"$subject/pr-body.md"
+git -C "$subject" add .
+"$node_bin" "$script_dir/test-release-composition.mjs" record "$subject" WO-099
+git -C "$subject" add docs/control
+git -C "$subject" commit -m complete >/dev/null
+
+if bad_title="$(node "$subject/scripts/worktree.mjs" publish WO-099 --title unquoted multiple words --body-file pr-body.md 2>&1)"; then
+  printf 'error: surplus publish positionals accepted\n' >&2; exit 1
+fi
+grep -Fq 'quote titles with spaces' <<<"$bad_title"
+
+mkdir -p "$test_root/no-gh-bin"
+ln -s "$test_root/bin/git" "$test_root/no-gh-bin/git"
+ln -s "$node_bin" "$test_root/no-gh-bin/node"
+ln -s "$(command -v npm)" "$test_root/no-gh-bin/npm"
+ln -s /bin/sh "$test_root/no-gh-bin/sh"
+notes_path="docs/final-reviews/WO-099/RELEASE-NOTES.md"
+assert_notes_refusal() {
+  local expected="$1"
+  if notes_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then
+    printf 'error: publish accepted malformed release notes (%s)\n' "$expected" >&2
+    exit 1
+  fi
+  grep -Fq "$notes_path" <<<"$notes_output"
+  grep -Fq "$expected" <<<"$notes_output"
+  if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then
+    printf 'error: branch pushed before release-notes validation (%s)\n' "$expected" >&2
+    exit 1
+  fi
+}
+set_release_notes() {
+  printf '%s' "$1" >"$subject/$notes_path"
+  git -C "$subject" add "$notes_path"
+  git -C "$subject" commit --amend --no-edit >/dev/null
+}
+
+printf '%s\n' \
+  '# Fixture repository' \
+  '' \
+  '<!-- DOTLN-RELEASE-BEGIN -->' \
+  '' \
+  'This source prepares DotLn `v0.2.0`.' \
+  '<!-- DOTLN-RELEASE-END -->' >"$subject/README.md"
+git -C "$subject" add README.md
+git -C "$subject" commit --amend --no-edit >/dev/null
+if surface_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then
+  printf 'error: publish accepted a stale release block\n' >&2
+  exit 1
+fi
+grep -Fq 'FAIL release-block: observed v0.2.0; expected exactly one v0.2.1' <<<"$surface_output"
+if grep -Fq 'error:' <<<"$surface_output"; then printf 'error: worktree wrapped the surface report\n' >&2; exit 1; fi
+if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: branch pushed before surface validation\n' >&2; exit 1; fi
+printf '%s\n' \
+  '# Fixture repository' \
+  '' \
+  '<!-- DOTLN-RELEASE-BEGIN -->' \
+  '' \
+  'This source prepares DotLn `v0.2.1`.' \
+  '<!-- DOTLN-RELEASE-END -->' >"$subject/README.md"
+git -C "$subject" add README.md
+git -C "$subject" commit --amend --no-edit >/dev/null
+printf 'worktree surface refusal preserved the checker report and mutated no remote\n'
+
+assert_notes_refusal 'release-notes file is missing'
+bom="$(printf '\357\273\277')"
+set_release_notes "${bom}"$'## Release overview\n\nOverview.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'missing required heading "## Release overview"'
+set_release_notes $'## Release overview\n\nOverview.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n'
+assert_notes_refusal 'missing required heading "## Evidence and compatibility"'
+set_release_notes $'## Release overview\n\nOverview.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Extra section\n\nExtra.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'extra level-two heading "## Extra section"'
+set_release_notes $'## Release overview\n\nOverview.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n  ## Extra visible heading\n\nExtra.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'level-two heading markers are allowed only as exact column-one section headings'
+set_release_notes $'## Release overview\n\nOverview.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n> ## Extra quoted heading\n\nExtra.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'level-two heading markers are allowed only as exact column-one section headings'
+set_release_notes $'## Release overview\n\nOverview.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n##\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'level-two heading markers are allowed only as exact column-one section headings'
+set_release_notes $'## Release overview\n\nOverview.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Substantive changes\n\nDuplicate.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'duplicated required heading "## Substantive changes"'
+set_release_notes $'## Release overview\n\nOverview.\n\n## Substantive changes\n\nChange.\n\n## Read before upgrading\n\nNone.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'required headings are misordered'
+# Reserved-heading parsing exercises code blocks and visible title spellings.
+node --input-type=module - "$main/scripts/lib/release-notes.mjs" <<'NODE'
+import assert from "node:assert/strict";
+import { pathToFileURL } from "node:url";
+const { parseReleaseNotes, releaseNoteHeadings } = await import(pathToFileURL(process.argv[2]));
+const notes = (extra) => releaseNoteHeadings.map((name, index) =>
+  `## ${name}\n\n${index === 0 ? extra : "Fixture."}\n`).join("\n");
+for (const extra of [
+  "Derived from\nthe diff\n===", "Machine-derived\nrelease evidence\n===",
+  "# WO\\-123 — Generated shape", "# WO-123 &mdash; Generated shape",
+  "# WO-123 &#x2014; Generated shape", "# **Derived from the diff**",
+  "### _Machine-derived release evidence_", "# **Derived from the diff** ###",
+  "> ```\n> code\n\n# Derived from the diff\n```",
+  "- list item\n\n    ### Derived from the diff",
+]) assert.throws(() => parseReleaseNotes(notes(extra), "fixture"), /generated release heading is reserved/, extra);
+for (const extra of [
+  "    # WO-123 — Generated shape", "\t# Derived from the diff",
+  "> ```\n> # WO-123 — Generated shape\n> ```",
+  "```\n# Derived from the diff\n```", "Ordinary text.",
+  "```\n> ```\n# Derived from the diff\n```",
+  "> ```\n>> ```\n> # Derived from the diff\n> ```",
+  "# Derived from the di_ff", "# \\*Derived from the diff\\*",
+]) assert.equal(Object.keys(parseReleaseNotes(notes(extra), "fixture").sections).length, 5, extra);
+NODE
+for marker in '#' '##' '###' '####' '#####' '######' '- ###' '1. ###' '> - ###'; do
+  for reserved in 'WO-999 — Generated shape' 'Derived from the diff' 'Machine-derived release evidence'; do
+    set_release_notes $'## Release overview\n\nOverview.\n\n'"$marker $reserved"$'\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+    assert_notes_refusal 'generated release heading is reserved'
+  done
+done
+for underline in '===' '---'; do
+  for reserved in 'WO-999 — Generated shape' 'Derived from the diff' 'Machine-derived release evidence'; do
+    set_release_notes $'## Release overview\n\nOverview.\n\n'"$reserved"$'\n'"$underline"$'\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+    assert_notes_refusal 'generated release heading is reserved'
+  done
+done
+set_release_notes $'## Release overview\n\n   \n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'empty required section "## Release overview"'
+set_release_notes $'## Release overview\n\nOverview.\n\n## Read before upgrading\n\n   \n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'empty required section "## Read before upgrading"'
+set_release_notes $'## Release overview\n\nOverview.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nDOTLN-MANIFEST-BEGIN\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'reserved tag marker line "DOTLN-MANIFEST-BEGIN"'
+set_release_notes $'## Release overview\n\n<!-- hidden -->\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'HTML comments are not allowed in reviewed notes'
+set_release_notes $'## Release overview\n\nOverview.\n\n<!--\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n-->'
+assert_notes_refusal 'HTML comments are not allowed in reviewed notes'
+set_release_notes $'## Release overview\n\nOverview.\n\nExtra\n-----\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'setext level-two headings are not allowed'
+set_release_notes $'## Release overview\n\nOverview.\n\n> Extra\n> -----\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'setext level-two headings are not allowed'
+set_release_notes $'## Release overview\n\nOverview.\n\n- list item\n\n    ## Extra list-continuation heading\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'level-two heading markers are allowed only as exact column-one section headings'
+set_release_notes $'## Release overview\n\nOverview.\n\n<pre>\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n</pre>\n'
+assert_notes_refusal 'raw HTML is not allowed in reviewed notes'
+set_release_notes $'## Release overview\n\nOverview.\n\n<pre\n>\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'raw HTML is not allowed in reviewed notes'
+set_release_notes $'## Release overview\n\nOverview.\n\n``` `\n## Extra visible heading\n```\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'extra level-two heading "## Extra visible heading"'
+set_release_notes $'## Release overview\n\nOverview.\n\n\t```\n## Extra visible heading\n```\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'extra level-two heading "## Extra visible heading"'
+set_release_notes $'## Release overview\n\nOverview mentioning the literal `## Example` text.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+set_release_notes $'## Release overview\n\nThis release overview was accidentally wrapped at a fixed source column even though it is one logical\nparagraph that the reader should wrap for its own viewport.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'accidental GitHub prose soft wrap'
+set_release_notes $'## Release overview\n\nThis release overview stays on one physical source line even though it is longer than eighty characters, leaving visual wrapping to the reader.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\n- This substantive list-item paragraph also stays on one physical source line beyond eighty characters for a viewport-fluid GitHub body.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+printf 'release-notes publish validation fixtures passed\n'
+
+printf '%s\n' \
+  'This reviewed PR body was accidentally wrapped at a fixed source column even though it is one logical' \
+  'paragraph that the reader should wrap for its own viewport.' >"$subject/pr-body.md"
+git -C "$subject" add pr-body.md
+git -C "$subject" commit --amend --no-edit >/dev/null
+if wrapped_pr_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then
+  printf 'error: publish accepted a wrapped PR body\n' >&2
+  exit 1
+fi
+grep -Fq 'pr-body.md: accidental GitHub prose soft wrap between lines 1 and 2' <<<"$wrapped_pr_output"
+if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: wrapped PR body reached remote\n' >&2; exit 1; fi
+printf '%s\n' 'This reviewed PR body stays on one physical source line even though it is longer than eighty characters, leaving visual wrapping to the reader.' >"$subject/pr-body.md"
+printf '%s\n' '- A code example `` [sample](file.md) ` literal `` keeps its bytes and an [empty]() link becomes its text.' >>"$subject/pr-body.md"
+# Markdown ends a line at a lone carriage return or at a carriage return and
+# newline as well; the published body keeps those bytes and the code on such a
+# line, and writes the link on such a line absolute like any other.
+printf '\nIntro\r\r`` [crsample](cr-file.md) ` literal ``\r\rA carriage-return line links to [the notes](notes.md).\r\n' >>"$subject/pr-body.md"
+git -C "$subject" add pr-body.md
+git -C "$subject" commit --amend --no-edit >/dev/null
+printf 'GitHub body profile refused wrapped PR and release-note prose before publication\n'
+
+clean_attribution_body="$test_root/clean-attribution-body.md"
+cp "$subject/pr-body.md" "$clean_attribution_body"
+for attribution in 'Claude-Session: fixture' 'SomeAgent-Session: fixture' 'https://claude.ai/code/session_fixture'; do
+  cp "$clean_attribution_body" "$subject/pr-body.md"
+  printf '\n%s\n' "$attribution" >>"$subject/pr-body.md"
+  git -C "$subject" add pr-body.md
+  git -C "$subject" commit --amend --no-edit >/dev/null
+  if attribution_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then printf 'error: attributed PR body accepted\n' >&2; exit 1; fi
+  grep -Fq 'AI attribution' <<<"$attribution_output"
+  cp "$clean_attribution_body" "$subject/pr-body.md"
+  git -C "$subject" add pr-body.md
+  git -C "$subject" commit --amend --no-edit >/dev/null
+  if attribution_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title "$attribution" --body-file pr-body.md 2>&1)"; then printf 'error: attributed PR title accepted\n' >&2; exit 1; fi
+  grep -Fq 'AI attribution' <<<"$attribution_output"
+  if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: attribution reached origin\n' >&2; exit 1; fi
+done
+printf 'publication refuses agent session trailers and URLs in titles and bodies before any push\n'
+
+printf 'ignored private body\n' >"$subject/.env"
+if ignored_body_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file .env 2>&1)"; then printf 'error: publish accepted an ignored untracked PR body\n' >&2; exit 1; fi
+grep -Fq '.env: file is not tracked' <<<"$ignored_body_output"
+test -f "$subject/.env"
+rm -- "$subject/.env"
+
+printf 'ignored pathspec body\n' >"$subject/.env.*"
+if pathspec_body_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file '.env.*' 2>&1)"; then printf 'error: publish accepted an ignored pathspec-like PR body\n' >&2; exit 1; fi
+grep -Fq '.env.*: file is not tracked' <<<"$pathspec_body_output"
+test -f "$subject/.env.*"
+rm -- "$subject/.env.*"
+
+git -C "$subject" commit --allow-empty --author='Outside Contributor <outside@example.invalid>' -m 'unsigned outside fixture' >/dev/null
+if unsigned_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then printf 'error: publish accepted an unsigned outside commit\n' >&2; exit 1; fi
+grep -Fq 'outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)' <<<"$unsigned_output"
+if grep -Fq 'gh is required' <<<"$unsigned_output"; then printf 'error: unsigned outside commit reached gh preflight\n' >&2; exit 1; fi
+if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: unsigned outside commit reached origin\n' >&2; exit 1; fi
+printf '%s\n' "$unsigned_output" | sed -n '/FAIL contribution-signoff/p'
+git -C "$subject" commit --amend --allow-empty -m 'signed outside fixture' -m 'Signed-off-by: Outside Contributor <outside@example.invalid>' >/dev/null
+git -C "$subject" commit --allow-empty -m 'operator fixture without sign-off' >/dev/null
+
+if missing_gh_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then printf 'error: publish accepted a missing gh executable\n' >&2; exit 1; fi
+grep -Fq 'observed matching author sign-off' <<<"$missing_gh_output"
+grep -Fq 'observed operator author; expected operator exemption (no sign-off required)' <<<"$missing_gh_output"
+printf '%s\n' "$missing_gh_output" | sed -n '/PASS contribution-signoff/p'
+printf 'contribution sign-off publication fixtures passed before any remote mutation\n'
+grep -Fq 'gh is required before any remote mutation' <<<"$missing_gh_output"
+if grep -Fq 'at file://' <<<"$missing_gh_output"; then printf 'error: missing-gh refusal leaked a JavaScript stack trace\n' >&2; exit 1; fi
+if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: branch pushed before gh preflight\n' >&2; exit 1; fi
+
+gh_log="$test_root/gh.log"
+printf '%s\n' \
+  '#!/usr/bin/env bash' \
+  'set -euo pipefail' \
+  'printf "%s\\n" "$*" >>"$DOTLN_GH_LOG"' \
+  'if [[ -n "${GH_REPO:-}" || -n "${GH_HOST:-}" ]]; then printf "ambient GH target leaked\\n" >&2; exit 65; fi' \
+  'if [[ "$*" == "--version" ]]; then printf "gh version fixture\\n"; exit 0; fi' \
+  'if [[ "${1:-} ${2:-}" == "auth status" ]]; then' \
+  '  if [[ "${DOTLN_FIXTURE_GH_FAIL:-}" == "auth" ]]; then printf "not authenticated\\n" >&2; exit 4; fi' \
+  '  printf "authenticated fixture\\n"; exit 0' \
+  'fi' \
+  'if [[ "${1:-} ${2:-}" == "pr create" ]]; then' \
+  '  body_file=""' \
+  '  while (( "$#" )); do if [[ "$1" == "--body-file" ]]; then body_file="$2"; shift 2; else shift; fi; done' \
+  '  cp "$body_file" "$DOTLN_GH_BODY"' \
+  '  printf "https://example.invalid/pr/99\\n"; exit 0' \
+  'fi' \
+  'printf "unexpected gh invocation: %s\\n" "$*" >&2' \
+  'exit 64' >"$test_root/bin/gh"
+chmod +x "$test_root/bin/gh"
+: >"$gh_log"
+git -C "$subject" remote set-url --push origin https://github.com/dotln-fixture/wrong-target.git
+if split_origin_output="$(PATH="$test_root/bin:$PATH" DOTLN_GH_LOG="$gh_log" node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then printf 'error: publish accepted split fetch/push GitHub targets\n' >&2; exit 1; fi
+grep -Fq 'matching GitHub HOST/OWNER/REPO fetch and push target' <<<"$split_origin_output"
+test ! -s "$gh_log"
+git -C "$subject" config --unset-all remote.origin.pushurl
+git -C "$subject" remote set-url origin http://github.com/dotln-fixture/worktree.git
+if insecure_origin_output="$(PATH="$test_root/bin:$PATH" DOTLN_GH_LOG="$gh_log" node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then printf 'error: publish accepted an insecure GitHub origin\n' >&2; exit 1; fi
+grep -Fq 'matching GitHub HOST/OWNER/REPO fetch and push target' <<<"$insecure_origin_output"
+test ! -s "$gh_log"
+git -C "$subject" remote set-url origin "$github_origin"
+if unauth_output="$(PATH="$test_root/bin:$PATH" DOTLN_GH_LOG="$gh_log" DOTLN_FIXTURE_GH_FAIL=auth node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then printf 'error: publish accepted unauthenticated gh\n' >&2; exit 1; fi
+grep -Fq 'gh authentication is required before any remote mutation' <<<"$unauth_output"
+test "$(cat "$gh_log")" = $'--version\nauth status --hostname github.com'
+if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: branch pushed before gh authentication\n' >&2; exit 1; fi
+: >"$gh_log"
+mkdir -p "$test_root/outside"
+printf 'secret\n' >"$test_root/outside/secret.md"
+ln -s "$test_root/outside" "$subject/link"
+if PATH="$test_root/bin:$PATH" node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file link/secret.md >/dev/null 2>&1; then printf 'error: symlinked PR body accepted\n' >&2; exit 1; fi
+rm -- "$subject/link"
+if PATH="$test_root/bin:$PATH" node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file ../outside.md >/dev/null 2>&1; then printf 'error: outside PR body accepted\n' >&2; exit 1; fi
+git -C "$subject" tag -a v7.7.7 -m 'unrelated local annotated tag'
+git -C "$subject" config push.followTags true
+committed_body="$test_root/committed-pr-body.md"
+committed_notes="$test_root/committed-release-notes.md"
+published_body="$test_root/published-pr-body.md"
+cp "$subject/pr-body.md" "$committed_body"
+cp "$subject/$notes_path" "$committed_notes"
+git -C "$subject" update-index --assume-unchanged pr-body.md "$notes_path"
+printf 'hidden uncommitted private body\n' >"$subject/pr-body.md"
+printf '<!-- hidden malformed notes -->\n' >"$subject/$notes_path"
+publish_output="$(PATH="$test_root/bin:$PATH" DOTLN_GH_LOG="$gh_log" DOTLN_GH_BODY="$published_body" GH_REPO=wrong/target GH_HOST=wrong.example node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md)"
+grep -Fq "$(cat "$committed_body")" "$published_body"
+# Each committed line reaches the forge: the prose line whole, the code example
+# byte-for-byte and the empty-destination link written as its text.
+grep -Fxq "$(head -n 1 "$committed_body")" "$published_body"
+grep -Fxq -e '- A code example `` [sample](file.md) ` literal `` keeps its bytes and an empty link becomes its text.' "$published_body"
+if grep -Fq '[empty]()' "$published_body"; then printf 'error: an empty link destination was published\n' >&2; exit 1; fi
+"$node_bin" --input-type=module - "$committed_body" "$published_body" <<'NODE'
+import { readFileSync } from "node:fs";
+import assert from "node:assert/strict";
+const [committed, published] = process.argv
+  .slice(2)
+  .map((path) => readFileSync(path, "utf8"));
+const span = "`` [crsample](cr-file.md) ` literal ``";
+assert.ok(
+  committed.includes(`\nIntro\r\r${span}\r\rA carriage-return line links to [the notes](notes.md).\r\n`),
+  "the committed body holds the carriage-return lines",
+);
+assert.ok(
+  published.includes(`\nIntro\r\r${span}\r\rA carriage-return line links to [the notes](https://github.com/`),
+  "the published body keeps the carriage-return lines and the code on them",
+);
+assert.match(
+  published,
+  /\[the notes\]\(https:\/\/github\.com\/[^)]+\/blob\/[0-9a-f]{40}\/notes\.md\)\./u,
+  "the link on a carriage-return line is written absolute",
+);
+assert.ok(
+  !published.includes("[the notes](notes.md)"),
+  "no relative link on a carriage-return line was published",
+);
+NODE
+if grep -Fq 'hidden uncommitted private body' "$published_body"; then printf 'error: private working body leaked\n' >&2; exit 1; fi
+grep -Fq 'dotln-product-gate:start' "$published_body"
+grep -Fq '"checkId": "npm test"' "$published_body"
+cp "$committed_body" "$subject/pr-body.md"
+cp "$committed_notes" "$subject/$notes_path"
+git -C "$subject" update-index --no-assume-unchanged pr-body.md "$notes_path"
+test "$(git -C "$subject" rev-parse wo-099)" = "$(git --git-dir="$test_root/origin.git" rev-parse refs/heads/wo-099)"
+remote_refs="$(git --git-dir="$test_root/origin.git" for-each-ref --format='%(refname)' | LC_ALL=C sort)"
+test "$remote_refs" = $'refs/heads/main\nrefs/heads/wo-099'
+grep -Fq "Start a session in main ('$main')" <<<"$publish_output"
+grep -Fq "'$node_bin' '$main/scripts/release.mjs' close WO-099 --publish" <<<"$publish_output"
+printf '%s\n' "$publish_output" >"$test_root/publish-output.txt"
+CODEX_THREAD_ID='' COPILOT_AGENT_SESSION_ID='' "$node_bin" "$script_dir/test-close-admission.mjs" "$main" WO-099 "$test_root/publish-output.txt"
+grep -Fq 'network egress to the GitHub host' <<<"$publish_output"
+if grep -Fq "'$subject/scripts/release.mjs' close WO-099 --publish" <<<"$publish_output"; then
+  printf 'error: post-merge handoff names the helper the close will remove\n' >&2
+  exit 1
+fi
+test "$(sed -n '1p' "$gh_log")" = '--version'
+test "$(sed -n '2p' "$gh_log")" = 'auth status --hostname github.com'
+grep -Eq '^pr create --repo github\.com/dotln-fixture/worktree --head wo-099 --base main --title :sparkles: fixture --body-file .+/PR\.md$' "$gh_log"
+test "$(wc -l <"$gh_log" | tr -d ' ')" = 3
+printf 'worktree gh stub transcript (temporary path normalized):\n'
+sed -E 's#--body-file [^ ]+/PR\.md#--body-file <committed-PR-body>#' "$gh_log"
+printf 'GitHub PR target, authentication, and committed-body fixtures passed\n'
+git -C "$subject" config --unset push.followTags
+git -C "$subject" tag -d v7.7.7 >/dev/null
+if finish_worktree WO-099 >/dev/null 2>&1; then printf 'error: unmerged PR cleaned up\n' >&2; exit 1; fi
+
+git -C "$main" fetch origin wo-099 >/dev/null 2>&1
+git -C "$main" merge --ff-only origin/wo-099 >/dev/null
+git -C "$main" push origin main >/dev/null 2>&1
+printf 'SECRET=fixture-only\n' >"$subject/.env"
+printf 'disposable build state\n' >"$subject/tsconfig.tsbuildinfo"
+# Every blocker is listed at once with its lane and remedy. A nested
+# repository outside intake is scratch: the preview says it would go, the
+# refusal that follows deletes nothing, and no declaration is asked for.
+mkdir -p "$subject/docs/control/local/feedback/verifier/mount" "$subject/vendor/node_modules/kept-repo"
+git -C "$subject/docs/control/local/feedback/verifier/mount" init -q
+git -C "$subject/vendor/node_modules/kept-repo" init -q
+printf 'kept nested content\n' >"$subject/vendor/node_modules/kept-repo/file.txt"
+if finish_output="$(finish_worktree WO-099 2>&1)"; then printf 'error: ignored secret was deleted\n' >&2; exit 1; fi
+grep -Fq '(1 entry; only scratch repositories are removed)' <<<"$finish_output"
+grep -Fq '.env: other lane: ignored file; move it outside the checkout or delete it from an operator terminal' <<<"$finish_output"
+grep -Fq '"vendor/node_modules/kept-repo": nested repository disposable; removed with the worktree' <<<"$finish_output"
+grep -Fq 'Scratch removal: {"worktree":' <<<"$finish_output"
+if grep -Fq 'npm run worktree -- material' <<<"$finish_output"; then printf 'error: a declaration was asked for\n' >&2; exit 1; fi
+if grep -Fq 'npm run backup:intake' <<<"$finish_output"; then printf 'error: intake archive named for non-intake material\n' >&2; exit 1; fi
+if grep -Fq 'verifier/mount/:' <<<"$finish_output"; then printf 'error: empty nested repository reported as a blocker\n' >&2; exit 1; fi
+if grep -Fq 'SECRET=fixture-only' <<<"$finish_output"; then printf 'error: ignored-file content leaked in refusal\n' >&2; exit 1; fi
+test -f "$subject/.env"
+test -f "$subject/tsconfig.tsbuildinfo"
+test -d "$subject"
+test -f "$subject/vendor/node_modules/kept-repo/file.txt"
+test -d "$subject/vendor/node_modules/kept-repo/.git"
+test -n "$(git -C "$main" branch --list wo-099)"
+rm -- "$subject/.env" "$subject/tsconfig.tsbuildinfo"
+rm -rf -- "$subject/vendor" "$subject/docs/control/local/feedback"
+printf 'removal refusal listed every blocker with its lane and remedy\n'
+mkdir -p "$subject/docs/intake"
+intake_path="docs/intake/raw${u202f}"$'\n'"note.md"
+assert_u202f "$intake_path"
+printf 'raw local note\n' >"$subject/$intake_path"
+intake_output="$(finish_worktree WO-099 --dry-run 2>&1)"
+"$node_bin" -e 'require("node:assert/strict").ok(process.argv[1].includes(JSON.stringify(process.argv[2])))' "$intake_output" "$intake_path"
+test ! -e "$main/$intake_path"
+test -f "$subject/$intake_path"
+test -d "$subject"
+test -n "$(git -C "$main" branch --list wo-099)"
+rm -- "$subject/$intake_path"
+rmdir -- "$subject/docs/intake"
+mkdir -p "$subject/docs/intake/dist" "$subject/docs/intake/node_modules"
+printf 'protected intake distribution note\n' >"$subject/docs/intake/dist/x.md"
+printf 'protected intake dependency note\n' >"$subject/docs/intake/node_modules/y"
+intake_build_output="$(finish_worktree WO-099 --dry-run 2>&1)"
+grep -Fq 'docs/intake/dist/x.md' <<<"$intake_build_output"
+test -f "$subject/docs/intake/dist/x.md"
+test -f "$subject/docs/intake/node_modules/y"
+test -d "$subject"
+test -n "$(git -C "$main" branch --list wo-099)"
+rm -- "$subject/docs/intake/dist/x.md"
+rmdir -- "$subject/docs/intake/dist"
+intake_node_output="$(finish_worktree WO-099 --dry-run 2>&1)"
+grep -Fq 'docs/intake/node_modules/y' <<<"$intake_node_output"
+test -f "$subject/docs/intake/node_modules/y"
+rm -- "$subject/docs/intake/node_modules/y"
+rmdir -- "$subject/docs/intake/node_modules" "$subject/docs/intake"
+mkdir -p "$subject/.claude"
+printf 'subject-only settings fixture\n' >"$subject/.claude/settings.local.json"
+if settings_output="$(finish_worktree WO-099 2>&1)"; then
+  printf 'error: subject harness settings were deleted\n' >&2
+  exit 1
+fi
+grep -Fq '.claude/settings.local.json' <<<"$settings_output"
+test -f "$subject/.claude/settings.local.json"
+test -d "$subject"
+test -n "$(git -C "$main" branch --list wo-099)"
+rm -- "$subject/.claude/settings.local.json"
+rmdir -- "$subject/.claude"
+mkdir -p "$subject/assets/dist"
+printf 'kept asset\n' >"$subject/assets/dist/keep"
+if asset_dist_output="$(finish_worktree WO-099 2>&1)"; then
+  printf 'error: nested asset dist directory was treated as disposable\n' >&2
+  exit 1
+fi
+grep -Fq 'assets/dist/keep' <<<"$asset_dist_output"
+test -f "$subject/assets/dist/keep"
+rm -- "$subject/assets/dist/keep"
+rmdir -- "$subject/assets/dist" "$subject/assets"
+mkdir -p "$subject/vendor/node_modules"
+printf 'kept vendor material\n' >"$subject/vendor/node_modules/keep"
+if vendor_modules_output="$(finish_worktree WO-099 2>&1)"; then
+  printf 'error: nested vendor node_modules directory was treated as disposable\n' >&2
+  exit 1
+fi
+grep -Fq 'vendor/node_modules/keep' <<<"$vendor_modules_output"
+test -f "$subject/vendor/node_modules/keep"
+rm -- "$subject/vendor/node_modules/keep"
+rmdir -- "$subject/vendor/node_modules" "$subject/vendor"
+node_module_path="node_modules/fixture${u202f}/file"
+dist_path="dist/generated${u202f}/file"
+package_node_module_path="packages/kernel/node_modules/fixture/file"
+package_dist_path="packages/kernel/dist/generated/file"
+ds_store_path="assets${u202f}/.DS_Store"
+tsbuildinfo_path="compiler${u202f}.tsbuildinfo"
+assert_u202f "$node_module_path"
+assert_u202f "$dist_path"
+assert_u202f "$ds_store_path"
+assert_u202f "$tsbuildinfo_path"
+mkdir -p "$subject/$(dirname "$node_module_path")" "$subject/$(dirname "$dist_path")" "$subject/$(dirname "$package_node_module_path")" "$subject/$(dirname "$package_dist_path")" "$subject/$(dirname "$ds_store_path")"
+printf 'disposable\n' >"$subject/$node_module_path"
+printf 'generated\n' >"$subject/$dist_path"
+printf 'disposable package dependency\n' >"$subject/$package_node_module_path"
+printf 'generated package output\n' >"$subject/$package_dist_path"
+printf 'finder metadata\n' >"$subject/$ds_store_path"
+printf 'disposable build state\n' >"$subject/$tsbuildinfo_path"
+git -C "$subject" branch --unset-upstream
+test -d "$subject/.control-beacons/public"
+test -d "$subject/.control-beacons/verifier"
+test -d "$subject/.control-beacons/groups"
+node --input-type=module - "$subject" <<'NODE'
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { pathToFileURL } from "node:url";
+const root = process.argv[2];
+const host = await import(pathToFileURL(join(root, "packages/beacons/src/control-beacon-fs.mjs")));
+host.issueBeaconSession(root, "WO-099");
+const record = JSON.parse(readFileSync(join(host.controlBeaconDirectory(root), host.controlBeaconAddress("WO-099")), "utf8"));
+host.emitControlBeacon(root, record);
+NODE
+mkdir -p "$subject/docs/control/local/prototypes/nested" "$subject/docs/control/local/process/empty" "$main/docs/control/local"
+printf 'subject retained record\000bytes\n' >"$subject/docs/control/local/adjacent-work.jsonl"
+printf 'subject prototype\n' >"$subject/docs/control/local/prototypes/nested/source.txt"
+# A nested repository with content in the control lane is scratch like any
+# other outside intake: removed with the worktree and recorded, never archived.
+mkdir -p "$subject/docs/control/local/prototypes/repo" "$subject/docs/control/local/feedback/verifier/mount"
+git -C "$subject/docs/control/local/prototypes/repo" init -q
+printf 'kept nested content\n' >"$subject/docs/control/local/prototypes/repo/file.txt"
+git -C "$subject/docs/control/local/prototypes/repo" -c user.name=Fixture -c user.email=fixture@example.invalid add file.txt
+git -C "$subject/docs/control/local/prototypes/repo" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm kept
+git -C "$subject/docs/control/local/feedback/verifier/mount" init -q
+printf 'subject terms\n' >"$subject/docs/control/local/terms.txt"
+printf 'main active terms\n' >"$main/docs/control/local/terms.txt"
+printf 'main active queue\n' >"$main/docs/control/local/adjacent-work.jsonl"
+cp "$subject/docs/control/local/adjacent-work.jsonl" "$test_root/retained-expected.bin"
+node --input-type=module - "$subject" "$main" <<'NODE'
+import { pathToFileURL } from "node:url";
+import { join } from "node:path";
+for (const [index, root] of process.argv.slice(2).entries()) {
+  const { gateTreeHash, recordGateChecks } = await import(pathToFileURL(join(root, "scripts/lib/gate-evidence.mjs")));
+  const treeHash = gateTreeHash(root);
+  recordGateChecks(root, [{ checkId: `fixture-closeout-${index}`, treeHash, subject: treeHash, durationMs: 1, exitCode: 0, executed: true, evidenceRef: "synthetic-closeout-handoff", recordedAt: new Date().toISOString() }]);
+}
+NODE
+# Derived detached worktrees of the closing order are pruned,
+# preserved-and-removed when safe, or reported with their blocker.
+derived_clean="$test_root/project-wo099-measure-001"
+derived_dirty="$test_root/project-wo099-measure-002"
+derived_gone="$test_root/project-wo099-measure-003"
+derived_retained="$test_root/wo099-host-fixture/subject"
+derived_writer="$test_root/project-wo099-measure-writer"
+derived_unknown="$test_root/project-wo099-measure-unknown"
+git -C "$main" worktree add --detach "$derived_writer" >/dev/null 2>&1
+git -C "$main" worktree add --detach "$derived_unknown" >/dev/null 2>&1
+mkdir -p "$derived_writer/docs/control/local/harness/writer" "$derived_unknown/docs/control/local/harness/writer"
+printf '{"actorId":"fixture-live","owner":{"pid":%s,"source":"parent"}}\n' "$$" >"$derived_writer/docs/control/local/harness/writer/reservation-00000000000000000000000000000000.json"
+printf '{"actorId":"fixture-unknown"}\n' >"$derived_unknown/docs/control/local/harness/writer/reservation-00000000000000000000000000000000.json"
+git -C "$main" worktree add --detach "$derived_clean" >/dev/null 2>&1
+git -C "$main" worktree add --detach "$derived_dirty" >/dev/null 2>&1
+git -C "$main" worktree add --detach "$derived_gone" >/dev/null 2>&1
+git -C "$main" worktree add --detach "$derived_retained" >/dev/null 2>&1
+printf 'measurement build state\n' >"$derived_clean/tsconfig.tsbuildinfo"
+printf 'unsaved\n' >"$derived_dirty/notes.txt"
+mkdir -p "$derived_retained/docs/control/local/measure"
+printf 'derived measurement log\n' >"$derived_retained/docs/control/local/measure/log.txt"
+rm -rf -- "$derived_gone"
+retained_main_refs="$(git -C "$main" show-ref)"
+retained_subject_head="$(git -C "$subject" rev-parse HEAD)"
+retained_preview="$(finish_worktree WO-099 --dry-run 2>&1)"
+grep -Fq 'docs/control/local/retained/WO-099/adjacent-work.jsonl' <<<"$retained_preview"
+grep -Fq 'docs/control/local/retained/WO-099/process/empty' <<<"$retained_preview"
+grep -Fq '"docs/control/local/prototypes/repo": nested repository disposable; removed with the worktree' <<<"$retained_preview"
+grep -Fq '"docs/control/local/feedback/verifier/mount": nested repository disposable; removed with the worktree' <<<"$retained_preview"
+if grep -Fq 'retained/WO-099/prototypes/repo' <<<"$retained_preview"; then printf 'error: a scratch repository was archived\n' >&2; exit 1; fi
+grep -Fq '"path":"docs/control/local/prototypes/repo"' <<<"$retained_preview"
+grep -Fq '"outcome":"would-remove"' <<<"$retained_preview"
+grep -Fq "Derived worktree $derived_clean: would remove" <<<"$retained_preview"
+grep -Fq "Derived worktree $derived_dirty: kept (uncommitted changes); operator: commit, stash or discard the changes in '$derived_dirty' from an operator terminal, then retry with node '$main/scripts/worktree.mjs' settle WO-099" <<<"$retained_preview"
+grep -Fq "Derived worktree $derived_writer: kept (writer reservation" <<<"$retained_preview"
+grep -Fq "Derived worktree $derived_unknown: kept (writer reservation" <<<"$retained_preview"
+grep -Fq "Derived worktree $derived_gone: would prune (directory missing)" <<<"$retained_preview"
+grep -Fq "Derived worktree $derived_retained: would remove (detached, clean, idle; 1 preserved files" <<<"$retained_preview"
+test -d "$derived_clean"
+test -d "$derived_retained"
+test ! -e "$main/docs/control/local/retained"
+test -f "$subject/docs/control/local/adjacent-work.jsonl"
+test "$(git -C "$main" show-ref)" = "$retained_main_refs"
+test "$(git -C "$subject" rev-parse HEAD)" = "$retained_subject_head"
+retained_finish="$(finish_worktree WO-099)"
+test ! -e "$subject"
+"$node_bin" - "$retained_finish" <<'JS'
+const assert = require("node:assert/strict");
+const rows = process.argv[2].split("\n").filter((line) => line.startsWith("Scratch removal: ")).map((line) => JSON.parse(line.slice("Scratch removal: ".length)));
+const repo = rows.filter((row) => row.path === "docs/control/local/prototypes/repo").at(-1);
+assert.equal(repo.outcome, "removed");
+assert.match(repo.head, /^[0-9a-f]{40}$/);
+assert.equal(repo.remoteHeld, false);
+const mount = rows.filter((row) => row.path === "docs/control/local/feedback/verifier/mount").at(-1);
+assert.deepEqual([mount.head, mount.remoteHeld, mount.outcome], [null, null, "removed"]);
+JS
+grep -Fq "Derived worktree $derived_clean: removed" <<<"$retained_finish"
+grep -Fq "Derived worktree $derived_dirty: kept (uncommitted changes)" <<<"$retained_finish"
+grep -Fq "Derived worktree $derived_gone: pruned (directory missing)" <<<"$retained_finish"
+grep -Fq "Derived worktree $derived_retained: removed" <<<"$retained_finish"
+test ! -e "$derived_clean"
+test ! -e "$derived_retained"
+test -f "$derived_dirty/notes.txt"
+test -d "$derived_writer"
+test -d "$derived_unknown"
+grep -Fq "Derived worktree $derived_writer: kept (writer reservation" <<<"$retained_finish"
+grep -Fq "Derived worktree $derived_unknown: kept (writer reservation" <<<"$retained_finish"
+git -C "$main" worktree remove --force "$derived_writer" >/dev/null
+git -C "$main" worktree remove --force "$derived_unknown" >/dev/null
+test "$(cat "$main/docs/control/local/retained/WO-099/measure/log.txt")" = 'derived measurement log'
+if git -C "$main" worktree list --porcelain | grep -Fq "$derived_clean"; then printf 'error: removed derived worktree still registered\n' >&2; exit 1; fi
+if git -C "$main" worktree list --porcelain | grep -Fq "$derived_gone"; then printf 'error: missing derived worktree not pruned\n' >&2; exit 1; fi
+git -C "$main" worktree list --porcelain | grep -Fq "$derived_dirty"
+git -C "$main" worktree remove --force "$derived_dirty" >/dev/null
+printf 'derived worktrees settled: pruned, preserved and removed, or kept with a blocker\n'
+# The same settlement runs on its own after the subject is already gone.
+git -C "$main" worktree add --detach "$test_root/project-wo099-measure-009" >/dev/null 2>&1
+settle_output="$(cd "$main" && node "$main/scripts/worktree.mjs" settle WO-099)"
+grep -Fq "Derived worktree $test_root/project-wo099-measure-009: removed" <<<"$settle_output"
+test ! -e "$test_root/project-wo099-measure-009"
+test "$(cd "$main" && node "$main/scripts/worktree.mjs" settle WO-099)" = 'No derived worktrees for WO-099.'
+printf 'settle removed a derived worktree with no subject present\n'
+cmp "$test_root/retained-expected.bin" "$main/docs/control/local/retained/WO-099/adjacent-work.jsonl"
+test -f "$main/docs/control/local/retained/WO-099/prototypes/nested/source.txt"
+test -d "$main/docs/control/local/retained/WO-099/process/empty"
+test ! -e "$main/docs/control/local/retained/WO-099/prototypes/repo"
+test ! -e "$main/docs/control/local/retained/WO-099/feedback"
+test "$(cat "$main/docs/control/local/terms.txt")" = 'main active terms'
+test "$(cat "$main/docs/control/local/adjacent-work.jsonl")" = 'main active queue'
+test "$(cat "$main/docs/control/local/retained/WO-099/terms.txt")" = 'subject terms'
+node --input-type=module - "$main" <<'NODE'
+import assert from "node:assert/strict";
+import { pathToFileURL } from "node:url";
+import { join } from "node:path";
+const root = process.argv[2];
+const { readGateChecks } = await import(pathToFileURL(join(root, "scripts/lib/gate-evidence.mjs")));
+const ids = readGateChecks(root).map(row => row.checkId);
+assert.ok(ids.includes("fixture-closeout-0"), "subject gate evidence must survive teardown");
+assert.ok(ids.includes("fixture-closeout-1"), "main gate evidence must remain intact");
+NODE
+test "$(git -C "$main" branch --list wo-099)" = ""
+test -f "$main/result.txt"
+printf 'beacon cleanup: populated anchored projection directories removed; docs/intake/dist/x.md negative fixture preserved\n'
+test "$(git -C "$main" status --porcelain)" = ""
+
+hidden_subject="$test_root/project-wo098"
+git -C "$main" worktree add "$hidden_subject" -b wo-098 >/dev/null
+printf '%s\n' \
+  '# WO-098 — committed-state finish fixture, v0.2.1' \
+  '' \
+  '**Model:** fixture-model.' \
+  '**Effort:** executor any; verifier any; reviewer any.' \
+  '' \
+  '**Objective:** Keep destructive finish bound to committed control.' >"$hidden_subject/docs/work-orders/WO-098-fixture.md"
+printf '%s\n' '{"schemaVersion":1,"type":"WorkOrderActivated","workOrderId":"WO-098","workOrderPath":"docs/work-orders/WO-098-fixture.md"}' >>"$hidden_subject/docs/control/resume.jsonl"
+printf '%s\n' \
+  '# Current control state' \
+  '' \
+  '- Work order: WO-098' \
+  '- Work-order path: docs/work-orders/WO-098-fixture.md' \
+  '- Phase: active' >"$hidden_subject/docs/control/current.md"
+git -C "$hidden_subject" add .
+git -C "$hidden_subject" commit -m 'active committed finish fixture' >/dev/null
+git -C "$hidden_subject" push -u origin wo-098 >/dev/null 2>&1
+git -C "$main" fetch origin wo-098 >/dev/null 2>&1
+git -C "$main" merge --ff-only origin/wo-098 >/dev/null
+git -C "$main" push origin main >/dev/null 2>&1
+cp "$hidden_subject/docs/control/resume.jsonl" "$test_root/committed-active-finish-resume.jsonl"
+cp "$hidden_subject/docs/control/current.md" "$test_root/committed-active-finish-current.md"
+git -C "$hidden_subject" update-index --assume-unchanged docs/control/resume.jsonl docs/control/current.md
+printf '%s\n' '{"schemaVersion":1,"type":"FinalReviewCompleted","workOrderId":"WO-098","finalReviewId":"FINAL-001","reportPath":"docs/final-reviews/WO-098/FINAL-001.md","verdict":"pass"}' >>"$hidden_subject/docs/control/resume.jsonl"
+printf '%s\n' \
+  '# Current control state' \
+  '' \
+  '- Work order: WO-098' \
+  '- Work-order path: docs/work-orders/WO-098-fixture.md' \
+  '- Phase: closed' >"$hidden_subject/docs/control/current.md"
+if hidden_finish_output="$(finish_worktree WO-098 2>&1)"; then
+  printf 'error: hidden live control state bypassed destructive finish gate\n' >&2
+  exit 1
+fi
+grep -Fq 'WO-098 has not passed final review and closed' <<<"$hidden_finish_output"
+test -d "$hidden_subject"
+test -n "$(git -C "$main" branch --list wo-098)"
+test -f "$hidden_subject/docs/control/resume.jsonl"
+cp "$test_root/committed-active-finish-resume.jsonl" "$hidden_subject/docs/control/resume.jsonl"
+cp "$test_root/committed-active-finish-current.md" "$hidden_subject/docs/control/current.md"
+git -C "$hidden_subject" update-index --no-assume-unchanged docs/control/resume.jsonl docs/control/current.md
+test "$(git -C "$hidden_subject" status --porcelain)" = ""
+printf 'destructive finish used committed control state and preserved the hidden-live fixture\n'
+# A closed subject cannot be removed if its integrated order was reopened.
+reopened_subject="$test_root/project-wo097"
+git -C "$main" worktree add "$reopened_subject" -b wo-097 >/dev/null
+printf '# WO-097 — reopened integration fixture, v0.2.1\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n' >"$reopened_subject/docs/work-orders/WO-097-fixture.md"
+node "$reopened_subject/scripts/resume.mjs" activate WO-097 docs/work-orders/WO-097-fixture.md >/dev/null
+printf '%s\n' '{"schemaVersion":1,"type":"FinalReviewCompleted","workOrderId":"WO-097","finalReviewId":"FINAL-001","reportPath":"docs/final-reviews/WO-097/FINAL-001.md","verdict":"pass"}' >>"$reopened_subject/docs/control/orders/WO-097.jsonl"
+node "$reopened_subject/scripts/resume.mjs" next >/dev/null
+git -C "$reopened_subject" add .
+git -C "$reopened_subject" commit -m 'closed subject integration fixture' >/dev/null
+git -C "$main" merge --ff-only wo-097 >/dev/null
+node "$main/scripts/resume.mjs" activate WO-097 docs/work-orders/WO-097-fixture.md >/dev/null
+git -C "$main" add .
+git -C "$main" commit -m 'reopened integrated order' >/dev/null
+git -C "$main" push origin main >/dev/null 2>&1
+if reopened_output="$(finish_worktree WO-097 2>&1)"; then printf 'error: reopened merged order was removed\n' >&2; exit 1; fi
+grep -Fq 'WO-097 is not closed in merged control state' <<<"$reopened_output"
+test -d "$reopened_subject"
+test -n "$(git -C "$main" branch --list wo-097)"
+printf 'finish refused reopened merged order and preserved its closed subject\n'
+node "$script_dir/test-control-beacons.mjs" "$test_root"
+printf 'worktree tests passed\n'

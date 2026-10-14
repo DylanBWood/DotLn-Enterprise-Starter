@@ -1,0 +1,191 @@
+import { canonicalStringify } from "@dotln/compiler";
+export const sourceChangeEventTypes = [
+    "SourceChangeRequested",
+    "SourceChangeObserved",
+    "SourceChangeRefused",
+];
+export const SOURCE_CHANGE_HOST = "source-change-host";
+function record(value, fields) {
+    if (value === null || typeof value !== "object" || Array.isArray(value))
+        throw new Error("source-change payload must be an object");
+    const object = value;
+    if (Object.keys(object).sort().join(",") !== [...fields].sort().join(","))
+        throw new Error(`source-change payload requires exactly ${fields.join(", ")}`);
+    return object;
+}
+function line(value) {
+    if (typeof value !== "string" ||
+        !value ||
+        value.length > 4096 ||
+        /[\u0000-\u001f\u007f]/u.test(value))
+        throw new Error("source-change payload requires a nonempty line");
+}
+export function assertSourceCommit(value) {
+    if (typeof value !== "string" ||
+        !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/u.test(value))
+        throw new Error("source-change commit must be an immutable Git identity");
+}
+function digest(value) {
+    if (typeof value !== "string" || !/^[a-f0-9]{64}$/u.test(value))
+        throw new Error("source-change digest must be SHA-256");
+}
+export function assertSourceSurface(value) {
+    line(value);
+    if (value.startsWith("/") ||
+        value.includes("\\") ||
+        value
+            .split("/")
+            .some((part) => !part || part === "." || part === ".." || part === ".git"))
+        throw new Error("source-change surface must be a relative file or directory");
+}
+export function decodeFocusedTest(value) {
+    const item = record(value, [
+        "command",
+        "exitCode",
+        "signal",
+        "stdoutHash",
+        "stderrHash",
+    ]);
+    line(item.command);
+    if (item.exitCode !== null &&
+        (!Number.isSafeInteger(item.exitCode) || Number(item.exitCode) < 0))
+        throw new Error("source-change test exit code is invalid");
+    if (item.signal !== null)
+        line(item.signal);
+    if (item.exitCode === null && item.signal === null)
+        throw new Error("source-change test lacks an outcome");
+    digest(item.stdoutHash);
+    digest(item.stderrHash);
+    return item;
+}
+export function decodeSourceRequest(value) {
+    const item = record(value, [
+        "workOrderId",
+        "repo",
+        "baseCommit",
+        "branch",
+        "surfaces",
+    ]);
+    line(item.workOrderId);
+    line(item.repo);
+    line(item.branch);
+    assertSourceCommit(item.baseCommit);
+    if (!Array.isArray(item.surfaces) ||
+        !item.surfaces.length ||
+        new Set(item.surfaces).size !== item.surfaces.length)
+        throw new Error("source-change surfaces must be unique and nonempty");
+    for (const surface of item.surfaces)
+        assertSourceSurface(surface);
+    return item;
+}
+export function decodeSourceObservation(value) {
+    const item = record(value, [
+        "workOrderId",
+        "commit",
+        "branch",
+        "diffHash",
+        "testBefore",
+        "testAfter",
+    ]);
+    line(item.workOrderId);
+    line(item.branch);
+    assertSourceCommit(item.commit);
+    digest(item.diffHash);
+    const before = decodeFocusedTest(item.testBefore);
+    const after = decodeFocusedTest(item.testAfter);
+    if (before.command !== after.command)
+        throw new Error("source-change focused test changed");
+    return item;
+}
+export function decodeSourceRefusal(value) {
+    const item = record(value, ["workOrderId", "reason"]);
+    line(item.workOrderId);
+    line(item.reason);
+    return item;
+}
+export function decodeSharedRepositoryState(value) {
+    const item = record(value, ["commonDirectory", "refs", "alternates"]);
+    line(item.commonDirectory);
+    if (!item.commonDirectory.startsWith("/"))
+        throw new Error("source-change common directory must be absolute");
+    if (!Array.isArray(item.refs))
+        throw new Error("source-change shared refs must be an array");
+    const names = new Set();
+    for (const entry of item.refs) {
+        if (!Array.isArray(entry) || entry.length !== 3)
+            throw new Error("source-change shared ref requires name, commit and symbolic target");
+        line(entry[0]);
+        if (!entry[0].startsWith("refs/") || names.has(entry[0]))
+            throw new Error("source-change shared refs must have unique ref names");
+        if (entry[1] !== "" || entry[2] === "")
+            assertSourceCommit(entry[1]);
+        if (entry[2] !== "") {
+            line(entry[2]);
+            if (!entry[2].startsWith("refs/"))
+                throw new Error("source-change symbolic target must be a ref name");
+        }
+        names.add(entry[0]);
+    }
+    if (item.alternates !== null &&
+        (typeof item.alternates !== "string" ||
+            !/^(?:[a-f0-9]{2})*$/.test(item.alternates)))
+        throw new Error("source-change alternates must be hexadecimal bytes or absent");
+    return item;
+}
+export const sameSourceValue = (left, right) => canonicalStringify(left) === canonicalStringify(right);
+/** The host observes effects. This fold neither performs nor verifies a change. */
+export function sourceChangeDecision(state, event) {
+    let next = state;
+    let branch = "observed";
+    if (sourceChangeEventTypes.some((type) => event.type === type)) {
+        if (event.actorId !== SOURCE_CHANGE_HOST)
+            throw new Error("source-change event requires the host actor");
+        if (state.workstreamId !== undefined &&
+            event.workstreamId !== state.workstreamId)
+            throw new Error("source-change workstream mismatch");
+        if (event.type === "SourceChangeRequested") {
+            const request = decodeSourceRequest(event.payload);
+            if (state.request && !sameSourceValue(state.request, request))
+                throw new Error("source-change request drift");
+            next = state.request
+                ? state
+                : { workstreamId: event.workstreamId, request };
+        }
+        else {
+            if (!state.request)
+                throw new Error("source-change result has no request");
+            if (event.type === "SourceChangeObserved") {
+                const observation = decodeSourceObservation(event.payload);
+                if (observation.workOrderId !== state.request.workOrderId ||
+                    observation.branch !== state.request.branch ||
+                    observation.commit === state.request.baseCommit ||
+                    state.refusal ||
+                    (state.observation &&
+                        !sameSourceValue(state.observation, observation)))
+                    throw new Error("source-change observation conflicts with its request or receipt");
+                next = state.observation ? state : { ...state, observation };
+            }
+            else {
+                const refusal = decodeSourceRefusal(event.payload);
+                if (refusal.workOrderId !== state.request.workOrderId ||
+                    state.observation ||
+                    (state.refusal && !sameSourceValue(state.refusal, refusal)))
+                    throw new Error("source-change refusal conflicts with its request or receipt");
+                next = state.refusal ? state : { ...state, refusal };
+            }
+        }
+        branch = next === state ? "dedup" : "folded";
+    }
+    return {
+        state: next,
+        intents: [],
+        schedules: [],
+        trace: {
+            reactorId: "source-change",
+            reactorVersion: "1",
+            branchPath: [event.type, branch],
+            envInputs: ["event"],
+            cadenceEvaluations: [],
+        },
+    };
+}

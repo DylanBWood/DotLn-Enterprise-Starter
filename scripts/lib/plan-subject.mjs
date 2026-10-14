@@ -1,0 +1,673 @@
+import { sha256Hex } from "./helpers.mjs";
+export { sha256Hex } from "./helpers.mjs";
+import { lstatSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import { parseHeader, parseSequence } from "../work-orders.mjs";
+import { readGitObjects, runGit } from "./git.mjs";
+import { containedRegularFile } from "./paths.mjs";
+import { defaultDocRelative, docRelative, rootPattern } from "./config.mjs";
+
+// Default-layout names for peers that hold no launchpad; `planPaths` resolves
+// the same documents under a launchpad's configured roots.
+export const PLAN_MAP = defaultDocRelative("planning", "sequence.md");
+export const PLAN_LEDGER = defaultDocRelative("lineage", "idea-ledger.md");
+export const planPaths = (root) => ({
+  map: docRelative(root, "planning", "sequence.md"),
+  ledger: docRelative(root, "lineage", "idea-ledger.md"),
+});
+export const THESIS_HEADINGS = [
+  ["the-one-paragraph-story", "The one-paragraph story"],
+  ["the-core-bet", "The core bet"],
+  ["the-differentiated-interface", "The differentiated interface"],
+  ["three-horizons-one-kernel", "Three horizons, one kernel"],
+  [
+    "mission--increase-the-chance-of-operator-flow",
+    "Mission — increase the chance of operator flow",
+  ],
+];
+export const sha256 = (value) => `sha256:${sha256Hex(value)}`;
+
+// Length framing is supplied by JSON's string encoding. No whitespace folding
+// occurs before hashing source bytes. A revision id is provenance, not identity.
+export const hashParts = (parts) => sha256(JSON.stringify(parts));
+
+// Activation changes only the release-label parenthetical. Preserve legacy
+// receipt hashes while comparing their substantive order content canonically.
+export const planOrderHash = (order, { legacy = false } = {}) =>
+  hashParts([
+    order.workOrderId,
+    legacy
+      ? order.title
+      : order.title?.replace(
+          / \((?:version assigned at activation|v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*))\)$/u,
+          "",
+        ),
+    order.objective,
+    order.criteria,
+    order.nonGoals,
+    ...(Object.hasOwn(order, "cost") ? [order.cost] : []),
+  ]);
+export const carriedOrderHashMatches = (order, previous, recorded) =>
+  Boolean(
+    order &&
+    previous &&
+    planOrderHash(order) === planOrderHash(previous) &&
+    [
+      planOrderHash(order),
+      planOrderHash(order, { legacy: true }),
+      planOrderHash(previous, { legacy: true }),
+    ].includes(recorded),
+  );
+
+const TREE_CACHE_LIMIT = 64;
+const BLOB_CACHE_LIMIT = 2048;
+const BLOB_BATCH_LIMIT = 32;
+const treeCache = new Map();
+const blobCache = new Map();
+const cached = (cache, key) => {
+  if (!cache.has(key)) return undefined;
+  const value = cache.get(key);
+  cache.delete(key);
+  cache.set(key, value);
+  return value;
+};
+const retain = (cache, key, value, limit) => {
+  cache.delete(key);
+  cache.set(key, value);
+  while (cache.size > limit) cache.delete(cache.keys().next().value);
+  return value;
+};
+const readBlobBatch = (root, oids) => {
+  try {
+    return new Map(
+      [...readGitObjects(root, oids, "blob")].map(([oid, bytes]) => [
+        oid,
+        bytes.toString("utf8"),
+      ]),
+    );
+  } catch (error) {
+    // Combined payloads can exceed Git's fixed output buffer even when each
+    // object fits. Retry smaller batches; singleton failures still propagate.
+    if (oids.length <= 1) throw error;
+    const middle = Math.ceil(oids.length / 2);
+    return new Map([
+      ...readBlobBatch(root, oids.slice(0, middle)),
+      ...readBlobBatch(root, oids.slice(middle)),
+    ]);
+  }
+};
+
+const committedTree = (root, revision) => {
+  // Reuse only full ids already resolved as commits in this root. An unseen
+  // full id can name an annotated tag and must still be peeled to its commit.
+  // HEAD, branches, tags and revision expressions resolve afresh.
+  const knownTree = /^[0-9a-f]{40}(?:[0-9a-f]{24})?$/u.test(revision)
+    ? cached(treeCache, `${root}\0${revision}`)
+    : undefined;
+  const commit = knownTree
+    ? revision
+    : runGit(root, ["rev-parse", "--verify", `${revision}^{commit}`]);
+  const treeKey = `${root}\0${commit}`;
+  const entries =
+    knownTree ??
+    cached(treeCache, treeKey) ??
+    retain(
+      treeCache,
+      treeKey,
+      new Map(
+        runGit(root, ["ls-tree", "-rz", commit], { trim: false })
+          .split("\0")
+          .filter(Boolean)
+          .map((entry) => {
+            const [meta, path] = entry.split("\t");
+            const [mode, type, oid] = meta.split(" ");
+            return [path, { mode, type, oid }];
+          }),
+      ),
+      TREE_CACHE_LIMIT,
+    );
+  return { commit, entries };
+};
+const requireBlob = (entries, path) => {
+  const entry = entries.get(path);
+  if (
+    !entry ||
+    entry.type !== "blob" ||
+    !["100644", "100755"].includes(entry.mode)
+  )
+    throw new Error(`plan subject requires a committed regular file: ${path}`);
+  return entry.oid;
+};
+const readBlobs = (root, requested) => {
+  const sources = new Map();
+  const misses = new Map();
+  for (const oid of new Set(requested)) {
+    const key = `${root}\0${oid}`;
+    const source = cached(blobCache, key);
+    if (source === undefined) misses.set(oid, key);
+    else sources.set(oid, source);
+  }
+  const oids = [...misses.keys()];
+  for (let offset = 0; offset < oids.length; offset += BLOB_BATCH_LIMIT) {
+    const batch = oids.slice(offset, offset + BLOB_BATCH_LIMIT);
+    for (const [oid, source] of readBlobBatch(root, batch)) {
+      sources.set(oid, source);
+      retain(blobCache, misses.get(oid), source, BLOB_CACHE_LIMIT);
+    }
+  }
+  return sources;
+};
+
+export const committedReader = (root, revision = "HEAD") => {
+  const { commit, entries } = committedTree(root, revision);
+  const readMany = (paths) => {
+    const requested = [...new Set(paths)].map((path) => [
+      path,
+      requireBlob(entries, path),
+    ]);
+    const sources = readBlobs(
+      root,
+      requested.map(([, oid]) => oid),
+    );
+    return new Map(requested.map(([path, oid]) => [path, sources.get(oid)]));
+  };
+  return {
+    revision: commit,
+    paths: [...entries.keys()],
+    readMany,
+    read(path) {
+      return readMany([path]).get(path);
+    },
+  };
+};
+
+// Hints populate only the existing bounded immutable cache. They grant no
+// validity: callers must still construct and compare the canonical subjects.
+export const prefetchCommittedSources = (root, requests) => {
+  try {
+    const oids = requests.flatMap(({ revision, paths }) => {
+      const { entries } = committedTree(root, revision);
+      return paths.flatMap((path) => {
+        const entry = entries.get(path);
+        return entry?.type === "blob" &&
+          ["100644", "100755"].includes(entry.mode)
+          ? [entry.oid]
+          : [];
+      });
+    });
+    readBlobs(root, oids);
+  } catch {
+    // Hints may be stale, malformed or unreadable. Canonical consumers still
+    // read and validate required sources, preserving their original refusals.
+  }
+};
+
+const section = (source, heading) => {
+  const lines = source.match(/[^\n]*\n|[^\n]+$/g) ?? [];
+  const positions = lines.flatMap((line, i) =>
+    line.trimEnd() === `## ${heading}` ? [i] : [],
+  );
+  if (positions.length !== 1)
+    throw new Error(`expected exactly one section: ${heading}`);
+  const start = positions[0];
+  const end = lines.findIndex((line, i) => i > start && /^#{1,2} /u.test(line));
+  return lines.slice(start, end < 0 ? undefined : end).join("");
+};
+
+const field = (source, label) => {
+  const lines = source.split(/\r?\n/);
+  const matches = lines.flatMap((line, i) =>
+    line.startsWith(`**${label}`) ? [i] : [],
+  );
+  if (matches.length !== 1) throw new Error(`expected one ${label} field`);
+  const start = matches[0];
+  const end = lines.findIndex(
+    (line, i) => i > start && /^(?:\*\*[A-Z][^*]+\*\*|#{1,6} )/u.test(line),
+  );
+  const body = lines.slice(start, end < 0 ? undefined : end);
+  body[0] = body[0].replace(/^\*\*[^*]+\*\*\s*/, "");
+  return body.join("\n").trim();
+};
+
+/** Exact Cost declaration bytes, including its trailing separator. Absence is
+ * an empty block, so adding or removing only this field can be disposed. */
+export const planCostDeclaration = (source) => {
+  const lines = source.match(/[^\n]*\n|[^\n]+$/g) ?? [];
+  const starts = lines.flatMap((line, i) =>
+    line.startsWith("**Cost:**") ? [i] : [],
+  );
+  if (!starts.length) return "";
+  if (starts.length !== 1) throw new Error("expected one Cost: field");
+  const start = starts[0];
+  const end = lines.findIndex(
+    (line, i) => i > start && /^(?:\*\*[A-Z][^*]+\*\*|#{1,6} )/u.test(line),
+  );
+  return lines.slice(start, end < 0 ? undefined : end).join("");
+};
+
+export const parsePlanOrder = (
+  source,
+  path,
+  workOrderId,
+  { includeCost = false } = {},
+) => {
+  const { title } = parseHeader(source, path);
+  if (!title.startsWith(`${workOrderId} — `))
+    throw new Error(`order title/id mismatch: ${path}`);
+  const criteriaSource = field(source, "Acceptance criteria");
+  const matches = [
+    ...criteriaSource.matchAll(/^(\d+)\. ([\s\S]*?)(?=^\d+\. |$(?![\s\S]))/gm),
+  ];
+  const criteria = matches.map((match, i) => {
+    if (Number(match[1]) !== i + 1)
+      throw new Error(`non-sequential acceptance criteria: ${path}`);
+    return { id: `criterion:${match[1]}`, text: match[2].trim() };
+  });
+  if (!criteria.length || !/^1\. /u.test(criteriaSource))
+    throw new Error(`missing acceptance criteria: ${path}`);
+  return {
+    workOrderId,
+    path,
+    title,
+    objective: field(source, "Objective:"),
+    ...(includeCost
+      ? { cost: /^\*\*Cost:\*\*/m.test(source) ? field(source, "Cost:") : null }
+      : {}),
+    criteria,
+    nonGoals: field(source, "Non-goals:"),
+  };
+};
+
+export function buildPlanSubject(
+  root,
+  revision = "HEAD",
+  { workspace = false, costTable = true, goalReview = false } = {},
+) {
+  if (goalReview) return buildGoalSubject(root, revision, { workspace });
+  const committed = committedReader(root, revision);
+  const read = workspace
+    ? (path) => {
+        if (!containedRegularFile(join(root, path), root))
+          throw new Error(
+            `subject source is not a contained regular file: ${path}`,
+          );
+        return readFileSync(join(root, path), "utf8");
+      }
+    : committed.read;
+  // Historical receipt identities retain the source path present at their
+  // revision. Workspace checks see a newly introduced sequence immediately.
+  const planMap = planPaths(root).map;
+  const sequencePath = (
+    workspace
+      ? containedRegularFile(join(root, planMap), root)
+      : committed.paths.includes(planMap)
+  )
+    ? planMap
+    : docRelative(root, "planning", "work-order-map.md");
+  const map = read(sequencePath);
+  const has = (path) =>
+    workspace
+      ? containedRegularFile(join(root, path), root)
+      : committed.paths.includes(path);
+  const budgetPath = docRelative(root, "control", "budgets.json");
+  const includeCost = has(budgetPath);
+  const sequence = parseSequence(map);
+  if (!sequence.length || sequence.length > 100)
+    throw new Error("plan sequence must contain 1–100 orders");
+  const block = map.match(
+    /^<!-- dotln-work-order-sequence:start -->\r?\n[\s\S]*?^<!-- dotln-work-order-sequence:end -->[^\S\r\n]*(?:\r?\n|$)/m,
+  )?.[0];
+  if (!block) throw new Error("expected a byte-addressable sequence block");
+  const parts = [["sequence", block]];
+  const orderRoot = rootPattern(root, "workOrders");
+  const orderPaths = sequence.map(({ id }) => {
+    const pattern = new RegExp(`^${orderRoot}/${id}-[^/]+\\.md$`, "u");
+    const paths = committed.paths.filter((path) => pattern.test(path));
+    // Workspace observation also notices drafts that have not been committed.
+    if (paths.length !== 1)
+      throw new Error(`expected one committed order file for ${id}`);
+    return paths[0];
+  });
+  const kit = committed.paths.includes("KIT-MANIFEST.json");
+  const standardPaths = [
+    docRelative(root, "product", "00-vision.md"),
+    docRelative(root, "product", "13-uifa-roles.md"),
+    docRelative(root, "planning", "capability-table.md"),
+  ];
+  const missing = (path) =>
+    workspace
+      ? !lstatSync(join(root, path), { throwIfNoEntry: false })
+      : !committed.paths.includes(path);
+  const unavailable = kit ? standardPaths.filter(missing) : [];
+  const optionalRead = (path) =>
+    unavailable.includes(path) ? null : read(path);
+  if (!workspace)
+    committed.readMany([
+      ...orderPaths,
+      ...standardPaths.filter((path) => !unavailable.includes(path)),
+      ...(includeCost ? [budgetPath] : []),
+      ...(includeCost && has(docRelative(root, "planning", "cost-table.json"))
+        ? [docRelative(root, "planning", "cost-table.json")]
+        : []),
+    ]);
+  const orders = sequence.map(({ id }, index) => {
+    const path = orderPaths[index];
+    const source = read(path);
+    parts.push([path, source]);
+    return parsePlanOrder(source, path, id, { includeCost });
+  });
+  const vision = optionalRead(standardPaths[0]);
+  if (vision === null) parts.push(["vision:unavailable", standardPaths[0]]);
+  const theses = (vision === null ? [] : THESIS_HEADINGS).map(([id, title]) => {
+    const text = section(vision, title);
+    parts.push([`vision:${id}`, text]);
+    return { id, title, text };
+  });
+  const exclusionsSource =
+    vision === null ? "" : section(vision, "What DotLn is not");
+  parts.push(["vision:what-dotln-is-not", exclusionsSource]);
+  const exclusions = [
+    ...exclusionsSource.matchAll(/^- ([\s\S]*?)(?=^- |\n\n)/gm),
+  ].map((match, i) => ({
+    id: `what-dotln-is-not:${i + 1}`,
+    text: match[1].trim(),
+  }));
+  if (vision !== null && !exclusions.length)
+    throw new Error("vision exclusions missing");
+  const rolesSource = optionalRead(standardPaths[1]);
+  const rolesText =
+    rolesSource === null
+      ? ""
+      : section(rolesSource, "The five roles").split(/^### /m)[0];
+  const rolesTable = rolesText
+    .split(/\r?\n/)
+    .filter((line) => line.startsWith("|"))
+    .join("\n");
+  const roles = [...rolesTable.matchAll(/\*\*(UIFA [^*]+)\*\*/g)].map(
+    ([, role]) => role,
+  );
+  if (rolesSource !== null && (roles.length !== 5 || new Set(roles).size !== 5))
+    throw new Error("expected the five-role table");
+  // Preserve CRLF as well as spaces in the judged table.
+  const rolesBytes = rolesText.match(/^\|[^\n]*(?:\n|$)/gm)?.join("") ?? "";
+  parts.push([
+    "roles",
+    rolesSource === null ? `unavailable: ${standardPaths[1]}` : rolesBytes,
+  ]);
+  const capabilitiesSource = optionalRead(standardPaths[2]);
+  if (capabilitiesSource === null)
+    parts.push(["capability:unavailable", standardPaths[2]]);
+  const capabilities = (capabilitiesSource ?? "")
+    .split(/\r?\n/)
+    .filter((line) => line.startsWith("|"))
+    .flatMap((line) => {
+      const cells = line.split("|").slice(1, -1);
+      const id = cells[0]?.match(/`([a-z][a-z0-9-]*(?:\.[a-z0-9-]+)+)`/u)?.[1];
+      if (!id) return [];
+      if (!cells[1]?.trim()) throw new Error(`capability level missing: ${id}`);
+      // Multiple dated assessments are retained in source order, not silently
+      // collapsed to whichever row a Map happened to keep.
+      parts.push([`capability:${id}`, [cells[0], cells[1]]]);
+      return [{ id, level: cells[1].trim() }];
+    });
+  if (capabilitiesSource !== null && !capabilities.length)
+    throw new Error("capability table has no identified rows");
+  const deferrals = orders.flatMap((order, index) =>
+    [
+      ...order.nonGoals.matchAll(
+        /<!-- dotln-plan-defer: ([a-z0-9:-]+) -> (WO-\d{3}) -->/g,
+      ),
+    ].map(([, thesis, laterWorkOrderId]) => {
+      if (
+        !theses.some(({ id }) => id === thesis) ||
+        !sequence.slice(index + 1).some(({ id }) => id === laterWorkOrderId)
+      )
+        throw new Error("invalid named later-order deferral");
+      return { thesis, workOrderId: order.workOrderId, laterWorkOrderId };
+    }),
+  );
+  let costs;
+  if (includeCost) {
+    const budget = JSON.parse(read(budgetPath));
+    const sourceHash = hashParts([
+      block,
+      ...orders.map(({ workOrderId, objective, criteria, nonGoals, cost }) => ({
+        workOrderId,
+        objective,
+        criteria,
+        nonGoals,
+        cost,
+      })),
+      ...parts.filter(
+        ([name]) =>
+          name.startsWith("vision:") ||
+          name === "roles" ||
+          name.startsWith("capability:"),
+      ),
+    ]);
+    if (costTable) {
+      const path = docRelative(root, "planning", "cost-table.json");
+      if (!has(path))
+        throw new Error(
+          "Planning cost table missing; run npm run meta -- --plan-cost after measuring the subject",
+        );
+      const source = read(path);
+      if (Buffer.byteLength(source) > 65536)
+        throw new Error("Planning cost table exceeds its bounded 64 KB input");
+      costs = JSON.parse(source);
+      if (
+        costs.schemaVersion !== 1 ||
+        !Number.isFinite(Date.parse(costs.observedAt)) ||
+        costs.subjectSourceHash !== sourceHash ||
+        JSON.stringify(costs.acceptances) !== JSON.stringify(budget.acceptances)
+      )
+        throw new Error(
+          "Planning cost evidence is stale for the subject revision or dated acceptances",
+        );
+      if (
+        !Array.isArray(costs.rows) ||
+        costs.rows.length !== orders.length ||
+        new Set(costs.rows.map((row) => row.workOrder)).size !==
+          orders.length ||
+        orders.some(
+          (order) =>
+            !costs.rows.some((row) => row.workOrder === order.workOrderId),
+        )
+      )
+        throw new Error(
+          "Planning cost table must cover exactly the subject orders",
+        );
+      const at = runGit(root, [
+        "show",
+        "-s",
+        "--format=%cI",
+        `${costs.subjectRevision}^{commit}`,
+      ]);
+      runGit(root, [
+        "merge-base",
+        "--is-ancestor",
+        costs.subjectRevision,
+        committed.revision,
+      ]);
+      // The source hash above binds the cost-bearing projection. A later
+      // execution record or merge can touch its containing files without
+      // changing that projection. The observation must postdate its recorded
+      // revision; whole-file commit times are not planning-input freshness.
+      if (Date.parse(costs.observedAt) < Date.parse(at))
+        throw new Error("Planning cost evidence predates its subject revision");
+      parts.push(["cost-table", source]);
+    } else
+      costs = {
+        schemaVersion: 1,
+        subjectSourceHash: sourceHash,
+        acceptances: budget.acceptances,
+      };
+  }
+  return {
+    schemaVersion: "plan-subject-v1",
+    revision: committed.revision,
+    hash: hashParts(parts),
+    sequenceHash: sha256(block),
+    inputs: parts.map(([name, bytes]) => ({
+      name,
+      hash: sha256(typeof bytes === "string" ? bytes : JSON.stringify(bytes)),
+    })),
+    standard: {
+      theses,
+      exclusions,
+      roles,
+      rolesTable,
+      capabilities,
+      ...(unavailable.length ? { unavailable } : {}),
+    },
+    orders,
+    deferrals,
+    ...(costs ? { costTable: costs } : {}),
+  };
+}
+
+/** New judgment inputs are opt-in so every historical subject hash is stable. */
+function buildGoalSubject(root, revision, { workspace }) {
+  const subject = buildPlanSubject(root, revision, {
+    workspace,
+    costTable: false,
+  });
+  const committed = committedReader(root, revision);
+  const has = (path) =>
+    workspace
+      ? containedRegularFile(join(root, path), root)
+      : committed.paths.includes(path);
+  if (!workspace)
+    committed.readMany(
+      [
+        docRelative(root, "product", "07-execution-guide.md"),
+        docRelative(root, "planning", "critical-path-2026-09-08.md"),
+      ].filter(has),
+    );
+  const read = (path) => {
+    if (!has(path))
+      throw new Error(
+        `goal-review source missing or not a contained regular file: ${path}`,
+      );
+    return workspace
+      ? readFileSync(join(root, path), "utf8")
+      : committed.read(path);
+  };
+  const guide = read(docRelative(root, "product", "07-execution-guide.md"));
+  const platformStandard = guide.match(
+    /the point is to create a platform,[\s\S]*?before a later pass pays it again\./u,
+  )?.[0];
+  if (!platformStandard)
+    throw new Error("product 07 platform-first standard missing");
+  const goalStandard = section(guide, "Goal-aligned decisions");
+  const criticalPathSource = docRelative(
+    root,
+    "planning",
+    "critical-path-2026-09-08.md",
+  );
+  const criticalPath =
+    committed.paths.includes("KIT-MANIFEST.json") &&
+    (workspace
+      ? !lstatSync(join(root, criticalPathSource), { throwIfNoEntry: false })
+      : !committed.paths.includes(criticalPathSource))
+      ? `unavailable: ${criticalPathSource}; this instance has not declared a critical path`
+      : section(read(criticalPathSource), "The critical path");
+  const path = docRelative(root, "planning", "cost-table.json");
+  const costs = has(path) ? JSON.parse(read(path)) : null;
+  const costEvidenceStatus = costs
+    ? costs.subjectSourceHash === subject.costTable?.subjectSourceHash
+      ? "current"
+      : "stale"
+    : "unknown";
+  // Retain available meter observations when a criterion repair changes its
+  // source projection. Freshness is described, not a demand for a new judgment.
+  const observedNumber = (value) =>
+    typeof value === "number"
+      ? Number.isFinite(value)
+      : value &&
+        typeof value === "object" &&
+        Object.values(value).some(observedNumber);
+  const observations = [
+    ...(costs?.rows ?? [])
+      .filter((row) => observedNumber(row.metrics))
+      .map((row) => ({
+        id: `${path}#row:${row.workOrder}`,
+        text: JSON.stringify(row),
+      })),
+    ...(costs?.traps ?? [])
+      .filter((row) => observedNumber(row.indicators))
+      .map((row, index) => ({
+        id: `${path}#trap:${row.id ?? index}`,
+        text: JSON.stringify(row),
+      })),
+  ];
+  const goalReview = {
+    platformStandard,
+    goalStandard,
+    criticalPath,
+    evidenceHash: goalEvidenceHash(subject.standard, observations),
+    observations,
+    costEvidenceStatus,
+  };
+  const extra = [
+    ["goal-review", goalReview],
+    ...(costs ? [["cost-table", costs]] : []),
+  ];
+  return {
+    ...subject,
+    orders: subject.orders.map((order) =>
+      parsePlanOrder(read(order.path), order.path, order.workOrderId, {
+        includeCost: true,
+      }),
+    ),
+    hash: hashParts([subject.hash, ...extra]),
+    inputs: [
+      ...subject.inputs,
+      ...extra.map(([name, value]) => ({
+        name,
+        hash: sha256(JSON.stringify(value)),
+      })),
+    ],
+    ...(costs ? { costTable: costs } : {}),
+    goalReview,
+  };
+}
+
+// Observation timestamps describe collection, not a changed body of evidence.
+export function goalEvidenceHash(standard, observations) {
+  const evidenceValues = (value) =>
+    Array.isArray(value)
+      ? value.map(evidenceValues)
+      : value && typeof value === "object"
+        ? Object.fromEntries(
+            Object.entries(value)
+              .filter(
+                ([key]) =>
+                  !["observedAt", "collectedAt", "subjectRevision"].includes(
+                    key,
+                  ),
+              )
+              .map(([key, item]) => [key, evidenceValues(item)]),
+          )
+        : value;
+  return hashParts([
+    standard.theses,
+    standard.exclusions,
+    observations.map((row) => ({
+      id: row.id,
+      value: evidenceValues(JSON.parse(row.text)),
+    })),
+  ]);
+}
+
+export const planningPasses = (ledger) =>
+  [...ledger.matchAll(/^## (.+)$/gm)]
+    .map(([, heading]) => ({
+      heading,
+      date: heading.match(/\b\d{4}-\d{2}-\d{2}\b/u)?.[0],
+    }))
+    .filter(({ heading, date }) => date && /planning pass/iu.test(heading))
+    .map((pass) => ({
+      ...pass,
+      id: `planning-${sha256(pass.heading).slice(7, 23)}`,
+    }));

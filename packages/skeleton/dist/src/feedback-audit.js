@@ -1,0 +1,250 @@
+import { observedExecFileSync as execFileSync, observedSpawnSync as spawnSync, } from "./gate-deadlines.mjs";
+import { lstatSync, readFileSync, realpathSync } from "node:fs";
+import { resolve } from "node:path";
+import { canonicalStringify, feedbackMaturity, } from "@dotln/compiler";
+import { feedbackContentHash } from "./feedback-boundary.js";
+export const FEEDBACK_SOURCE_PATHS = [
+    "package-lock.json",
+    "packages/skeleton/package.json",
+    "packages/compiler/src/feedback.ts",
+    "packages/compiler/src/attribution.mjs",
+    "packages/compiler/src/artifact-identity.ts",
+    "packages/compiler/src/verification.ts",
+    "packages/skeleton/src/loadouts/feedback.ts",
+    "packages/skeleton/src/feedback-boundary.ts",
+    "packages/skeleton/src/feedback-source-comments.ts",
+    "packages/skeleton/src/feedback-audit.ts",
+    "packages/skeleton/src/gate-deadlines.mjs",
+    "packages/skeleton/src/feedback-selfhost.ts",
+    "packages/skeleton/src/reactor.ts",
+    "packages/skeleton/src/verification-fold.ts",
+    "packages/skeleton/src/repair.ts",
+    "packages/skeleton/src/review.ts",
+    "packages/skeleton/src/repair-host.ts",
+    "packages/skeleton/src/resident-state.ts",
+    "packages/skeleton/src/vertical.ts",
+    "packages/skeleton/src/presence-signals.ts",
+    "packages/skeleton/src/presence-machine.ts",
+    "packages/skeleton/src/actor-catalog.ts",
+    "packages/skeleton/src/actor-contract.ts",
+    "packages/skeleton/src/cli-actor-contract.ts",
+    "packages/skeleton/src/cli-actor.ts",
+    "packages/skeleton/src/cli-episode.ts",
+    "packages/skeleton/src/handoff-contract.ts",
+    "packages/skeleton/src/handoff-actor.ts",
+    "packages/skeleton/src/work-candidate.ts",
+    "packages/skeleton/src/script-episode.ts",
+    "packages/skeleton/src/discovery-sandbox.ts",
+    "packages/skeleton/src/discovery-actor.ts",
+    "packages/skeleton/src/discovery-cli.ts",
+    "packages/skeleton/src/discovery.ts",
+    "packages/skeleton/src/verification-protocol.ts",
+    // The request protocols verification-protocol.ts and worker-transport.ts
+    // import, so a moved protocol stales the subject (WO-157 item 12).
+    "packages/skeleton/src/entropy-review-protocol.ts",
+    "packages/skeleton/src/mission-check-protocol.ts",
+    "packages/skeleton/src/vertical-judgment-protocol.ts",
+    "packages/skeleton/src/plan-refutation-protocol.ts",
+    "packages/skeleton/src/verification-host.ts",
+    "packages/skeleton/src/verification-worktree.ts",
+    "packages/skeleton/src/worker-transport.ts",
+    "packages/skeleton/src/worker-protocol.ts",
+    "packages/skeleton/src/execution-environment.ts",
+    "packages/skeleton/src/source-change-environment.ts",
+    "packages/skeleton/src/source-change-command.ts",
+    "packages/skeleton/src/source-change-host.ts",
+    "packages/skeleton/src/host-interruption.ts",
+    // Native launch/ownership behavior is dynamically imported by the source host.
+    "scripts/lib/host-resources.mjs",
+    "scripts/lib/host-lock.c",
+    "scripts/lib/host-footprint.c",
+    "packages/skeleton/src/source-change-state.ts",
+    "packages/skeleton/src/source-change-worktree.ts",
+    "packages/skeleton/src/usage-observation.mjs",
+    "packages/skeleton/src/worker-store.ts",
+    "packages/skeleton/test/feedback-fixtures.test.ts",
+    "packages/skeleton/test/feedback-v2.test.ts",
+    "packages/skeleton/test/feedback-audit-source.test.ts",
+    "scripts/feedback-commit-msg.mjs",
+];
+/** A labeled behavior dependency projection, never a claim of raw manifest bytes. */
+export function feedbackSourceFile(path, contents) {
+    if (!["package-lock.json", "packages/skeleton/package.json"].includes(path))
+        return { path, contents };
+    const object = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
+    const value = JSON.parse(contents);
+    if (!object(value))
+        throw new Error("feedback package source must be an object");
+    const omitted = ["/version", "/license"];
+    delete value.version;
+    delete value.license;
+    if (path === "package-lock.json") {
+        if (!object(value.packages))
+            throw new Error("feedback lockfile requires a packages object");
+        // npm records each linked workspace with its resolved lockfile entry.
+        // Keep unlinked package metadata and registry dependencies in the subject.
+        const workspaces = new Set([""]);
+        for (const entry of Object.values(value.packages)) {
+            if (!object(entry))
+                throw new Error("feedback package lock entry must be an object");
+            if (entry.link === true &&
+                typeof entry.resolved === "string" &&
+                Object.hasOwn(value.packages, entry.resolved))
+                workspaces.add(entry.resolved);
+        }
+        for (const workspace of [...workspaces].sort()) {
+            const entry = value.packages[workspace];
+            if (entry === undefined)
+                continue;
+            if (!object(entry))
+                throw new Error("feedback workspace lock entry must be an object");
+            delete entry.version;
+            delete entry.license;
+            const pointer = workspace.replaceAll("/", "~1");
+            omitted.push(`/packages/${pointer}/version`, `/packages/${pointer}/license`);
+        }
+    }
+    return {
+        path: `.feedback-source/${path}`,
+        contents: canonicalStringify({
+            projection: "feedback-package-projection-v1",
+            sourcePath: path,
+            omitted,
+            value,
+        }) + "\n",
+    };
+}
+export function readFeedbackSource(root) {
+    const physical = realpathSync(root);
+    const gitRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
+        cwd: physical,
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "pipe"],
+        timeout: 5000,
+    }).trim();
+    if (realpathSync(gitRoot) !== physical)
+        throw new Error("feedback requires the Git root");
+    const files = FEEDBACK_SOURCE_PATHS.map((path) => {
+        const absolute = resolve(physical, path);
+        if (realpathSync(absolute) !== absolute || !lstatSync(absolute).isFile())
+            throw new Error("feedback source must be a contained regular file");
+        return feedbackSourceFile(path, readFileSync(absolute, "utf8"));
+    });
+    return { files, subject: feedbackContentHash(canonicalStringify(files)) };
+}
+export function feedbackContextAccounting(program, baseline) {
+    const size = (value) => ({
+        files: 1,
+        lines: value.split("\n").length - 1,
+        bytes: Buffer.byteLength(value, "utf8"),
+    });
+    const prose = program.units.map((unit) => unit.proseEquivalent).join("\n") + "\n";
+    const residue = `Feedback policy ${program.policyHash}: executable units use host predicates; prose remains role guidance and Stop advises.\n` +
+        program.units
+            .filter((unit) => unit.mechanism.kind === "prose")
+            .map((unit) => unit.proseEquivalent)
+            .join("\n") +
+        "\n";
+    const commonBaseline = {
+        files: baseline.files.length,
+        lines: baseline.files.reduce((sum, file) => sum + file.lines, 0),
+        bytes: baseline.files.reduce((sum, file) => sum + file.bytes, 0),
+    };
+    const proseEquivalent = size(prose), compiledResidue = size(residue);
+    return {
+        method: "WO-004 UTF-8 instruction-file bytes and physical lines; matched common baseline plus one task-local projection",
+        baselineRef: "docs/discovery/environment.json#claudeCode.startupContext.files",
+        commonBaseline,
+        proseEquivalent,
+        compiledResidue,
+        beforeBytes: commonBaseline.bytes + proseEquivalent.bytes,
+        afterBytes: commonBaseline.bytes + compiledResidue.bytes,
+        savedBytes: proseEquivalent.bytes - compiledResidue.bytes,
+        limits: "Counterfactual instruction projection, not effective-session tokens or total workflow cost. Verifier source/evidence context and tool schemas are outside this matched comparison.",
+    };
+}
+export function runFeedbackRegressions(root, program) {
+    const source = readFeedbackSource(root);
+    const fixture = "packages/skeleton/dist/test/feedback-fixtures.test.js";
+    const run = (unitId, removed) => {
+        const unit = program.units.find((row) => row.unitId === unitId);
+        const name = unit.regressionFixtures[0];
+        const env = { ...process.env };
+        delete env.DOTLN_FEEDBACK_ABLATE;
+        // An independent test subprocess must not inherit its parent's test-runner IPC mode.
+        delete env.NODE_TEST_CONTEXT;
+        if (removed)
+            env.DOTLN_FEEDBACK_ABLATE = unitId;
+        const args = [
+            "--test",
+            "--test-reporter=tap",
+            `--test-name-pattern=^${name}$`,
+            unit.version === 1
+                ? fixture
+                : "packages/skeleton/dist/test/feedback-v2.test.js",
+        ];
+        const result = spawnSync(process.execPath, args, {
+            cwd: root,
+            env,
+            encoding: "utf8",
+            timeout: 30_000,
+            maxBuffer: 1_000_000,
+        });
+        if (result.error || result.signal)
+            throw new Error("feedback regression subprocess unavailable");
+        const output = result.stdout;
+        const passed = Number(output.match(/^# pass (\d+)$/mu)?.[1] ?? -1);
+        const failed = Number(output.match(/^# fail (\d+)$/mu)?.[1] ?? -1);
+        const expected = removed
+            ? result.status === 1 &&
+                passed === 0 &&
+                failed === 1 &&
+                output.includes(`- ${name}`) &&
+                /code: 'ERR_ASSERTION'/u.test(output)
+            : result.status === 0 && passed === 1 && failed === 0;
+        if (!expected)
+            throw new Error(`feedback fixture gate failed: ${unitId} ${removed ? "removed" : "present"}`);
+        return {
+            command: `node ${args.join(" ")}`,
+            mechanism: removed ? "removed" : "present",
+            exitCode: result.status,
+            passed,
+            failed,
+            captured: output
+                .split("\n")
+                .filter((line) => new RegExp(`^(?:not )?ok \\d+ - ${name}$`, "u").test(line) ||
+                /^\s+(?:code: 'ERR_ASSERTION'|operator: )/u.test(line) ||
+                /^# (?:pass|fail) /u.test(line)),
+        };
+    };
+    const fixtures = program.units.map((unit) => ({
+        unitId: unit.unitId,
+        present: run(unit.unitId, false),
+        removed: run(unit.unitId, true),
+    }));
+    if (readFeedbackSource(root).subject !== source.subject)
+        throw new Error("feedback source changed during audit");
+    const baseline = JSON.parse(readFileSync(resolve(root, "docs/discovery/environment.json"), "utf8"));
+    const context = feedbackContextAccounting(program, baseline.claudeCode.startupContext);
+    if (context.savedBytes <= 0)
+        throw new Error("feedback context did not decrease");
+    const observations = fixtures.map((fixture) => ({
+        unitId: fixture.unitId,
+        episodeId: `regression_${fixture.unitId}`,
+        source: "fixture",
+        activated: true,
+        prevented: program.units.find((unit) => unit.unitId === fixture.unitId)
+            ?.enforcement === "hard",
+        falseActivation: false,
+        overridden: false,
+    }));
+    return {
+        contractVersion: "feedback-audit-v1",
+        policyHash: program.policyHash,
+        subject: source.subject,
+        fixtures,
+        context,
+        maturityMethod: "One isolated present/removal fixture per unit. Hard units count prevention; prose delivery and advisory violations do not claim behavioral prevention. Fixtures are not a population estimate.",
+        maturity: feedbackMaturity(program, observations),
+    };
+}

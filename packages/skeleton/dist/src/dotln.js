@@ -1,0 +1,352 @@
+#!/usr/bin/env node
+import { existsSync, readFileSync } from "node:fs";
+import { join, resolve } from "node:path";
+import { decodeLog } from "@dotln/kernel";
+import { WorkerStore } from "./worker-store.js";
+import { projectWorkerStatus, renderWorkerStatus } from "./worker-status.js";
+import { renderAuditProjections } from "./audit.js";
+import { runWorkerDemo } from "./worker-demo.js";
+import { ClaudeCliPrintWorkOrderTransport, CodexCliExecWorkOrderTransport, } from "./worker-transport.js";
+import { WorkerFailure } from "./worker-protocol.js";
+import { runVerificationDemo } from "./verification-demo.js";
+import { invalidResultDetail } from "./verification-protocol.js";
+import { FakeVerificationTransport } from "./verification-fake.js";
+import { runFeedbackSelfhost } from "./feedback-selfhost.js";
+import { harnessControl } from "./harness-host.js";
+import { ResidentHost } from "./resident-host.js";
+import { interruptionCheckpoint } from "./host-interruption.js";
+import { recordPresence, answerHandoff } from "./resident-store.js";
+import { recordUsageObservation, } from "./usage-observation.mjs";
+const args = process.argv.slice(2);
+const command = args.shift();
+// This kit-owned bridge locates scripts from the installed CLI, never cwd.
+// The control loader alone selects the launchpad (including DOTLN_LAUNCHPAD).
+const derivedOrders = () => import(new URL("../../../../scripts/lib/derived-orders.mjs", import.meta.url).href);
+const intentProse = command === "intent" ? args.shift() : undefined;
+const verticalIssue = command === "vertical" ? args.shift() : undefined;
+const verticalBridge = () => import(new URL("../../../../scripts/lib/vertical-runtime.mjs", import.meta.url)
+    .href);
+const presenceAction = command === "presence" ? args.shift() : undefined;
+const handoffAction = command === "handoff" ? args.shift() : undefined;
+const options = new Map();
+const switches = new Set();
+try {
+    while (args.length) {
+        const key = args.shift();
+        if (["--json", "--beacons", "--once"].includes(key)) {
+            if (switches.has(key))
+                throw new Error("duplicate option");
+            switches.add(key);
+        }
+        else {
+            if (![
+                "--store",
+                "--transport",
+                "--model",
+                "--effort",
+                "--policy",
+                "--tick",
+                "--episode",
+                "--workstream",
+                "--work-order",
+                "--option",
+            ].includes(key) ||
+                options.has(key))
+                throw new Error("unknown or duplicate option");
+            const value = args.shift();
+            if (!value || value.startsWith("--"))
+                throw new Error("missing option value");
+            options.set(key, value);
+        }
+    }
+    const directory = options.get("--store") ?? "";
+    if (!directory && command !== "intent")
+        throw new Error('usage: dotln intent "<prose>" | dotln vertical <issue> --store <directory> | dotln resident --store <directory> --policy <id> [--tick <ms> | --once] | dotln presence away|back --store <directory> | dotln status --store <directory> [--json] | dotln audit --store <directory> [--workstream <id> | --episode <id>] | dotln handoff answer --store <directory> --episode <id> --work-order <id> --option <id> | dotln demo --store <directory> --transport <claude-cli-print|codex-cli-exec> --model <model> --effort <level> [--beacons] | dotln <verify-demo|feedback-audit> --store <directory> [--transport fake|claude-cli-print|codex-cli-exec --model <model> --effort <level>]');
+    if (command === "intent") {
+        if (!intentProse || options.size || switches.size)
+            throw new Error('usage: dotln intent "<prose>"');
+        const result = await (await derivedOrders()).fileIntent(intentProse);
+        console.log(`Filed draft ${result.workOrderId}: ${result.workOrderPath}`);
+    }
+    else if (command === "vertical") {
+        if (options.size !== 1 ||
+            switches.size ||
+            !/^[1-9][0-9]*$/u.test(verticalIssue ?? ""))
+            throw new Error("usage: dotln vertical <issue> --store <directory>");
+        const abort = new AbortController();
+        const signals = { SIGINT: 130, SIGTERM: 143, SIGHUP: 129 };
+        // The run's abort forwards the signal to a live writer and settles its
+        // group within 10 s; every other in-flight episode or timed wait ends at
+        // once (WO-199). Should the run still not end, exit anyway and
+        // let the next run recover from the records. The bound must exceed the
+        // writer's 9 s SIGKILL escalation plus settlement; it caps the waits the
+        // abort does not reach (a browser scenario, a prior group's termination
+        // poll) and counts from when this process handles the signal, which a
+        // synchronous child command in flight delays until it returns.
+        const INTERRUPT_EXIT_MS = 15_000;
+        const handlers = Object.entries(signals).map(([signal, code]) => {
+            const stop = () => {
+                // A repeated signal never extends the wait.
+                if (abort.signal.aborted)
+                    return;
+                process.exitCode = code;
+                abort.abort(signal);
+                setTimeout(() => {
+                    console.error(`Vertical interrupted: ${signal}; exiting ${INTERRUPT_EXIT_MS} ms after the signal`);
+                    process.exit(code);
+                }, INTERRUPT_EXIT_MS).unref();
+            };
+            process.on(signal, stop);
+            return { signal, stop };
+        });
+        let result;
+        try {
+            result = await (await verticalBridge()).runVerticalIssue({
+                directory: resolve(directory),
+                issue: Number(verticalIssue),
+                signal: abort.signal,
+            });
+            // The final synchronous stretch can finish before Node delivers a
+            // terminal signal. Keep the listeners until a poll turn admits success.
+            await interruptionCheckpoint(abort.signal);
+        }
+        catch (error) {
+            if (!abort.signal.aborted)
+                throw error;
+            console.error(`Vertical interrupted: ${abort.signal.reason}`);
+            // Any live writer has been settled and recorded, and every other
+            // in-flight episode or wait stopped; the step stays pending.
+            process.exit(process.exitCode);
+        }
+        finally {
+            for (const { signal, stop } of handlers)
+                process.off(signal, stop);
+        }
+        // A paused continuation prints its position, never its binding or bundle.
+        const paused = Array.isArray(result.receipts)
+            ? {
+                kind: "pending",
+                key: result.binding.key,
+                completedSteps: result.receipts.length,
+                pendingStep: result.pending?.step ?? null,
+            }
+            : result;
+        console.log(JSON.stringify(result.terminal ?? paused, null, 2));
+        if (result.terminal?.kind !== "resolved" && !abort.signal.aborted)
+            process.exitCode = 1;
+    }
+    else if (command === "presence") {
+        if (options.size !== 1 ||
+            switches.size ||
+            !["away", "back"].includes(presenceAction ?? ""))
+            throw new Error("usage: dotln presence away|back --store <directory>");
+        await recordPresence(directory, presenceAction === "away" ? "away" : "returned");
+        console.log(`Presence recorded: ${presenceAction}`);
+    }
+    else if (command === "handoff") {
+        if (handoffAction !== "answer" ||
+            switches.size ||
+            options.size !== 4 ||
+            !options.get("--episode") ||
+            !options.get("--work-order") ||
+            !options.get("--option"))
+            throw new Error("usage: dotln handoff answer --store <directory> --episode <id> --work-order <id> --option <id>");
+        await answerHandoff(directory, {
+            episodeId: options.get("--episode"),
+            workOrderId: options.get("--work-order"),
+            optionId: options.get("--option"),
+        });
+        console.log("Human handoff answer recorded");
+    }
+    else if (command === "resident") {
+        if (!options.get("--policy") ||
+            [...options.keys()].some((key) => !["--store", "--policy", "--tick"].includes(key)) ||
+            [...switches].some((key) => key !== "--once") ||
+            (switches.has("--once") && options.has("--tick")))
+            throw new Error("usage: dotln resident --store <directory> --policy <id> [--tick <ms> | --once]");
+        const abort = new AbortController();
+        const stop = () => abort.abort();
+        process.once("SIGINT", stop);
+        process.once("SIGTERM", stop);
+        // A closed terminal stops the resident in order, so it can interrupt the
+        // console commands it started in their own process groups.
+        process.once("SIGHUP", stop);
+        try {
+            const { findLaunchpad, docPath } = await import(new URL("../../../../scripts/lib/config.mjs", import.meta.url).href);
+            let commandRoot = resolve(process.env["DOTLN_LAUNCHPAD"] ?? process.cwd());
+            let workOrderIndexPath;
+            let workOrderIndexError;
+            try {
+                commandRoot = findLaunchpad();
+                try {
+                    workOrderIndexPath = docPath(commandRoot, "workOrders", "README.md");
+                }
+                catch {
+                    workOrderIndexError = "configuration-invalid";
+                }
+            }
+            catch {
+                workOrderIndexError = "launchpad-unavailable";
+            }
+            const vertical = existsSync(join(directory, "vertical.json"))
+                ? (await verticalBridge()).createVerticalEntry({
+                    directory: resolve(directory),
+                    configuration: (await verticalBridge()).readVerticalConfiguration(resolve(directory), commandRoot),
+                }).resident
+                : undefined;
+            await new ResidentHost({
+                directory,
+                policyId: options.get("--policy"),
+                commandRoot,
+                ...(vertical ? { vertical } : {}),
+                ...(workOrderIndexPath === undefined ? {} : { workOrderIndexPath }),
+                ...(workOrderIndexError === undefined ? {} : { workOrderIndexError }),
+            }).run({
+                once: switches.has("--once"),
+                tickMs: Number(options.get("--tick") ?? 1000),
+                signal: abort.signal,
+            });
+        }
+        finally {
+            process.removeListener("SIGINT", stop);
+            process.removeListener("SIGTERM", stop);
+            process.removeListener("SIGHUP", stop);
+        }
+    }
+    else if (command === "status") {
+        if (options.size !== 1 || [...switches].some((key) => key !== "--json"))
+            throw new Error("status accepts only --store and --json");
+        const status = projectWorkerStatus(decodeLog(new WorkerStore(directory).read()), (await derivedOrders()).projectDerivedOrders());
+        console.log(switches.has("--json")
+            ? JSON.stringify(status, null, 2)
+            : renderWorkerStatus(status));
+    }
+    else if (command === "audit") {
+        if (switches.size ||
+            [...options.keys()].some((key) => !["--store", "--workstream", "--episode"].includes(key)) ||
+            (options.has("--workstream") && options.has("--episode")))
+            throw new Error("usage: dotln audit --store <directory> [--workstream <id> | --episode <id>]");
+        const events = decodeLog(new WorkerStore(directory).read());
+        if (events.length === 0)
+            throw new Error(`audit: store ${directory} holds no events`);
+        const workstream = options.get("--workstream");
+        const episode = options.get("--episode");
+        // One projection run scopes itself by its input events (product 09 §Audit
+        // projections), so a selection passes the envelopes the fold would scope
+        // and never filters the fold's output.
+        const selected = events.filter((event) => (workstream === undefined || event.workstreamId === workstream) &&
+            (episode === undefined || event.episodeId === episode));
+        if (selected.length === 0)
+            throw new Error(workstream === undefined
+                ? `audit: episode ${episode} is not in store ${directory}`
+                : `audit: workstream ${workstream} is not in store ${directory}`);
+        console.log(renderAuditProjections(selected));
+    }
+    else if (command === "verify-demo" || command === "feedback-audit") {
+        if ([...options.keys()].some((key) => !["--store", "--transport", "--model", "--effort"].includes(key)))
+            throw new Error("demo requires its declared options");
+        if (switches.size > 0)
+            throw new Error("demo requires no switches");
+        const transportName = options.get("--transport") ?? "fake";
+        const model = options.get("--model") ?? (transportName === "fake" ? "synthetic" : "");
+        const effort = options.get("--effort") ?? (transportName === "fake" ? "unknown" : "");
+        if (!["fake", "claude-cli-print", "codex-cli-exec"].includes(transportName) ||
+            !model ||
+            !effort.trim())
+            throw new Error("demo requires an explicit transport, model and effort");
+        if (transportName !== "fake" && process.env.DOTLN_LIVE_WORKERS !== "1")
+            throw new Error("live demo requires DOTLN_LIVE_WORKERS=1 on an authenticated runner that permits child CLI execution");
+        const startedAt = new Date().toISOString();
+        const owner = command === "feedback-audit" &&
+            existsSync(join(process.cwd(), "docs/control/budgets.json"))
+            ? harnessControl(process.cwd()).workOrder
+            : null;
+        const onUsage = owner
+            ? (observation) => recordUsageObservation(process.cwd(), {
+                workOrder: owner,
+                role: "verifier",
+                startedAt,
+                durationMs: Date.now() - Date.parse(startedAt),
+                observation,
+            })
+            : undefined;
+        const transport = transportName === "fake"
+            ? new FakeVerificationTransport()
+            : transportName === "claude-cli-print"
+                ? new ClaudeCliPrintWorkOrderTransport(undefined, undefined, onUsage)
+                : new CodexCliExecWorkOrderTransport(undefined, undefined, onUsage);
+        if (command === "feedback-audit") {
+            const result = await runFeedbackSelfhost({
+                root: process.cwd(),
+                directory,
+                transport,
+                model,
+                effort: effort,
+            });
+            console.log(JSON.stringify({
+                workOrderId: result.workOrder.workOrderId,
+                phase: result.matrix.phase,
+                fixtures: result.report.fixtures.length,
+                savedInstructionBytes: result.report.context.savedBytes,
+                verifier: transport.name,
+            }));
+            if (!result.complete)
+                process.exitCode = 1;
+        }
+        else {
+            const result = await runVerificationDemo({
+                directory,
+                transport,
+                model,
+                effort: effort,
+            });
+            console.log(JSON.stringify(result.envelope));
+            if (result.matrix.phase !== "complete")
+                process.exitCode = 1;
+        }
+    }
+    else if (command === "demo") {
+        if ([...options.keys()].some((key) => !["--store", "--transport", "--model", "--effort"].includes(key)) ||
+            switches.has("--once"))
+            throw new Error("demo requires its declared options");
+        if (process.env.DOTLN_LIVE_WORKERS !== "1")
+            throw new Error("live demo requires DOTLN_LIVE_WORKERS=1 on an authenticated runner that permits child CLI execution");
+        const transportName = options.get("--transport");
+        const model = options.get("--model");
+        const effort = options.get("--effort");
+        if (!model ||
+            !effort ||
+            !effort.trim() ||
+            !["claude-cli-print", "codex-cli-exec"].includes(transportName ?? "") ||
+            switches.has("--json"))
+            throw new Error("demo requires an explicit transport, model and effort");
+        const transport = transportName === "claude-cli-print"
+            ? new ClaudeCliPrintWorkOrderTransport()
+            : new CodexCliExecWorkOrderTransport();
+        const fixture = JSON.parse(readFileSync(new URL("../../fixtures/repo-tree.json", import.meta.url), "utf8"));
+        const result = await runWorkerDemo({
+            directory,
+            fixture,
+            transport,
+            model,
+            effort: effort,
+            beacons: switches.has("--beacons"),
+        });
+        // The dispatching session sees exactly the compact envelope, never CLI logs.
+        console.log(JSON.stringify(result.envelope));
+        if (result.envelope.status !== "completed")
+            process.exitCode = 1;
+    }
+    else
+        throw new Error("expected intent, vertical, resident, presence, handoff, status, audit, demo, verify-demo or feedback-audit");
+}
+catch (error) {
+    // Unexpected external diagnostics may contain paths or auth details.
+    console.error(error instanceof WorkerFailure
+        ? `worker refused: ${error.code}${error.code === "invalid-result" ? ` (${invalidResultDetail(error.detail)})` : ""}; pending work is retained`
+        : error instanceof Error &&
+            /^(derived order:|usage:|live demo requires|demo requires|expected |status accepts|unknown or duplicate|missing option|duplicate option|console loopback|audit:|invalid audit )/u.test(error.message)
+            ? error.message
+            : "worker host refused; inspect the store and declared environment before retrying");
+    process.exitCode = 1;
+}

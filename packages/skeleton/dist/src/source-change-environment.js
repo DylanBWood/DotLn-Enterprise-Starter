@@ -1,0 +1,75 @@
+import { realpathSync, statSync } from "node:fs";
+import { dirname, isAbsolute, relative, resolve, sep } from "node:path";
+import { observedExecFileSync as execFileSync } from "./gate-deadlines.mjs";
+const inside = (parent, path) => {
+    const child = relative(parent, path);
+    return (child !== "" &&
+        child !== ".." &&
+        !child.startsWith(`..${sep}`) &&
+        !isAbsolute(child));
+};
+const canonicalPath = (path) => {
+    const directory = statSync(path).isDirectory() ? path : dirname(path);
+    if (!isAbsolute(path) ||
+        resolve(path) !== path ||
+        realpathSync.native(path) !== path ||
+        execFileSync("/bin/pwd", ["-P"], {
+            cwd: directory,
+            encoding: "utf8",
+            stdio: ["ignore", "pipe", "pipe"],
+            timeout: 5_000,
+        }).replace(/\n$/u, "") !== directory)
+        throw new Error("source-change environment requires canonical paths");
+    return path;
+};
+/** Host preflight, not an OS security boundary. The host owns these paths. */
+export function validateSourceChangeEnvironment(profile, cwd, commitMessagePath) {
+    const mount = canonicalPath(cwd);
+    const parent = canonicalPath(profile.worktreeParent);
+    const launchpad = canonicalPath(profile.launchpadCheckout);
+    if (profile.profileId !== "source-change-v1" ||
+        profile.mounts.length !== 1 ||
+        profile.mounts[0]?.path !== mount ||
+        profile.mounts[0]?.access !== "read-write" ||
+        profile.writableSurfaces.length !== 1 ||
+        profile.writableSurfaces[0] !== mount ||
+        !statSync(mount).isDirectory() ||
+        !statSync(parent).isDirectory() ||
+        !statSync(launchpad).isDirectory() ||
+        !inside(parent, mount) ||
+        mount === launchpad ||
+        inside(mount, launchpad) ||
+        inside(launchpad, mount))
+        throw new Error("source-change worktree refused");
+    const top = execFileSync("git", ["rev-parse", "--show-toplevel"], {
+        cwd: mount,
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "pipe"],
+        timeout: 5_000,
+    }).trim();
+    if (top !== mount)
+        throw new Error("source-change mount must be a Git worktree root");
+    const message = canonicalPath(commitMessagePath);
+    if (!inside(mount, message) || !statSync(message).isFile())
+        throw new Error("source-change message must be a file inside the worktree");
+}
+/** Refuse unsupported native variants by their actual discovery row. */
+export function sourceChangeProfile(input, requested = {}) {
+    if (requested.claudeTools !== undefined &&
+        requested.claudeTools !== "exact-allowlist")
+        throw new Error("source-change profile refused: C-W1 ambiguous");
+    if (requested.codexApproval !== undefined &&
+        requested.codexApproval !== "never")
+        throw new Error("source-change profile refused: X-U2 ambiguous");
+    if (requested.codexHooks !== undefined && requested.codexHooks !== false)
+        throw new Error("source-change profile refused: X-W3 unavailable");
+    const profile = {
+        profileId: "source-change-v1",
+        mounts: [{ path: input.worktree, access: "read-write" }],
+        writableSurfaces: [input.worktree],
+        worktreeParent: input.worktreeParent,
+        launchpadCheckout: input.launchpadCheckout,
+    };
+    validateSourceChangeEnvironment(profile, input.worktree, input.commitMessagePath);
+    return profile;
+}

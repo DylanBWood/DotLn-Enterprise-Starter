@@ -1,0 +1,161 @@
+import { runGit } from "./lib/git.mjs";
+import test from "node:test";
+import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
+import {
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { join, resolve } from "node:path";
+import { tmpdir } from "node:os";
+import {
+  copyReleaseTemplate,
+  createReleaseFixtureContext,
+  releaseCases,
+  saveReleaseTemplate,
+} from "./lib/release-fixtures.mjs";
+
+const repo = resolve(import.meta.dirname, "..");
+test("case inventory includes existing release scenarios and the one-gate lifecycle and rejects duplicates", (t) => {
+  const expected =
+    "preflight surfaces surfaces_local_snapshot prepare_independent license_surfaces surfaces_committed_readme surfaces_lower surfaces_first surfaces_component surfaces_non_source surfaces_new_component surfaceclose surfaceclose_linked bodyclose dirty unreachable derived settings_scope nonmain divergence malformed missinggh unauthenticated splitorigin lower failures cadence_missing cadence_inconsistent conflict localconflict nestedtag prepare missinglocalprevious pushfail refrecovery createrecovery submodule_force malformed_material stale_helpers runtime_refresh success edition firstrelease cached_evidence composed_evidence concurrent material close_completion close_sealed close_leftover close_retry_paths close_receipt_recovery starter_refresh".split(
+      " ",
+    );
+  assert.deepEqual(releaseCases(repo), expected);
+  const root = mkdtempSync(join(tmpdir(), "dotln-case-list-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  mkdirSync(join(root, "scripts"));
+  writeFileSync(
+    join(root, "scripts/test-release.sh"),
+    "release_case_one() {\n}\nrelease_case_one() {\n}\n",
+  );
+  assert.throws(() => releaseCases(root), /duplicated/);
+  assert.throws(
+    () =>
+      execFileSync("bash", ["scripts/test-release.sh", "--case", "missing"], {
+        cwd: repo,
+        stdio: "pipe",
+      }),
+    /unknown release case/,
+  );
+});
+
+test("sealed fixture copies share no mutable refs or files and refuse a changed template", (t) => {
+  const root = mkdtempSync(join(tmpdir(), "dotln-fixture-copy-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const fixture = join(root, "fixture");
+  mkdirSync(fixture);
+  const fixtureGitOptions = {
+    exec: true,
+    trim: false,
+    encoding: null,
+    stdio: "pipe",
+  };
+  runGit(
+    undefined,
+    ["init", "--bare", join(fixture, "origin.git")],
+    fixtureGitOptions,
+  );
+  runGit(
+    undefined,
+    ["clone", join(fixture, "origin.git"), join(fixture, "project")],
+    fixtureGitOptions,
+  );
+  const project = join(fixture, "project");
+  runGit(
+    undefined,
+    ["-C", project, "config", "user.name", "Fixture"],
+    fixtureGitOptions,
+  );
+  runGit(
+    undefined,
+    ["-C", project, "config", "user.email", "fixture@example.invalid"],
+    fixtureGitOptions,
+  );
+  writeFileSync(join(project, "input.txt"), "original\n");
+  runGit(undefined, ["-C", project, "add", "."], fixtureGitOptions);
+  runGit(
+    undefined,
+    ["-C", project, "commit", "-qm", "Fixture"],
+    fixtureGitOptions,
+  );
+  runGit(
+    undefined,
+    [
+      "-C",
+      project,
+      "config",
+      "url.fixture.insteadOf",
+      "https://example.invalid/template",
+    ],
+    fixtureGitOptions,
+  );
+  const template = join(root, "template"),
+    first = join(root, "first"),
+    second = join(root, "second");
+  saveReleaseTemplate(fixture, template);
+  copyReleaseTemplate(template, first);
+  copyReleaseTemplate(template, second);
+  const file = (base) => join(base, "project/input.txt");
+  assert.notEqual(lstatSync(file(first)).ino, lstatSync(file(second)).ino);
+  writeFileSync(file(first), "changed\n");
+  runGit(
+    undefined,
+    ["-C", join(first, "project"), "tag", "only-first"],
+    fixtureGitOptions,
+  );
+  assert.equal(readFileSync(file(second), "utf8"), "original\n");
+  assert.equal(readFileSync(file(template), "utf8"), "original\n");
+  assert.equal(
+    runGit(
+      undefined,
+      ["-C", join(second, "project"), "tag"],
+      fixtureGitOptions,
+    ).toString(),
+    "",
+  );
+  assert.equal(
+    runGit(
+      undefined,
+      ["-C", join(template, "project"), "tag"],
+      fixtureGitOptions,
+    ).toString(),
+    "",
+  );
+  assert.throws(() =>
+    runGit(
+      undefined,
+      [
+        "-C",
+        join(second, "project"),
+        "config",
+        "--get",
+        "url.fixture.insteadOf",
+      ],
+      fixtureGitOptions,
+    ),
+  );
+  writeFileSync(file(template), "tampered\n");
+  assert.throws(
+    () => copyReleaseTemplate(template, join(root, "third")),
+    /changed after preparation/,
+  );
+});
+
+test("fixture context cleans only its owned temporary root", () => {
+  const context = createReleaseFixtureContext();
+  const directory = resolve(context.template, "..");
+  const marker = join(directory, ".owner");
+  const token = readFileSync(marker);
+  writeFileSync(marker, "different-owner");
+  assert.throws(() => context.cleanup(), /Refusing cleanup/);
+  assert.ok(existsSync(directory));
+  writeFileSync(marker, token);
+  context.cleanup();
+  assert.equal(existsSync(directory), false);
+});

@@ -1,0 +1,357 @@
+import { json as prettyJson } from "./helpers.mjs";
+import { docRelative } from "./config.mjs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { runGit } from "./git.mjs";
+import {
+  buildPlanSubject,
+  planOrderHash,
+  carriedOrderHashMatches,
+  planPaths,
+  planningPasses,
+  sha256,
+} from "./plan-subject.mjs";
+import {
+  readReceipts,
+  writePlanReceipt,
+  checkPlanGate,
+  requireChangedPlanEvidence,
+  planningPassScope,
+} from "./plan-receipts.mjs";
+import { containedRegularFile } from "./paths.mjs";
+
+const localPlan = (root) => docRelative(root, "control", "local/plan");
+export async function latestPlanningPass(root, history) {
+  const enforced = planningPassScope(root).passes;
+  const { ledger } = planPaths(root);
+  const passes = enforced.length
+    ? enforced
+    : planningPasses(readFileSync(join(root, ledger), "utf8"));
+  const date = passes
+    .map((pass) => pass.date)
+    .sort()
+    .at(-1);
+  if (!date) throw new Error("no dated planning-pass ledger heading");
+  const current = passes.filter((pass) => pass.date === date);
+  const receipts = (history ?? (await readReceipts(root))).filter(
+    (receipt) => receipt.pass.kind === "planning",
+  );
+  // The gate requires each new pass's receipt, then follows the validated
+  // receipt chain. Neither fact depends on where a ledger section was filed.
+  const pending = current.filter(
+    (pass) => !receipts.some((receipt) => receipt.pass.id === pass.id),
+  );
+  if (pending.length > 1)
+    throw new Error(
+      `ambiguous planning passes on ${date}: multiple unjudged headings`,
+    );
+  const latest = [...receipts]
+    .reverse()
+    .find((receipt) => current.some((pass) => pass.id === receipt.pass.id));
+  const pass = pending[0] ?? current.find((pass) => pass.id === latest.pass.id);
+  return { id: pass.id, kind: "planning", heading: pass.heading };
+}
+export async function planJudgmentScope(root, subject, pass, scope = "pass") {
+  if (!["pass", "full"].includes(scope))
+    throw new Error("Refutation scope must be pass or full");
+  const history = await readReceipts(root);
+  let changed = new Set(subject.orders.map((row) => row.workOrderId));
+  if (scope === "pass") {
+    const { ledger } = planPaths(root);
+    const introduced = runGit(root, [
+      "log",
+      "--reverse",
+      "--format=%H",
+      `-S## ${pass.heading}`,
+      "HEAD",
+      "--",
+      ledger,
+    ])
+      .split("\n")
+      .find(Boolean);
+    if (introduced) {
+      try {
+        const before = buildPlanSubject(root, `${introduced}^`, {
+          costTable: false,
+          goalReview: Boolean(subject.goalReview),
+        });
+        changed = new Set(
+          subject.orders
+            .filter(
+              (order) =>
+                planOrderHash(order) !==
+                planOrderHash(
+                  before.orders.find(
+                    (row) => row.workOrderId === order.workOrderId,
+                  ) ?? { criteria: [], nonGoals: "" },
+                ),
+            )
+            .map((row) => row.workOrderId),
+        );
+      } catch {
+        /* Initial horizon has no earlier subject: every order is new. */
+      }
+    }
+  }
+  const carried = [];
+  for (const order of subject.orders.filter(
+    (row) => !changed.has(row.workOrderId),
+  )) {
+    const prior = [...history]
+      .reverse()
+      .find(
+        (receipt) =>
+          receipt.subject.goalReview &&
+          receipt.subject.orders.some(
+            (row) => row.workOrderId === order.workOrderId,
+          ),
+      );
+    if (
+      !prior?.subject.orders.some(
+        (row) =>
+          row.workOrderId === order.workOrderId &&
+          planOrderHash(row) === planOrderHash(order),
+      )
+    ) {
+      changed.add(order.workOrderId);
+      continue;
+    }
+    carried.push({
+      workOrderId: order.workOrderId,
+      orderHash: planOrderHash(order),
+      receiptId: prior.receiptId,
+      receiptHash: prior.receiptHash,
+    });
+  }
+  return {
+    scope,
+    judgedOrderIds: subject.orders
+      .filter((row) => changed.has(row.workOrderId))
+      .map((row) => row.workOrderId),
+    carried,
+  };
+}
+export async function carryPlanResult(root, subject, review, value) {
+  if (
+    !value ||
+    !Array.isArray(value.orders) ||
+    value.orders.length !== review.judgedOrderIds.length ||
+    value.orders.some(
+      (row) => !review.judgedOrderIds.includes(row.workOrderId),
+    ) ||
+    new Set(value.orders.map((row) => row.workOrderId)).size !==
+      value.orders.length
+  )
+    throw new Error("One direct result per judged order required");
+  const history = await readReceipts(root),
+    carriedOrders = [],
+    carriedHolds = [];
+  for (const item of review.carried) {
+    const prior = history.find(
+      (row) =>
+        row.receiptId === item.receiptId &&
+        row.receiptHash === item.receiptHash,
+    );
+    const order = subject.orders.find(
+      (row) => row.workOrderId === item.workOrderId,
+    );
+    if (
+      !prior ||
+      !order ||
+      !prior.subject.orders.some(
+        (row) =>
+          row.workOrderId === item.workOrderId &&
+          carriedOrderHashMatches(order, row, item.orderHash),
+      )
+    )
+      throw new Error("Carried verdict source or current order hash changed");
+    carriedOrders.push(
+      prior.result.orders.find((row) => row.workOrderId === item.workOrderId),
+    );
+    carriedHolds.push(
+      ...prior.result.holdReasons.filter(
+        (row) => row.workOrderId === item.workOrderId,
+      ),
+    );
+  }
+  return {
+    ...value,
+    orders: subject.orders.map((order) =>
+      [...value.orders, ...carriedOrders].find(
+        (row) => row.workOrderId === order.workOrderId,
+      ),
+    ),
+    holdReasons: [...(value.holdReasons ?? []), ...carriedHolds],
+  };
+}
+export async function beginDirectRefutation(
+  root,
+  { scope = "pass", now = () => new Date().toISOString() } = {},
+) {
+  const subject = buildPlanSubject(root, "HEAD", { goalReview: true }),
+    history = await readReceipts(root),
+    pass = await latestPlanningPass(root, history);
+  if (
+    buildPlanSubject(root, "HEAD", { workspace: true, goalReview: true })
+      .hash !== subject.hash
+  )
+    throw new Error(
+      "commit the planning subject before refutation; committed subject differs from workspace",
+    );
+  requireChangedPlanEvidence(pass, subject, history);
+  if (
+    history.some(
+      (row) => row.pass.id === pass.id && row.subject.hash === subject.hash,
+    )
+  )
+    throw new Error("same subject cannot be re-rolled");
+  const review = await planJudgmentScope(root, subject, pass, scope);
+  const path = `${localPlan(root)}/direct-${subject.hash.slice(7)}-${pass.id}-${scope}.json`;
+  const pending = existsSync(join(root, path))
+    ? JSON.parse(readFileSync(join(root, path), "utf8"))
+    : {
+        schemaVersion: 1,
+        revision: subject.revision,
+        subjectHash: subject.hash,
+        pass,
+        review,
+        dispatchedAt: now(),
+      };
+  if (
+    pending.subjectHash !== subject.hash ||
+    JSON.stringify(pending.pass) !== JSON.stringify(pass) ||
+    JSON.stringify(pending.review) !== JSON.stringify(review)
+  )
+    throw new Error(
+      "Pending direct refutation differs from current subject; retain its evidence",
+    );
+  mkdirSync(join(root, localPlan(root)), { recursive: true });
+  if (!existsSync(join(root, path)))
+    writeFileSync(join(root, path), prettyJson(pending), {
+      flag: "wx",
+    });
+  writeFileSync(
+    join(root, localPlan(root), "current-direct.json"),
+    JSON.stringify({ path }) + "\n",
+  );
+  const { compilePlanRefuter } =
+    await import("../../packages/skeleton/dist/src/loadouts/plan-refuter.js");
+  const { planPrompt, planResultSchema } =
+    await import("../../packages/skeleton/dist/src/plan-refutation-protocol.js");
+  const compiled = compilePlanRefuter(
+    subject.revision,
+    Date.parse(pending.dispatchedAt),
+  );
+  return JSON.stringify({
+    ...JSON.parse(
+      planPrompt({
+        workOrder: compiled.program.workOrder,
+        subject: { ...subject, judgment: review },
+      }),
+    ),
+    resultSchema: planResultSchema({ ...subject, judgment: review }),
+    workerInstructions:
+      "Also return a truthful public session statement as one plain line of at most 4000 characters, naming what you actually read. Return the result and statement to the parent; do not edit the repository or commit a receipt.",
+  });
+}
+export async function fileDirectRefutation(
+  root,
+  resultPath,
+  statementPath,
+  {
+    dispositions = [],
+    now = () => new Date().toISOString(),
+    commit = true,
+  } = {},
+) {
+  for (const path of [resultPath, statementPath])
+    if (!containedRegularFile(join(root, path), root))
+      throw new Error(
+        "Direct result and statement must be contained regular files",
+      );
+  const pointer = JSON.parse(
+    readFileSync(join(root, localPlan(root), "current-direct.json"), "utf8"),
+  );
+  if (
+    !new RegExp(
+      `^${localPlan(root)}/direct-[a-f0-9]{64}-(?:planning-[a-f0-9]{16}-)?(?:pass|full)\\.json$`,
+    ).test(pointer.path)
+  )
+    throw new Error("Invalid direct refutation pointer");
+  const pending = JSON.parse(readFileSync(join(root, pointer.path), "utf8"));
+  const subject = buildPlanSubject(root, "HEAD", { goalReview: true });
+  if (
+    subject.hash !== pending.subjectHash ||
+    buildPlanSubject(root, "HEAD", { workspace: true, goalReview: true })
+      .hash !== subject.hash
+  )
+    throw new Error("Direct refutation subject is stale");
+  const completedAt = now(),
+    durationMs = Date.parse(completedAt) - Date.parse(pending.dispatchedAt);
+  if (!Number.isFinite(durationMs) || durationMs < 0)
+    throw new Error("Invalid direct refutation duration");
+  const { validatePlanResult } =
+    await import("../../packages/skeleton/dist/src/plan-refutation-protocol.js");
+  const raw = JSON.parse(readFileSync(join(root, resultPath), "utf8"));
+  if (raw.schemaVersion !== "plan-goal-review-v1")
+    throw new Error("new refutations require plan-goal-review-v1 findings");
+  const result = validatePlanResult(
+    await carryPlanResult(root, subject, pending.review, raw),
+    subject,
+  );
+  const statement = readFileSync(join(root, statementPath), "utf8").trim();
+  const episode = {
+    kind: "direct-session",
+    harness: "unknown",
+    harnessVersion: "unknown",
+    model: "unknown",
+    effort: "unknown",
+    settingsVerification: "unverified",
+    profileId: "plan-refutation-v1",
+    completedAt,
+    resultHash: sha256(prettyJson(result)),
+    judgmentBasis: "canonical-subject-and-protocol",
+    independence: "session-attested",
+    contextIsolation: "not-enforced",
+    modelTools: "available",
+    statement,
+    review: {
+      ...pending.review,
+      dispatchedAt: pending.dispatchedAt,
+      durationMs,
+    },
+    result,
+  };
+  if (commit && runGit(root, ["diff", "--cached", "--name-only"]))
+    throw new Error("Direct receipt commit refuses an unrelated staged change");
+  const receipt = await writePlanReceipt(root, {
+    pass: pending.pass,
+    slug: pending.pass.id,
+    subject,
+    episode,
+    dispositions,
+  });
+  const receipts = docRelative(root, "refutations");
+  if (commit) {
+    const paths = ["json", "md"].map(
+      (ext) => `${receipts}/${receipt.receiptId}.${ext}`,
+    );
+    runGit(root, ["add", "--", ...paths]);
+    runGit(root, [
+      "commit",
+      "-m",
+      `Record planning refutation ${receipt.receiptId}`,
+      "--",
+      ...paths,
+    ]);
+  }
+  const gate = await checkPlanGate(root);
+  return {
+    receipt: `${receipts}/${receipt.receiptId}.md`,
+    scope: pending.review.scope,
+    durationMs,
+    verdict: receipt.result.planVerdict,
+    carried: pending.review.carried.length,
+    gate,
+  };
+}

@@ -1,0 +1,739 @@
+import { canonicalStringify, compileLoadout, normalizeAuthorityGrants, requireCompiled, } from "@dotln/compiler";
+import { authorize, commandId, } from "@dotln/kernel";
+import { assertActorResult, scriptResultVerified, assertActorSpec, } from "./actor-contract.js";
+import { PresenceMachine, presencePredicates, } from "./presence-machine.js";
+import { decodePresenceObservation, presenceActorKey, } from "./presence-signals.js";
+import { assertHandoffPacket } from "./handoff-contract.js";
+import { assertMissionCheckSubject, isMissionCheckRequest, validateMissionCheckResult, } from "./mission-check-protocol.js";
+import { isWriterRequest } from "./worker-protocol.js";
+import { admitPortfolio, decodePortfolioBinding, deriveWorkOrders, summarizeDerivations, } from "./portfolio.js";
+import { admitIntent, intentBudgetUsed, verticalEqual, verticalProgram, } from "./vertical.js";
+export function decodeResidentConfiguration(value) {
+    if (!value || typeof value !== "object" || Array.isArray(value))
+        throw new Error("invalid resident configuration");
+    const v = value;
+    if (Object.keys(v).some((key) => ![
+        "graph",
+        "environment",
+        "policyId",
+        "actors",
+        "evidence",
+        "heartbeatBudgetMs",
+        "portfolio",
+    ].includes(key)) ||
+        typeof v.policyId !== "string" ||
+        !v.actors ||
+        typeof v.actors !== "object" ||
+        Array.isArray(v.actors) ||
+        !Array.isArray(v.evidence) ||
+        v.evidence.some((item) => typeof item !== "string"))
+        throw new Error("invalid resident configuration fields");
+    if (v.heartbeatBudgetMs !== undefined &&
+        (!Number.isSafeInteger(v.heartbeatBudgetMs) || v.heartbeatBudgetMs < 1))
+        throw new Error("invalid resident heartbeat budget");
+    const program = requireCompiled(compileLoadout(v.graph, v.environment));
+    const policy = program.presence?.find((p) => p.policyId === v.policyId);
+    if (!policy)
+        throw new Error("resident policy is not compiled");
+    if (Object.keys(v.actors).length !== policy.phases.length)
+        throw new Error("resident requires one actor per phase");
+    const portfolio = v.portfolio === undefined
+        ? undefined
+        : admitBinding(v.portfolio, policy, program.authorityEnvelope);
+    for (const phase of policy.phases) {
+        if (!Object.hasOwn(v.actors, phase.phaseId))
+            throw new Error("resident phase actor is missing");
+        assertActorSpec(v.actors[phase.phaseId]);
+        const actor = v.actors[phase.phaseId];
+        if (actor.kind !== "portfolio")
+            continue;
+        const ceiling = portfolio?.definition.phases[phase.phaseId];
+        if (!ceiling)
+            throw new Error("resident portfolio actor needs a portfolio ceiling for its phase");
+        // The actor's reservation, which the phase admits, bounds every order.
+        if ((actor.resources["files"] ?? 0) < ceiling.files)
+            throw new Error("resident portfolio actor reserves fewer files than its phase ceiling");
+    }
+    return structuredClone({ ...v, ...(portfolio ? { portfolio } : {}) });
+}
+function admitBinding(value, policy, floor) {
+    const binding = decodePortfolioBinding(value);
+    admitPortfolio(binding.definition, policy, floor);
+    return binding;
+}
+export const emptyResidentState = () => ({
+    configuration: null,
+    policy: null,
+    machine: null,
+    at: 0,
+    present: true,
+    episodes: {},
+    episodePhases: {},
+    episodeGenerations: {},
+    revokedBy: [],
+    lastNoOp: null,
+    lastHumanAt: null,
+    actors: {},
+    progress: {},
+    handoffs: {},
+    missionChecks: {},
+    dispatchHeld: null,
+    discovery: null,
+    portfolio: {
+        activations: {},
+        sources: [],
+        episodes: 0,
+        wallMs: 0,
+        tokens: 0,
+    },
+});
+export function residentMachine(state, predicates = {}) {
+    if (!state.policy || !state.machine)
+        throw new Error("resident is not configured");
+    return new PresenceMachine(state.policy, { ...predicates, ...presencePredicates }, state.machine);
+}
+/** The host and replay fold share the scheduling predicate. Input/authority
+ * decoding remains admitIntent's job; a temporarily unavailable slot is no
+ * admission decision. */
+export function intentAdmissionReady(state, phase, operator = false, predicates = {}) {
+    const machine = residentMachine(state, predicates);
+    const selected = operator
+        ? state.policy.phases.find((p) => p.phaseId === phase?.phaseId)
+        : machine.phase();
+    return !!(phase &&
+        selected &&
+        verticalEqual(phase, selected) &&
+        (operator || !state.present) &&
+        !state.dispatchHeld &&
+        !state.revokedBy.length &&
+        !machine.current &&
+        selected.availability.kind === "ready" &&
+        (operator || machine.due(state.at) !== null));
+}
+export function intentStepReady(state, binding, commandId, predicates = {}, resuming = false) {
+    const machine = residentMachine(state, predicates);
+    const phase = machine.phase();
+    if (state.present ||
+        state.dispatchHeld ||
+        state.revokedBy.length ||
+        !phase ||
+        phase.phaseId !== binding.phaseId ||
+        phase.availability.kind !== "ready" ||
+        binding.authority.expiresAt <= state.at ||
+        (state.intentStep &&
+            (state.intentStep.key !== binding.key ||
+                state.intentStep.commandId !== commandId)))
+        return false;
+    if (machine.current)
+        return !!(resuming &&
+            state.intentStep?.key === binding.key &&
+            machine.current.id === commandId);
+    return machine.due(state.at) !== null;
+}
+export function residentEpisodeId(machine, dueAt) {
+    return commandId("resident", canonicalStringify([
+        machine.compiled.policyId,
+        machine.state,
+        machine.phase().cadence,
+        dueAt,
+        machine.generation,
+    ]), 0, 0).replace("cmd_", "script_");
+}
+export const residentEventTypes = [
+    "IntentAdmitted",
+    "IntentHeld",
+    "IntentStepStarted",
+    "IntentStepSettled",
+    "ResidentConfigured",
+    "ClockSampled",
+    "ScriptEpisodeDispatched",
+    "ScriptEpisodeObserved",
+    "ScriptEpisodeLost",
+    "ScriptEpisodeRefused",
+    "ActorUnavailable",
+    "OperatorPresenceObserved",
+    "HandoffRequested",
+    "HandoffAnswered",
+    "CliWorkerObserved",
+    "MissionDriftObserved",
+    "MissionHoldCleared",
+    "PortfolioOrderActivated",
+    "PortfolioOrderObserved",
+];
+/** What the capsule proves on its own, with no model judgment at all. A
+ * verifier that never answered removes the model's verdict, never the host's
+ * evidence, so an episode that failed after observing its capsule is normalized
+ * exactly as an `unknown` model result is. A capsule that was never observed
+ * stays genuinely unjudged. */
+function hostMissionJudgment(subject) {
+    try {
+        assertMissionCheckSubject(subject);
+        return validateMissionCheckResult({ schemaVersion: "mission-check-v1", verdict: "unknown", findings: [] }, subject);
+    }
+    catch {
+        return null;
+    }
+}
+/** The verdict is read from the already-validated observation; the fold never
+ * takes a worker's word for whether a hold is needed. */
+function foldMissionJudgment(state, episodeId, payload) {
+    const observation = payload.worker;
+    const subject = observation?.subject;
+    const observed = observation?.result;
+    const judgment = observed ?? (subject ? hostMissionJudgment(observation.subject) : null);
+    const verdict = judgment?.verdict ?? "unknown";
+    state.missionChecks[episodeId] = {
+        subjectHash: subject?.hash ?? null,
+        verdict,
+    };
+    // A pass never holds, and a standing hold is not replaced by a second one.
+    // Retiring it is an explicit `MissionHoldCleared` event the host appends
+    // from this recorded verdict, never a silent effect of the fold.
+    if (verdict === "on-mission" || state.dispatchHeld)
+        return;
+    const findings = judgment?.findings ?? [];
+    const failure = observation?.failure ?? "verifier unavailable";
+    state.dispatchHeld = {
+        reason: verdict === "drift"
+            ? `mission check ${episodeId} found drift: ${findings
+                .map((finding) => `${finding.reference} (${finding.evidence})`)
+                .join("; ")}${observed === undefined ? ` (no model judgment: ${failure})` : ""}`
+            : observed !== undefined &&
+                subject &&
+                (subject.observation.diff.omittedPaths.length > 0 ||
+                    subject.observation.omittedDecisions !== null)
+                ? `mission check ${episodeId} has an incomplete capsule: ${[
+                    ...subject.observation.diff.omittedPaths.map((path) => `omitted path ${path}`),
+                    ...(subject.observation.omittedDecisions === null
+                        ? []
+                        : [
+                            `omitted decisions: ${subject.observation.omittedDecisions}`,
+                        ]),
+                ].join("; ")}`
+                : observed !== undefined
+                    ? `mission check ${episodeId} returned an unknown judgment`
+                    : `mission check ${episodeId} returned no judgment (${failure})`,
+        episodeId,
+        subjectHash: subject?.hash ?? "",
+        verdict,
+        findings: [...findings],
+    };
+}
+function expireActorHeartbeats(state) {
+    const budget = state.configuration?.heartbeatBudgetMs ?? 30000;
+    for (const actor of Object.values(state.actors)) {
+        if (actor.status === "live" && state.at - actor.lastHeartbeatAt >= budget) {
+            actor.status = "stalled";
+            actor.failureAt = actor.lastHeartbeatAt + budget;
+        }
+    }
+}
+/** The read-only judge of running work, declared as a CLI worker actor. */
+export const isMissionActor = (spec) => spec.kind === "cli-worker" && isMissionCheckRequest(spec.worker.request);
+/** WO-100: the one order a portfolio phase may activate now, or the NoOp
+ * reason. Pure over recorded state, so the fold recomputes what the host
+ * recorded; the budget is checked first, and nothing dispatches past it. */
+export function portfolioSelection(state, phase) {
+    const binding = state.configuration?.portfolio;
+    if (!binding)
+        return { refusal: "resident declares no portfolio" };
+    const { definition } = binding;
+    const used = state.portfolio;
+    const name = `portfolio ${definition.portfolioId} v${definition.version}`;
+    const budget = definition.budget;
+    if (used.episodes >= budget.episodes)
+        return {
+            refusal: `${name} budget exhausted: ${used.episodes} of ${budget.episodes} episodes`,
+        };
+    if (used.wallMs >= budget.wallMs)
+        return {
+            refusal: `${name} budget exhausted: ${used.wallMs} of ${budget.wallMs} ms wall time`,
+        };
+    if (budget.tokens !== undefined && used.tokens >= budget.tokens)
+        return {
+            refusal: `${name} budget exhausted: ${used.tokens} of ${budget.tokens} reported tokens`,
+        };
+    if (!state.discovery)
+        return { refusal: `${name} has no verified discovery observation` };
+    const derivations = deriveWorkOrders(state.discovery.report.candidates, definition, phase, binding);
+    const outcomes = summarizeDerivations(derivations);
+    const selected = derivations.find((d) => d.kind === "order" && !used.sources.includes(d.order.sourceId));
+    if (selected?.kind !== "order")
+        return {
+            refusal: `${name} phase ${phase.phaseId}: no candidate left to derive (${outcomes.orders.length} already activated or none derived, ${outcomes.suggestions.length} suggestions, ${outcomes.needsHuman.length} needing a human, ${outcomes.deferred.length} deferred)`,
+        };
+    return {
+        activation: {
+            portfolioId: definition.portfolioId,
+            version: definition.version,
+            phaseId: phase.phaseId,
+            discoveryEpisodeId: state.discovery.episodeId,
+            order: selected.order,
+            provenance: { kind: "runtime", sourceId: selected.order.sourceId },
+            outcomes,
+        },
+    };
+}
+export function residentRefusal(state, machine) {
+    const phase = machine.phase();
+    const spec = state.configuration.actors[phase.phaseId];
+    // Held work waits for a human or a fresh judgment; the check itself is not
+    // the work it holds, so it stays armed and can observe the repair.
+    if (state.dispatchHeld && !isMissionActor(spec))
+        return state.dispatchHeld.reason;
+    const orderId = spec.worker?.request.workOrder.workOrderId ?? spec.handoff?.workOrderId;
+    if (orderId &&
+        Object.values(state.handoffs).some((h) => h.packet.workOrderId === orderId && h.answer === undefined))
+        return "work order is waiting for a human handoff answer";
+    if (!phase.scope.surfaces.includes(spec.surface))
+        return "actor surface is outside phase scope";
+    const limits = { ...phase.scope.budget };
+    for (const [resource, amount] of Object.entries(phase.scope.changeSize))
+        limits[resource] = Math.min(limits[resource] ?? Infinity, amount);
+    if (Object.keys(limits).some((key) => !Object.hasOwn(spec.resources, key)) ||
+        Object.entries(spec.resources).some(([resource, amount]) => amount > (limits[resource] ?? 0) ||
+            amount >
+                (Object.hasOwn(phase.effectiveEnvelope.resourceLimits, resource)
+                    ? phase.effectiveEnvelope.resourceLimits[resource]
+                    : 0)))
+        return "actor resource reservation exceeds phase scope or authority budget";
+    const authorization = authorize({ kind: "Act", effect: spec.effect, payload: {} }, phase.effectiveEnvelope, {
+        now: state.at,
+        actorId: spec.kind,
+        workstreamId: "resident",
+        decisionIndex: 0,
+        intentIndex: 0,
+        evidence: state.configuration.evidence,
+        revokedBy: state.revokedBy,
+        state: machine.projected(),
+        predicateEnv: { rngState: 0, predicates: machine.predicates },
+    });
+    if (spec.worker) {
+        const request = spec.worker.request;
+        const envelope = phase.effectiveEnvelope;
+        const effects = [...request.workOrder.allowedOperations];
+        if (isWriterRequest(request)) {
+            const authority = request.authorityEnvelope;
+            if (authority.expiresAt > envelope.expiresAt ||
+                Object.entries(authority.resourceLimits).some(([key, amount]) => amount > (spec.resources[key] ?? 0)) ||
+                envelope.requiredEvidence.some((e) => !authority.requiredEvidence.includes(e)) ||
+                envelope.revocationEventTypes.some((e) => !authority.revocationEventTypes.includes(e)) ||
+                authority.revocationEventTypes.some((e) => !envelope.revocationEventTypes.includes(e)) ||
+                (authority.revocationConditions?.length ?? 0) > 0 ||
+                (envelope.revocationConditions?.length ?? 0) > 0)
+                return "worker authority exceeds or cannot represent the resident phase";
+            effects.push(...authority.allowedEffects.filter((e) => !effects.includes(e)));
+        }
+        for (const effect of effects) {
+            for (const candidate of isWriterRequest(request)
+                ? [envelope, request.authorityEnvelope]
+                : [envelope]) {
+                const check = authorize({ kind: "Act", effect, payload: {} }, candidate, {
+                    now: state.at,
+                    actorId: spec.kind,
+                    workstreamId: "resident",
+                    decisionIndex: 0,
+                    intentIndex: 0,
+                    evidence: state.configuration.evidence,
+                    revokedBy: state.revokedBy,
+                    state: machine.projected(),
+                    predicateEnv: { rngState: 0, predicates: machine.predicates },
+                });
+                if (!check.authorized)
+                    return "worker operations exceed the resident phase authority";
+            }
+        }
+    }
+    if (!authorization.authorized)
+        return authorization.refusal.payload.reason;
+    if (spec.kind === "portfolio") {
+        const selection = portfolioSelection(state, phase);
+        if ("refusal" in selection)
+            return selection.refusal;
+    }
+    return null;
+}
+export function foldResidentEvent(previous, event, predicates) {
+    const state = structuredClone({ ...emptyResidentState(), ...previous });
+    const payload = event.payload;
+    if (!payload || typeof payload !== "object" || Array.isArray(payload))
+        throw new Error("invalid resident event payload");
+    if (event.type === "ResidentConfigured") {
+        const configuration = decodeResidentConfiguration(payload["configuration"]);
+        if (state.configuration) {
+            if (canonicalStringify(configuration) !==
+                canonicalStringify(state.configuration))
+                throw new Error("resident configuration changed within a store");
+            return state;
+        }
+        state.configuration = configuration;
+        state.policy = requireCompiled(compileLoadout(configuration.graph, configuration.environment)).presence.find((p) => p.policyId === configuration.policyId);
+        const machine = new PresenceMachine(state.policy);
+        if (!state.present)
+            machine.absence(state.at);
+        state.machine = machine.snapshot();
+        return state;
+    }
+    if (event.type === "ClockSampled") {
+        const at = payload["at"];
+        if (typeof at !== "number" ||
+            !Number.isFinite(at) ||
+            at < 0 ||
+            at !== event.occurredAt)
+            throw new Error("invalid recorded clock sample");
+        state.at = Math.max(state.at, at); // A backwards wall clock cannot replenish a phase.
+        expireActorHeartbeats(state);
+    }
+    let humanChanged = false;
+    if (event.type === "OperatorPresenceObserved") {
+        const observation = decodePresenceObservation(payload);
+        if (observation.at !== event.occurredAt)
+            throw new Error("presence time differs from event");
+        state.at = Math.max(state.at, observation.at);
+        // A late heartbeat cannot hide a deadline crossed before its arrival.
+        expireActorHeartbeats(state);
+        const { signal, origin, stamp } = observation;
+        if (origin === "human" &&
+            observation.at >= state.at &&
+            observation.at >= (state.lastHumanAt ?? 0)) {
+            state.lastHumanAt = observation.at;
+            state.present = signal.kind !== "away";
+            humanChanged = true;
+        }
+        if (origin === "actor" && signal.kind === "heartbeat") {
+            const key = presenceActorKey(signal, stamp);
+            const old = state.actors[key];
+            // A late heartbeat cannot resurrect a completed/lost resident episode.
+            if (observation.at >= state.at &&
+                (!stamp ||
+                    !["observed", "lost"].includes(state.episodes[stamp.episodeId] ?? "")) &&
+                (!old || observation.at >= old.lastHeartbeatAt)) {
+                state.actors[key] = {
+                    lastHeartbeatAt: observation.at,
+                    status: "live",
+                    ...(stamp ? { episodeId: stamp.episodeId } : {}),
+                    ...(old?.failureAt === undefined ? {} : { failureAt: old.failureAt }),
+                };
+            }
+        }
+        if (origin === "task" && signal.kind === "progress")
+            state.progress = {
+                ...state.progress,
+                [signal.taskId]: Math.max(Object.hasOwn(state.progress, signal.taskId)
+                    ? state.progress[signal.taskId]
+                    : 0, observation.at),
+            };
+    }
+    if (event.type === "OperatorPresenceChanged") {
+        if (typeof payload["presence"] !== "string" ||
+            !["away", "returned"].includes(payload["presence"]))
+            throw new Error("invalid resident presence");
+        state.present = payload["presence"] === "returned";
+        state.lastHumanAt = state.at;
+        humanChanged = true;
+    }
+    if (event.type === "ClockSampled" &&
+        state.present &&
+        state.lastHumanAt !== null &&
+        state.policy?.humanIdleMs !== undefined &&
+        state.at - state.lastHumanAt >= state.policy.humanIdleMs) {
+        state.present = false;
+        humanChanged = true;
+    }
+    if (!state.machine) {
+        if (![
+            "ClockSampled",
+            "OperatorPresenceChanged",
+            "OperatorPresenceObserved",
+        ].includes(event.type))
+            throw new Error("resident event precedes configuration");
+        return state;
+    }
+    const machine = residentMachine(state, predicates);
+    machine.now = state.at;
+    if (event.type === "IntentHeld" || event.type === "IntentAdmitted") {
+        const draftId = payload["draftId"];
+        if (typeof draftId !== "string" || !draftId || state.intents?.[draftId])
+            throw new Error("invalid or repeated intent admission");
+        state.intents ??= {};
+        if (event.type === "IntentHeld") {
+            if (typeof payload["reason"] !== "string" ||
+                !payload["reason"] ||
+                typeof payload["step"] !== "string")
+                throw new Error("intent hold requires a step and reason");
+            state.intents[draftId] = {
+                kind: "NeedsHuman",
+                step: payload["step"],
+                reason: payload["reason"],
+            };
+        }
+        else {
+            const input = payload["input"];
+            const operator = payload["entry"] === "operator";
+            const grants = payload["grants"];
+            const registry = normalizeAuthorityGrants(state.configuration.environment.authorityGrantRegistry ?? []);
+            if ((payload["entry"] !== undefined &&
+                payload["entry"] !== "resident" &&
+                !operator) ||
+                (operator && event.actorId !== "operator") ||
+                !intentAdmissionReady(state, input.phase, operator, predicates) ||
+                input.draft.workOrderId !== draftId ||
+                input.at !== state.at ||
+                !verticalEqual(input.evidence ?? [], state.configuration.evidence) ||
+                !verticalEqual(input.spent, intentBudgetUsed(state.intents, state.at)) ||
+                !Array.isArray(grants) ||
+                grants.some((g) => !registry.some((entry) => verticalEqual(entry, g))))
+                throw new Error("intent admission outside the current resident phase");
+            const admission = admitIntent(input, state.configuration.portfolio?.definition, payload["grants"]);
+            if (admission.kind !== "admitted" ||
+                !verticalEqual(admission.binding, payload["binding"]) ||
+                !verticalEqual(payload["continuation"], verticalProgram(admission.binding.key)))
+                throw new Error("intent admission differs from its recorded inputs");
+            state.intents[draftId] = admission;
+        }
+    }
+    if (event.type === "IntentStepStarted") {
+        const key = payload["key"], commandId = payload["commandId"];
+        const admitted = Object.values(state.intents ?? {}).find((i) => i.kind === "admitted" && i.binding.key === key);
+        if (event.actorId !== "resident-host" ||
+            admitted?.kind !== "admitted" ||
+            typeof commandId !== "string" ||
+            !commandId.startsWith("cmd_vertical_") ||
+            !intentStepReady(state, admitted.binding, commandId, predicates))
+            throw new Error("vertical step is outside the resident phase");
+        machine.dispatch(commandId);
+        state.intentStep = { key: admitted.binding.key, commandId };
+    }
+    if (event.type === "IntentStepSettled") {
+        if (event.actorId !== "resident-host" ||
+            state.intentStep?.key !== payload["key"] ||
+            state.intentStep?.commandId !== payload["commandId"] ||
+            !["completed", "NeedsHuman", "refused", "retry", "repair"].includes(payload["result"]) ||
+            typeof payload["terminal"] !== "boolean")
+            throw new Error("vertical settlement has no matching step");
+        const id = state.intentStep.commandId;
+        if (payload["terminal"])
+            machine.outcome(payload["result"] === "completed" ? "verified-success" : "failure", id);
+        else
+            machine.waitForInput(id);
+        machine.lastActivity = state.at;
+        state.intentStep = null;
+    }
+    if (humanChanged) {
+        if (state.present)
+            machine.returned();
+        else
+            machine.absence();
+    }
+    if (event.type === "ClockSampled")
+        machine.transition("idle-expired");
+    if (state.policy.phases.some((phase) => phase.effectiveEnvelope.revocationEventTypes.includes(event.type) ||
+        phase.effectiveEnvelope.revocationConditions?.length))
+        state.revokedBy.push(event);
+    if (event.type === "ScriptEpisodeDispatched") {
+        const dueAt = machine.due(state.at);
+        const id = payload["episodeId"];
+        const phase = machine.phase();
+        const spec = phase ? state.configuration.actors[phase.phaseId] : null;
+        if (typeof id !== "string" ||
+            dueAt === null ||
+            id !== residentEpisodeId(machine, dueAt) ||
+            Object.hasOwn(state.episodes, id) ||
+            payload["dueAt"] !== dueAt ||
+            payload["phaseId"] !== phase.phaseId ||
+            payload["kind"] !== spec.kind ||
+            payload["effect"] !== spec.effect ||
+            payload["authorityEnvelopeId"] !==
+                phase.effectiveEnvelope.authorityEnvelopeId ||
+            residentRefusal(state, machine))
+            throw new Error("invalid or repeated resident dispatch");
+        state.episodes[id] = "dispatched";
+        state.episodePhases[id] = phase.phaseId;
+        state.episodeGenerations[id] = machine.generation;
+        state.actors[`episode:${id}`] = {
+            lastHeartbeatAt: state.at,
+            status: "live",
+            episodeId: id,
+        };
+        machine.dispatch(id);
+        state.lastNoOp = null;
+    }
+    if (event.type === "PortfolioOrderActivated") {
+        const id = payload["episodeId"];
+        const phaseId = typeof id === "string" ? state.episodePhases[id] : undefined;
+        const phase = state.policy.phases.find((p) => p.phaseId === phaseId);
+        const selection = phase ? portfolioSelection(state, phase) : undefined;
+        if (typeof id !== "string" ||
+            Object.keys(payload).sort().join(",") !== "activation,episodeId" ||
+            state.episodes[id] !== "dispatched" ||
+            machine.current?.id !== id ||
+            state.configuration.actors[phaseId]?.kind !== "portfolio" ||
+            Object.hasOwn(state.portfolio.activations, id) ||
+            !selection ||
+            !("activation" in selection) ||
+            canonicalStringify(payload["activation"]) !==
+                canonicalStringify(selection.activation))
+            throw new Error("portfolio activation differs from the recorded derivation");
+        state.portfolio.activations[id] = { ...selection.activation, at: state.at };
+        state.portfolio.sources.push(selection.activation.provenance.sourceId);
+        state.portfolio.episodes += 1;
+    }
+    if (event.type === "HandoffRequested") {
+        const packet = payload["packet"];
+        assertHandoffPacket(packet);
+        const id = packet.episodeId;
+        const phaseId = state.episodePhases[id];
+        const spec = phaseId ? state.configuration.actors[phaseId] : undefined;
+        if (state.episodes[id] !== "dispatched" ||
+            !spec?.handoff ||
+            canonicalStringify(packet) !==
+                canonicalStringify({ ...spec.handoff, episodeId: id }) ||
+            Object.values(state.handoffs).some((h) => h.packet.workOrderId === packet.workOrderId && h.answer === undefined))
+            throw new Error("invalid or repeated handoff request");
+        state.handoffs[id] = {
+            packet,
+            phaseId: phaseId,
+            generation: state.episodeGenerations[id],
+        };
+        state.episodes[id] = "observed";
+        state.actors[`episode:${id}`].status = "stopped";
+        // Waiting is durable state, not a live actor or an occupied process slot.
+        machine.waitForInput(id);
+    }
+    if (event.type === "HandoffAnswered") {
+        const id = payload["episodeId"];
+        const handoff = typeof id === "string" ? state.handoffs[id] : undefined;
+        const option = payload["optionId"];
+        if (event.actorId !== "operator" ||
+            payload["origin"] !== "human" ||
+            !handoff ||
+            handoff.answer !== undefined ||
+            payload["workOrderId"] !== handoff.packet.workOrderId ||
+            typeof option !== "string" ||
+            !handoff.packet.options.some((o) => o.id === option))
+            throw new Error("invalid, stale or repeated human handoff answer");
+        handoff.answer = option;
+        state.at = Math.max(state.at, event.occurredAt);
+        machine.now = state.at;
+        machine.transition("idle-expired");
+        if (!machine.present &&
+            !machine.current &&
+            machine.state === handoff.phaseId &&
+            machine.generation === handoff.generation) {
+            machine.dispatch(handoff.packet.episodeId);
+            machine.outcome("verified-success", handoff.packet.episodeId);
+        }
+        state.lastNoOp = null;
+    }
+    if ([
+        "ScriptEpisodeObserved",
+        "CliWorkerObserved",
+        "PortfolioOrderObserved",
+        "ScriptEpisodeLost",
+    ].includes(event.type)) {
+        const id = payload["episodeId"];
+        if (typeof id !== "string" || state.episodes[id] !== "dispatched")
+            throw new Error("resident outcome has no pending dispatch");
+        const lost = event.type === "ScriptEpisodeLost";
+        if (lost && (typeof payload["reason"] !== "string" || !payload["reason"]))
+            throw new Error("lost episode needs a reason");
+        if (!lost) {
+            assertActorResult(payload);
+            const spec = state.configuration.actors[state.episodePhases[id]];
+            const expected = spec.kind === "cli-worker"
+                ? "CliWorkerObserved"
+                : spec.kind === "portfolio"
+                    ? "PortfolioOrderObserved"
+                    : "ScriptEpisodeObserved";
+            if (event.type !== expected)
+                throw new Error("actor observation kind differs from dispatch");
+            if (spec.kind === "portfolio" && !state.portfolio.activations[id])
+                throw new Error("portfolio observation has no recorded activation");
+            const verified = scriptResultVerified(spec, payload, id);
+            if (payload.verified !== verified)
+                throw new Error("script verification contradicts recorded output");
+        }
+        if (!lost) {
+            const spec = state.configuration.actors[state.episodePhases[id]];
+            if (isMissionActor(spec))
+                foldMissionJudgment(state, id, payload);
+            if (spec.outputContract === "work-candidates-v1" &&
+                payload["verified"] === true)
+                state.discovery = {
+                    episodeId: id,
+                    report: payload["discovery"],
+                };
+        }
+        // Charged when the episode ends: resident-clock wall time and reported tokens.
+        const activation = state.portfolio.activations[id];
+        if (activation) {
+            state.portfolio.wallMs += Math.max(0, state.at - activation.at);
+            const portfolio = payload["portfolio"];
+            if (!lost)
+                state.portfolio.tokens += portfolio?.tokens ?? 0;
+        }
+        state.episodes[id] = lost ? "lost" : "observed";
+        const actor = state.actors[`episode:${id}`];
+        if (actor)
+            actor.status = "stopped";
+        machine.outcome(!lost && payload["verified"] === true ? "verified-success" : "failure", id);
+    }
+    if (event.type === "MissionDriftObserved") {
+        const hold = state.dispatchHeld;
+        if (event.actorId !== "resident-host" ||
+            !hold ||
+            hold.verdict !== "drift" ||
+            hold.correctionEventId !== undefined ||
+            payload["episodeId"] !== hold.episodeId ||
+            payload["subjectHash"] !== hold.subjectHash ||
+            canonicalStringify(payload["findings"]) !==
+                canonicalStringify(hold.findings))
+            throw new Error("correction does not record the current mission hold");
+        hold.correctionEventId = event.eventId;
+    }
+    if (event.type === "MissionHoldCleared") {
+        const hold = state.dispatchHeld;
+        const origin = payload["origin"];
+        if (!hold)
+            throw new Error("no mission hold to clear");
+        if (origin === "human") {
+            if (event.actorId !== "operator" ||
+                typeof payload["answer"] !== "string" ||
+                !payload["answer"].trim() ||
+                payload["episodeId"] !== hold.episodeId)
+                throw new Error("invalid human answer to the mission hold");
+        }
+        else if (origin === "verified-repair") {
+            const judged = payload["judgment"];
+            const subject = payload["subject"];
+            if (event.actorId !== "resident-host")
+                throw new Error("invalid clear");
+            assertMissionCheckSubject(subject);
+            const judgment = validateMissionCheckResult(judged, subject);
+            // Only a fresh pass over changed work clears: re-judging the same bytes
+            // cannot retire a finding, and the implementer never clears its own hold.
+            if (judgment.verdict !== "on-mission" ||
+                subject.hash === hold.subjectHash ||
+                typeof payload["episodeId"] !== "string" ||
+                payload["episodeId"] === hold.episodeId)
+                throw new Error("mission hold needs a passing judgment over a repair");
+            state.missionChecks[payload["episodeId"]] = {
+                subjectHash: subject.hash,
+                verdict: judgment.verdict,
+            };
+        }
+        else
+            throw new Error("unknown mission hold clearance origin");
+        state.dispatchHeld = null;
+        state.lastNoOp = null;
+    }
+    if (["ActorUnavailable", "ScriptEpisodeRefused"].includes(event.type)) {
+        if (typeof payload["reason"] !== "string" ||
+            !payload["reason"] ||
+            !state.policy.phases.some((p) => p.phaseId === payload["phaseId"]))
+            throw new Error("resident NoOp needs a reason and phase");
+        state.lastNoOp = payload["reason"];
+    }
+    state.machine = machine.snapshot();
+    return state;
+}

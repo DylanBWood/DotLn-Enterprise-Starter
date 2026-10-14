@@ -1,0 +1,16 @@
+import type { CodeDslView, EditableView, FunctionTableView, LoadoutGraph, StatechartJsonView } from "./types.js";
+export declare const defineLoadout: (definition: LoadoutGraph) => CodeDslView;
+export declare const functionTableFromLoadout: (source: LoadoutGraph) => FunctionTableView;
+export declare const loadoutFromFunctionTable: (source: FunctionTableView) => LoadoutGraph;
+export declare const statechartJsonFromLoadout: (source: LoadoutGraph) => StatechartJsonView;
+export declare const loadoutFromStatechartJson: (source: StatechartJsonView) => LoadoutGraph;
+export declare const loadoutFromEditableView: (source: EditableView) => LoadoutGraph;
+export declare const normalizeCodeDslView: (source: CodeDslView) => CodeDslView;
+export declare const normalizeFunctionTableView: (source: FunctionTableView) => FunctionTableView;
+export declare const normalizeStatechartJsonView: (source: StatechartJsonView) => StatechartJsonView;
+export declare const encodeCodeDsl: (source: CodeDslView) => string;
+export declare const decodeCodeDsl: (encoded: string) => CodeDslView;
+export declare const encodeFunctionTable: (source: FunctionTableView) => string;
+export declare const decodeFunctionTable: (encoded: string) => FunctionTableView;
+export declare const encodeStatechartJson: (source: StatechartJsonView) => string;
+export declare const decodeStatechartJson: (encoded: string) => StatechartJsonView;

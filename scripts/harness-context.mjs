@@ -1,0 +1,258 @@
+import { json as prettyJson } from "./lib/helpers.mjs";
+import { docPath, docRelative, findLaunchpad } from "./lib/config.mjs";
+import { isMainModule } from "./lib/paths.mjs";
+import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+
+import {
+  harnessInstallation,
+  harnessInstructionBlock,
+} from "./lib/harness.mjs";
+import {
+  HARNESS_CONTEXT_BASE,
+  citedSelectors,
+  countReads,
+  directedReads,
+  legacyDirectedReads,
+  readDirectives,
+  sectionRange,
+} from "./lib/harness-context.mjs";
+import {
+  dispatchKinds,
+  measureColdStarts,
+  requireBudgets,
+} from "./lib/process-budget.mjs";
+
+const root = findLaunchpad();
+export const fixtureTree = join(root, "scripts/fixtures/harness-context/tree");
+export const roles = ["executor", "verifier", "reviewer", "release-close"];
+export function fixtureSelectors(read) {
+  const workOrder = docRelative(root, "workOrders", "WO-999-fixture.md");
+  const inputs = [
+    "fixture/source.ts",
+    "fixture/source.test.mjs",
+    "fixture/contract.md",
+  ];
+  return {
+    "@work-order": [workOrder],
+    "@citations": citedSelectors(read(workOrder), inputs, read),
+    "@subject-files": inputs,
+    "@failure-report": [
+      docRelative(root, "verifications", "WO-999/VER-001.md"),
+    ],
+    "@verification-reports": [
+      docRelative(root, "verifications", "WO-999/VER-001.md"),
+    ],
+    "@final-review": [
+      docRelative(root, "finalReviews", "WO-999/FINAL-001.md"),
+      docRelative(root, "finalReviews", "WO-999/PR.md"),
+      docRelative(root, "finalReviews", "WO-999/RELEASE-NOTES.md"),
+    ],
+  };
+}
+export function measureHarnessContext(overrides = new Map()) {
+  // This comparison uses two immutable activation files, not candidate history.
+  // Pin their bytes so the same regression runs in a history-free replica.
+  const baseline = JSON.parse(
+    readFileSync(
+      join(root, "scripts/fixtures/harness-context/baseline.json"),
+      "utf8",
+    ),
+  );
+  assert.equal(baseline.ref, HARNESS_CONTEXT_BASE);
+  const snapshot = {
+    read(path) {
+      const file = baseline.files[path];
+      assert.ok(file, `Undeclared context baseline: ${path}`);
+      assert.equal(
+        createHash("sha256").update(file.text).digest("hex"),
+        file.sha256,
+      );
+      return file.text;
+    },
+  };
+  const installation = harnessInstallation();
+  const files = new Map(
+    installation.files.map((file) => [file.path, file.contents]),
+  );
+  const floor = readFileSync(join(root, "CLAUDE.md"), "utf8");
+  const instruction = floor.includes("<!-- dotln-harness:start -->")
+    ? floor.replace(
+        harnessInstructionBlock(floor).trimEnd(),
+        files.get("CLAUDE.md").trimEnd(),
+      )
+    : `${floor.trimEnd()}\n\n${files.get("CLAUDE.md")}`;
+  const taskRead = (path) =>
+    existsSync(join(fixtureTree, path))
+      ? readFileSync(join(fixtureTree, path), "utf8")
+      : readFileSync(join(root, path), "utf8");
+  const selectors = fixtureSelectors(taskRead);
+  const oldInstruction = snapshot.read("CLAUDE.md");
+  const guidePath = docRelative(root, "product", "07-execution-guide.md");
+  const oldGuide = snapshot.read(guidePath);
+  const beforeRead = (path) =>
+    path === "CLAUDE.md"
+      ? oldInstruction
+      : path === guidePath
+        ? oldGuide
+        : taskRead(path);
+  const afterRead = (path) =>
+    overrides.get(path) ??
+    (path === "CLAUDE.md" ? instruction : (files.get(path) ?? taskRead(path)));
+  const result = [];
+  for (const skillsRoot of [".claude/skills", ".agents/skills"])
+    for (const role of roles) {
+      const skill = afterRead(`${skillsRoot}/dotln-${role}/SKILL.md`);
+      const before = countReads(
+        legacyDirectedReads(
+          oldInstruction,
+          oldGuide,
+          role,
+          selectors,
+          beforeRead,
+        ),
+        beforeRead,
+      );
+      const after = countReads(
+        directedReads({
+          instruction,
+          skill,
+          role,
+          skillsRoot,
+          selectors,
+          read: afterRead,
+        }),
+        afterRead,
+      );
+      const lower = after.bytes < before.bytes && after.lines < before.lines;
+      result.push({
+        role,
+        skillsRoot,
+        before,
+        after,
+        lower,
+        residue: lower
+          ? []
+          : [
+              {
+                originId: `contributor.${role}`,
+                reason: "Complete directed input set is not strictly lower",
+                files: after.files.map((file) => file.path),
+              },
+            ],
+      });
+    }
+  const beforeInstruction = countReads(
+    [{ path: "CLAUDE.md", startLine: 1, endLine: Number.MAX_SAFE_INTEGER }],
+    beforeRead,
+  );
+  const afterInstruction = countReads(
+    [{ path: "CLAUDE.md", startLine: 1, endLine: Number.MAX_SAFE_INTEGER }],
+    afterRead,
+  );
+  return {
+    schemaVersion: 1,
+    activationBase: HARNESS_CONTEXT_BASE,
+    task: "matched synthetic WO-999 closed role-entry fixture",
+    method:
+      "Whole activation instruction and its mandatory execution guide versus whole current instruction and generated role skill. Both sides receive identical fixture task files and current shared task guidance; only the activation instruction and execution guide remain frozen. Full files or named heading subtrees are counted as UTF-8 bytes and source lines, with overlapping reads counted once. The complete role procedure is scanned, including later reads. Commands' process I/O is execution, not automatically model-loaded file content. This controlled comparison does not estimate a work order's own changing implementation context or harness system prompts.",
+    selectors,
+    instruction: {
+      before: beforeInstruction,
+      after: afterInstruction,
+      lower:
+        afterInstruction.bytes < beforeInstruction.bytes &&
+        afterInstruction.lines < beforeInstruction.lines,
+    },
+    profiles: result,
+  };
+}
+/** Every document selector the installed floor and role skills read, resolved
+ * with the strict resolver; task selectors (`@work-order`, ...) are task input
+ * and absent skill files are the measurement's unknowns (WO-167 VER-001 F1). */
+export function unresolvedInstalledReads(launchpad) {
+  const text = (path) =>
+    existsSync(join(launchpad, path))
+      ? readFileSync(join(launchpad, path), "utf8")
+      : null;
+  const floor = text("CLAUDE.md");
+  const failures = new Set();
+  for (const skillsRoot of [".claude/skills", ".agents/skills"])
+    for (const role of dispatchKinds) {
+      const skillPath = `${skillsRoot}/dotln-${role}/SKILL.md`;
+      for (const [source, body] of [
+        ["CLAUDE.md", floor],
+        [skillPath, text(skillPath)],
+      ]) {
+        if (body === null) continue;
+        let directives;
+        try {
+          directives = readDirectives(body, role);
+        } catch (error) {
+          failures.add(`${source} (${role}): ${error.message}`);
+          continue;
+        }
+        for (const { selector, line } of directives) {
+          const [path, ...anchor] = selector
+            .replace(/^@skills\//, `${skillsRoot}/`)
+            .split("#");
+          if (path.startsWith("@")) continue;
+          try {
+            if (path.startsWith("/") || path.split("/").includes(".."))
+              throw new Error(`Unsafe required path: ${path}`);
+            const target = text(path);
+            if (target === null)
+              throw new Error(`Unresolved required file: ${path}`);
+            sectionRange(target, anchor.join("#"));
+          } catch (error) {
+            failures.add(`${source}:${line} (${role}): ${error.message}`);
+          }
+        }
+      }
+    }
+  return [...failures];
+}
+export function checkContextMeasurement(measurement) {
+  if (!measurement.instruction.lower)
+    process.stderr.write(
+      `DotLn advisory: shared instruction context changed from ${measurement.instruction.before.bytes} to ${measurement.instruction.after.bytes} bytes; capability residue remains visible in both harnesses.\n`,
+    );
+  for (const row of measurement.profiles)
+    if (!row.lower)
+      console.warn(
+        `Advisory: ${row.skillsRoot}/${row.role}: ${JSON.stringify(row.residue)}`,
+      );
+}
+if (isMainModule(import.meta.url)) {
+  const args = process.argv.slice(2);
+  if (args.includes("--help")) {
+    console.log(
+      "usage: harness-context.mjs [--check] [--write]\nMeasures installed cold-start bytes and historical deltas as JSON. --check evaluates budgets and prints advisory breaches; budget observations never refuse. --check also resolves every document Read selector of the installed floor and role skills strictly and exits 1 naming each one that does not resolve. --write refreshes the legacy WO-126 measurement path.",
+    );
+  } else if (args.some((arg) => !["--check", "--write"].includes(arg))) {
+    console.error("usage: harness-context.mjs [--check] [--write]");
+    process.exitCode = 1;
+  } else {
+    const result = measureColdStarts(root);
+    if (args.includes("--check")) {
+      requireBudgets(result.profiles);
+      for (const failure of unresolvedInstalledReads(root)) {
+        console.error(`Unresolved installed read: ${failure}`);
+        process.exitCode = 1;
+      }
+    }
+    const destination = docPath(
+      root,
+      "evidence",
+      "WO-126/harness-context.json",
+    );
+    const text = prettyJson(result);
+    if (process.argv.includes("--write")) {
+      mkdirSync(docPath(root, "evidence", "WO-126"), { recursive: true });
+      writeFileSync(destination, text);
+    }
+    console.log(text.trimEnd());
+  }
+}

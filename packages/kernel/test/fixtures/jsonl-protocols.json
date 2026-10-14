@@ -1,0 +1,23 @@
+{
+  "nonEventPaths": {
+    "docs/publication/reader-scores.jsonl": "Reader answer quotations, positions, tagged profile revisions and typed surface corrections; validated by scripts/reader.mjs check",
+    "corpus/baselines/observations-2bae7d407af2d5d07d16c5b15dc63134e277eabd.jsonl": "WO-107 provisional profiling observations; validated by corpus/harness/wo107-schema.test.mjs",
+    "corpus/manifests/WO-105-observations.jsonl": "WO-105 crash-corpus classified observations",
+    "corpus/fixtures/ids/command-id-vectors.jsonl": "ID vectors",
+    "corpus/fixtures/ids/stable-hash-vectors.jsonl": "ID vectors",
+    "corpus/fixtures/program/enumerated-000.jsonl": "Program vectors",
+    "corpus/fixtures/program/enumerated-001.jsonl": "Program vectors",
+    "corpus/fixtures/program/enumerated-002.jsonl": "Program vectors",
+    "corpus/fixtures/program/enumerated-003.jsonl": "Program vectors",
+    "corpus/fixtures/program/matching-await.jsonl": "Program vectors",
+    "corpus/fixtures/program/matching-invoke.jsonl": "Program vectors",
+    "corpus/fixtures/program/sequence-laws.jsonl": "Program vectors",
+    "corpus/mutation/candidates-3dc19b7342ad03662172cf86663f406b96a43db4.jsonl": "Mutation records",
+    "corpus/mutation/kill-matrix-3dc19b7342ad03662172cf86663f406b96a43db4.jsonl": "Mutation records",
+    "corpus/mutation/sites-3dc19b7342ad03662172cf86663f406b96a43db4.jsonl": "Mutation records",
+    "docs/control/resume.jsonl": "Lifecycle control",
+    "docs/control/plan-refutations.jsonl": "Planning refutation control",
+    "docs/control/entropy-reducer.jsonl": "Entropy Reducer receipt control"
+  },
+  "controlSegmentPattern": "^docs/control/orders/WO-\\d{3}\\.jsonl$"
+}

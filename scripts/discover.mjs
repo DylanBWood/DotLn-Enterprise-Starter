@@ -1,0 +1,132 @@
+#!/usr/bin/env node
+import { json as prettyJson } from "./lib/helpers.mjs";
+import { spawnGit } from "./lib/git.mjs";
+import { docPath, findLaunchpad } from "./lib/config.mjs";
+import { isMainModule } from "./lib/paths.mjs";
+import { observedSpawnSync as spawnSync } from "../packages/skeleton/src/gate-deadlines.mjs";
+import { readFileSync, writeFileSync, realpathSync } from "node:fs";
+import { join } from "node:path";
+
+export function probeHarness(name, execute = spawnSync, env = process.env) {
+  const fallback = {
+    "claude-code": "claude",
+    "codex-cli": "codex",
+    "copilot-cli": "copilot",
+  }[name];
+  if (!fallback)
+    throw new Error(
+      "Unknown harness; select claude-code, codex-cli or copilot-cli",
+    );
+  const running = name === "claude-code" ? env.CLAUDE_CODE_EXECPATH : undefined;
+  const command = running || fallback;
+  const versionChannel = running ? "CLAUDE_CODE_EXECPATH" : "PATH";
+  const versionRun = execute(command, ["--version"], {
+    encoding: "utf8",
+    timeout: 5000,
+    env,
+  });
+  const version = versionRun.stdout?.match(/\b(\d+\.\d+\.\d+)\b/)?.[1];
+  if (versionRun.status !== 0 || !version)
+    throw new Error(
+      `Harness version probe failed (${versionRun.status ?? "unavailable"})`,
+    );
+  const help = execute(command, ["--help"], {
+    encoding: "utf8",
+    timeout: 5000,
+    env,
+  });
+  if (help.status !== 0)
+    throw new Error(
+      `Harness selector probe failed (${help.status ?? "unavailable"})`,
+    );
+  const effort = name === "claude-code" ? env.CLAUDE_EFFORT : undefined;
+  const hasReadback = ["low", "medium", "high", "xhigh", "max"].includes(
+    effort,
+  );
+  return {
+    classification: "observed",
+    value: version,
+    observedAt: new Date().toISOString(),
+    line: version.split(".").slice(0, 2).join("."),
+    probe: {
+      versionChannel,
+      versionExitCode: versionRun.status,
+      helpExitCode: help.status,
+      effortSelectorPresent: /--effort\b/.test(help.stdout ?? ""),
+      configSelectorPresent: /--config\b/.test(help.stdout ?? ""),
+      readbackChannel: name === "claude-code" ? "CLAUDE_EFFORT" : "unavailable",
+      readbackChannelPresent: hasReadback,
+    },
+    ...(hasReadback ? { observedEffort: effort } : {}),
+  };
+}
+
+export function discoverHarness(root, name, probe = probeHarness) {
+  if (
+    realpathSync(root) !==
+    realpathSync(
+      spawnGit(["rev-parse", "--show-toplevel"], {
+        cwd: root,
+        encoding: "utf8",
+      }).stdout.trim(),
+    )
+  )
+    throw new Error("Discovery requires the Git root");
+  const path = docPath(root, "discovery", "environment.json");
+  const document = JSON.parse(readFileSync(path, "utf8"));
+  const row = probe(name);
+  const record = document.effortReadbackProbe.harnesses[name];
+  if (!record) throw new Error("No declared harness discovery record");
+  record.versions.push(row);
+  const lines = (record.versionLines ??= []);
+  lines.push({
+    classification: "observed",
+    line: row.line,
+    newestPatch: row.value,
+    observedAt: row.observedAt,
+    source: `bounded-cli-probe:${row.probe.versionChannel}`,
+  });
+  if (row.probe.effortSelectorPresent)
+    record.sessionEffortSelector = {
+      classification: "observed",
+      control: "--effort",
+      values: ["low", "medium", "high", "xhigh", "max"],
+    };
+  // CLAUDE_EFFORT is the effort the Claude Code host selected for its own
+  // session, not an effective-effort readback (WO-157 item 11, WO-152 D012).
+  if (row.probe.readbackChannelPresent)
+    record.selectedSessionReadback = {
+      classification: "observed",
+      channel: "CLAUDE_EFFORT",
+      setBy:
+        "the Claude Code host for its own session; DotLn never sets it (its transports pass the parent environment through and select effort with --effort)",
+      scope: "selected, not effective",
+      value: row.observedEffort,
+      harnessVersion: row.value,
+      observedAt: row.observedAt,
+    };
+  writeFileSync(path, prettyJson(document));
+  return { harness: name, ...row };
+}
+if (isMainModule(import.meta.url)) {
+  try {
+    const [action, ...args] = process.argv.slice(2);
+    if (action !== "harness" || args.length > 1)
+      throw new Error(
+        "usage: discover harness [claude-code|codex-cli|copilot-cli]",
+      );
+    const name =
+      args[0] ??
+      (process.env.COPILOT_AGENT_SESSION_ID
+        ? "copilot-cli"
+        : process.env.CLAUDE_CODE_EXECPATH || process.env.CLAUDE_PID
+          ? "claude-code"
+          : "codex-cli");
+    console.log(
+      JSON.stringify(discoverHarness(findLaunchpad(), name), null, 2),
+    );
+  } catch (error) {
+    console.error(error.message);
+    process.exitCode = 1;
+  }
+}

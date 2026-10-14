@@ -1,0 +1,313 @@
+import { execFileSync } from "node:child_process";
+import {
+  closeSync,
+  ftruncateSync,
+  lstatSync,
+  mkdirSync,
+  mkdtempSync,
+  openSync,
+  realpathSync,
+  renameSync,
+  rmSync,
+  statSync,
+  utimesSync,
+  writeSync,
+} from "node:fs";
+import {
+  basename,
+  dirname,
+  isAbsolute,
+  join,
+  relative,
+  resolve,
+  sep,
+} from "node:path";
+import {
+  MAX_GROUP_LOGICAL_BYTES,
+  MAX_V2_LOGICAL_BYTES,
+} from "./control-codebook.mjs";
+
+/** @param {string} root @param {string} path */
+const inside = (root, path) => {
+  const rel = relative(root, path);
+  return (
+    rel === "" ||
+    (!isAbsolute(rel) && rel !== ".." && !rel.startsWith(`..${sep}`))
+  );
+};
+
+/** @param {string} path */
+export const exists = (path) => {
+  try {
+    lstatSync(path);
+    return true;
+  } catch (error) {
+    if (/** @type {NodeJS.ErrnoException} */ (error).code === "ENOENT")
+      return false;
+    throw error;
+  }
+};
+
+// Resolve existing ancestors too, including aliases to a forbidden intake path.
+export class BeaconDirectoryIdentityError extends Error {
+  /** @param {string} directory @param {string} reason */
+  constructor(
+    directory,
+    reason = "directory spelling differs from its identity",
+  ) {
+    super(`beacon ${reason}: ${directory}`);
+    this.directory = directory;
+    this.reason = reason;
+  }
+}
+/** @param {string} path */
+export const canonicalDestination = (path) => {
+  let ancestor = path;
+  /** @type {string[]} */
+  const tail = [];
+  while (!exists(ancestor)) {
+    tail.unshift(basename(ancestor));
+    ancestor = dirname(ancestor);
+  }
+  const ancestorIsDirectory = statSync(ancestor).isDirectory();
+  if (tail.length && !ancestorIsDirectory)
+    throw new Error("beacon destination ancestor is not a directory");
+  // This helper also validates existing provenance-key files; their containing
+  // directory supplies directory identity, while the caller checks the file.
+  const directory = ancestorIsDirectory ? ancestor : dirname(ancestor);
+  // realpath on a case-insensitive volume can retain case, Unicode and volume
+  // aliases. Read the existing directory's physical identity before comparing
+  // any spelling against intake or repository containment.
+  let identity;
+  try {
+    identity = execFileSync("/bin/pwd", ["-P"], {
+      cwd: directory,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+      timeout: 5_000,
+    }).replace(/\n$/u, "");
+  } catch {
+    // An identity that cannot be read is refused by name, never passed.
+    throw new BeaconDirectoryIdentityError(
+      directory,
+      "directory identity cannot be read",
+    );
+  }
+  if (identity !== directory) throw new BeaconDirectoryIdentityError(directory);
+  return join(realpathSync(ancestor), ...tail);
+};
+
+/** @param {string} directory @param {string} repository @param {{control?: boolean}} options */
+export function validateBeaconDirectory(
+  directory,
+  repository,
+  { control = false } = {},
+) {
+  if (!directory.trim()) throw new Error("--beacons requires a directory");
+  const requested = resolve(directory);
+  const destination = canonicalDestination(requested);
+  const root = canonicalDestination(resolve(repository));
+  for (const path of [requested, destination]) {
+    const parts = path.split(sep);
+    if (!control && parts.includes(".control-beacons"))
+      throw new Error(
+        "control beacon directories accept host projections only",
+      );
+    if (parts.some((part, i) => part === "docs" && parts[i + 1] === "intake"))
+      throw new Error("beacons cannot be written under docs/intake");
+    if (inside(root, path)) {
+      const gitRoot = realpathSync(
+        execFileSync("git", ["-C", root, "rev-parse", "--show-toplevel"], {
+          encoding: "utf8",
+        }).trim(),
+      );
+      if (gitRoot !== root)
+        throw new Error("beacon repository must be the Git root");
+      try {
+        execFileSync(
+          "git",
+          [
+            "-C",
+            root,
+            "check-ignore",
+            "--quiet",
+            "--",
+            `${relative(root, path)}/`,
+          ],
+          { stdio: "pipe" },
+        );
+      } catch {
+        throw new Error(
+          "a beacon directory inside the repository must be gitignored",
+        );
+      }
+    }
+  }
+  if (exists(destination) && !lstatSync(destination).isDirectory())
+    throw new Error("beacon destination is not a directory");
+  return destination;
+}
+
+/**
+ * @typedef {{maxLogicalBytes: bigint, sparse: boolean, blockBytes: bigint}} BeaconStorage
+ * @typedef {{size: number | bigint, mtimeMs: number, content: string}} BeaconFile
+ */
+
+/** @param {number | bigint} size @param {BeaconStorage} storage */
+export function exactHostSize(size, storage) {
+  if (typeof size === "number" && !Number.isSafeInteger(size))
+    throw new Error("beacon size is not exactly representable by the host API");
+  const bytes = BigInt(size);
+  if (bytes < 0n || bytes > BigInt(Number.MAX_SAFE_INTEGER))
+    throw new Error("beacon size is not exactly representable by the host API");
+  if (bytes > storage.maxLogicalBytes)
+    throw new Error("beacon size exceeds the observed filesystem ceiling");
+  if (storage.blockBytes <= 0n)
+    throw new Error("invalid filesystem block bound");
+  return Number(bytes);
+}
+
+/**
+ * A bounded probe, not a search for the filesystem's theoretical maximum.
+ * Sparse promotion is tested first at 64 KiB; only that observed lowering may
+ * probe the largest group size. A dense host retains the reproduced v2 ceiling.
+ * @param {string} directory
+ * @returns {BeaconStorage}
+ */
+export function probeBeaconStorage(directory) {
+  mkdirSync(directory, { recursive: true, mode: 0o700 });
+  const stage = mkdtempSync(join(directory, ".probe-"));
+  try {
+    const path = join(stage, "value");
+    const fd = openSync(path, "wx", 0o600);
+    try {
+      ftruncateSync(fd, 65536);
+    } finally {
+      closeSync(fd);
+    }
+    let metadata = lstatSync(path, { bigint: true });
+    const blockBytes = metadata.blksize;
+    const sparse = metadata.size === 65536n && metadata.blocks === 0n;
+    const maximum = sparse ? MAX_GROUP_LOGICAL_BYTES : MAX_V2_LOGICAL_BYTES;
+    const probeFd = openSync(path, "r+");
+    try {
+      if (sparse) ftruncateSync(probeFd, Number(maximum));
+      else {
+        const bytes = Buffer.alloc(Number(maximum), 10);
+        writeAll(probeFd, bytes);
+      }
+    } finally {
+      closeSync(probeFd);
+    }
+    metadata = lstatSync(path, { bigint: true });
+    if (
+      metadata.size !== maximum ||
+      (sparse && metadata.blocks * 512n > blockBytes)
+    )
+      throw new Error("filesystem did not preserve the bounded beacon probe");
+    return { maxLogicalBytes: maximum, sparse, blockBytes };
+  } finally {
+    rmSync(stage, { recursive: true, force: true });
+  }
+}
+
+/** @param {number} fd @param {Uint8Array} bytes */
+const writeAll = (fd, bytes) => {
+  let offset = 0;
+  while (offset < bytes.length) {
+    const written = writeSync(fd, bytes, offset, bytes.length - offset);
+    if (written === 0) throw new Error("beacon write made no progress");
+    offset += written;
+  }
+};
+
+/**
+ * Node sets timestamps through binary64 seconds. Retain the encoded integer
+ * millisecond while allowing less than one microsecond of positive conversion
+ * error. The lower bound is not symmetric: an earlier nanosecond would decode
+ * as the preceding millisecond. Observers retain the actual nanoseconds.
+ * @param {bigint} observedNs @param {number} encodedMs
+ */
+export function beaconMtimeMatches(observedNs, encodedMs) {
+  const targetNs = BigInt(encodedMs) * 1_000_000n;
+  return observedNs >= targetNs && observedNs < targetNs + 1_000n;
+}
+
+/**
+ * The same validated temp-file/rename boundary serves v1, v2, and group files.
+ * Size refusal precedes any allocation. Sparse group files intentionally have
+ * no content; their complete disclosed value is in the independent codebook.
+ * @param {string} directory @param {string} address
+ * @param {BeaconFile} encoded @param {BeaconStorage} storage
+ */
+export function writeBeaconFile(directory, address, encoded, storage) {
+  const size = exactHostSize(encoded.size, storage);
+  const bytes = Buffer.from(encoded.content, "utf8");
+  if (bytes.length > size)
+    throw new Error("beacon record exceeds its codeword size");
+  if (
+    !Number.isSafeInteger(encoded.mtimeMs) ||
+    encoded.mtimeMs < 0 ||
+    encoded.mtimeMs > 8.64e15
+  )
+    throw new Error(
+      "beacon mtime is not a representable nonnegative millisecond",
+    );
+  if (!/^[a-zA-Z0-9.-]+\.beacon$/.test(address))
+    throw new Error("invalid beacon address");
+  if (canonicalDestination(directory) !== directory)
+    throw new Error("beacon directory changed since validation");
+  const destination = join(directory, address);
+  if (exists(destination) && !lstatSync(destination).isFile())
+    throw new Error("beacon address is occupied by a non-regular file");
+  mkdirSync(directory, { recursive: true, mode: 0o700 });
+  const staging = mkdtempSync(join(dirname(directory), ".dotln-beacon-stage-"));
+  try {
+    const temporary = join(staging, "value");
+    const fd = openSync(temporary, "wx", 0o600);
+    try {
+      writeAll(fd, bytes);
+      if (storage.sparse) ftruncateSync(fd, size);
+      else {
+        const padding = Buffer.alloc(Math.min(65536, size - bytes.length), 10);
+        let remaining = size - bytes.length;
+        while (remaining > 0) {
+          const chunk = padding.subarray(
+            0,
+            Math.min(remaining, padding.length),
+          );
+          writeAll(fd, chunk);
+          remaining -= chunk.length;
+        }
+      }
+    } finally {
+      closeSync(fd);
+    }
+    utimesSync(temporary, encoded.mtimeMs / 1000, encoded.mtimeMs / 1000);
+    let metadata = lstatSync(temporary, { bigint: true });
+    if (!beaconMtimeMatches(metadata.mtimeNs, encoded.mtimeMs)) {
+      // A direct conversion can land just below the millisecond boundary.
+      // One centered attempt supports both microsecond and nanosecond hosts;
+      // readback still decides whether this filesystem preserves the contract.
+      const centered = encoded.mtimeMs / 1000 + 0.0000005;
+      utimesSync(temporary, centered, centered);
+      metadata = lstatSync(temporary, { bigint: true });
+    }
+    if (
+      metadata.size !== BigInt(size) ||
+      !beaconMtimeMatches(metadata.mtimeNs, encoded.mtimeMs)
+    )
+      throw new Error(
+        "filesystem did not preserve exact beacon size and millisecond mtime within the sub-microsecond bound",
+      );
+    const allocatedBound = storage.sparse
+      ? storage.blockBytes
+      : ((BigInt(size) + storage.blockBytes - 1n) / storage.blockBytes) *
+        storage.blockBytes;
+    if (metadata.blocks * 512n > allocatedBound)
+      throw new Error("beacon exceeds its declared allocated-block bound");
+    renameSync(temporary, destination);
+  } finally {
+    rmSync(staging, { recursive: true, force: true });
+  }
+}

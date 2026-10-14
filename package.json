@@ -1,0 +1,54 @@
+{
+  "name": "dotln-launchpad",
+  "private": true,
+  "license": "Apache-2.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "evidence:artifact": "node scripts/artifact-identity-evidence.mjs",
+    "evidence:feedback": "npm run build --silent && node scripts/feedback-evidence.mjs",
+    "test": "node scripts/test-runner.mjs",
+    "test:mutation": "node --test corpus/mutation/wo108-selftest.test.mjs",
+    "evidence:mutation": "node corpus/mutation/mutate.mjs",
+    "skeleton": "npm run build --silent && node packages/skeleton/dist/src/cli.js",
+    "dotln": "npm run build --silent && node packages/skeleton/dist/src/dotln.js",
+    "probe:workers": "npm run build --silent && node scripts/probe-worker-hosts.mjs",
+    "test:workers:live": "npm run build --silent && node scripts/test-live-workers.mjs",
+    "backup:intake": "bash scripts/backup-intake.sh",
+    "format": "prettier --write . --ignore-unknown",
+    "format:check": "prettier --check . --ignore-unknown",
+    "publication:check": "node scripts/check-publication.mjs",
+    "resume": "node scripts/resume.mjs",
+    "worktree": "node scripts/worktree.mjs",
+    "release": "node scripts/release.mjs",
+    "work-orders": "node scripts/work-orders.mjs",
+    "evidence:verification": "node scripts/verification-evidence.mjs",
+    "prepublishOnly": "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\"",
+    "license-surfaces": "node scripts/license-surfaces.mjs",
+    "plan": "node scripts/refute-plan.mjs",
+    "entropy": "node scripts/entropy.mjs",
+    "console": "npm run build --silent && node packages/console/dist/src/cli.js",
+    "test:console": "npm run build --silent && node --test packages/console/dist/test/*.test.js",
+    "evidence:console": "npm run build --silent && node scripts/console-fixtures.mjs",
+    "harness": "node scripts/harness-entry.mjs",
+    "launchpad": "node scripts/launchpad.mjs",
+    "terms": "node scripts/terms.mjs",
+    "adjacent": "node scripts/adjacent-work.mjs",
+    "test:full": "node scripts/test-runner.mjs --review",
+    "test:docs": "node scripts/test-runner.mjs --document",
+    "discover": "node scripts/discover.mjs",
+    "meta": "node scripts/meta.mjs",
+    "reader": "node scripts/reader.mjs",
+    "test:machinery": "node scripts/test-runner.mjs --machinery"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.2",
+    "prettier": "3.9.6",
+    "typescript": "7.0.2"
+  },
+  "engines": {
+    "node": ">=26.0.0 <27"
+  }
+}

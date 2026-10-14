@@ -1,0 +1,424 @@
+# Publication compiler — one source, many authoritative editions
+
+DotLn's repository should be able to become an authoritative resource about its
+purpose, vision, mechanics, implementation, operation, and consequences. That
+resource is not one universal manual. It is a family of versioned editions
+compiled from the same reviewed sources for different audiences and decisions.
+
+The book is a first-class output from the beginning, alongside ordinary
+reference documentation. A book supplies a coherent path through the ideas;
+reference docs supply precise lookup; runbooks supply action; generated API and
+schema references supply implementation truth. None becomes an independently
+maintained second source of truth.
+
+## Source model
+
+The publication compiler consumes only reviewed, classifiable repository
+sources:
+
+- product blueprint and principles for intent and settled semantics;
+- ADRs and idea lineage for decisions, alternatives, and historical context;
+- domain schemas, code, and tests for implemented behavior;
+- work orders and verification artifacts for delivery evidence;
+- discovery records for environment-qualified capability claims;
+- operator-authored examples, diagrams, glossaries, and teaching material.
+
+Gitignored intake may inspire a reviewed source but is never published or quoted
+directly. Runtime state, credentials, private configuration, event history, and
+implementation secrets are excluded unless an explicit export policy produces a
+redacted artifact.
+
+Each publishable claim should eventually carry enough metadata to select and
+verify it: stable ID, topic, audience relevance, detail level, lifecycle status,
+applicable version, source links, evidence class, sensitivity, and last
+verification. Until structured claim records exist, headings and links provide
+the bootstrap form of that graph.
+
+## Audience editions
+
+Audience selection changes sequence, vocabulary, examples, depth, and the
+decisions emphasized. It must not change facts, limitations, permissions, or
+evidence.
+
+| Edition                   | Primary question                                                               | Emphasis                                                                                            |
+| ------------------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| everyday AI user          | What can I safely accomplish, and how do I know it worked?                     | intent, recipes, previews, consent, evidence, recovery, plain-language mechanics                    |
+| software engineer         | How do I extend, test, integrate, and debug it?                                | IR, kernel, adapters, skills, schemas, events, fixtures, compatibility, local development           |
+| team manager              | How does this improve work without hiding judgment or removing accountability? | workstreams, roles, handoffs, decision packets, verification, coaching, adoption                    |
+| IT director               | Can this be deployed, governed, integrated, and supported?                     | architecture, identity, permissions, data flow, deployment modes, audit, retention, operations      |
+| VP of development         | How does it change engineering-system throughput and risk?                     | portfolio flow, organizational design, quality system, platform strategy, rollout, leading evidence |
+| CFO / finance leader      | What value, exposure, and control does it create?                              | cost model, scenario ranges, risk, authorization, reversibility, auditability, investment gates     |
+| security / compliance     | What can act, on what, under whose authority, with what record?                | threat model, trust classes, secrets, provenance, policy enforcement, incident response             |
+| executive or board reader | Why now, what is differentiated, and what must be true?                        | thesis, strategic options, evidence, failure modes, milestones, governance                          |
+
+These are starting profiles, not fixed personas. A field, organization, team, or
+individual implementation can add its own vocabulary, policy overlays, case
+studies, and editions without forking the publication engine.
+
+## Publication manifest
+
+An edition should be reproducible from a small manifest rather than assembled by
+a long prompt. A future manifest can specify:
+
+```yaml
+edition: it-director
+productVersion: 0.4.x
+audience:
+  role: it-director
+  priorKnowledge: enterprise-technology
+purpose: deployment-evaluation
+formats: [book, reference-site, briefing]
+includeTopics: [architecture, security, integrations, operations, audit]
+detail: decision-grade
+examples: sanitized
+claimsAsOf: 2026-08-31
+```
+
+Compilation resolves source revisions, constructs an audience-specific outline,
+renders the requested formats, attaches claim-to-source lineage, and runs
+checks. A content hash identifies the source set; an edition version identifies
+editorial structure. Updating either produces a semantic diff.
+
+### Outline first; publication IR only as needed
+
+The first useful planning artifact is an **edition outline**, not a new grand
+ontology. It names the audience and decision, establishes the reading path,
+selects repository sources, declares required status/evidence callouts, and
+specifies outputs and acceptance checks. That can begin as reviewed Markdown.
+
+If repeatability or traceability outgrows Markdown, promote only the stable
+fields into a small `PublicationPlan`:
+
+```ts
+type PublicationPlan = {
+  editionId: string;
+  audience: AudienceProfile;
+  purpose: string;
+  sourceRevision: string;
+  implementation?: ImplementationRef;
+  sections: Array<{
+    id: string;
+    objective: string;
+    sourceRefs: SourceRef[];
+    requiredClaims: ClaimRef[];
+    detail: DetailLevel;
+  }>;
+  outputs: OutputProfile[];
+  acceptance: PublicationCheck[];
+};
+```
+
+This is a **projection plan over existing DotLn IR and reviewed repository
+artifacts**, not a parallel representation of the product. Runtime semantics
+continue to live in the normalized DotLn IR; implementation truth continues to
+live in versioned definitions, code, tests, decisions, and evidence. The
+publication layer adds selection, sequencing, audience, pedagogy, source
+lineage, and rendering instructions—the information the runtime IR does not and
+should not contain.
+
+Do not introduce a finer-grained `Claim` IR until the first two editions prove
+that heading- and artifact-level references cannot support reliable stale
+detection or contradiction checks. An outline is allowed to be sufficient.
+
+### Base publication and implementation overlays
+
+The DotLn repository gets a base publication plan covering the common substrate,
+founding point of view, reference implementation, and honest implementation
+status. Each concrete DotLn implementation then supplies a small overlay rather
+than rewriting that plan:
+
+- implementation identity, audience extensions, and local vocabulary;
+- installed components, runtime targets, integrations, and deployment shape;
+- local workflows, roles, authority, security, audit, logging, and retention;
+- implementation-specific examples, operating procedures, and evidence;
+- exclusions, confidential sections, and export/redaction policy;
+- source-version compatibility and local verification status.
+
+Compiling `base plan + implementation overlay + audience profile` produces the
+concrete edition. Shared explanations remain inherited and traceable; local
+secret sauce stays local; divergence is explicit rather than copied into a
+forked book.
+
+### Planning, rendering, and checking roles
+
+Publication follows the repository's existing separation of duties:
+
+1. A **planning role** reads the authoritative sources and produces or updates
+   the base outline, audience profiles, implementation-overlay template, and
+   bounded publication work orders. The current occupant of each role lives in
+   `PLAYBOOK.md`'s actor table, never here — models rotate; the roles survive
+   them. The planning role also performs the end-of-work-order blueprint and
+   lineage check.
+2. An **execution role** receives one bounded plan and renders the concrete
+   book, guide, implementation handbook, or other output. Any capable model can
+   occupy this role when explicitly assigned; the model is a replaceable
+   executor, not part of the publication format.
+3. A **verification role** checks claim lineage, implementation-status labels,
+   contradictions, omissions material to the audience, sensitive-content
+   boundaries, links, and output quality. It should not merely proofread the
+   prose it just produced.
+
+The planner does not write every edition in one giant context, and executors do
+not invent the outline while rendering. Work orders can be divided by edition,
+part, or chapter, with a final assembly check over navigation, terminology,
+cross-references, and shared claims.
+
+## Freshness and ownership
+
+Current documentation is part of the delivered behavior. A reader returning
+during downtime should be able to tell what works in this source revision,
+what is staged for review, and what remains a proposal without reconstructing
+several conversations. A source change is not finished merely because its
+code passes while its explanation still describes the previous behavior.
+
+The implementation executor owns the same-pass update of affected product
+facts, examples, naming, capability claims, and entry points. It follows the
+change's references to the relevant README, runbook, planning view, and
+publication source links; it does not reread or rewrite the entire corpus on
+every order. Its existing outcome or breakout receipt names those surfaces,
+their evidence, and any remaining stale derivative. Edit the sentence that
+changed in place; `scripts/docs-check.mjs` in `npm run test:docs` bounds product
+bytes, new receipt paragraphs and candidates, decision dispatches, and local
+links against the controls in `docs/control/doc-ceilings.json` and
+`docs/control/doc-baseline.json`. A source hash detects
+changed bytes; refreshing that hash alone does not establish factual agreement.
+
+Independent verification checks that documentation against the implemented
+behavior and the work order, including status labels, executable examples,
+links, and the reading task the surface serves. Final review performs the
+closing cross-document and publication consistency check, assembles the
+reviewed release explanation, and confirms the appropriate generated refreshes.
+It is the last check, not the first owner of missing implementation facts.
+Substantive corrections still return through repair and independent verification.
+
+A dedicated publication order is useful for book assembly, a new audience
+edition, broad editorial repair, or a demonstrated systemic freshness gap.
+It does not become a mandatory extra lifecycle phase or a queue in which
+incorrect current facts wait for a later writer. Fact maintenance belongs to
+the change that makes the fact different; editorial depth can be separately
+scheduled. Mechanical generation and stale checks should progressively absorb
+repeated maintenance wherever the source is deterministic.
+
+The current bootstrap checks heading coverage and selected edition source
+locks, not every factual claim in the repository. The work-order generator
+checks its recorded inputs, not the truth of human planning judgment. These
+limits remain visible. A future affected-claim check needs a bounded consumer
+and evidence that the existing checks plus human review miss a material
+dependency; no universal documentation engine is implied by this ownership rule.
+
+## Authority and honesty rules
+
+1. **Authoritative means traceable, not confident-sounding.** Every material
+   claim links back to reviewed source and, where applicable, executable
+   evidence.
+2. **Implementation status cannot blur.** `vision`, `specified`, `planned`,
+   `implemented`, `verified`, `blocked`, and `deprecated` remain visibly
+   different in every edition.
+3. **Audience adaptation cannot become spin.** A CFO edition may explain risk
+   economically and a programmer edition mechanically, but neither may omit a
+   material limitation relevant to its decision.
+4. **Numbers need provenance.** Costs, savings, performance, adoption, and risk
+   estimates state their method, range, date, and uncertainty; absent evidence
+   stays unknown.
+5. **Generated prose is reviewed output.** A model may propose structure and
+   wording, but publication gates validate citations, terminology, sensitive
+   content, contradictions, links, examples, and version applicability.
+6. **Lossy editions identify themselves.** An executive brief or narrative book
+   links to the mechanics and evidence it compresses.
+
+## Product surface
+
+The same compiler should support:
+
+- a canonical multi-edition DotLn book;
+- a conventional documentation site with tutorials, how-to guides, reference,
+  and explanation;
+- implementation-specific handbooks and onboarding paths;
+- printable briefings, decision memos, training modules, and course material;
+- role-aware in-product help generated from the exact installed build;
+- agent-facing skills and runbooks derived from the same contracts.
+
+Readers can switch audience lenses without losing their current topic. A claim
+inspector shows the canonical source, implementation status, evidence, other
+editions that use it, and what the current edition omitted. This is the
+publication equivalent of DotLn's mechanics inspector.
+
+## PRs and commits
+
+Style is set per surface in `docs/control/reader-profiles.json`: pull-request
+title and body, commit subject, release notes and Release page. Each chooses an
+audience, density, identifier treatment, machine-detail treatment and voice.
+`npm run reader -- preview prTitle` shows the three examples; substitute
+`prBody`, `commitSubject`, `releaseNotes` or `releasePage` for another surface.
+`profile` prints the committed guidance and nearest example. Without an operator
+choice, each surface uses the balanced profile. A planning pass changes the
+choices after previewing them. Publish prints title/body guidance beside the
+subject series, and release preparation prints release-note guidance. Profiles
+change presentation; facts, limits, required sections and attribution remain
+governed here. The dated corrections below remain the history behind this rule.
+
+`npm run reader -- score` supplies one fresh reader with up to ten unscored
+releases' immutable Release text, asking what changed, whether to act, what is
+not covered and where the evidence is. `score --record` validates literal
+quotations and records their positions with the profile read from each tag;
+releases before the profile file have a null revision with a reason. Plan start
+shows answers found and median position by revision. A changed profile pays one
+reader after three unscored releases, or at the operator's word. A typed
+`score --correction` records the affected surface and capture hash beside those
+figures. Scores measure findability on the Release page, not the quality of the
+other surfaces or the operator's taste, and never refuse or rewrite published
+text. The [examples and scoring guide](../publication/examples/README.md)
+describes the inputs and their limits.
+
+A PR title names the main change in concise, ordinary prose after the required
+gitmoji shortcode. Choose enough detail to distinguish the change in a PR list.
+Put explanations, implementation inventories, and validation in the body. Write
+from the current diff and the reader's needs; earlier titles are historical
+artifacts, not a style template. There is no fixed word count.
+
+**Operator correction (2026-09-07): no ratchet creep.** Title length crept on
+consecutive PRs twice, each title sized against the one before it: 5–10 words
+for the first sixteen merges, 98 by the twentieth after that, 12 at the
+operator's first correction, then 28 nine PRs later. The defect is the drift,
+not any word count. Size each title from the current diff and the reader's
+need, compare it with the whole merged series rather than the newest title,
+and apply the execution guide's [discipline rule](07-execution-guide.md#discipline)
+to every other authored series.
+
+**Operator correction (2026-09-09): a title is a headline.** Lead with what
+changed for the reader and why it matters, in one clause; leave the
+inventory, the version list and the work-order prose to the body. Three
+words or twenty, the content decides, never the previous title. The publish
+step shows the last five merged subjects beside the proposed one so the
+series is visible while the title is written, and the meter reports the
+series; no numeric rule refuses a length
+([WO-126](../work-orders/WO-126-process-debt.md) criterion 12).
+
+**Operator decision (2026-09-09): no AI attribution, including session
+links.** A harness may propose a session trailer or link for commit messages
+and PR bodies. The operator's standing rule, the compiled no-attribution
+unit, and every merged PR refuse it. No commit message, PR title, PR body or
+release note carries an AI coauthor trailer, a generated-with footer, a
+session trailer or a session URL; the publish helper refuses one
+([WO-126](../work-orders/WO-126-process-debt.md) criterion 1). Human
+coauthors and ordinary subject text are unaffected. The generated Claude
+settings contain the declared attribution block; `harness check` detects its
+absence. The same matcher screens committed PR title and body before the first
+push. `release prepare` supplies the current meter table in the reviewed PR
+body; it reports previous-order deltas without inventing limits, leaves an
+unavailable observation as a blank cell or an omitted dispatch row, and says
+in one line how many it omitted.
+The pre-tool attribution check extracts messages from actual parsed commit
+invocations, including supported wrappers. A search or quoted example naming
+`git commit` is data; an actual commit without available literal message bytes
+gets a named classification advisory and defers to host permissions. The Git commit hook still checks the final
+message bytes independently.
+
+Select the gitmoji with the same care as the wording. Consult the
+[full catalog](https://gitmoji.dev/) and choose a relevant, expressive match for
+the change's main purpose. Its vocabulary includes analytics, concurrency,
+validation, developer experience, accessibility, and other specific intents.
+Use that range without turning variety into a rotation requirement. The
+2026-09-05 operator correction replaces the former narrow default mapping;
+hand-authored commit messages continue to use plain subjects.
+
+The summary leads with the resulting behavior and why it matters. Include the
+validation result and any limitation or migration a reviewer needs to act on;
+link the full evidence with paths relative to the stored body file, the form
+the document gate resolves; the publish step writes each such link absolute to
+the repository at the reviewed revision, or as plain text where it would
+escape, so the forge resolves it, and refuses a body it could not rewrite. The
+Release text does the same with the reviewed notes at the release commit, names
+the order's title once under the overview, and carries the order identifier
+alone in its section headings. Optimize for accuracy, clarity, and useful substance.
+Scale detail to the change: complex behavior and consequential tradeoffs may
+need several paragraphs or grouped explanations. There is no sentence quota,
+and shortening the text must not remove what the reviewer needs. Remove repeated claims,
+self-praise, stock transitions, invented labels, and procedural narration that
+does not help assess the change. Review the rendered summary as well as its
+source layout; the existing GitHub body check detects accidental line wrapping,
+not editorial quality.
+
+Commit distinct coherent changes separately. Keep an implementation with the
+tests and documentation needed to understand and validate it; separate an
+independent correction when it can be reviewed on its own. Subjects describe
+the change in plain, concise language; explanatory context belongs in the commit
+body. Neither a work-order boundary nor a file count determines the number of
+commits. The final reviewer creates this series after the passing review under
+the existing lifecycle authority.
+
+This convention applies to new publication work from the 2026-09-05 operator
+correction. Historical reviewed artifacts retain their original wording.
+
+## Release-note edition
+
+Patch notes are a compact, layered edition over the release manifest, diff,
+work-order lineage, verification sequence, and final-review evidence. Their
+editorial contract is:
+
+1. **Release overview:** the visible payoff, intended audience, and why the
+   release matters in plain language.
+2. **Read-before-upgrading:** breaking contracts, migration steps, schema or
+   compatibility changes, security/privacy implications, authority changes,
+   data-loss risks, removals, known incidents, and required operator action.
+3. **Substantive changes:** grouped by recognizable product area and described
+   in terms of changed behavior, not commit or filename trivia.
+4. **Progressive polish:** an explicit aggregate for repetitive low-impact
+   asset, copy, fixture, diagnostic, accessibility, performance, or visual
+   refinement. Representative examples may be named, but exhaustive churn is
+   linked rather than promoted into the narrative.
+5. **Evidence and compatibility:** exact source tag/commit, release manifest,
+   supported versions, migration paths, verification result, known limitations,
+   and links to deeper technical notes.
+
+Compression is editorial, never evasive. A change cannot enter “progressive
+polish” if it affects observable semantics, saved-data interpretation,
+compatibility, authority, security/privacy, recovery, or an operator's required
+action. Generated notes should flag uncertain classification for human review.
+
+The reviewed source is also the GitHub body, so its physical layout must not
+pretend that one authoring width is every reader's viewport. From WO-025
+forward, each ordinary prose paragraph and list-item paragraph occupies one
+physical source line; headings, blank paragraph boundaries, distinct list
+items, fenced or indented code, tables, and explicit hard breaks retain their
+semantic lines. Publication validates the current committed body and preserves
+its bytes. Historical reviewed artifacts are immutable and exempt from this
+forward authoring profile.
+
+## Tag evidence after WO-132 (2026-09-15)
+
+The annotated tag's compatibility manifest consumes the successful reviewer
+`npm test` row from the committed `FinalReviewCompleted` event. The reviewer
+invokes `npm test -- --review` once, including machinery checks selected by
+changed sources. Publication requires its code identity to match the committed
+code being published. The manifest records the command, successful execution,
+`outputSha256`, `codeIdentity`, `reviewedTree`, `mergeTree`, duration, timestamp
+and evidence reference. The exact tree remains provenance; code identity is the
+reuse key. Reports, control records, generated projections and release prose may
+change between review and merge without invalidating that key.
+
+The PR body carries the same product-gate record. Release close proves egress,
+fast-forwards main, checks release/notes/license surfaces, builds missing runtime
+output and validates the manifest before creating the tag and GitHub Release.
+It runs no suite, `npm ci` or CLI smoke check. Cleanup and derived-worktree
+settlement follow publication as best effort. A missing or mismatched committed
+reviewer row refuses publication rather than inventing replacement evidence.
+Historical tag manifests retain their original evidence-row shapes and validation;
+WO-132 does not rewrite earlier releases.
+
+## Bootstrap path
+
+Do not begin with an elaborate content-management system. The first proof is:
+
+1. tag the existing blueprint sections with a minimal audience/status index;
+2. have the planning role produce the base DotLn outline, an
+   implementation-overlay template, and two sharply different tables of contents
+   from the same sources—an everyday AI-user book and a software-engineer book;
+3. render one shared concept in both voices with identical claim links;
+4. deliberately change a source claim and prove both editions become stale;
+5. add manager, IT-director, VP-development, and CFO editions only after that
+   traceability loop works.
+
+The key test is not whether a model can rewrite a chapter. It is whether many
+useful versions can evolve rapidly without contradiction, secret leakage, or
+quiet divergence from the system they describe.

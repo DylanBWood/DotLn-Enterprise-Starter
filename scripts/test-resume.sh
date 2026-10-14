@@ -1,0 +1,1064 @@
+#!/usr/bin/env bash
+set -euo pipefail
+unset DOTLN_ACCOUNT_LABEL # Fixtures declare their own labels.
+unset CLAUDE_EFFORT # The host's selected effort is declared per fixture (WO-157 item 11).
+unset CODEX_THREAD_ID COPILOT_AGENT_SESSION_ID # Fixtures declare host identity explicitly.
+
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+source "$script_dir/test-temp-root.sh"
+tmp_base="${TMPDIR:-/tmp}"
+tmp_base="$(resolve_test_tmp_base "$tmp_base")"
+test_root_prefix="dotln-resume-test"
+create_test_temp_root "$tmp_base" "$test_root_prefix"
+test_root="$test_temp_root_result"
+install_test_temp_root_traps "$tmp_base" "$test_root" "$test_root_prefix"
+node "$script_dir/test-dependency-resume.mjs" "$test_root"
+node "$script_dir/test-off-ramps.mjs" "$test_root"
+node "$script_dir/test-verifier-gate-claims.mjs" "$test_root"
+node "$script_dir/test-verification-review.mjs" "$test_root"
+fixture_repo="$test_root/repo"
+active_log="$fixture_repo/docs/control/orders/WO-099.jsonl"
+u2028="$(printf '\342\200\250')"
+
+mkdir -p -- "$fixture_repo/scripts" "$fixture_repo/docs/work-orders" "$fixture_repo/docs/discovery"
+cp -- "$script_dir/resume.mjs" "$fixture_repo/scripts/resume.mjs"
+cp -R -- "$script_dir/lib" "$fixture_repo/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$fixture_repo"
+printf '%s\n' \
+  '# fixture' \
+  '' \
+  '> operator-authored draft notice may precede metadata' \
+  '' \
+  '**Model:** fixture-model with a multiline' \
+  'declaration preserved in dispatch.' \
+  '' \
+  '**Effort:** executor high+; verifier any; reviewer any. The multiline' \
+  'effort source is preserved too.' \
+  '**Objective:** fixture lifecycle.' >"$fixture_repo/docs/work-orders/WO-099-fixture.md"
+printf '%s\n' \
+  '{"effortReadbackProbe":{"harnesses":{"claude-code":{"versions":[{"classification":"observed","value":"fixture-0"},{"classification":"observed","value":"fixture-1"}],"sessionEffortSelector":{"classification":"documented locally","values":["low","medium","high","max"]},"sessionLabelNotes":{"custom-selector":{"classification":"operator-attested","reasoningEffort":"xhigh","attestationSource":"operator-attested","automaticConversion":false},"malformed":{"classification":"operator-attested","reasoningEffort":"xhigh"}},"effectiveEffortReadback":{"classification":"observed","values":["xhigh"]}},"codex-cli":{"versions":[{"classification":"observed","value":"fixture-1"},{"classification":"observed","value":"fixture-2"}],"persistedEffortSelector":{"classification":"observed","value":"xhigh"},"effectiveEffortReadback":{"classification":"not found"}}}}}' >"$fixture_repo/docs/discovery/environment.json"
+mkdir -p "$fixture_repo/docs/verifications/WO-099" "$fixture_repo/docs/final-reviews/WO-099"
+printf '# existing verification\n' >"$fixture_repo/docs/verifications/WO-099/VER-001.md"
+printf '# existing final review\n' >"$fixture_repo/docs/final-reviews/WO-099/FINAL-001.md"
+git init "$fixture_repo" >/dev/null 2>&1
+cp -- "$script_dir/../.gitignore" "$fixture_repo/.gitignore"
+status_sequence=0
+assert_status_read_only() {
+  status_sequence=$((status_sequence + 1))
+  local current_before="$test_root/current-$status_sequence.before"
+  local log_before="$test_root/log-$status_sequence.before"
+  local json_path="$test_root/status-$status_sequence.json"
+  node "$script_dir/test-beacon-fixture.mjs" "$fixture_repo" snapshot >"$test_root/beacons-before-status"
+  cp -- "$fixture_repo/docs/control/current.md" "$current_before"
+  cp -- "$active_log" "$log_before"
+  node "$fixture_repo/scripts/resume.mjs" status >/dev/null
+  node "$fixture_repo/scripts/resume.mjs" status --json >"$json_path"
+  cmp "$current_before" "$fixture_repo/docs/control/current.md"
+  cmp "$log_before" "$active_log"
+  node "$script_dir/test-beacon-fixture.mjs" "$fixture_repo" snapshot >"$test_root/beacons-after-status"
+  cmp "$test_root/beacons-before-status" "$test_root/beacons-after-status"
+  node "$script_dir/test-beacon-fixture.mjs" "$fixture_repo" assert "$json_path"
+  node - "$json_path" <<'NODE'
+const fs = require("node:fs");
+const status = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+const expected = [
+  "workOrder",
+  "workOrderPath",
+  "phase",
+  "latestVerification",
+  "verificationPath",
+  "latestVerdict",
+  "finalReview",
+  "finalReviewPath",
+  "latestAttestation",
+  "effortDrift",
+  "latestCheckpoint",
+  "legalNextActions",
+  "legalOffRamps",
+  "waivedCriteria",
+  "unmetCriteria",
+  "withdrawal",
+  "corrections",
+  "overrideRecords",
+  "recordedAt",
+  "elapsed",
+  "orders",
+  "dependencies",
+].sort();
+const observed = Object.keys(status).sort();
+if (JSON.stringify(observed) !== JSON.stringify(expected)) {
+  throw new Error(`status keys changed: ${JSON.stringify(observed)}`);
+}
+if (!Array.isArray(status.effortDrift) || !Array.isArray(status.legalNextActions)) {
+  throw new Error("status array fields are malformed");
+}
+NODE
+}
+assert_status_json() {
+  local expected="$1"
+  local actual="$test_root/status-exact.json"
+  node "$fixture_repo/scripts/resume.mjs" status --json >"$actual"
+  node - "$actual" "$expected" <<'NODE'
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const [actualPath, expectedSource] = process.argv.slice(2);
+const { recordedAt, elapsed, orders, dependencies, ...actual } = JSON.parse(fs.readFileSync(actualPath, "utf8"));
+assert.equal(typeof recordedAt, "string");
+assert.equal(typeof elapsed, "object");
+assert.deepStrictEqual(
+  actual,
+  JSON.parse(expectedSource, (key, value) => key === "latestAttestation" && value ? { ...value, accountLabel: "not-applicable" } : value),
+);
+NODE
+}
+run() {
+  node "$fixture_repo/scripts/resume.mjs" "$@" >/dev/null 2>/dev/null || return
+  assert_status_read_only
+}
+run_with_actor() {
+  local action="$1" effort="$2"
+  shift 2
+  node "$fixture_repo/scripts/resume.mjs" "$action" "$@" \
+    --harness codex-cli \
+    --harness-version fixture-2 \
+    --model fixture.model/beta \
+    --effort "$effort" \
+    --source self-reported >/dev/null 2>/dev/null || return
+  assert_status_read_only
+}
+event_count() { if [[ -f "$active_log" ]]; then wc -l <"$active_log" | tr -d ' '; else printf '0\n'; fi; }
+assert_refusal() {
+  local expected="$1" before output
+  shift
+  before="$(event_count)"
+  if output="$(node "$fixture_repo/scripts/resume.mjs" "$@" 2>&1)"; then
+    printf 'error: refusal expected for resume %s\n' "$*" >&2
+    exit 1
+  fi
+  grep -Fq "$expected" <<<"$output"
+  if grep -Fq 'at file://' <<<"$output"; then printf 'error: refusal leaked a JavaScript stack trace\n' >&2; exit 1; fi
+  test "$(event_count)" = "$before"
+}
+refuse_next() {
+  local before output
+  before="$(event_count)"
+  if output="$(node "$fixture_repo/scripts/resume.mjs" next 2>&1)"; then printf 'error: next accepted outside active/closed\n' >&2; exit 1; fi
+  grep -Fq 'run:' <<<"$output"
+  if grep -Fq 'at file://' <<<"$output"; then printf 'error: next refusal leaked a JavaScript stack trace\n' >&2; exit 1; fi
+  test "$(event_count)" = "$before"
+}
+
+refuse_next
+printf '%s\n' '# missing model' '' '**Effort:** executor high+; verifier any; reviewer any.' '**Objective:** fixture.' >"$fixture_repo/docs/work-orders/WO-096-missing-model.md"
+assert_refusal 'missing **Model:** line' activate WO-096 docs/work-orders/WO-096-missing-model.md
+printf '%s\n' '# empty model' '' '**Model:**' '**Effort:** executor high+; verifier any; reviewer any.' '**Objective:** fixture.' >"$fixture_repo/docs/work-orders/WO-095-empty-model.md"
+assert_refusal 'malformed **Model:** line' activate WO-095 docs/work-orders/WO-095-empty-model.md
+printf '%s\n' '# missing effort' '' '**Model:** fixture-model.' '**Objective:** fixture.' >"$fixture_repo/docs/work-orders/WO-097-missing-effort.md"
+assert_refusal 'missing **Effort:** line' activate WO-097 docs/work-orders/WO-097-missing-effort.md
+printf '%s\n' '# malformed effort' '' '**Model:** fixture-model.' '**Effort:** executor high+; verifier any.' '**Objective:** fixture.' >"$fixture_repo/docs/work-orders/WO-098-malformed-effort.md"
+assert_refusal 'malformed **Effort:** line' activate WO-098 docs/work-orders/WO-098-malformed-effort.md
+printf '%s\n' '# buried model' '' '**Objective:** fixture.' '**Model:** fixture-model.' '**Effort:** executor high+; verifier any; reviewer any.' >"$fixture_repo/docs/work-orders/WO-094-buried-model.md"
+assert_refusal 'leading metadata header' activate WO-094 docs/work-orders/WO-094-buried-model.md
+printf '%s\n' '# h2 buried model' '' '## Body' '' '**Model:** fixture-model.' '**Effort:** executor high+; verifier any; reviewer any.' >"$fixture_repo/docs/work-orders/WO-090-h2-buried-model.md"
+assert_refusal 'leading metadata header' activate WO-090 docs/work-orders/WO-090-h2-buried-model.md
+printf '%s\n' '# reversed fields' '' '**Effort:** executor high+; verifier any; reviewer any.' '**Model:** fixture-model.' '**Objective:** fixture.' >"$fixture_repo/docs/work-orders/WO-093-reversed-fields.md"
+assert_refusal 'immediately after **Model:**' activate WO-093 docs/work-orders/WO-093-reversed-fields.md
+printf '%s\n' '# duplicate model' '' '**Model:** fixture-model.' '**Effort:** executor high+; verifier any; reviewer any.' '**Objective:** fixture.' '' '```markdown' '**Model:** misleading-example.' '```' >"$fixture_repo/docs/work-orders/WO-092-duplicate-model.md"
+assert_refusal 'duplicate **Model:** lines' activate WO-092 docs/work-orders/WO-092-duplicate-model.md
+printf '%s\n' '# duplicate effort' '' '**Model:** fixture-model.' '**Effort:** executor high+; verifier any; reviewer any.' '**Objective:** fixture.' '' '```markdown' '**Effort:** executor any; verifier any; reviewer any.' '```' >"$fixture_repo/docs/work-orders/WO-091-duplicate-effort.md"
+assert_refusal 'duplicate **Effort:** lines' activate WO-091 docs/work-orders/WO-091-duplicate-effort.md
+# An umbrella record (the label plus typed superseded entries) refuses
+# activation naming its successors (WO-190), in a fixture where activation would
+# otherwise succeed; at 08845c71 the same run activates WO-900 (recorded in
+# docs/evidence/WO-190/activation-08845c71.txt).
+umbrella_repo="$test_root/umbrella"
+mkdir -p -- "$umbrella_repo/scripts" "$umbrella_repo/docs/work-orders"
+cp -- "$script_dir/resume.mjs" "$umbrella_repo/scripts/resume.mjs"
+cp -R -- "$script_dir/lib" "$umbrella_repo/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$umbrella_repo"
+printf '%s\n' \
+  '# WO-900 — Umbrella fixture (version assigned at activation)' \
+  '' \
+  '**Model:** fixture-model.' \
+  '**Effort:** executor high; verifier high; reviewer any.' \
+  '**Umbrella record (2026-10-09):** superseded whole by WO-901 and WO-902; not activatable.' \
+  '' \
+  '<!-- dotln-dependencies:start -->' \
+  '[' \
+  '  {"workOrderId":"WO-901","relation":"superseded","reason":"fixture split: carried by WO-901.","by":"WO-901"},' \
+  '  {"workOrderId":"WO-902","relation":"superseded","reason":"fixture split: carried by WO-902.","by":"WO-902"}' \
+  ']' \
+  '<!-- dotln-dependencies:end -->' \
+  '' \
+  '**Objective:** fixture umbrella.' >"$umbrella_repo/docs/work-orders/WO-900-umbrella.md"
+git init "$umbrella_repo" >/dev/null 2>&1
+cp -- "$script_dir/../.gitignore" "$umbrella_repo/.gitignore"
+if umbrella_output="$(node "$umbrella_repo/scripts/resume.mjs" activate WO-900 docs/work-orders/WO-900-umbrella.md 2>&1)"; then
+  printf 'error: umbrella record WO-900 activated\n' >&2
+  exit 1
+fi
+grep -Fq 'activation refused: WO-900 is an umbrella record superseded by WO-901, WO-902' <<<"$umbrella_output"
+if grep -Fq 'at file://' <<<"$umbrella_output"; then printf 'error: umbrella refusal leaked a JavaScript stack trace\n' >&2; exit 1; fi
+test ! -e "$umbrella_repo/docs/control/orders/WO-900.jsonl"
+# The label alone is not the class: without typed superseded entries the same
+# file activates, as any draft does.
+printf '%s\n' \
+  '# WO-903 — Labelled draft (version assigned at activation)' \
+  '' \
+  '**Model:** fixture-model.' \
+  '**Effort:** executor high; verifier high; reviewer any.' \
+  '**Umbrella record:** a label with no typed superseded entry.' \
+  '**Objective:** fixture draft.' >"$umbrella_repo/docs/work-orders/WO-903-labelled.md"
+node "$umbrella_repo/scripts/resume.mjs" activate WO-903 docs/work-orders/WO-903-labelled.md >/dev/null 2>&1
+test -s "$umbrella_repo/docs/control/orders/WO-903.jsonl"
+activate_warning="$(node "$fixture_repo/scripts/resume.mjs" activate WO-099 docs/work-orders/WO-099-fixture.md 2>&1 >/dev/null)"
+assert_status_read_only
+assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"active","latestVerification":null,"verificationPath":null,"latestVerdict":null,"finalReview":null,"finalReviewPath":null,"latestAttestation":null,"effortDrift":[],"latestCheckpoint":{"unavailable":true},"legalNextActions":["next","implementation-ready"],"legalOffRamps":["withdraw","correct","override-record"],"waivedCriteria":[],"unmetCriteria":[],"withdrawal":null,"corrections":[],"overrideRecords":[]}'
+tail -n 1 "$active_log" | grep -Fq '"effortDeclarationValidated":true'
+grep -q 'warning: could not create recovery checkpoint.*not a valid object name HEAD' <<<"$activate_warning"
+grep -Fq 'Do not repeat this transition after it records' <<<"$activate_warning"
+grep -Fq 'one-invocation outside-sandbox approval' <<<"$activate_warning"
+grep -Fq 'never persist an allow rule' <<<"$activate_warning"
+grep -Fq 'docs/AI-HARNESS-SECURITY.md' <<<"$activate_warning"
+grep -Fq 'Latest checkpoint: unavailable for the latest transition; do not use an older checkpoint' "$fixture_repo/docs/control/current.md"
+before_active_next="$(wc -l <"$active_log" | tr -d ' ')"
+node "$script_dir/test-beacon-fixture.mjs" "$fixture_repo" snapshot >"$test_root/beacons-before-next"
+active_next="$(node "$fixture_repo/scripts/resume.mjs" next)"
+node "$script_dir/test-beacon-fixture.mjs" "$fixture_repo" snapshot >"$test_root/beacons-after-next"
+cmp "$test_root/beacons-before-next" "$test_root/beacons-after-next"
+grep -Fq 'docs/work-orders/WO-099-fixture.md' <<<"$active_next"
+grep -Fq '**Model:** fixture-model with a multiline' <<<"$active_next"
+grep -Fq 'declaration preserved in dispatch.' <<<"$active_next"
+grep -Fq '**Effort:** executor high+; verifier any; reviewer any. The multiline' <<<"$active_next"
+grep -Fq 'effort source is preserved too.' <<<"$active_next"
+grep -Fq 'npm run resume -- implementation-ready --harness' <<<"$active_next"
+test "$(wc -l <"$active_log" | tr -d ' ')" = "$before_active_next"
+grep -q 'Legal next actions: next, implementation-ready' "$fixture_repo/docs/control/current.md"
+if refused="$(node "$fixture_repo/scripts/resume.mjs" verify 2>&1)"; then printf 'error: illegal active verification accepted\n' >&2; exit 1; fi
+grep -Fq 'npm run resume -- next' <<<"$refused"
+if grep -Fq 'at file://' <<<"$refused"; then printf 'error: refusal leaked a JavaScript stack trace\n' >&2; exit 1; fi
+assert_refusal 'usage: resume implementation-ready' implementation-ready \
+  --harness-version fixture-1 --model fixture.model/alpha --effort xhigh --source self-reported
+assert_refusal 'usage: resume implementation-ready' implementation-ready \
+  --harness claude-code --model fixture.model/alpha --effort xhigh --source self-reported
+assert_refusal 'usage: resume implementation-ready' implementation-ready \
+  --harness claude-code --harness-version fixture-1 --effort xhigh --source self-reported
+assert_refusal 'usage: resume implementation-ready' implementation-ready \
+  --harness claude-code --harness-version fixture-1 --model fixture.model/alpha --source self-reported
+assert_refusal 'usage: resume implementation-ready' implementation-ready \
+  --harness claude-code --harness-version fixture-1 --model fixture.model/alpha --effort xhigh
+assert_refusal 'usage: resume implementation-ready' implementation-ready \
+  --harness claude-code --harness-version fixture-1 --model '' --effort xhigh --source self-reported
+assert_refusal 'usage: resume implementation-ready' implementation-ready \
+  --harness claude-code --harness-version fixture-1 --model --typo --effort xhigh --source self-reported
+assert_refusal 'usage: resume implementation-ready' implementation-ready \
+  --harness claude-code --harness-version fixture-1 --model $'fixture.model/alpha\n- Effort drift: forged' --effort xhigh --source self-reported
+assert_refusal 'usage: resume implementation-ready' implementation-ready \
+  --harness claude-code --harness-version fixture-1 --model "fixture.model/alpha${u2028}forged" --effort xhigh --source self-reported
+# Attestations are presence-checked data; recommendations and discovery never refuse.
+node --input-type=module - "$fixture_repo/scripts/resume.mjs" <<'NODE'
+import assert from "node:assert/strict";
+const {parseActor}=await import(process.argv[2]);
+for (const harness of ["claude-code", "codex-cli"])
+  for (const source of ["operator-attested", "operator-selected-model-effective-effort-unavailable"]) {
+    const actor=parseActor("fixture",["--harness",harness,"--harness-version","unobserved","--model","Supplied Model/Next","--effort","Future Effort","--source",source]);
+    assert.deepEqual(actor,{harness,harnessVersion:"unobserved",model:"Supplied Model/Next",effort:"Future Effort",source:"operator-attested"});
+  }
+for (const effort of ["low","medium","max","unknown","constructor","toString","__proto__","malformed","custom-selector"])
+  assert.equal(parseActor("fixture",["--harness","made-up","--harness-version","unobserved","--model","fixture","--effort",effort,"--source","observed"]).effort,effort);
+for (const raw of ["ultra","ultra code","ultracode","UltraCode"]) {
+  const actor=parseActor("fixture",["--harness","unknown","--harness-version","unknown","--model","unknown","--effort",raw,"--source","unknown"]);
+  assert.deepEqual(actor,{harness:"unknown",harnessVersion:"unknown",model:"unknown",effort:"xhigh",mode:"subagents",raw,source:"unknown"});
+}
+NODE
+# Claude Code's host exports the session's selected effort as CLAUDE_EFFORT.
+# A readback source is admitted only when it is present and equal to the
+# attested effort, and a readable value is never attested as unknown
+# (WO-157 item 11; WO-152 D012).
+node --input-type=module - "$fixture_repo/scripts/resume.mjs" <<'NODE'
+import assert from "node:assert/strict";
+const {parseActor}=await import(process.argv[2]);
+const flags=(effort,source,harness="claude-code")=>["--harness",harness,"--harness-version","fixture-1","--model","fixture.model/alpha","--effort",effort,"--source",source];
+const withEnv=(value,fn)=>{if(value===undefined) delete process.env.CLAUDE_EFFORT; else process.env.CLAUDE_EFFORT=value; try{return fn();} finally{delete process.env.CLAUDE_EFFORT;}};
+withEnv(undefined,()=>assert.throws(()=>parseActor("fixture",flags("xhigh","claude-session-readback")),/claude-session-readback requires the Claude Code host's CLAUDE_EFFORT to equal the attested effort: CLAUDE_EFFORT absent/));
+withEnv(undefined,()=>assert.deepEqual(parseActor("fixture",flags("xhigh","operator-attested")),{harness:"claude-code",harnessVersion:"fixture-1",model:"fixture.model/alpha",effort:"xhigh",source:"operator-attested"}));
+withEnv("xhigh",()=>assert.deepEqual(parseActor("fixture",flags("xhigh","claude-session-readback")),{harness:"claude-code",harnessVersion:"fixture-1",model:"fixture.model/alpha",effort:"xhigh",source:"claude-session-readback"}));
+withEnv("xhigh",()=>assert.throws(()=>parseActor("fixture",flags("max","claude-session-readback")),/CLAUDE_EFFORT xhigh, attested claude-code effort max/));
+withEnv("xhigh",()=>assert.throws(()=>parseActor("fixture",flags("xhigh","claude-session-readback","codex-cli")),/CLAUDE_EFFORT xhigh, attested codex-cli effort xhigh/));
+withEnv("xhigh",()=>assert.throws(()=>parseActor("fixture",flags("unknown","operator-attested")),/exports CLAUDE_EFFORT=xhigh; attest --effort xhigh --source claude-session-readback rather than unknown/));
+withEnv("xhigh",()=>assert.equal(parseActor("fixture",flags("ultracode","claude-session-readback")).effort,"xhigh"));
+// Under a readable CLAUDE_EFFORT a claude-code attestation records that value
+// from the readback; another effort or source is refused.
+withEnv("xhigh",()=>assert.throws(()=>parseActor("fixture",flags("high","operator-attested")),/exports CLAUDE_EFFORT=xhigh; attest --effort xhigh --source claude-session-readback rather than high with source operator-attested/));
+withEnv("xhigh",()=>assert.throws(()=>parseActor("fixture",flags("xhigh","operator-attested")),/rather than xhigh with source operator-attested/));
+withEnv("xhigh",()=>assert.throws(()=>parseActor("fixture",flags("xhigh","operator-selected-model-effective-effort-unavailable")),/rather than xhigh with source operator-selected-model-effective-effort-unavailable\./));
+withEnv("xhigh",()=>assert.throws(()=>parseActor("fixture",flags("max","claude-session-readback")),/Attest --effort xhigh\./));
+withEnv("xhigh",()=>assert.equal(parseActor("fixture",flags("high","operator-attested","codex-cli")).effort,"high"));
+withEnv("not-a-level",()=>assert.equal(parseActor("fixture",flags("unknown","operator-attested")).effort,"unknown"));
+NODE
+assert_refusal 'claude-session-readback requires' implementation-ready \
+  --harness claude-code --harness-version fixture-0 --model fixture.model/alpha --effort xhigh --source claude-session-readback
+# A same-session completion whose effort disagrees is refused and
+# appends nothing.
+export CLAUDE_EFFORT=xhigh
+assert_refusal 'exports CLAUDE_EFFORT=xhigh; attest --effort xhigh --source claude-session-readback rather than high with source operator-attested' implementation-ready \
+  --harness claude-code --harness-version fixture-0 --model fixture.model/alpha --effort high --source operator-attested
+unset CLAUDE_EFFORT
+CLAUDE_EFFORT=xhigh node "$fixture_repo/scripts/resume.mjs" status | grep -Fq 'Current Claude Code session: effort xhigh; source claude-session-readback; host-selected (CLAUDE_EFFORT), not effective effort.'
+if node "$fixture_repo/scripts/resume.mjs" status | grep -Fq 'Current Claude Code session'; then printf 'error: a Claude session line without CLAUDE_EFFORT\n' >&2; exit 1; fi
+CLAUDE_EFFORT=xhigh node "$fixture_repo/scripts/resume.mjs" implementation-ready \
+  --harness claude-code \
+  --harness-version fixture-0 \
+  --model fixture.model/alpha \
+  --effort xhigh \
+  --source claude-session-readback >/dev/null 2>/dev/null
+assert_status_read_only
+node - "$active_log" <<'NODE'
+const fs = require("node:fs");
+const events = fs.readFileSync(process.argv[2], "utf8").trim().split("\n").map(JSON.parse);
+const actor = events.at(-1).actor;
+const expected = { harness: "claude-code", harnessVersion: "fixture-0", model: "fixture.model/alpha", effort: "xhigh", source: "claude-session-readback" };
+if (JSON.stringify(actor) !== JSON.stringify(expected)) throw new Error(`recognized actor changed: ${JSON.stringify(actor)}`);
+NODE
+grep -Fq 'Latest attestation: harness claude-code; version fixture-0; model fixture.model/alpha; effort xhigh; source claude-session-readback' "$fixture_repo/docs/control/current.md"
+grep -Fq 'Effort drift: none' "$fixture_repo/docs/control/current.md"
+refuse_next
+before_unfounded_fix="$(event_count)"
+if run fix 2>/dev/null; then printf 'error: repair reopened without a failure source\n' >&2; exit 1; fi
+test "$(event_count)" = "$before_unfounded_fix"
+run verify
+refuse_next
+grep -q 'VER-002.md' "$fixture_repo/docs/control/current.md"
+before_invalid="$(wc -l <"$active_log" | tr -d ' ')"
+if run final-review 2>/dev/null; then printf 'error: illegal transition accepted\n' >&2; exit 1; fi
+test "$(wc -l <"$active_log" | tr -d ' ')" = "$before_invalid"
+assert_refusal 'verification report is not a contained regular file' verification-result fail \
+  --harness codex-cli --harness-version fixture-2 --model fixture.model/beta --effort custom-selector --source self-reported
+printf '# fail\n' >"$fixture_repo/docs/verifications/WO-099/VER-002.md"
+assert_refusal 'usage: resume verification-result pass|fail' verification-result fail
+assert_refusal 'verification report must contain exactly one machine-readable actor header' verification-result fail \
+  --harness codex-cli --harness-version fixture-2 --model fixture.model/beta --effort custom-selector --source self-reported
+printf '%s\n' \
+  '# fail' \
+  '' \
+  '**Process cost:** unknown; cause no-session' \
+  '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"custom-selector","source":"self-reported"}' \
+  '**Process cost:** unknown; cause no-session' \
+  '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"custom-selector","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-002.md"
+assert_refusal 'verification report must contain exactly one machine-readable actor header' verification-result fail \
+  --harness codex-cli --harness-version fixture-2 --model fixture.model/beta --effort custom-selector --source self-reported
+printf '%s\n' \
+  '# fail' \
+  '' \
+  '**Process cost:** unknown; cause no-session' \
+  '**Actor attestation:** {not-json}' >"$fixture_repo/docs/verifications/WO-099/VER-002.md"
+assert_refusal 'verification report has malformed actor header' verification-result fail \
+  --harness codex-cli --harness-version fixture-2 --model fixture.model/beta --effort custom-selector --source self-reported
+printf '%s\n' \
+  '# fail' \
+  '' \
+  '**Process cost:** unknown; cause no-session' \
+  '**Actor attestation:** {"harness":"spoof","harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"custom-selector","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-002.md"
+assert_refusal 'verification report actor header does not match the completion actor' verification-result fail \
+  --harness codex-cli --harness-version fixture-2 --model fixture.model/beta --effort custom-selector --source self-reported
+printf '%s\n' \
+  '# fail' \
+  '' \
+  '**Process cost:** unknown; cause no-session' \
+  '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"custom-selector","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-002.md"
+assert_refusal 'verification report actor header does not match the completion actor' verification-result fail \
+  --harness codex-cli --harness-version fixture-2 --model fixture.model/beta --effort xhigh --source self-reported
+run_with_actor verification-result custom-selector fail
+node - "$active_log" <<'NODE'
+const fs = require("node:fs");
+const events = fs.readFileSync(process.argv[2], "utf8").trim().split("\n").map(JSON.parse);
+const actor = events.at(-1).actor;
+const expected = { harness: "codex-cli", harnessVersion: "fixture-2", model: "fixture.model/beta", effort: "custom-selector", source: "self-reported" };
+if (JSON.stringify(actor) !== JSON.stringify(expected)) throw new Error(`raw effort was not preserved: ${JSON.stringify(actor)}`);
+NODE
+grep -Fq 'Latest attestation: harness codex-cli; version fixture-2; model fixture.model/beta; effort custom-selector; source self-reported' "$fixture_repo/docs/control/current.md"
+grep -Fq 'Effort drift: xhigh -> custom-selector' "$fixture_repo/docs/control/current.md"
+refuse_next
+run fix
+refuse_next
+assert_refusal 'usage: resume repair-complete' repair-complete
+node "$fixture_repo/scripts/resume.mjs" repair-complete \
+  --harness claude-code \
+  --harness-version fixture-1 \
+  --model fixture.model/alpha \
+  --effort high \
+  --source self-reported >/dev/null 2>/dev/null
+assert_status_read_only
+grep -q 'Legal next actions: verify, fix' "$fixture_repo/docs/control/current.md"
+reopened_fix="$(node "$fixture_repo/scripts/resume.mjs" fix 2>/dev/null)"
+assert_status_read_only
+grep -q 'VER-002.md' <<<"$reopened_fix"
+grep -q 'Phase: repairing' "$fixture_repo/docs/control/current.md"
+before_repairing_verify="$(event_count)"
+if repairing_verify="$(node "$fixture_repo/scripts/resume.mjs" verify 2>&1)"; then printf 'error: verify accepted before repair-complete\n' >&2; exit 1; fi
+grep -Fq 'npm run resume -- repair-complete' <<<"$repairing_verify"
+test "$(event_count)" = "$before_repairing_verify"
+tail -n 1 "$active_log" | grep -Fq '"sourceFindingId":"VER-002"'
+tail -n 1 "$active_log" | grep -Fq '"sourceReportPath":"docs/verifications/WO-099/VER-002.md"'
+run_with_actor repair-complete xhigh
+run verify
+grep -q 'VER-003.md' "$fixture_repo/docs/control/current.md"
+printf '%s\n' \
+  '# pass' \
+  '' \
+  '**Process cost:** unknown; cause no-session' \
+  '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"custom-selector","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-003.md"
+run_with_actor verification-result custom-selector pass
+test "$(grep -F 'Effort drift:' "$fixture_repo/docs/control/current.md")" = '- Effort drift: xhigh -> custom-selector -> high'
+refuse_next
+run final-review
+refuse_next
+grep -q 'FINAL-002.md' "$fixture_repo/docs/control/current.md"
+printf '# failed final\n' >"$fixture_repo/docs/final-reviews/WO-099/FINAL-002.md"
+assert_refusal 'final-review report must contain exactly one machine-readable actor header' final-review-result fail \
+  --harness codex-cli --harness-version fixture-2 --model fixture.model/beta --effort xhigh --source self-reported
+printf '%s\n' \
+  '# failed final' \
+  '' \
+  '**Process cost:** unknown; cause no-session' \
+  '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"xhigh","source":"self-reported"}' >"$fixture_repo/docs/final-reviews/WO-099/FINAL-002.md"
+assert_refusal 'usage: resume final-review-result pass|fail' final-review-result fail
+run_with_actor final-review-result xhigh fail
+node "$fixture_repo/scripts/resume.mjs" fix 2>/dev/null | grep -q 'FINAL-002.md'
+assert_status_read_only
+node "$fixture_repo/scripts/resume.mjs" repair-complete \
+  --harness claude-code \
+  --harness-version fixture-1 \
+  --model fixture.model/alpha \
+  --effort xhigh \
+  --source operator-selected-model-effective-effort-unavailable >/dev/null 2>/dev/null
+node --input-type=module - "$active_log" <<'NODE'
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+const event=readFileSync(process.argv[2],"utf8").trim().split("\n").map(JSON.parse).at(-1);
+assert.equal(event.actor.model,"fixture.model/alpha");
+assert.equal(event.actor.effort,"xhigh");
+assert.equal(event.actor.source,"operator-attested");
+assert.equal(event.sourceVerificationId, "FINAL-002");
+NODE
+assert_status_read_only
+reopened_final_fix="$(node "$fixture_repo/scripts/resume.mjs" fix 2>/dev/null)"
+grep -q 'FINAL-002.md' <<<"$reopened_final_fix"
+node - "$active_log" <<'NODE'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const events = fs.readFileSync(process.argv[2], "utf8").trim().split("\n").map(JSON.parse);
+const reopened = events.at(-1);
+assert.equal(reopened.type, "RepairRequested");
+assert.equal(reopened.sourceFindingId, "FINAL-002");
+assert.equal(reopened.sourceReportPath, "docs/final-reviews/WO-099/FINAL-002.md");
+assert.equal(events.filter((event) => event.type === "VerificationCompleted").at(-1).verificationId, "VER-003");
+assert.notEqual(reopened.sourceFindingId, "VER-003");
+NODE
+run_with_actor repair-complete xhigh
+run verify
+grep -q 'VER-004.md' "$fixture_repo/docs/control/current.md"
+printf '%s\n' \
+  '# repaired pass' \
+  '' \
+  '**Process cost:** unknown; cause no-session' \
+  '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"custom-selector-2","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-004.md"
+run_with_actor verification-result custom-selector-2 pass
+grep -Fq 'Effort drift: xhigh -> custom-selector -> high -> custom-selector-2' "$fixture_repo/docs/control/current.md"
+run final-review
+grep -q 'FINAL-003.md' "$fixture_repo/docs/control/current.md"
+printf '%s\n' \
+  '# pass' \
+  '' \
+  '**Process cost:** unknown; cause no-session' \
+  '**Actor attestation:** {"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"}' >"$fixture_repo/docs/final-reviews/WO-099/FINAL-003.md"
+assert_refusal 'final-review report actor header does not match the completion actor' final-review-result pass \
+  --harness codex-cli --harness-version fixture-2 --model fixture.model/beta --effort xhigh --source self-reported
+final_pass_output="$(node "$fixture_repo/scripts/resume.mjs" final-review-result pass \
+  --harness human \
+  --harness-version not-applicable \
+  --model human \
+  --effort unknown \
+  --source operator-attested 2>/dev/null)"
+assert_status_read_only
+assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"closed","latestVerification":"VER-004","verificationPath":"docs/verifications/WO-099/VER-004.md","latestVerdict":"pass","finalReview":"FINAL-003","finalReviewPath":"docs/final-reviews/WO-099/FINAL-003.md","latestAttestation":{"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"},"effortDrift":[{"effort":"xhigh"},{"effort":"custom-selector"},{"effort":"high"},{"effort":"custom-selector-2"},{"effort":"unknown"}],"latestCheckpoint":{"unavailable":true},"legalNextActions":["release-close","next","activate"],"legalOffRamps":["correct"],"waivedCriteria":[],"unmetCriteria":[],"withdrawal":null,"corrections":[],"overrideRecords":[]}'
+grep -Fq 'npm run worktree -- publish WO-099 --title "<title>" --body-file <contained-reviewed-body-path>' <<<"$final_pass_output"
+grep -Fq 'Latest attestation: harness human; version not-applicable; model human; effort unknown; source operator-attested' "$fixture_repo/docs/control/current.md"
+if grep -Fq 'raw: unknown' "$fixture_repo/docs/control/current.md"; then printf 'error: canonical unknown was duplicated as a raw label\n' >&2; exit 1; fi
+node - "$active_log" <<'NODE'
+const fs = require("node:fs");
+const events = fs.readFileSync(process.argv[2], "utf8").trim().split("\n").map(JSON.parse);
+const completionTypes = new Set(["ImplementationReady", "VerificationCompleted", "RepairCompleted", "FinalReviewCompleted"]);
+const completions = events.filter((event) => event.workOrderId === "WO-099" && completionTypes.has(event.type));
+if (!completions.length || completions.some((event) => !event.actor)) throw new Error("completion event without actor");
+if (events.some((event) => event.schemaVersion !== 1)) throw new Error("control schema version changed");
+NODE
+closed_next="$(node "$fixture_repo/scripts/resume.mjs" next)"
+grep -Fq 'between work orders' <<<"$closed_next"
+grep -Fq 'npm run worktree -- start' <<<"$closed_next"
+test "$(wc -l <"$active_log" | tr -d ' ')" = "20"
+grep -q 'Phase: closed' "$fixture_repo/docs/control/current.md"
+test "$(grep -c '"verificationId":"VER-002"' "$active_log")" = "2"
+test "$(grep -c '"verificationId":"VER-003"' "$active_log")" = "2"
+cp -- "$fixture_repo/docs/control/current.md" "$test_root/current.closed"
+cp -- "$active_log" "$test_root/log.closed"
+printf '\nmanual projection drift\n' >>"$fixture_repo/docs/control/current.md"
+cp -- "$fixture_repo/docs/control/current.md" "$test_root/current.drifted"
+node "$fixture_repo/scripts/resume.mjs" status \
+  >"$test_root/status-drift-human.txt" \
+  2>"$test_root/status-drift-human.err"
+node "$fixture_repo/scripts/resume.mjs" status --json \
+  >"$test_root/status-drift.json" \
+  2>"$test_root/status-drift-json.err"
+grep -q 'Legal next actions: release-close, next, activate' "$test_root/status-drift-human.txt"
+grep -Fq 'warning: docs/control/current.md disagrees with the canonical fold' "$test_root/status-drift-human.err"
+grep -Fq 'warning: docs/control/current.md disagrees with the canonical fold' "$test_root/status-drift-json.err"
+node - "$test_root/status-drift.json" <<'NODE'
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const { recordedAt, elapsed, orders, dependencies, ...status } = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+assert.equal(typeof recordedAt, "string");
+assert.deepStrictEqual(Object.keys(elapsed).sort(), ["finalReview", "implementation", "repair", "verification"]);
+assert.deepStrictEqual(status, {
+  workOrder: "WO-099",
+  workOrderPath: "docs/work-orders/WO-099-fixture.md",
+  phase: "closed",
+  latestVerification: "VER-004",
+  verificationPath: "docs/verifications/WO-099/VER-004.md",
+  latestVerdict: "pass",
+  finalReview: "FINAL-003",
+  finalReviewPath: "docs/final-reviews/WO-099/FINAL-003.md",
+  latestAttestation: { harness: "human", harnessVersion: "not-applicable", model: "human", effort: "unknown", source: "operator-attested", accountLabel: "not-applicable" },
+  effortDrift: [
+    { effort: "xhigh" },
+    { effort: "custom-selector" },
+    { effort: "high" },
+    { effort: "custom-selector-2" },
+    { effort: "unknown" },
+  ],
+  latestCheckpoint: { unavailable: true },
+  legalNextActions: ["release-close", "next", "activate"],
+  legalOffRamps: ["correct"],
+  waivedCriteria: [],
+  unmetCriteria: [],
+  withdrawal: null,
+  corrections: [],
+  overrideRecords: [],
+});
+NODE
+cmp "$test_root/current.drifted" "$fixture_repo/docs/control/current.md"
+cmp "$test_root/log.closed" "$active_log"
+cp -- "$test_root/current.closed" "$fixture_repo/docs/control/current.md"
+cp -- "$fixture_repo/docs/control/current.md" "$test_root/current-before-bad-status"
+cp -- "$active_log" "$test_root/log-before-bad-status"
+assert_refusal 'usage: resume status [--json]' status --json --json
+assert_refusal 'usage: resume status [--json]' status --wat
+cmp "$test_root/current-before-bad-status" "$fixture_repo/docs/control/current.md"
+cmp "$test_root/log-before-bad-status" "$active_log"
+before_release_close="$(wc -l <"$active_log" | tr -d ' ')"
+release_close_output="$(node "$fixture_repo/scripts/resume.mjs" release-close)"
+grep -Fq 'run the reviewed helper from this main checkout' <<<"$release_close_output"
+if grep -Fq ' && ' <<<"$release_close_output"; then printf 'error: handoff printed from main must not change directory\n' >&2; exit 1; fi
+grep -Fq "'$fixture_repo/scripts/release.mjs' close WO-099 --publish" <<<"$release_close_output"
+grep -Fq 'never push main' <<<"$release_close_output"
+grep -Fq 'network egress to the GitHub host' <<<"$release_close_output"
+test "$(wc -l <"$active_log" | tr -d ' ')" = "$before_release_close"
+before_bad_activate="$(wc -l <"$active_log" | tr -d ' ')"
+if run activate WO-100 docs/work-orders/WO-100-next.md 2>/dev/null; then printf 'error: nonexistent work order activated\n' >&2; exit 1; fi
+test "$(wc -l <"$active_log" | tr -d ' ')" = "$before_bad_activate"
+mkdir -p "$test_root/outside"
+printf '%s\n' '# outside' '' '**Model:** fixture-model.' '**Effort:** executor any; verifier any; reviewer any.' >"$test_root/outside/WO-101-outside.md"
+ln -s "$test_root/outside" "$fixture_repo/docs/work-orders/link"
+if run activate WO-101 docs/work-orders/link/WO-101-outside.md 2>/dev/null; then printf 'error: symlinked work order activated\n' >&2; exit 1; fi
+test "$(wc -l <"$active_log" | tr -d ' ')" = "$before_bad_activate"
+printf '%s\n' '# next' '' '**Model:** fixture-model.' '**Effort:** executor any; verifier any; reviewer any.' >"$fixture_repo/docs/work-orders/WO-100-next.md"
+active_log="$fixture_repo/docs/control/orders/WO-100.jsonl"
+run activate WO-100 docs/work-orders/WO-100-next.md
+grep -q 'Work order: WO-100' "$fixture_repo/docs/control/current.md"
+grep -q 'Latest attestation: none' "$fixture_repo/docs/control/current.md"
+grep -q 'Effort drift: none' "$fixture_repo/docs/control/current.md"
+test "$(wc -l <"$active_log" | tr -d ' ')" = "1"
+test "$(wc -l <"$fixture_repo/docs/control/orders/WO-099.jsonl" | tr -d ' ')" = "20"
+printf '%s\n' '# next' '' '**Model:** fixture-model.' >"$fixture_repo/docs/work-orders/WO-100-next.md"
+assert_refusal 'missing **Effort:** line' next
+
+legacy_repo="$test_root/legacy-active"
+mkdir -p "$legacy_repo/scripts" "$legacy_repo/docs/work-orders" "$legacy_repo/docs/control"
+cp -- "$script_dir/resume.mjs" "$legacy_repo/scripts/resume.mjs"
+cp -R -- "$script_dir/lib" "$legacy_repo/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$legacy_repo"
+git init -q "$legacy_repo"
+cp -- "$script_dir/../.gitignore" "$legacy_repo/.gitignore"
+printf '%s\n' \
+  '# legacy active fixture' \
+  '' \
+  '**Model:** fixture-model.' \
+  '**Objective:** activated before WO-019.' >"$legacy_repo/docs/work-orders/WO-089-legacy.md"
+printf '%s\n' \
+  '{"schemaVersion":1,"type":"WorkOrderActivated","workOrderId":"WO-089","workOrderPath":"docs/work-orders/WO-089-legacy.md"}' >"$legacy_repo/docs/control/resume.jsonl"
+legacy_next="$(node "$legacy_repo/scripts/resume.mjs" next)"
+grep -Fq '**Effort:** unavailable for this pre-WO-019 activation; executor any; verifier any; reviewer any.' <<<"$legacy_next"
+node "$legacy_repo/scripts/resume.mjs" implementation-ready \
+  --harness human \
+  --harness-version not-applicable \
+  --model human \
+  --effort unknown \
+  --source operator-attested >/dev/null 2>/dev/null
+test "$(wc -l <"$legacy_repo/docs/control/resume.jsonl" | tr -d ' ')" = "2"
+tail -n 1 "$legacy_repo/docs/control/resume.jsonl" | grep -Fq '"effort":"unknown"'
+
+boundary_repo="$test_root/wo019-boundary"
+mkdir -p "$boundary_repo/scripts" "$boundary_repo/docs/work-orders" "$boundary_repo/docs/control"
+cp -- "$script_dir/resume.mjs" "$boundary_repo/scripts/resume.mjs"
+cp -R -- "$script_dir/lib" "$boundary_repo/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$boundary_repo"
+printf '%s\n' \
+  '# WO-019 boundary fixture' \
+  '' \
+  '**Model:** fixture-model.' \
+  '**Objective:** migration boundary stays strict.' >"$boundary_repo/docs/work-orders/WO-019-boundary.md"
+printf '%s\n' \
+  '{"schemaVersion":1,"type":"WorkOrderActivated","workOrderId":"WO-019","workOrderPath":"docs/work-orders/WO-019-boundary.md"}' >"$boundary_repo/docs/control/resume.jsonl"
+if boundary_output="$(node "$boundary_repo/scripts/resume.mjs" next 2>&1)"; then
+  printf 'error: WO-019 migration boundary accepted a missing Effort declaration\n' >&2
+  exit 1
+fi
+grep -Fq 'missing **Effort:** line' <<<"$boundary_output"
+test "$(wc -l <"$boundary_repo/docs/control/resume.jsonl" | tr -d ' ')" = "1"
+
+invalid_events_repo="$test_root/invalid-events"
+mkdir -p "$invalid_events_repo/scripts" "$invalid_events_repo/docs/control"
+cp -- "$script_dir/resume.mjs" "$invalid_events_repo/scripts/resume.mjs"
+cp -R -- "$script_dir/lib" "$invalid_events_repo/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$invalid_events_repo"
+printf 'projection sentinel\n' >"$invalid_events_repo/docs/control/current.md"
+printf '%s\n' \
+  '{"schemaVersion":1,"type":"WorkOrderActivated","workOrderId":"WO-088","workOrderPath":"docs/work-orders/WO-088-fixture.md"}' \
+  '{"schemaVersion":1,"type":"FutureControlEvent","workOrderId":"WO-088"}' >"$invalid_events_repo/docs/control/resume.jsonl"
+cp -- "$invalid_events_repo/docs/control/current.md" "$test_root/invalid-current.before"
+cp -- "$invalid_events_repo/docs/control/resume.jsonl" "$test_root/unknown-log.before"
+if unknown_output="$(node "$invalid_events_repo/scripts/resume.mjs" status --json 2>&1)"; then
+  printf 'error: unknown control event was accepted\n' >&2
+  exit 1
+fi
+grep -Fq 'unknown control event type at line 2: FutureControlEvent' <<<"$unknown_output"
+if grep -Fq 'at file://' <<<"$unknown_output"; then printf 'error: unknown-event refusal leaked a JavaScript stack trace\n' >&2; exit 1; fi
+cmp "$test_root/invalid-current.before" "$invalid_events_repo/docs/control/current.md"
+cmp "$test_root/unknown-log.before" "$invalid_events_repo/docs/control/resume.jsonl"
+printf '%s\n' \
+  '{"schemaVersion":1,"type":"WorkOrderActivated","workOrderId":"WO-088","workOrderPath":"docs/work-orders/WO-088-fixture.md"}' \
+  '{' >"$invalid_events_repo/docs/control/resume.jsonl"
+cp -- "$invalid_events_repo/docs/control/resume.jsonl" "$test_root/malformed-log.before"
+if malformed_output="$(node "$invalid_events_repo/scripts/resume.mjs" status --json 2>&1)"; then
+  printf 'error: malformed control event was accepted\n' >&2
+  exit 1
+fi
+grep -Fq 'invalid control event at line 2' <<<"$malformed_output"
+if grep -Fq 'at file://' <<<"$malformed_output"; then printf 'error: malformed-event refusal leaked a JavaScript stack trace\n' >&2; exit 1; fi
+cmp "$test_root/invalid-current.before" "$invalid_events_repo/docs/control/current.md"
+cmp "$test_root/malformed-log.before" "$invalid_events_repo/docs/control/resume.jsonl"
+
+time_repo="$test_root/time-repo"
+mkdir -p "$time_repo/scripts" "$time_repo/docs/work-orders"
+cp -- "$script_dir/resume.mjs" "$time_repo/scripts/resume.mjs"
+cp -R -- "$script_dir/lib" "$time_repo/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$time_repo"
+git init -q "$time_repo"
+cp -- "$script_dir/../.gitignore" "$time_repo/.gitignore"
+printf '%s\n' '# time fixture' '' '**Model:** any.' '**Effort:** executor any; verifier any; reviewer any.' >"$time_repo/docs/work-orders/WO-087-time.md"
+node --input-type=module - "$time_repo" "$test_root" <<'NODE'
+import assert from "node:assert/strict";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { pathToFileURL } from "node:url";
+const [root, evidence] = process.argv.slice(2);
+const { main, fold, statusProjection } = await import(pathToFileURL(join(root, "scripts/resume.mjs")));
+const log = join(root, "docs/control/orders/WO-087.jsonl");
+const current = join(root, "docs/control/current.md");
+const readEvents = () => readFileSync(log, "utf8").trim().split("\n").map(JSON.parse);
+const writeEvents = (events) => writeFileSync(log, events.map(JSON.stringify).join("\n") + "\n");
+const actor = { harness: "human", harnessVersion: "not-applicable", model: "human", effort: "unknown", source: "operator-attested" };
+const actorArgs = ["--harness", "human", "--harness-version", "not-applicable", "--model", "human", "--effort", "unknown", "--source", "operator-attested"];
+const stdout = process.stdout.write;
+const stderr = process.stderr.write;
+const call = async (args) => {
+  let output = "";
+  process.stdout.write = (chunk) => { output += chunk; return true; };
+  process.stderr.write = () => true; // This unborn fixture cannot checkpoint.
+  try { await main(args); } finally { process.stdout.write = stdout; process.stderr.write = stderr; }
+  return output;
+};
+const report = (kind, number) => {
+  const directory = join(root, "docs", kind === "VER" ? "verifications" : "final-reviews", "WO-087");
+  mkdirSync(directory, { recursive: true });
+  writeFileSync(join(directory, `${kind}-${number}.md`), `# fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n**Process cost:** unknown; cause no-session\n`);
+};
+
+// Every event kind is appended by the actual command dispatcher in one process.
+const beforeSequence = Date.now();
+await call(["activate", "WO-087", "docs/work-orders/WO-087-time.md"]);
+const beforeBadClock = [readFileSync(log), readFileSync(current)];
+const RealDate = Date;
+globalThis.Date = class extends RealDate {
+  constructor(...args) { super(...args); this.fromClock = args.length === 0; }
+  toISOString() { return this.fromClock ? "invalid-host-time" : super.toISOString(); }
+};
+try {
+  await assert.rejects(() => call(["implementation-ready", ...actorArgs]), /invalid recordedAt at append/);
+} finally { globalThis.Date = RealDate; }
+assert.deepEqual([readFileSync(log), readFileSync(current)], beforeBadClock);
+await call(["implementation-ready", ...actorArgs]);
+const costForms = "Put exactly one physical cost line in the report: `**Process cost:** entry <total> tokens; handoff <total> tokens; source <source>` or `**Process cost:** unknown; cause <hooks-fallback|no-session|harness-no-readback>`. The result transition and npm run test:docs refuse a bare unknown.";
+assert.ok((await call(["verify"])).includes(`VER-001.md. ${costForms}\n`), "the verify briefing prints the admitted cost-line forms");
+// The result transition judges the stamped cost line while the author can
+// still edit the report, before it becomes an immutable receipt.
+const bareUnknown = join(root, "docs/verifications/WO-087/VER-001.md");
+mkdirSync(join(bareUnknown, ".."), { recursive: true });
+for (const body of ["", "\n**Process cost:** unknown\n", "\n- **Process cost:** entry unknown as of 2026-09-19; handoff unknown; source none\n"]) {
+  writeFileSync(bareUnknown, `# fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n${body}`);
+  const beforeRefusal = readFileSync(log);
+  await assert.rejects(() => call(["verification-result", "fail", ...actorArgs]), /Receipt cost lines refused:\ndocs\/verifications\/WO-087\/VER-001\.md: cost line /);
+  assert.deepEqual(readFileSync(log), beforeRefusal, "a refused cost line appends no event");
+}
+writeFileSync(bareUnknown, `# fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\n- **Process cost:** entry 120,412 tokens; handoff 388,019 tokens; source claude-transcript-message-usage\n`);
+await call(["verification-result", "fail", ...actorArgs]);
+await call(["fix"]);
+await call(["repair-complete", ...actorArgs]);
+await call(["verify"]);
+report("VER", "002");
+await call(["verification-result", "pass", ...actorArgs]);
+assert.ok((await call(["final-review"])).includes(`FINAL-001.md. ${costForms}\n`), "the final-review briefing prints the admitted cost-line forms");
+report("FINAL", "001");
+await call(["final-review-result", "pass", ...actorArgs]);
+const afterSequence = Date.now();
+const appended = readEvents();
+assert.deepEqual([...new Set(appended.map((event) => event.type))].sort(), [
+  "WorkOrderActivated", "ImplementationReady", "VerificationRequested", "VerificationCompleted",
+  "RepairRequested", "RepairCompleted", "FinalReviewRequested", "FinalReviewCompleted",
+].sort());
+appended.forEach((event, index) => {
+  assert.match(event.recordedAt, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+  assert.equal(new Date(event.recordedAt).toISOString(), event.recordedAt);
+  assert.equal(event.schemaVersion, 1);
+  const time = Date.parse(event.recordedAt);
+  assert.ok(time >= beforeSequence && time <= afterSequence);
+  if (index) assert.ok(time >= Date.parse(appended[index - 1].recordedAt));
+});
+// Only the receipts this lifecycle allocates carry the cost-line duty.
+assert.deepEqual(
+  appended.filter((event) => event.costLine !== undefined).map((event) => [event.type, event.reportPath.split("/").at(-1), event.costLine]),
+  [["VerificationRequested", "VER-001.md", "required"], ["VerificationRequested", "VER-002.md", "required"], ["FinalReviewRequested", "FINAL-001.md", "required"]],
+);
+console.log(`time append: ${appended.length} events, all 8 types, valid host times and non-decreasing order in one process; invalid append preserved bytes`);
+
+const seconds = [0, 1, 2, 4, 6, 9, 11, 15, 16, 21];
+const baseline = appended.map((event, index) => ({
+  ...event,
+  recordedAt: new Date(Date.UTC(2026, 8, 4) + seconds[index] * 1000).toISOString(),
+  checkpointRef: `refs/dotln/checkpoint/WO-087/${index + 1}`,
+  checkpointSha: String(index + 1).padStart(40, "0"),
+}));
+const expectedState = fold(baseline);
+const expectedElapsed = { implementation: 1000, verification: 4000, repair: 3000, finalReview: 5000 };
+assert.deepEqual(statusProjection(baseline).elapsed, expectedElapsed);
+const withoutTimes = baseline.map(({ recordedAt, ...event }) => event);
+const reversedTimes = baseline.map((event, index) => ({ ...event, recordedAt: baseline.at(-index - 1).recordedAt }));
+const variants = {
+  baseline,
+  absent: withoutTimes,
+  reordered: baseline.map((event) => Object.fromEntries(Object.entries(event).reverse())),
+  backwards: reversedTimes,
+};
+for (const [name, events] of Object.entries(variants)) {
+  assert.deepEqual(fold(events), expectedState, name);
+  writeEvents(events);
+  const before = readFileSync(log);
+  await call(["next"]); // Regenerate current.md through the legal projection path.
+  assert.deepEqual(readFileSync(log), before);
+  const rendered = readFileSync(current, "utf8");
+  const masked = rendered.split("\n").filter((line) => !/^- (Latest recordedAt:|Elapsed )/.test(line)).join("\n");
+  writeFileSync(join(evidence, `time-${name}.masked`), masked);
+  const status = JSON.parse(await call(["status", "--json"]));
+  assert.equal(status.phase, "closed");
+  assert.deepEqual(status.legalNextActions, ["release-close", "next", "activate"]);
+  assert.equal(status.latestCheckpoint.ref, "refs/dotln/checkpoint/WO-087/10");
+  assert.equal(status.recordedAt, events.at(-1).recordedAt ?? null);
+  assert.ok(rendered.includes(`- Latest recordedAt: ${status.recordedAt ?? "unknown"}\n`));
+}
+assert.deepEqual(statusProjection(withoutTimes).elapsed, { implementation: "unknown", verification: "unknown", repair: "unknown", finalReview: "unknown" });
+assert.deepEqual(statusProjection(reversedTimes).elapsed, { implementation: -5000, verification: -2000, repair: -3000, finalReview: -1000 });
+const mixed = baseline.map((event, index) => index === 0 ? withoutTimes[index] : event);
+writeEvents(mixed);
+await call(["next"]);
+const mixedStatus = JSON.parse(await call(["status", "--json"]));
+assert.deepEqual(mixedStatus.elapsed, { ...expectedElapsed, implementation: "unknown" });
+assert.ok(readFileSync(current, "utf8").includes("- Elapsed implementation: unknown\n"));
+assert.ok(readFileSync(current, "utf8").includes("- Elapsed verification: 4000 ms\n"));
+assert.deepEqual(statusProjection(baseline.slice(0, 7)).elapsed, { implementation: 1000, verification: 2000, repair: 3000 }, "in-flight retry retains the latest completed attempt");
+const legacyRetry = baseline.map((event, index) => index === 6 ? withoutTimes[index] : event);
+assert.equal(statusProjection(legacyRetry).elapsed.verification, "unknown", "unknown latest attempt must not borrow an older duration");
+assert.deepEqual(statusProjection([...baseline, { type: "WorkOrderActivated", workOrderId: "WO-086", recordedAt: baseline[0].recordedAt }]).elapsed, {});
+assert.deepEqual(statusProjection([]).elapsed, {});
+assert.equal(statusProjection([]).recordedAt, null);
+console.log(`time projection: mixed=${JSON.stringify(mixedStatus.elapsed)}; latest attempts, in-flight phases, activation reset, absent and backwards times checked`);
+
+const invalid = [null, 0, {}, [], "", "2026-09-04", "2026-09-04T00:00:00Z", "2026-09-04T00:00:00.000+00:00", "2026-09-04T00:00:00.0000Z", "2026-09-04T24:00:00.000Z", "2026-02-30T00:00:00.000Z", "2026-02-29T00:00:00.000Z", "2026-13-04T00:00:00.000Z", "2026-09-04T00:00:60.000Z", "2026-09-04T00:00:00.000Z\n"];
+for (const recordedAt of invalid) {
+  const events = baseline.map((event, index) => index === 1 ? { ...event, recordedAt } : event);
+  assert.throws(() => fold(events), /invalid recordedAt at line 2/);
+  writeEvents(events);
+  const before = [readFileSync(log), readFileSync(current)];
+  for (const args of [["status"], ["status", "--json"], ["next"], ["times"]])
+    await assert.rejects(() => call(args), /invalid recordedAt at line 2/);
+  assert.deepEqual([readFileSync(log), readFileSync(current)], before);
+}
+assert.doesNotThrow(() => fold([{ ...baseline[0], recordedAt: "2024-02-29T23:59:59.999Z" }]));
+writeEvents(mixed);
+const beforeTimes = [readFileSync(log), readFileSync(current)];
+await assert.rejects(() => call(["times", "--json"]), /usage: resume times/);
+assert.deepEqual([readFileSync(log), readFileSync(current)], beforeTimes);
+console.log(`time validation: ${invalid.length} malformed values refuse with ordinal and preserve log/projection; valid leap day accepted`);
+NODE
+for variant in absent reordered backwards; do
+  cmp "$test_root/time-baseline.masked" "$test_root/time-$variant.masked"
+  printf 'time-blind current.md cmp: %s passed\n' "$variant"
+done
+
+usage_repo="$test_root/usage-repo"
+mkdir -p "$usage_repo/scripts" "$usage_repo/docs/control/orders" "$usage_repo/docs/control/local"
+cp -- "$script_dir/resume.mjs" "$usage_repo/scripts/resume.mjs"
+cp -R -- "$script_dir/lib" "$usage_repo/scripts/lib"
+cp -- "$script_dir/../.gitignore" "$usage_repo/.gitignore"
+node "$script_dir/test-beacon-fixture.mjs" "$usage_repo"
+git init "$usage_repo" >/dev/null 2>&1
+node --input-type=module - "$usage_repo" "$script_dir" <<'NODE'
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import { syncBuiltinESMExports } from "node:module";
+import { execFileSync } from "node:child_process";
+import childProcess from "node:child_process";
+import { join, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
+const [root, scripts] = process.argv.slice(2);
+const { main } = await import(pathToFileURL(join(root, "scripts/resume.mjs")));
+const { readControl } = await import(pathToFileURL(join(root, "scripts/lib/control-store.mjs")));
+const { completedPhaseAttempts, controlTimeProjection } = await import(pathToFileURL(join(root, "scripts/lib/control-time.mjs")));
+const { renderHistory } = await import(pathToFileURL(join(scripts, "work-orders.mjs")));
+const stdout = process.stdout.write, stderr = process.stderr.write;
+const call = async (args) => {
+  let output = "";
+  process.stdout.write = (chunk) => { output += chunk; return true; };
+  process.stderr.write = () => true;
+  try { await main(args); } finally { process.stdout.write = stdout; process.stderr.write = stderr; }
+  return output;
+};
+const actorA = { harness: "codex-cli", harnessVersion: "fixture-1", model: "model-alpha", effort: "high", source: "self-reported", accountLabel: "a1" };
+const actorB = { harness: "claude-code", harnessVersion: "fixture-1", model: "model-beta", effort: "unknown", source: "self-reported", accountLabel: "claude-2" };
+const actorC = { ...actorA, harnessVersion: "fixture-2", effort: "max", accountLabel: "claude-2" };
+const { accountLabel, ...actorD } = actorA;
+const event = (workOrderId, type, seconds, actor, verdict = "pass") => ({
+  schemaVersion: 1, type, workOrderId,
+  ...(type === "WorkOrderActivated" ? { workOrderPath: `docs/work-orders/${workOrderId}-fixture.md` } : {}),
+  ...(seconds === undefined ? {} : { recordedAt: new Date(Date.UTC(2026, 8, 5) + seconds * 1000).toISOString() }),
+  ...(actor ? { actor, verdict } : {}),
+});
+const first = [
+  event("WO-075", "WorkOrderActivated"),
+  event("WO-075", "ImplementationReady", 0, actorA),
+  event("WO-075", "VerificationRequested", 0),
+  event("WO-075", "VerificationCompleted", 1, actorA, "fail"),
+  event("WO-075", "RepairRequested", 2),
+  event("WO-075", "RepairCompleted", 5, actorB),
+  event("WO-075", "VerificationRequested", 6),
+  event("WO-075", "VerificationCompleted", 10, actorA),
+  event("WO-075", "FinalReviewRequested", 11),
+  event("WO-075", "FinalReviewCompleted", 9, actorB),
+];
+const second = [
+  event("WO-076", "WorkOrderActivated", 20),
+  event("WO-076", "ImplementationReady", 22, actorA),
+  event("WO-076", "VerificationRequested", 23),
+  event("WO-076", "VerificationCompleted", 24, actorA),
+  event("WO-076", "FinalReviewRequested", 25),
+  event("WO-076", "FinalReviewCompleted", 26, actorB, "fail"),
+];
+const third = [
+  event("WO-077", "WorkOrderActivated", 30),
+  event("WO-077", "ImplementationReady", 31, actorC),
+  event("WO-077", "VerificationRequested", 32),
+  event("WO-077", "VerificationCompleted", 32, actorD),
+  event("WO-077", "FinalReviewRequested", 33),
+];
+const writeEvents = (path, events) => fs.writeFileSync(join(root, path), events.map(JSON.stringify).join("\n") + "\n");
+const paths = ["docs/control/resume.jsonl", "docs/control/orders/WO-076.jsonl", "docs/control/orders/WO-077.jsonl", "docs/control/current.md"];
+writeEvents(paths[0], first); writeEvents(paths[1], second); writeEvents(paths[2], third);
+fs.writeFileSync(join(root, paths[3]), "deliberately stale projection\n");
+fs.writeFileSync(join(root, "docs/control/local/account-labels.md"), "fixture mapping canary\n");
+for (const path of paths) fs.copyFileSync(join(root, path), join(root, `${path}.before`));
+// Snapshot copies cannot live in orders/, whose entire directory is authoritative.
+for (const path of paths.filter((path) => path.includes("/orders/")))
+  fs.renameSync(join(root, `${path}.before`), join(root, `${path.replace("/orders/", "/")}.before`));
+const before = paths.map((path) => fs.readFileSync(join(root, path)));
+process.env.DOTLN_ACCOUNT_LABEL = "invalid@fixture";
+// Observe actual filesystem calls made by the dispatcher; the private lane
+// must remain unopened, even if a mapping is present and the env label is set.
+const savedFs = {};
+let interceptedFsCalls = 0;
+for (const name of ["readFileSync", "readdirSync", "existsSync", "lstatSync", "statSync", "realpathSync"]) {
+  savedFs[name] = fs[name];
+  fs[name] = (path, ...args) => {
+    interceptedFsCalls++;
+    const named = path instanceof URL ? path.pathname : String(path);
+    assert.ok(!resolve(named).startsWith(join(root, "docs/control/local")), `private lane accessed by ${name}`);
+    return savedFs[name](path, ...args);
+  };
+}
+syncBuiltinESMExports();
+let usage, rendered;
+const savedSpawn = childProcess.spawnSync;
+childProcess.spawnSync = () => { throw new Error("usage attempted to launch a process"); };
+syncBuiltinESMExports();
+try {
+  usage = JSON.parse(await call(["usage", "--json"]));
+  rendered = await call(["usage"]);
+} finally { Object.assign(fs, savedFs); childProcess.spawnSync = savedSpawn; syncBuiltinESMExports(); delete process.env.DOTLN_ACCOUNT_LABEL; }
+assert.ok(interceptedFsCalls > 0, "privacy canary must intercept the dispatcher filesystem reads");
+assert.deepEqual(JSON.parse(execFileSync(process.execPath, [join(root, "scripts/resume.mjs"), "usage", "--json"], { encoding: "utf8" })), usage);
+assert.equal(execFileSync(process.execPath, [join(root, "scripts/resume.mjs"), "usage"], { encoding: "utf8" }), rendered);
+assert.deepEqual(usage.totals, { attempts: 10, elapsedMs: 11000, unknown: 1 });
+const group = (actor, phase, attempts, elapsedMs, unknown, workOrders) => {
+  const { harness, harnessVersion, model, effort } = actor;
+  return { harness, harnessVersion, model, effort, accountLabel: actor.accountLabel ?? "not-applicable", phase, attempts, elapsedMs, unknown, workOrders };
+};
+const expectedGroups = [
+  group(actorA, "implementation", 2, 2000, 1, ["WO-075", "WO-076"]),
+  group(actorA, "verification", 3, 6000, 0, ["WO-075", "WO-076"]),
+  group(actorB, "repair", 1, 3000, 0, ["WO-075"]),
+  group(actorB, "finalReview", 2, -1000, 0, ["WO-075", "WO-076"]),
+  group(actorC, "implementation", 1, 1000, 0, ["WO-077"]),
+  group(actorD, "verification", 1, 0, 0, ["WO-077"]),
+];
+assert.deepEqual(usage.byActor, expectedGroups);
+assert.deepEqual(usage.byWorkOrder, [
+  { workOrder: "WO-075", attempts: 5, elapsedMs: 6000, unknown: 1, byActor: [
+    group(actorA, "implementation", 1, 0, 1, ["WO-075"]),
+    group(actorA, "verification", 2, 5000, 0, ["WO-075"]),
+    group(actorB, "repair", 1, 3000, 0, ["WO-075"]),
+    group(actorB, "finalReview", 1, -2000, 0, ["WO-075"]),
+  ] },
+  { workOrder: "WO-076", attempts: 3, elapsedMs: 4000, unknown: 0, byActor: [
+    group(actorA, "implementation", 1, 2000, 0, ["WO-076"]),
+    group(actorA, "verification", 1, 1000, 0, ["WO-076"]),
+    group(actorB, "finalReview", 1, 1000, 0, ["WO-076"]),
+  ] },
+  { workOrder: "WO-077", attempts: 2, elapsedMs: 1000, unknown: 0, byActor: expectedGroups.slice(4) },
+]);
+assert.match(usage.timing, /include waiting/);
+// Parse both text groupings back into records independently of the renderer.
+const textGroups = rendered.split("\n").filter((line) => /^\s*- harness=/.test(line)).map((line) => {
+  const entries = line.replace(/^\s*- /, "").split("; ").map((part) => {
+    const at = part.indexOf("="); const key = part.slice(0, at), value = part.slice(at + 1);
+    return [key, key === "workOrders" ? value.split(",") : JSON.parse(value)];
+  });
+  return Object.fromEntries(entries);
+});
+assert.deepEqual(textGroups, [...expectedGroups, ...usage.byWorkOrder.flatMap((row) => row.byActor)]);
+assert.match(rendered, /Total: attempts=10; elapsedMs=11000; unknown=1/);
+for (const row of usage.byWorkOrder)
+  assert.ok(rendered.includes(`${row.workOrder}: attempts=${row.attempts}; elapsedMs=${row.elapsedMs}; unknown=${row.unknown}`));
+await assert.rejects(() => call(["status", "--json"]), /ambiguous work-order selection/);
+for (const args of [["--wat"], ["--json", "--json"], ["--work-order", "WO-075"]])
+  await assert.rejects(() => call(["usage", ...args]), /usage: resume usage/);
+assert.deepEqual(paths.map((path) => fs.readFileSync(join(root, path))), before);
+for (const path of paths)
+  execFileSync("cmp", [join(root, path), join(root, `${path.replace("/orders/", "/")}.before`)]);
+console.log(`usage fixture: ${JSON.stringify(usage.totals)}; 6 exact actor/phase groups; all three work-order groups and text numbers match`);
+console.log("usage privacy: every instrumented filesystem call avoided docs/control/local; ambient label ignored; stale projection and every segment preserved");
+console.log("usage cmp: current.md, legacy log and both order segments byte-identical after both output forms and refused arguments");
+console.log("usage source boundary: no subprocess or Git discovery; CLI and direct dispatcher reports agree");
+// Pairing must retain all attempts across activations without borrowing a
+// stale start, or confusing interleaved orders. Status still resets on activation.
+assert.equal([...completedPhaseAttempts([first[0], first[2], event("WO-075", "WorkOrderActivated", 50), first[3]])][0].elapsedMs, "unknown");
+assert.equal([...completedPhaseAttempts([...first, event("WO-075", "WorkOrderActivated", 50), event("WO-075", "ImplementationReady", 51, actorA)])].length, 6);
+assert.deepEqual(controlTimeProjection([...first, event("WO-075", "WorkOrderActivated", 50)]).elapsed, {});
+assert.deepEqual([...completedPhaseAttempts([second[0], third[0], second[1], third[1]])].map((row) => row.elapsedMs), [2000, 1000]);
+assert.equal([...completedPhaseAttempts([second[0], event("WO-076", "ImplementationReady", undefined, actorA)])][0].elapsedMs, "unknown");
+assert.equal([...completedPhaseAttempts([first[0], event("WO-075", "ImplementationReady", undefined, actorA)])][0].elapsedMs, "unknown");
+writeEvents(paths[0], first.map((entry) => entry.type === "ImplementationReady" ? { ...entry, actor: undefined } : entry));
+assert.equal(JSON.parse(await call(["usage", "--json"])).byActor[0].harness, "unknown");
+writeEvents(paths[0], first);
+
+// Completion label grammar, report parity, and all downstream projections.
+const id = "WO-078", authority = `docs/work-orders/${id}-fixture.md`;
+fs.mkdirSync(join(root, "docs/work-orders"), { recursive: true });
+fs.writeFileSync(join(root, authority), `# ${id} fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n`);
+const selectedCall = (args) => call([...args, "--work-order", id]);
+await selectedCall(["activate", id, authority]);
+const actor = { harness: "human", harnessVersion: "not-applicable", model: "human", effort: "unknown", source: "operator-attested" };
+const flags = ["--harness", "human", "--harness-version", "not-applicable", "--model", "human", "--effort", "unknown", "--source", "operator-attested"];
+const labelLog = join(root, `docs/control/orders/${id}.jsonl`);
+const last = () => JSON.parse(fs.readFileSync(labelLog, "utf8").trim().split("\n").at(-1));
+const snapshot = () => [fs.readFileSync(labelLog), fs.readFileSync(join(root, "docs/control/current.md"))];
+for (const label of ["Test", "a b", "x@y", "a".repeat(17), "a\u2028b", "a\u2029b", "a\nb", "a\n", "a\x00b", "", "1a"]) {
+  const before = snapshot();
+  await assert.rejects(() => selectedCall(["implementation-ready", ...flags, "--account-label", label]), /invalid account label|usage: resume implementation-ready/);
+  assert.deepEqual(snapshot(), before);
+}
+for (const extra of [["--account-label"], ["--account-label", "a1", "--account-label", "claude-2"]])
+  await assert.rejects(() => selectedCall(["implementation-ready", ...flags, ...extra]), /usage: resume implementation-ready/);
+process.env.DOTLN_ACCOUNT_LABEL = "invalid@fixture";
+const beforeEnv = snapshot();
+await assert.rejects(() => selectedCall(["implementation-ready", ...flags]), /invalid account label/);
+assert.deepEqual(snapshot(), beforeEnv);
+process.env.DOTLN_ACCOUNT_LABEL = "a1";
+await selectedCall(["implementation-ready", ...flags]);
+assert.equal(last().actor.accountLabel, "a1");
+assert.equal(JSON.parse(await selectedCall(["status", "--json"])).latestAttestation.accountLabel, "a1");
+assert.match(fs.readFileSync(join(root, "docs/control/current.md"), "utf8"), /account a1/);
+await selectedCall(["verify"]);
+const report = async (field, attestation) => {
+  const status = JSON.parse(await selectedCall(["status", "--json"]));
+  const file = join(root, status[field]);
+  fs.mkdirSync(join(file, ".."), { recursive: true });
+  fs.writeFileSync(file, `# Fixture\n\n**Actor attestation:** ${JSON.stringify(attestation)}\n\n**Process cost:** unknown; cause no-session\n`);
+};
+await report("verificationPath", actor);
+const beforeReport = snapshot();
+await assert.rejects(() => selectedCall(["verification-result", "fail", ...flags]), /actor header does not match/);
+assert.deepEqual(snapshot(), beforeReport);
+await report("verificationPath", { ...actor, accountLabel: "claude-2" });
+process.env.DOTLN_ACCOUNT_LABEL = "invalid@fixture";
+await selectedCall(["verification-result", "fail", ...flags, "--account-label", "claude-2"]);
+assert.equal(last().actor.accountLabel, "claude-2");
+await selectedCall(["fix"]);
+await selectedCall(["repair-complete", ...flags, "--account-label", "a1"]);
+assert.equal(last().actor.accountLabel, "a1");
+delete process.env.DOTLN_ACCOUNT_LABEL;
+await selectedCall(["verify"]);
+await report("verificationPath", actor);
+await selectedCall(["verification-result", "pass", ...flags]);
+assert.ok(!Object.hasOwn(last().actor, "accountLabel"));
+assert.equal(JSON.parse(await selectedCall(["status", "--json"])).latestAttestation.accountLabel, "not-applicable");
+assert.match(fs.readFileSync(join(root, "docs/control/current.md"), "utf8"), /account not-applicable/);
+await selectedCall(["final-review"]);
+await report("finalReviewPath", { ...actor, accountLabel: "claude-2" });
+process.env.DOTLN_ACCOUNT_LABEL = "a1";
+await selectedCall(["final-review-result", "pass", ...flags, "--account-label", "claude-2"]);
+delete process.env.DOTLN_ACCOUNT_LABEL;
+assert.equal(last().actor.accountLabel, "claude-2");
+const state = readControl(root).orders.get(id).state;
+const index = renderHistory({ rows: [{ id, path: authority, title: "Fixture", phase: "closed", section: "Closed", model: "any", effort: "any", dependencies: { source: "conservative-tokens", entries: [], blocking: [] }, state }], sequence: [], releases: [] });
+assert.match(index, /Latest attestation: harness human;.*account claude-2/);
+console.log("account labels: 11 invalid forms, missing/duplicate flags and invalid env refused before append; a1/claude-2 accepted; env default and flag override checked through all four completion commands");
+console.log("account projections: optional field stays absent in stored history; status/current render not-applicable; labelled status/current/index and report-header parity checked");
+NODE
+for source in resume.jsonl orders/WO-076.jsonl orders/WO-077.jsonl; do
+  cmp "$usage_repo/docs/control/$source" "$usage_repo/docs/control/${source#orders/}.before"
+done
+# current.md was intentionally refreshed by the later labelled lifecycle fixture;
+# its usage-only byte comparison ran before any completion transition above.
+git -C "$usage_repo" check-ignore docs/control/local/account-labels.md
+printf 'usage cmp: legacy and every original order segment unchanged; local mapping ignored\n'
+
+node "$script_dir/test-control-segments.mjs" "$test_root"
+printf 'beacons: every lifecycle transition matches phase/verdict/effort/time; status and next preserve inode/ctime/size/mtime\n'
+printf 'resume tests passed\n'

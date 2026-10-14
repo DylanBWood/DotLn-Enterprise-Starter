@@ -1,0 +1,283 @@
+#!/usr/bin/env bash
+set -euo pipefail
+unset DOTLN_ACCOUNT_LABEL # Fixtures declare their own actors.
+
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+source "$script_dir/test-temp-root.sh"
+tmp_base="${TMPDIR:-/tmp}"
+tmp_base="$(resolve_test_tmp_base "$tmp_base")"
+test_root_prefix="dotln-checkpoint-test"
+create_test_temp_root "$tmp_base" "$test_root_prefix"
+test_root="$test_temp_root_result"
+install_test_temp_root_traps "$tmp_base" "$test_root" "$test_root_prefix"
+fixture_repo="$test_root/repo"
+saved="$test_root/saved"
+
+git init "$fixture_repo" >/dev/null
+git -C "$fixture_repo" config user.email test@example.invalid
+git -C "$fixture_repo" config user.name "DotLn Test"
+mkdir -p "$fixture_repo/scripts" "$fixture_repo/docs/work-orders" "$fixture_repo/docs/discovery"
+cp -- "$script_dir/resume.mjs" "$fixture_repo/scripts/resume.mjs"
+cp -R -- "$script_dir/lib" "$fixture_repo/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$fixture_repo"
+cp -- "$script_dir/../.gitignore" "$fixture_repo/.gitignore"
+printf '%s\n' \
+  '# fixture' \
+  '' \
+  '**Model:** fixture-model.' \
+  '**Effort:** executor any; verifier any; reviewer any.' >"$fixture_repo/docs/work-orders/WO-099-fixture.md"
+printf '%s\n' \
+  '{"effortReadbackProbe":{"harnesses":{"codex-cli":{"versions":[{"classification":"observed","value":"fixture"}],"persistedEffortSelector":{"classification":"observed","value":"xhigh"}}}}}' >"$fixture_repo/docs/discovery/environment.json"
+git -C "$fixture_repo" add .
+git -C "$fixture_repo" commit -m initial >/dev/null
+
+node "$fixture_repo/scripts/resume.mjs" activate WO-099 docs/work-orders/WO-099-fixture.md >/dev/null
+refs_before_refusal="$(git -C "$fixture_repo" for-each-ref --format='%(refname)' refs/dotln/checkpoint/WO-099/)"
+if node "$fixture_repo/scripts/resume.mjs" verify >/dev/null 2>&1; then printf 'error: illegal transition accepted\n' >&2; exit 1; fi
+test "$(git -C "$fixture_repo" for-each-ref --format='%(refname)' refs/dotln/checkpoint/WO-099/)" = "$refs_before_refusal"
+mkdir -p "$fixture_repo/packages/skeleton/src" "$fixture_repo/docs/verifications/WO-099" "$fixture_repo/docs/intake/notes" "$saved"
+printf 'export const recovered = true;\n' >"$fixture_repo/packages/skeleton/src/recovery.ts"
+printf '# VER-001 evidence\n' >"$fixture_repo/docs/verifications/WO-099/VER-001.md"
+printf 'local raw material\n' >"$fixture_repo/docs/intake/notes/raw.md"
+printf 'SECRET=fixture-only\n' >"$fixture_repo/.env"
+cp -- "$fixture_repo/packages/skeleton/src/recovery.ts" "$saved/recovery.ts"
+cp -- "$fixture_repo/docs/verifications/WO-099/VER-001.md" "$saved/VER-001.md"
+cp -- "$fixture_repo/docs/control/orders/WO-099.jsonl" "$saved/resume.jsonl"
+
+git -C "$fixture_repo" rev-parse HEAD >"$saved/head.before"
+git -C "$fixture_repo" status --porcelain >"$saved/status.before"
+head_before="$(tr -d '\n' <"$saved/head.before")"
+node "$fixture_repo/scripts/resume.mjs" implementation-ready \
+  --harness codex-cli \
+  --harness-version fixture \
+  --model fixture-model \
+  --effort xhigh \
+  --source self-reported >/dev/null
+git -C "$fixture_repo" rev-parse HEAD >"$saved/head.after"
+git -C "$fixture_repo" status --porcelain >"$saved/status.after"
+cmp "$saved/head.before" "$saved/head.after"
+cmp "$saved/status.before" "$saved/status.after"
+
+checkpoint_sha="$(node -e 'const fs=require("fs"); const events=fs.readFileSync(process.argv[1],"utf8").trim().split("\n").map(JSON.parse); process.stdout.write(events.at(-1).checkpointSha)' "$fixture_repo/docs/control/orders/WO-099.jsonl")"
+checkpoint_ref="$(node -e 'const fs=require("fs"); const events=fs.readFileSync(process.argv[1],"utf8").trim().split("\n").map(JSON.parse); process.stdout.write(events.at(-1).checkpointRef)' "$fixture_repo/docs/control/orders/WO-099.jsonl")"
+test -n "$checkpoint_sha"
+test "$(git -C "$fixture_repo" rev-parse "$checkpoint_ref")" = "$checkpoint_sha"
+test "$(git -C "$fixture_repo" rev-parse "$checkpoint_ref^")" = "$head_before"
+test "$(git -C "$fixture_repo" log -1 --format=%s "$checkpoint_ref")" = 'dotln checkpoint: implementation-ready WO-099'
+grep -Fq "git checkout $checkpoint_ref -- ." "$fixture_repo/docs/control/current.md"
+
+tree_paths="$(git -C "$fixture_repo" ls-tree -r --name-only "$checkpoint_ref")"
+grep -Fxq 'packages/skeleton/src/recovery.ts' <<<"$tree_paths"
+grep -Fxq 'docs/verifications/WO-099/VER-001.md' <<<"$tree_paths"
+grep -Fxq 'docs/control/orders/WO-099.jsonl' <<<"$tree_paths"
+if grep -Eq '^(docs/intake/|\.env$)' <<<"$tree_paths"; then printf 'error: ignored material entered checkpoint\n' >&2; exit 1; fi
+
+git -C "$fixture_repo" checkout -- .
+git -C "$fixture_repo" clean -fd >/dev/null
+test ! -e "$fixture_repo/packages/skeleton/src/recovery.ts"
+test ! -e "$fixture_repo/docs/verifications/WO-099/VER-001.md"
+test ! -e "$fixture_repo/docs/control/orders/WO-099.jsonl"
+git -C "$fixture_repo" checkout "$checkpoint_ref" -- .
+cmp "$saved/recovery.ts" "$fixture_repo/packages/skeleton/src/recovery.ts"
+cmp "$saved/VER-001.md" "$fixture_repo/docs/verifications/WO-099/VER-001.md"
+cmp "$saved/resume.jsonl" "$fixture_repo/docs/control/orders/WO-099.jsonl"
+test -f "$fixture_repo/docs/intake/notes/raw.md"
+test -f "$fixture_repo/.env"
+
+stale_repo="$test_root/stale-repo"
+mkdir -p "$stale_repo/scripts" "$stale_repo/docs/work-orders" "$stale_repo/docs/discovery" "$test_root/failing-git"
+cp -- "$script_dir/resume.mjs" "$stale_repo/scripts/resume.mjs"
+cp -R -- "$script_dir/lib" "$stale_repo/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$stale_repo"
+cp -- "$script_dir/../.gitignore" "$stale_repo/.gitignore"
+printf '%s\n' \
+  '# fixture' \
+  '' \
+  '**Model:** fixture-model.' \
+  '**Effort:** executor any; verifier any; reviewer any.' >"$stale_repo/docs/work-orders/WO-098-fixture.md"
+printf '%s\n' \
+  '{"effortReadbackProbe":{"harnesses":{"codex-cli":{"versions":[{"classification":"observed","value":"fixture"}],"persistedEffortSelector":{"classification":"observed","value":"xhigh"}}}}}' >"$stale_repo/docs/discovery/environment.json"
+git init "$stale_repo" >/dev/null
+git -C "$stale_repo" config user.email test@example.invalid
+git -C "$stale_repo" config user.name "DotLn Test"
+git -C "$stale_repo" add .
+git -C "$stale_repo" commit -m initial >/dev/null
+node "$stale_repo/scripts/resume.mjs" activate WO-098 docs/work-orders/WO-098-fixture.md >/dev/null
+prior_checkpoint="$(git -C "$stale_repo" for-each-ref --format='%(refname)' refs/dotln/checkpoint/WO-098/)"
+test -n "$prior_checkpoint"
+# Let the inline whitespace check and tree observation run; fail only the
+# checkpoint commit. Without the fixture-only real Git path, all Git is absent.
+real_git="$(command -v git)"
+printf '%s\n' \
+  '#!/bin/sh' \
+  'if [ -z "${DOTLN_CHECKPOINT_REAL_GIT:-}" ]; then exit 73; fi' \
+  'if [ "${1:-}" = commit-tree ] || { [ "${1:-}" = -C ] && [ "${3:-}" = commit-tree ]; }; then exit 73; fi' \
+  'exec "$DOTLN_CHECKPOINT_REAL_GIT" "$@"' >"$test_root/failing-git/git"
+chmod +x "$test_root/failing-git/git"
+node_bin="$(command -v node)"
+checkpoint_warning="$(DOTLN_CHECKPOINT_REAL_GIT="$real_git" PATH="$test_root/failing-git" "$node_bin" "$stale_repo/scripts/resume.mjs" implementation-ready \
+  --harness codex-cli \
+  --harness-version fixture \
+  --model fixture-model \
+  --effort xhigh \
+  --source self-reported 2>&1 >/dev/null)"
+grep -Fq 'warning: could not create recovery checkpoint for implementation-ready' <<<"$checkpoint_warning"
+grep -Fq 'Do not repeat this transition after it records' <<<"$checkpoint_warning"
+grep -Fq 'one-invocation outside-sandbox approval' <<<"$checkpoint_warning"
+grep -Fq 'never persist an allow rule' <<<"$checkpoint_warning"
+grep -Fq 'docs/AI-HARNESS-SECURITY.md' <<<"$checkpoint_warning"
+grep -Fq 'Latest checkpoint: unavailable for the latest transition; do not use an older checkpoint' "$stale_repo/docs/control/current.md"
+if grep -Fq "$prior_checkpoint" "$stale_repo/docs/control/current.md"; then printf 'error: stale checkpoint remained advertised\n' >&2; exit 1; fi
+grep -Fq '"checkpointUnavailable":true' "$stale_repo/docs/control/orders/WO-098.jsonl"
+
+# Time recovery reads the named commit ref, never its tree or a neighboring event.
+time_blob_sha="$(printf 'fixture time blob\n' | git -C "$fixture_repo" hash-object -w --stdin)"
+git -C "$fixture_repo" update-ref refs/dotln/checkpoint/WO-099/9988 "$time_blob_sha"
+git -C "$fixture_repo" for-each-ref --format='%(refname) %(objectname)' refs/dotln/ >"$saved/times.refs.before"
+node - "$fixture_repo" <<'NODE'
+const fs = require("node:fs");
+const path = require("node:path");
+const root = process.argv[2];
+const log = path.join(root, "docs/control/orders/WO-099.jsonl");
+const activation = JSON.parse(fs.readFileSync(log, "utf8").trim().split("\n")[0]);
+if (!activation.recordedAt || !activation.checkpointRef) throw new Error("activation omitted recordedAt or checkpoint");
+const events = [
+  { ...activation, recordedAt: "2026-09-04T12:34:56.789Z", checkpointRef: "refs/dotln/checkpoint/WO-099/9999", checkpointSha: "missing-but-not-needed" },
+  { schemaVersion: 1, type: "ImplementationReady", workOrderId: "WO-099", checkpointRef: activation.checkpointRef, checkpointSha: activation.checkpointSha },
+  { schemaVersion: 1, type: "VerificationRequested", workOrderId: "WO-099" },
+];
+fs.writeFileSync(log, events.map(JSON.stringify).join("\n") + "\n");
+NODE
+cp -- "$fixture_repo/docs/control/orders/WO-099.jsonl" "$saved/times.log.before"
+cp -- "$fixture_repo/docs/control/current.md" "$saved/times.current.before"
+node "$fixture_repo/scripts/resume.mjs" times >"$saved/times.json"
+node "$fixture_repo/scripts/resume.mjs" times >"$saved/times.again.json"
+cmp "$saved/times.json" "$saved/times.again.json"
+cmp "$saved/times.log.before" "$fixture_repo/docs/control/orders/WO-099.jsonl"
+cmp "$saved/times.current.before" "$fixture_repo/docs/control/current.md"
+git -C "$fixture_repo" for-each-ref --format='%(refname) %(objectname)' refs/dotln/ >"$saved/times.refs.after"
+cmp "$saved/times.refs.before" "$saved/times.refs.after"
+node - "$fixture_repo" "$saved/times.json" "$saved/times.log.before" <<'NODE'
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
+const { spawnSync } = require("node:child_process");
+const [root, outputPath, originalPath] = process.argv.slice(2);
+const source = fs.readFileSync(outputPath, "utf8");
+const output = JSON.parse(source);
+const original = fs.readFileSync(originalPath, "utf8");
+const events = original.trim().split("\n").map(JSON.parse);
+const { runGit } = require(path.join(root, "scripts/lib/git.mjs"));
+const expectedSeconds = Number(runGit(root, ["show", "-s", "--format=%ct", events[1].checkpointSha]));
+assert.equal(output.eventCount, 3);
+assert.equal(output.localRefsRead, 1);
+assert.deepEqual(output.counts, { recordedAt: 1, "recovered-from-local-checkpoint-ref": 1, unknown: 1 });
+assert.match(output.checkpointRefs, /remain unpushed/);
+assert.match(output.recoveredPrecision, /second precision/);
+assert.equal(source.split("\n").filter((line) => line.startsWith('    {"ordinal":')).length, 3);
+assert.deepEqual(output.events, [
+  { ordinal: 1, workOrder: "WO-099", type: "WorkOrderActivated", time: "2026-09-04T12:34:56.789Z", source: "recordedAt" },
+  { ordinal: 2, workOrder: "WO-099", type: "ImplementationReady", time: new Date(expectedSeconds * 1000).toISOString(), source: "recovered-from-local-checkpoint-ref" },
+  { ordinal: 3, workOrder: "WO-099", type: "VerificationRequested", time: "unknown", source: "unknown" },
+].map((event) => ({ ...event, segment: "docs/control/orders/WO-099.jsonl" })));
+const log = path.join(root, "docs/control/orders/WO-099.jsonl");
+const current = path.join(root, "docs/control/current.md");
+const projectionBefore = fs.readFileSync(current);
+for (const [change, refusal] of [
+  [{ checkpointRef: "refs/dotln/checkpoint/WO-099/9999" }, /missing local checkpoint ref in docs\/control\/orders\/WO-099.jsonl at ordinal 2/],
+  [{ checkpointSha: "0".repeat(40) }, /checkpoint SHA mismatch in docs\/control\/orders\/WO-099.jsonl at ordinal 2/],
+  [{ checkpointRef: "HEAD" }, /invalid checkpoint ref in docs\/control\/orders\/WO-099.jsonl at ordinal 2/],
+  [{ checkpointRef: "refs/dotln/checkpoint/WO-098/1" }, /invalid checkpoint ref in docs\/control\/orders\/WO-099.jsonl at ordinal 2/],
+  [{ checkpointRef: "refs/dotln/checkpoint/WO-099/9988" }, /invalid checkpoint commit in docs\/control\/orders\/WO-099.jsonl at ordinal 2/],
+]) {
+  const changed = events.map((event, index) => index === 1 ? { ...event, ...change } : event);
+  const bytes = changed.map(JSON.stringify).join("\n") + "\n";
+  fs.writeFileSync(log, bytes);
+  const result = spawnSync(process.execPath, [path.join(root, "scripts/resume.mjs"), "times"], { encoding: "utf8" });
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, refusal);
+  assert.equal(result.stdout, "", "refusal must not emit a plausible partial observation");
+  assert.equal(fs.readFileSync(log, "utf8"), bytes);
+  assert.deepEqual(fs.readFileSync(current), projectionBefore);
+}
+fs.writeFileSync(log, original);
+console.log(`time recovery: ${JSON.stringify(output.counts)}, 1 ref read; byte-identical rerun, unchanged log/projection/refs, missing and mismatched refs refused`);
+NODE
+git -C "$fixture_repo" for-each-ref --format='%(refname) %(objectname)' refs/dotln/ >"$saved/times.refs.final"
+cmp "$saved/times.refs.before" "$saved/times.refs.final"
+
+# New events retain their host timestamp even when checkpoint creation fails.
+node - "$stale_repo/docs/control/orders/WO-098.jsonl" <<'NODE'
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const events = fs.readFileSync(process.argv[2], "utf8").trim().split("\n").map(JSON.parse);
+assert.equal(events.at(-1).checkpointUnavailable, true);
+for (const event of events) assert.equal(new Date(event.recordedAt).toISOString(), event.recordedAt);
+NODE
+PATH="$test_root/failing-git" "$node_bin" "$stale_repo/scripts/resume.mjs" times >"$saved/times.no-git.json"
+node - "$saved/times.no-git.json" <<'NODE'
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const output = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+assert.equal(output.localRefsRead, 0);
+assert.equal(output.counts.recordedAt, 2);
+NODE
+# Every state-changing lifecycle transition owns an executable recovery ref.
+lifecycle_repo="$test_root/all-transitions"
+mkdir -p "$lifecycle_repo/scripts" "$lifecycle_repo/docs/work-orders"
+cp "$script_dir/resume.mjs" "$lifecycle_repo/scripts/resume.mjs"
+cp -R "$script_dir/lib" "$lifecycle_repo/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$lifecycle_repo"
+cp "$script_dir/../.gitignore" "$lifecycle_repo/.gitignore"
+printf '# WO-097 — checkpoint fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n' >"$lifecycle_repo/docs/work-orders/WO-097-fixture.md"
+printf 'initial sentinel\n' >"$lifecycle_repo/recovery-sentinel.txt"
+git -C "$lifecycle_repo" init -q
+git -C "$lifecycle_repo" config user.name 'Checkpoint Fixture'
+git -C "$lifecycle_repo" config user.email fixture@example.invalid
+git -C "$lifecycle_repo" add .
+git -C "$lifecycle_repo" commit -qm initial
+printf 'uncommitted recovery sentinel\n' >"$lifecycle_repo/recovery-sentinel.txt"
+actor_flags=(--harness human --harness-version not-applicable --model human --effort unknown --source operator-attested)
+lifecycle() { node "$lifecycle_repo/scripts/resume.mjs" "$@" >/dev/null; }
+report() {
+  mkdir -p "$(dirname "$lifecycle_repo/$1")"
+  printf '# Fixture report\n\n**Actor attestation:** {"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"}\n\n**Process cost:** unknown; cause no-session\n' >"$lifecycle_repo/$1"
+}
+lifecycle activate WO-097 docs/work-orders/WO-097-fixture.md
+lifecycle implementation-ready "${actor_flags[@]}"
+lifecycle verify
+report docs/verifications/WO-097/VER-001.md
+lifecycle verification-result fail "${actor_flags[@]}"
+lifecycle fix
+lifecycle repair-complete "${actor_flags[@]}"
+lifecycle verify
+report docs/verifications/WO-097/VER-002.md
+lifecycle verification-result pass "${actor_flags[@]}"
+lifecycle final-review
+report docs/final-reviews/WO-097/FINAL-001.md
+lifecycle final-review-result fail "${actor_flags[@]}"
+lifecycle fix
+lifecycle repair-complete "${actor_flags[@]}"
+lifecycle verify
+report docs/verifications/WO-097/VER-003.md
+lifecycle verification-result pass "${actor_flags[@]}"
+lifecycle final-review
+report docs/final-reviews/WO-097/FINAL-002.md
+lifecycle final-review-result pass "${actor_flags[@]}"
+node - "$lifecycle_repo" <<'NODE'
+const assert = require("node:assert/strict"), fs = require("node:fs"), path = require("node:path");
+const root = process.argv[2];
+const events = fs.readFileSync(path.join(root, "docs/control/orders/WO-097.jsonl"), "utf8").trim().split("\n").map(JSON.parse);
+assert.deepEqual([...new Set(events.map((event) => event.type))].sort(), ["WorkOrderActivated", "ImplementationReady", "VerificationRequested", "VerificationCompleted", "RepairRequested", "RepairCompleted", "FinalReviewRequested", "FinalReviewCompleted"].sort());
+assert.equal(new Set(events.map((event) => event.checkpointRef)).size, events.length);
+for (const event of events) {
+  assert.match(event.checkpointSha ?? "", /^[a-f0-9]{40}$/);
+  assert.match(event.checkpointRef ?? "", /^refs\/dotln\/checkpoint\/WO-097\/[1-9]\d*$/);
+  const { runGit } = require(path.join(root, "scripts/lib/git.mjs"));
+  assert.equal(runGit(root, ["rev-parse", event.checkpointRef]), event.checkpointSha);
+  assert.equal(runGit(root, ["show", `${event.checkpointRef}:recovery-sentinel.txt`], { trim: false }), "uncommitted recovery sentinel\n");
+}
+console.log(`all lifecycle checkpoint refs resolve with recovery bytes: ${events.length} transitions`);
+NODE
+
+printf 'checkpoint tests passed\n'

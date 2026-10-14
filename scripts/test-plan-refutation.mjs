@@ -1,0 +1,6497 @@
+#!/usr/bin/env node
+import { write, json as prettyJson } from "./lib/helpers.mjs";
+import { isMainModule } from "./lib/paths.mjs";
+import test from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import childProcess from "node:child_process";
+import { syncBuiltinESMExports } from "node:module";
+import { createHash } from "node:crypto";
+import {
+  existsSync,
+  mkdtempSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  realpathSync,
+  renameSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { authorize } from "../packages/kernel/dist/src/index.js";
+import { compilePlanRefuter } from "../packages/skeleton/dist/src/loadouts/plan-refuter.js";
+import {
+  sinceEntropyReview,
+  failuresAtStart,
+  operationalFailures,
+  exportFailures,
+} from "./lib/plan-failures.mjs";
+import {
+  FakePlanRefutationTransport,
+  cannedPlanDrift,
+  cannedGoalReview,
+} from "../packages/skeleton/dist/src/plan-refutation-fake.js";
+import { runPlanRefutation } from "../packages/skeleton/dist/src/plan-refutation-host.js";
+import {
+  validatePlanResult,
+  planResultSchema,
+} from "../packages/skeleton/dist/src/plan-refutation-protocol.js";
+import {
+  ClaudeCliPrintWorkOrderTransport,
+  CodexCliExecWorkOrderTransport,
+} from "../packages/skeleton/dist/src/worker-transport.js";
+import {
+  buildPlanSubject,
+  committedReader,
+  prefetchCommittedSources,
+  PLAN_MAP,
+  PLAN_LEDGER,
+  planningPasses,
+  sha256,
+  THESIS_HEADINGS,
+  planOrderHash,
+  carriedOrderHashMatches,
+} from "./lib/plan-subject.mjs";
+import {
+  checkPassReceipt,
+  checkPlanGate,
+  OVERRIDES,
+  overridePlanHold,
+  disposePlanHold,
+  amendPlanOrder,
+  withdrawPlanAmendment,
+  criterionDispositions,
+  criterionHash,
+  readOverrides,
+  readReceipts,
+  RECEIPTS,
+  renderPlanReceipt,
+  validateReceipt,
+  writePlanReceipt,
+} from "./lib/plan-receipts.mjs";
+import { checkLocalTerms } from "./lib/terms.mjs";
+import { fold, parseControlEvents } from "./lib/control.mjs";
+import { runGit } from "./lib/git.mjs";
+import { isCorrection } from "./lib/meta.mjs";
+import { main as plan } from "./refute-plan.mjs";
+import { publishedReleases, recordScores } from "./lib/reader-profiles.mjs";
+import {
+  beginDirectRefutation,
+  fileDirectRefutation,
+  planJudgmentScope,
+  latestPlanningPass,
+} from "./lib/plan-direct.mjs";
+import {
+  capabilityHistoryRepair,
+  executionAmendmentSource,
+  reassessments,
+} from "./lib/plan-continuation.mjs";
+import {
+  checkSequenceTopology,
+  parseSequenceGroups,
+  readIndex,
+  main as workOrders,
+} from "./work-orders.mjs";
+import { projectDependencies } from "./lib/dependencies.mjs";
+import { LEGACY_COST_HEADER } from "./lib/legacy-cost.mjs";
+
+const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const now = () => Date.parse("2030-01-02T12:00:00.000Z");
+const actor = {
+  harness: "human",
+  harnessVersion: "fixture",
+  model: "human",
+  effort: "unknown",
+  source: "operator-attested",
+  accountLabel: "fixture",
+};
+const read = (repo, path) => readFileSync(join(repo, path), "utf8");
+const commit = (repo, label, date = "2030-01-02T00:00:00Z") => {
+  runGit(repo, ["add", "--all"]);
+  runGit(
+    repo,
+    [
+      "-c",
+      "user.name=Plan Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "commit",
+      "-qm",
+      label,
+    ],
+    {
+      env: {
+        ...process.env,
+        GIT_AUTHOR_DATE: date,
+        GIT_COMMITTER_DATE: date,
+      },
+    },
+  );
+};
+const orderPath = (id) => `docs/work-orders/${id}-fixture.md`;
+const order = (id) =>
+  `# ${id} — Fixture\n\n**Model:** fixture\n**Effort:** executor any; verifier any; reviewer any.\n**Nomination provenance:** PLANNER_NARRATIVE_SENTINEL\n\n**Objective:** Move the shape.\n\n**Design:** PLANNER_NARRATIVE_SENTINEL\n\n**Acceptance criteria (all required)**\n\n1. Evidence confirms a useful shape.\n2. Keep a bounded result.\n\n**Evidence gate:** PLANNER_NARRATIVE_SENTINEL\n\n**Non-goals:** Other shapes.\n\n**Operator-review assumptions**\n\n1. PLANNER_NARRATIVE_SENTINEL\n`;
+const makeRepo = (parent, name, oldDate = "2029-01-01") => {
+  const repo = join(parent, name);
+  mkdirSync(repo);
+  runGit(repo, ["init", "-q"]);
+  assert.equal(runGit(repo, ["rev-parse", "--show-toplevel"]), repo);
+  write(repo, ".gitignore", "docs/intake/**\ndocs/control/local/**\n");
+  write(
+    repo,
+    PLAN_MAP,
+    "# Fixture map\n\nPLANNER_NARRATIVE_SENTINEL\n\n<!-- dotln-work-order-sequence:start -->\n- WO-901 — First\n- WO-902 — Second\n<!-- dotln-work-order-sequence:end -->\n",
+  );
+  write(
+    repo,
+    PLAN_LEDGER,
+    `# Ledger\n\n## ${oldDate} old planning pass\n\nPLANNER_NARRATIVE_SENTINEL\n`,
+  );
+  write(
+    repo,
+    "docs/product/00-vision.md",
+    `# Vision\n\n${THESIS_HEADINGS.map(([, heading]) => `## ${heading}\n\nEvidence describes the shape.\n\n`).join("")}## What DotLn is not\n\n- Not a fixture-shaped dead end.\n- Not a compulsory doctrine.\n\n## Other narrative\n\nPLANNER_NARRATIVE_SENTINEL\n`,
+  );
+  write(
+    repo,
+    "docs/product/13-uifa-roles.md",
+    `# Roles\n\n## The five roles\n\n| Role | Owns |\n| --- | --- |\n${["product lead", "showrunner", "engineer", "tester", "devops"].map((role) => `| **UIFA ${role}** | A useful shape. |`).join("\n")}\n\n### Extra\n\nPLANNER_NARRATIVE_SENTINEL\n`,
+  );
+  write(
+    repo,
+    "docs/planning/capability-table.md",
+    "# Capabilities\n\n| Capability | Level | Narrative |\n| --- | --- | --- |\n| `fixture.first` | **0 — latent** | PLANNER_NARRATIVE_SENTINEL |\n",
+  );
+  write(
+    repo,
+    "docs/product/07-execution-guide.md",
+    "# Fixture guide\n\n## Goal-aligned decisions\n\nConsider all eight system traps and observed operator flow.\n\n## Platform-first\n\n" +
+      read(root, "docs/product/07-execution-guide.md").match(
+        /the point is to create a platform,[\s\S]*?before a later pass pays it again\./u,
+      )[0] +
+      "\n",
+  );
+  write(
+    repo,
+    "docs/planning/critical-path-2026-09-08.md",
+    "# Fixture critical path\n\n## The critical path\n\nGate R delivers an independently verified runtime loop.\n",
+  );
+  for (const id of ["WO-901", "WO-902"]) write(repo, orderPath(id), order(id));
+  commit(repo, "before mechanism");
+  write(repo, "scripts/refute-plan.mjs", "// fixture introduction marker\n");
+  commit(repo, "introduce mechanism");
+  write(
+    repo,
+    PLAN_LEDGER,
+    `${read(repo, PLAN_LEDGER)}\n## 2030-01-02 fixture planning pass\n\nNew pass.\n`,
+  );
+  commit(repo, "planning pass");
+  return repo;
+};
+const passFor = (repo) => {
+  const pass = planningPasses(read(repo, PLAN_LEDGER)).at(-1);
+  return { id: pass.id, kind: "planning", heading: pass.heading };
+};
+const passResult = (subject) => ({
+  ...cannedPlanDrift(subject),
+  orders: subject.orders.map((order) => ({
+    workOrderId: order.workOrderId,
+    verdict: "thesis-advancing",
+    thesis: subject.standard.theses[0].id,
+    capabilityRow: "fixture.first",
+    rolesServed: [subject.standard.roles[0]],
+    reason: "The first criterion advances the named thesis.",
+  })),
+  planVerdict: "pass",
+  holdReasons: [],
+});
+const episode = (subject, result = cannedPlanDrift) =>
+  runPlanRefutation(
+    subject,
+    new FakePlanRefutationTransport(result),
+    "fixture",
+    "max",
+    now,
+  );
+const writeReceipt = async (
+  repo,
+  result = cannedPlanDrift,
+  dispositions = [],
+) => {
+  const subject = buildPlanSubject(repo);
+  return writePlanReceipt(repo, {
+    pass: passFor(repo),
+    slug: "fixture",
+    subject,
+    episode: await episode(subject, result),
+    dispositions,
+  });
+};
+const directEpisode = (result) => ({
+  kind: "direct-session",
+  harness: "codex",
+  harnessVersion: "unknown",
+  model: "unknown",
+  effort: "unknown",
+  settingsVerification: "unverified",
+  profileId: "plan-refutation-v1",
+  completedAt: new Date(now()).toISOString(),
+  resultHash: sha256(prettyJson(result)),
+  judgmentBasis: "canonical-subject-and-protocol",
+  independence: "session-attested",
+  contextIsolation: "not-enforced",
+  modelTools: "available",
+  statement: "Synthetic direct-session attestation for deterministic fixtures.",
+  result,
+});
+const writeDirectReceipt = (
+  repo,
+  result = passResult,
+  dispositions = [],
+  options = {},
+) => {
+  const subject = buildPlanSubject(repo, "HEAD", options);
+  return writePlanReceipt(repo, {
+    pass: passFor(repo),
+    slug: "direct-fixture",
+    subject,
+    episode: directEpisode(validatePlanResult(result(subject), subject)),
+    dispositions,
+  });
+};
+const rehash = (receipt) => {
+  const { receiptHash: _hash, ...payload } = receipt;
+  return { ...payload, receiptHash: sha256(JSON.stringify(payload)) };
+};
+const accept = (receipt) =>
+  receipt.holds.map((hold) => ({
+    receiptId: receipt.receiptId,
+    holdId: hold.id,
+    kind: "accepted",
+    date: "2030-01-02",
+    workOrderId: hold.workOrderId,
+    criterionId: hold.criterionId,
+    change: "The named criterion now requires the missing behavior.",
+  }));
+const mutate = (repo, path, from, to) => {
+  const before = read(repo, path);
+  assert.ok(before.includes(from));
+  write(repo, path, before.replace(from, to));
+  commit(repo, "criterion or standard change");
+};
+
+// A record holding one item of each kind, events without a time, a
+// correction recorded by a misread field alone and a filed Entropy Reducer
+// review. The planning receipt completes at 2030-01-02T12:00Z, so WO-802's
+// items lie in the default window, WO-803's before it and WO-801's without a
+// time.
+const lines = (rows) =>
+  rows.map((row) => JSON.stringify({ schemaVersion: 1, ...row })).join("\n") +
+  "\n";
+const stableJson = (value) =>
+  JSON.stringify(value, (_key, item) =>
+    item && typeof item === "object" && !Array.isArray(item)
+      ? Object.fromEntries(
+          Object.keys(item)
+            .sort()
+            .map((key) => [key, item[key]]),
+        )
+      : item,
+  );
+const at = (day, hour, minute = 0) =>
+  `${day}T${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:00.000Z`;
+const failureActor = {
+  harness: "codex-cli",
+  harnessVersion: "fixture",
+  model: "fixture-model",
+  effort: "xhigh",
+  source: "operator-attested",
+};
+const failureReceipt = (ordinal, kind, completedAt) => {
+  const receiptId = `${completedAt.slice(0, 10)}-${kind}-fixture-${String(ordinal).padStart(3, "0")}`;
+  return [
+    `${RECEIPTS}/${receiptId}.json`,
+    prettyJson({
+      schemaVersion: "plan-refutation-receipt-v1",
+      receiptId,
+      ordinal,
+      pass: { id: `${kind}-fixture`, kind, heading: "Fixture pass" },
+      episode: { kind: "direct-session", completedAt },
+    }),
+  ];
+};
+const failureDecision = (id, date, extra = {}) =>
+  `## ${id}\n\n\`\`\`json\n${prettyJson({
+    id,
+    date,
+    dispatch: "resume: next",
+    decision: "Fixture decision.",
+    evidence: ["fixture"],
+    rejected: [],
+    reopenWhen: "never",
+    ...extra,
+  })}\`\`\`\n`;
+const failureRecord = (repo, { review = true } = {}) => {
+  const verification = (order, id, verdict, time, extra = {}) => [
+    {
+      type: "VerificationRequested",
+      workOrderId: order,
+      verificationId: id,
+      reportPath: `docs/verifications/${order}/${id}.md`,
+      ...(time ? { recordedAt: time } : {}),
+    },
+    {
+      type: "VerificationCompleted",
+      workOrderId: order,
+      verificationId: id,
+      reportPath: `docs/verifications/${order}/${id}.md`,
+      verdict,
+      ...(time ? { recordedAt: time } : {}),
+      ...extra,
+    },
+  ];
+  const review_ = (order, id, verdict, time) => [
+    {
+      type: "FinalReviewRequested",
+      workOrderId: order,
+      finalReviewId: id,
+      reportPath: `docs/final-reviews/${order}/${id}.md`,
+      ...(time ? { recordedAt: time } : {}),
+    },
+    {
+      type: "FinalReviewCompleted",
+      workOrderId: order,
+      finalReviewId: id,
+      reportPath: `docs/final-reviews/${order}/${id}.md`,
+      verdict,
+      ...(time ? { recordedAt: time } : {}),
+    },
+  ];
+  const repair = (order, source, time) => [
+    {
+      type: "RepairRequested",
+      workOrderId: order,
+      sourceFindingId: source,
+      ...(time ? { recordedAt: time } : {}),
+    },
+    {
+      type: "RepairCompleted",
+      workOrderId: order,
+      sourceVerificationId: source,
+      ...(time ? { recordedAt: time } : {}),
+    },
+  ];
+  // The older log holds WO-801; no event in it carries a time.
+  write(
+    repo,
+    "docs/control/resume.jsonl",
+    lines([
+      {
+        type: "WorkOrderActivated",
+        workOrderId: "WO-801",
+        workOrderPath: "docs/work-orders/WO-801-fixture.md",
+      },
+      { type: "ImplementationReady", workOrderId: "WO-801" },
+      ...verification("WO-801", "VER-001", "fail"),
+      ...repair("WO-801", "VER-001"),
+      ...verification("WO-801", "VER-002", "pass"),
+      ...review_("WO-801", "FINAL-001", "pass"),
+    ]),
+  );
+  const day = "2030-01-03";
+  write(
+    repo,
+    "docs/control/orders/WO-802.jsonl",
+    lines([
+      {
+        type: "WorkOrderActivated",
+        workOrderId: "WO-802",
+        workOrderPath: "docs/work-orders/WO-802-fixture.md",
+        recordedAt: at(day, 0),
+      },
+      {
+        type: "ImplementationReady",
+        workOrderId: "WO-802",
+        recordedAt: at(day, 1),
+      },
+      ...verification("WO-802", "VER-001", "fail", at(day, 2), {
+        actor: failureActor,
+      }),
+      ...repair("WO-802", "VER-001", at(day, 3)),
+      ...verification("WO-802", "VER-002", "pass", at(day, 4)),
+      ...review_("WO-802", "FINAL-001", "fail", at(day, 5)),
+      ...repair("WO-802", "FINAL-001", at(day, 6)),
+      {
+        type: "CriterionWaived",
+        workOrderId: "WO-802",
+        criterionId: "2",
+        reason: "Fixture waiver.",
+        capture: "docs/intake/fixture-waiver.json",
+        captureHash: sha256("fixture waiver capture"),
+        actor: failureActor,
+        recordedAt: at(day, 6, 30),
+      },
+      // A correction of VER-001's report path and judge (the event at
+      // ordinal 4), as resume correct appends it.
+      {
+        type: "RecordCorrected",
+        workOrderId: "WO-802",
+        subject: { ordinal: 4 },
+        fields: {
+          reportPath: "docs/verifications/WO-802/VER-001-corrected.md",
+          model: "corrected-model",
+        },
+        reason: "Fixture correction.",
+        actor: failureActor,
+        recordedAt: at(day, 6, 45),
+      },
+      ...verification("WO-802", "VER-003", "pass", at(day, 7)),
+      ...review_("WO-802", "FINAL-002", "pass", at(day, 8)),
+    ]),
+  );
+  write(
+    repo,
+    "docs/control/orders/WO-803.jsonl",
+    lines([
+      {
+        type: "WorkOrderActivated",
+        workOrderId: "WO-803",
+        workOrderPath: "docs/work-orders/WO-803-fixture.md",
+        recordedAt: at("2029-12-01", 0),
+      },
+      {
+        type: "ImplementationReady",
+        workOrderId: "WO-803",
+        recordedAt: at("2029-12-01", 1),
+      },
+      ...verification("WO-803", "VER-001", "pass", at("2029-12-01", 2)),
+      ...review_("WO-803", "FINAL-001", "pass", at("2029-12-01", 3)),
+    ]),
+  );
+  const amended = (decisionId, recordedAt) => ({
+    schemaVersion: 3,
+    type: "PlanExecutionAmended",
+    recordedAt,
+    receiptId: "2030-01-02-planning-fixture-001",
+    receiptHash: sha256("receipt"),
+    workOrderId: "WO-802",
+    sourceOrderHash: sha256("source order"),
+    orderHash: sha256(`order ${decisionId}`),
+    orderLength: 10,
+    decisionId,
+    decisionHash: sha256(decisionId),
+    reason: "Fixture amendment.",
+  });
+  const second = amended("WO-802-D002", at(day, 9, 30));
+  writeFileSync(
+    join(repo, OVERRIDES),
+    [
+      amended("WO-802-D001", at(day, 9)),
+      second,
+      {
+        schemaVersion: 4,
+        type: "PlanExecutionAmendmentWithdrawn",
+        recordedAt: at(day, 10),
+        workOrderId: "WO-802",
+        rowOrdinalWithdrawn: 2,
+        amendmentHash: sha256(stableJson(second)),
+        receiptHash: second.receiptHash,
+        sourceOrderHash: second.sourceOrderHash,
+        orderHash: second.orderHash,
+        reason: "Fixture withdrawal.",
+      },
+      {
+        schemaVersion: 1,
+        type: "PlanHoldOverridden",
+        recordedAt: at(day, 11),
+        receiptId: "2030-01-02-planning-fixture-001",
+        receiptHash: sha256("receipt"),
+        holdId: `hold-${"a".repeat(24)}`,
+        reason: "Fixture override.",
+        actor: {
+          harness: "human",
+          harnessVersion: "fixture",
+          model: "human",
+          effort: "unknown",
+          source: "operator-attested",
+        },
+        captureHash: sha256("override capture"),
+      },
+    ]
+      .map((event) => JSON.stringify(event))
+      .join("\n") + "\n",
+  );
+  write(
+    repo,
+    "docs/evidence/WO-802/decisions.md",
+    `# WO-802 decisions\n\n${[
+      failureDecision("WO-802-D001", day, {
+        dispatch: "resume: fix; operator correction",
+        kind: "correction",
+        misread: "The gate.",
+        meant: "Its input.",
+        changed: "The fixture.",
+      }),
+      failureDecision("WO-802-D002", day, { misread: "The order." }),
+      failureDecision("WO-802-D003", day),
+    ].join("\n")}`,
+  );
+  write(
+    repo,
+    "docs/evidence/WO-803/decisions.md",
+    `# WO-803 decisions\n\n${failureDecision("WO-803-D001", "2029-12-01", {
+      dispatch: "resume: verify",
+      kind: "correction",
+      misread: "A report.",
+      meant: "Its verdict.",
+      changed: "The record.",
+    })}`,
+  );
+  for (const [path, text] of [
+    failureReceipt(1, "planning", "2030-01-02T12:00:00.000Z"),
+    // A later evidence receipt and a manual redirect record open no window.
+    failureReceipt(2, "evidence", "2030-01-04T00:00:00.000Z"),
+    [`${RECEIPTS}/2026-09-06-phase-two-redirect-002.json`, "{}\n"],
+  ])
+    write(repo, path, text);
+  if (review) {
+    write(
+      repo,
+      "docs/control/entropy-reducer.jsonl",
+      lines([
+        {
+          type: "EntropyReviewFiled",
+          recordedAt: at(day, 8, 30),
+          receiptId: "REVIEW-001",
+          ordinal: 1,
+          receiptHash: sha256("review"),
+          renderedHash: sha256("rendered"),
+          subjectHash: "b".repeat(64),
+          baseCommit: "c".repeat(40),
+          identity: "entropy-reducer@1",
+        },
+      ]),
+    );
+    write(
+      repo,
+      "docs/instance/entropy-reducer/runs/REVIEW-001.json",
+      prettyJson({ receiptId: "REVIEW-001", endedAt: at(day, 7, 30) }),
+    );
+  }
+  // The ignored local gate index: counted per order, never listed.
+  write(
+    repo,
+    "docs/control/local/harness/checks.json",
+    JSON.stringify([
+      {
+        checkId: "npm test",
+        workOrder: "WO-802",
+        executed: true,
+        exitCode: 1,
+        recordedAt: at(day, 1, 30),
+      },
+      {
+        checkId: "npm test",
+        workOrder: "WO-802",
+        executed: true,
+        exitCode: 0,
+        recordedAt: at(day, 7, 30),
+      },
+      {
+        checkId: "npm test",
+        workOrder: "WO-803",
+        executed: true,
+        exitCode: 1,
+        recordedAt: at("2029-12-01", 1, 30),
+      },
+    ]),
+  );
+  // The ignored local lane of what the shell said about commands as written:
+  // counted per class and per order, never listed. A torn line and a row of
+  // no class are passed over, and a row without an order is unassigned.
+  write(
+    repo,
+    "docs/control/local/harness/shell-diagnostics.jsonl",
+    [
+      ...[
+        [at(day, 1, 45), "unmatched-pattern", "WO-802"],
+        [at(day, 8, 0), "unmatched-pattern", "WO-802"],
+        [at(day, 8, 5), "program-not-found", null],
+        [at("2029-12-01", 1, 30), "reserved-parameter", "WO-803"],
+        [at(day, 8, 10), "Not A Class", "WO-802"],
+      ].map(([time, kind, workOrder]) =>
+        JSON.stringify({
+          at: time,
+          shell: "zsh",
+          kind,
+          workOrder,
+          role: "executor",
+          phase: "implementation",
+          session: "0".repeat(64),
+        }),
+      ),
+      '{"at":"torn',
+    ].join("\n") + "\n",
+  );
+  commit(repo, "failure record");
+  return repo;
+};
+const failureRepo = (parent, name, options) => {
+  const repo = join(parent, name);
+  mkdirSync(repo);
+  runGit(repo, ["init", "-q", "-b", "main"]);
+  write(repo, ".gitignore", "docs/intake/**\ndocs/control/local/**\n");
+  return failureRecord(repo, options);
+};
+const failureCounts = (counts) => ({
+  failedVerifications: 0,
+  failedFinalReviews: 0,
+  repairs: 0,
+  ordersMadeReady: 0,
+  failedFirstVerifications: 0,
+  corrections: 0,
+  offRamps: 0,
+  offRampEvents: {},
+  amendments: 0,
+  withdrawnAmendments: 0,
+  overriddenHolds: 0,
+  ...counts,
+});
+const windowCounts = failureCounts({
+  failedVerifications: 1,
+  failedFinalReviews: 1,
+  repairs: 2,
+  ordersMadeReady: 1,
+  failedFirstVerifications: 1,
+  corrections: 2,
+  offRamps: 2,
+  offRampEvents: { CriterionWaived: 1, RecordCorrected: 1 },
+  amendments: 2,
+  withdrawnAmendments: 1,
+  overriddenHolds: 1,
+});
+// Every file under a checkout, ignored ones included, by path and bytes.
+const treeDigest = (repo) => {
+  const hash = createHash("sha256");
+  const walk = (directory) => {
+    for (const entry of readdirSync(join(repo, directory), {
+      withFileTypes: true,
+    }).sort((a, b) => a.name.localeCompare(b.name))) {
+      const path = directory ? `${directory}/${entry.name}` : entry.name;
+      if (path === ".git") continue;
+      if (entry.isDirectory()) walk(path);
+      else hash.update(`${path}\0`).update(readFileSync(join(repo, path)));
+    }
+  };
+  walk("");
+  return hash.digest("hex");
+};
+
+export async function fixtures() {
+  const parent = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-plan-fixtures-")),
+  );
+  const check = (label, run) => test(label, run);
+  try {
+    await check(
+      "WO-178 malformed decision errors name the record without parser excerpts",
+      async () => {
+        const repo = failureRepo(parent, "malformed-decision");
+        const file = "docs/evidence/WO-999/decisions.md";
+        write(
+          repo,
+          file,
+          '# Decisions\n\n## WO-999-D001 — Fixture\n\n```json\n{"decision":"synthetic private sentinel" BROKEN}\n```\n',
+        );
+        const safe =
+          /docs\/evidence\/WO-999\/decisions\.md: WO-999-D001: invalid JSON/;
+        await assert.rejects(plan(["failures"], repo), (error) => {
+          assert.match(error.message, safe);
+          assert.doesNotMatch(error.message, /synthetic private|BROKEN/);
+          return true;
+        });
+        const start = failuresAtStart(repo);
+        assert.match(start.unavailable, safe);
+        assert.doesNotMatch(JSON.stringify(start), /synthetic private|BROKEN/);
+        runGit(repo, ["add", "."]);
+        runGit(repo, [
+          "-c",
+          "user.name=Fixture",
+          "-c",
+          "user.email=fixture@example.test",
+          "commit",
+          "-qm",
+          "Malformed fixture",
+        ]);
+        await assert.rejects(plan(["start", "malformed-decision"], repo), safe);
+      },
+    );
+    await check(
+      "plan failures leaves a host task notification out of the interventions and counts prompts without transcript evidence as unattributed",
+      async () => {
+        const repo = failureRepo(parent, "notification-record");
+        const time = "2030-01-03T10:00:00.000Z";
+        write(
+          repo,
+          `docs/control/local/harness/${"b".repeat(64)}.jsonl`,
+          [
+            {
+              class: "direction",
+              source: "claude-prompt-hook",
+              route: "turn-prompt",
+              attribution: "operator",
+            },
+            {
+              class: "unclassified",
+              source: "claude-prompt-hook",
+              route: "unknown",
+              attribution: "unattributed",
+            },
+            {
+              class: "unclassified",
+              source: "host-task-notification",
+              route: "mid-turn",
+              attribution: "host-task-notification",
+            },
+          ]
+            .map((row) =>
+              JSON.stringify({
+                typedEvent: "OperatorMessageObserved",
+                ...row,
+                workOrder: "WO-802",
+                phase: "verification",
+                recordedAt: time,
+              }),
+            )
+            .join("\n") + "\n",
+        );
+        const operational = operationalFailures(
+          repo,
+          { eventSegments: new Map(), orders: new Map() },
+          () => true,
+        );
+        assert.equal(operational.interventions.count, 2);
+        assert.equal(operational.interventions.unattributed, 1);
+        assert.equal(operational.interventions.hostNotifications, 1);
+        assert.equal(
+          operational.interventions.bySource["claude-prompt-hook"],
+          2,
+        );
+        assert.ok(
+          !("host-task-notification" in operational.interventions.bySource),
+        );
+        assert.ok(!("unknown" in operational.interventions.bySource));
+        assert.equal((await plan(["failures"], repo)).interventions.count, 2);
+      },
+    );
+    await check(
+      "WO-178 local counts and track split reach failures, its export and plan start",
+      async () => {
+        const repo = failureRepo(parent, "operator-record");
+        const time = "2030-01-03T10:00:00.000Z";
+        write(
+          repo,
+          "docs/control/local/retained/WO-802/release-close.json",
+          prettyJson({
+            schemaVersion: 1,
+            workOrderId: "WO-802",
+            recordedAt: time,
+            publication: { tagOutcome: null },
+            blockers: [{ reason: "synthetic private blocker" }],
+          }),
+        );
+        write(
+          repo,
+          `docs/control/local/harness/${"a".repeat(64)}.jsonl`,
+          [
+            { typedEvent: "HostPermissionDenied" },
+            ...["direction", "question", "unclassified"].map(
+              (classification) => ({
+                typedEvent: "OperatorMessageObserved",
+                class: classification,
+                source: "claude-prompt-hook",
+                route: "turn-prompt",
+              }),
+            ),
+          ]
+            .map((row) =>
+              JSON.stringify({
+                ...row,
+                workOrder: "WO-802",
+                phase: "verification",
+                recordedAt: time,
+                prompt: "synthetic private text",
+              }),
+            )
+            .join("\n") + "\n",
+        );
+        write(
+          repo,
+          "docs/control/local/harness/checks.json",
+          prettyJson(
+            [0, 1].map((index) => ({
+              checkId: "npm test",
+              executed: true,
+              exitCode: 0,
+              workOrder: "WO-802",
+              codeIdentity: "b".repeat(64),
+              recordedAt: `2030-01-03T10:0${index}:00.000Z`,
+            })),
+          ),
+        );
+        // Real control-log projection, with a normal pair and an outlying third
+        // attempt: the median is 10 ms and only 30 ms exceeds twice it.
+        const attempts = [10, 10, 30].flatMap((elapsedMs, index) => [
+          {
+            type: "WorkOrderActivated",
+            workOrderId: `WO-90${index}`,
+            recordedAt: time,
+          },
+          {
+            type: "ImplementationReady",
+            workOrderId: `WO-90${index}`,
+            recordedAt: new Date(Date.parse(time) + elapsedMs).toISOString(),
+          },
+        ]);
+        const view = operationalFailures(
+          repo,
+          {
+            eventSegments: new Map([["fixture", attempts]]),
+            orders: new Map(),
+          },
+          () => true,
+        );
+        assert.equal(view.longPhases.count, 1);
+        assert.equal(view.longPhases.mediansMs.implementation, 10);
+        assert.equal(view.localReleaseCloses.count, 1);
+        assert.equal(view.localHostDenials.count, 1);
+        assert.equal(view.interventions.count, 3);
+        assert.deepEqual(view.interventions.byClass, {
+          direction: 1,
+          question: 1,
+          unclassified: 1,
+        });
+        assert.deepEqual(view.interventions.byOrder, { "WO-802": 3 });
+        assert.deepEqual(view.interventions.byPhase, { verification: 3 });
+        assert.equal(view.repeatedGateRuns.count, 1);
+        assert.equal(view.observations.length, 7);
+        assert.doesNotMatch(JSON.stringify(view), /synthetic private/);
+        const page = await plan(["failures"], repo);
+        assert.equal(page.localReleaseCloses.count, 1);
+        assert.equal(page.localHostDenials.count, 1);
+        assert.equal(page.interventions.count, 3);
+        assert.equal(page.repeatedGateRuns.count, 1);
+        assert.equal(
+          exportFailures(repo).observations.filter(
+            (row) => row.kind === "intervention",
+          ).length,
+          3,
+        );
+        write(
+          repo,
+          "docs/control/reader-profiles.json",
+          read(root, "docs/control/reader-profiles.json"),
+        );
+        runGit(repo, ["add", "docs/control/reader-profiles.json"]);
+        runGit(repo, ["commit", "-qm", "Fixture reader profile"]);
+        runGit(repo, [
+          "tag",
+          "-a",
+          "v90.0.0",
+          "-m",
+          "DotLn v90.0.0\n\nAn operator can inspect the evidence.\n\nDOTLN-MANIFEST-BEGIN\n{}\nDOTLN-MANIFEST-END\n",
+        ]);
+        const publication = publishedReleases(repo).find(
+          (row) => row.release === "v90.0.0",
+        );
+        recordScores(
+          {
+            schemaVersion: 1,
+            reader: { model: "fixture", effort: "fixture", source: "fixture" },
+            releases: [
+              {
+                release: publication.release,
+                textSha256: publication.textSha256,
+                answers: ["change", "action", "limits", "evidence"].map(
+                  (question) => ({
+                    question,
+                    quote:
+                      question === "evidence"
+                        ? "An operator can inspect the evidence."
+                        : null,
+                  }),
+                ),
+              },
+            ],
+          },
+          repo,
+        );
+        runGit(repo, ["add", "docs/publication/reader-scores.jsonl"]);
+        runGit(repo, ["commit", "-qm", "Fixture reader score"]);
+        const before = await plan(["start", "operator-record"], repo);
+        assert.equal(before.readerScores.figures[0].found, 1);
+        assert.equal(before.readerScores.figures[0].questions, 4);
+        assert.ok(before.readerScores.figures[0].medianPosition > 0);
+        assert.equal(before.readerScores.readerDue, false);
+        assert.equal(before.failures.localReleaseCloses, 1);
+        assert.equal(before.failures.localHostDenials, 1);
+        assert.equal(before.failures.interventions.count, 3);
+        assert.equal(before.failures.repeatedGateRuns, 1);
+        assert.ok(before.failures.recentTracks.unknown > 0);
+        assert.ok(Buffer.byteLength(prettyJson(before.failures)) <= 1024);
+        // A Track header labels only its order; absent metadata stays unknown.
+        const orderPath = "docs/work-orders/WO-802-fixture.md";
+        write(repo, orderPath, "# WO-802 — Fixture\n\n**Track:** delivery\n");
+        const tracked = await plan(["failures"], repo);
+        assert.equal(tracked.recentTracks.delivery, 1);
+        assert.equal(
+          tracked.recentTracks.counted,
+          tracked.recentTracks.delivery + tracked.recentTracks.unknown,
+        );
+        // Invalid local records expose unknown coverage without printing bytes.
+        write(
+          repo,
+          "docs/control/local/retained/WO-802/release-close.json",
+          '{"private":"synthetic private malformed',
+        );
+        const damaged = await plan(["failures"], repo);
+        assert.equal(damaged.localReleaseCloses.unreadable, 1);
+        assert.doesNotMatch(JSON.stringify(damaged), /synthetic private/);
+      },
+    );
+    await check(
+      "WO-156 normalization cache preserves exact semantics and bounds retained inputs",
+      (t) => {
+        const original = String.prototype.normalize;
+        let calls = 0;
+        try {
+          String.prototype.normalize = function (...args) {
+            calls++;
+            return original.apply(this, args);
+          };
+          const first = "  WO-156 cache: Ａ\u00a0café\r\n e\u0301 \t";
+          const expected = sha256("WO-156 cache: A café é");
+          const start = calls;
+          for (let i = 0; i < 12; i++)
+            assert.equal(criterionHash(first), expected);
+          assert.equal(calls - start, 1, "repeated text was normalized again");
+          assert.equal(criterionHash(undefined), sha256(""));
+          assert.equal(criterionHash(null), sha256(""));
+          assert.equal(criterionHash(""), sha256(""));
+          assert.notEqual(criterionHash(first + "changed"), expected);
+          for (let i = 0; i < 513; i++) criterionHash(`WO-156 eviction ${i}`);
+          const evicted = calls;
+          assert.equal(criterionHash(first), expected);
+          assert.equal(
+            calls - evicted,
+            1,
+            "entry bound did not evict old text",
+          );
+          const oversized = "x".repeat(300_000);
+          const bypass = calls;
+          assert.equal(criterionHash(oversized), sha256(oversized));
+          assert.equal(criterionHash(oversized), sha256(oversized));
+          assert.equal(calls - bypass, 2, "oversized text was retained");
+          const large = "y".repeat(100_000);
+          criterionHash(large + "first");
+          criterionHash(large + "second");
+          criterionHash(large + "third");
+          const byteEvicted = calls;
+          criterionHash(large + "first");
+          assert.equal(
+            calls - byteEvicted,
+            1,
+            "string byte bound did not evict",
+          );
+          t.diagnostic(
+            "normalization reused; entry/byte eviction and oversized bypass passed",
+          );
+        } finally {
+          String.prototype.normalize = original;
+        }
+      },
+    );
+    await check(
+      "WO-156 immutable readers avoid repeat launches while mutable revisions stay fresh",
+      (t) => {
+        const repo = makeRepo(parent, "wo156-reader-launches");
+        const path = orderPath("WO-901");
+        const initial = committedReader(repo);
+        const bytes = initial.read(path);
+        const original = childProcess.spawnSync;
+        let launches = 0;
+        try {
+          childProcess.spawnSync = function (...args) {
+            if (args[0] === "git") launches++;
+            return original.apply(this, args);
+          };
+          syncBuiltinESMExports();
+          for (let i = 0; i < 12; i++)
+            assert.equal(
+              committedReader(repo, initial.revision).read(path),
+              bytes,
+            );
+        } finally {
+          childProcess.spawnSync = original;
+          syncBuiltinESMExports();
+        }
+        assert.equal(launches, 0, "cached immutable readers launched Git");
+        t.diagnostic(`repeat immutable reader Git launches: ${launches}`);
+        const branch = runGit(repo, ["branch", "--show-current"]);
+        const tagged = "wo156-moving-tag";
+        runGit(repo, ["tag", tagged]);
+        assert.equal(committedReader(repo, branch).read(path), bytes);
+        assert.equal(committedReader(repo, tagged).read(path), bytes);
+        const changed = bytes.replace(
+          "Move the shape.",
+          "Move the next shape. café 🧭",
+        );
+        write(repo, path, changed);
+        commit(repo, "move mutable revisions");
+        runGit(repo, ["tag", "-f", tagged]);
+        for (const revision of ["HEAD", branch, tagged])
+          assert.equal(committedReader(repo, revision).read(path), changed);
+        assert.equal(committedReader(repo, initial.revision).read(path), bytes);
+        runGit(repo, [
+          "-c",
+          "user.name=Plan Fixture",
+          "-c",
+          "user.email=fixture@example.invalid",
+          "tag",
+          "-a",
+          "wo156-annotated",
+          "-m",
+          "Annotated fixture",
+        ]);
+        const tagObject = runGit(repo, ["rev-parse", "wo156-annotated"]);
+        assert.equal(
+          committedReader(repo, tagObject).revision,
+          runGit(repo, ["rev-parse", "HEAD"]),
+        );
+        for (const object of ["HEAD^{tree}", `HEAD:${path}`])
+          assert.throws(
+            () => committedReader(repo, runGit(repo, ["rev-parse", object])),
+            /commit|object|revision/,
+          );
+        assert.throws(
+          () => committedReader(repo, "f".repeat(40)),
+          /revision|object|single/,
+        );
+        const other = makeRepo(parent, "wo156-other-reader");
+        assert.throws(
+          () => committedReader(other, runGit(repo, ["rev-parse", "HEAD"])),
+          /revision|object|single/,
+        );
+        assert.throws(
+          () => initial.read("absent.md"),
+          /committed regular file/,
+        );
+      },
+    );
+    await check(
+      "WO-156 committed receipts batch blob reads and still reject tampering after cache reuse",
+      async (t) => {
+        const repo = makeRepo(parent, "wo156-receipt-launches");
+        const expected = [];
+        for (let i = 0; i < 4; i++) {
+          const subject = buildPlanSubject(repo);
+          expected.push(
+            await writePlanReceipt(repo, {
+              pass: {
+                id: `evidence-wo156-${i}`,
+                kind: "evidence",
+                heading: null,
+              },
+              slug: `wo156-${i}`,
+              subject,
+              episode: await episode(subject, passResult),
+            }),
+          );
+        }
+        commit(repo, "commit four receipts");
+        const original = childProcess.spawnSync;
+        let launches = 0;
+        try {
+          childProcess.spawnSync = function (...args) {
+            if (args[0] === "git") launches++;
+            return original.apply(this, args);
+          };
+          syncBuiltinESMExports();
+          assert.deepEqual(await readReceipts(repo), expected);
+        } finally {
+          childProcess.spawnSync = original;
+          syncBuiltinESMExports();
+        }
+        assert.ok(
+          launches <= 5,
+          `four committed receipts launched Git ${launches} times`,
+        );
+        t.diagnostic(`four committed receipt Git launches: ${launches}`);
+        const changed = structuredClone(expected[0]);
+        changed.result.orders[0].reason = "Changed valid judgment bytes.";
+        const modified = rehash(changed);
+        write(
+          repo,
+          `${RECEIPTS}/${modified.receiptId}.json`,
+          prettyJson(modified),
+        );
+        write(
+          repo,
+          `${RECEIPTS}/${modified.receiptId}.md`,
+          renderPlanReceipt(modified),
+        );
+        await assert.rejects(
+          readReceipts(repo),
+          /committed receipt was edited/,
+        );
+      },
+    );
+    await check(
+      "WO-156 optional prefetch preserves unused legacy symlinks and required-file refusals",
+      async () => {
+        const repo = makeRepo(parent, "wo156-optional-hints");
+        symlinkSync(
+          "sequence.md",
+          join(repo, "docs/planning/work-order-map.md"),
+        );
+        commit(repo, "unused legacy symlink");
+        const receipt = await writeDirectReceipt(repo);
+        commit(repo, "valid receipt with unused legacy symlink");
+        assert.deepEqual(await readReceipts(repo), [receipt]);
+        assert.throws(
+          () => committedReader(repo).read("docs/planning/work-order-map.md"),
+          /requires a committed regular file/,
+        );
+      },
+    );
+    await check(
+      "WO-156 aggregate receipt batches preserve individually readable large receipts",
+      async () => {
+        const repo = makeRepo(parent, "wo156-large-receipts");
+        const vision = "docs/product/00-vision.md";
+        write(
+          repo,
+          vision,
+          read(repo, vision).replace(
+            "Evidence describes the shape.",
+            "x".repeat(3 * 1024 * 1024),
+          ),
+        );
+        commit(repo, "large valid thesis");
+        const subject = buildPlanSubject(repo);
+        const expected = [];
+        for (let i = 0; i < 6; i++)
+          expected.push(
+            await writePlanReceipt(repo, {
+              pass: {
+                id: `evidence-large-${i}`,
+                kind: "evidence",
+                heading: null,
+              },
+              slug: `large-${i}`,
+              subject,
+              episode: await episode(subject, passResult),
+            }),
+          );
+        commit(repo, "six individually readable receipts");
+        try {
+          assert.deepEqual(await readReceipts(repo), expected);
+        } catch (error) {
+          assert.fail(
+            `large receipt batch failed: ${error.message.slice(0, 160)}`,
+          );
+        }
+      },
+    );
+    await check(
+      "WO-156 cross-revision prefetch preserves aggregate capacity and optional hints",
+      () => {
+        const repo = makeRepo(parent, "wo156-large-prefetch");
+        const path = "docs/large.txt";
+        const before = "a".repeat(9 * 1024 * 1024);
+        write(repo, path, before);
+        commit(repo, "large first revision");
+        const first = runGit(repo, ["rev-parse", "HEAD"]);
+        const after = "b".repeat(9 * 1024 * 1024);
+        write(repo, path, after);
+        commit(repo, "large second revision");
+        const second = runGit(repo, ["rev-parse", "HEAD"]);
+        try {
+          prefetchCommittedSources(
+            repo,
+            [first, second].map((revision) => ({ revision, paths: [path] })),
+          );
+        } catch (error) {
+          assert.fail(
+            `cross-revision batch failed: ${error.message.slice(0, 160)}`,
+          );
+        }
+        assert.equal(committedReader(repo, first).read(path), before);
+        assert.equal(committedReader(repo, second).read(path), after);
+        symlinkSync("large.txt", join(repo, "docs/optional.txt"));
+        write(repo, "docs/oversized.txt", "c".repeat(17 * 1024 * 1024));
+        commit(repo, "unusable optional hints");
+        assert.doesNotThrow(() =>
+          prefetchCommittedSources(repo, [
+            {
+              revision: "HEAD",
+              paths: [
+                "docs/missing.txt",
+                "docs/optional.txt",
+                "docs/oversized.txt",
+              ],
+            },
+          ]),
+        );
+        assert.throws(
+          () => committedReader(repo).read("docs/optional.txt"),
+          /requires a committed regular file/,
+        );
+        // A singleton failure must still reach an actual consumer.
+        let refused = false;
+        try {
+          committedReader(repo).read("docs/oversized.txt");
+        } catch {
+          refused = true;
+        }
+        assert.equal(refused, true);
+      },
+    );
+    await check(
+      "WO-156 fixture sequence resolves its order-path pattern outside the committed-path loop",
+      (t) => {
+        const repo = makeRepo(parent, "wo156-path-pattern");
+        for (let index = 0; index < 256; index++)
+          write(repo, `docs/noise/${index}.txt`, "unrelated\n");
+        commit(repo, "unrelated committed paths");
+        const original = fs.statSync;
+        let calls = 0;
+        let subject;
+        try {
+          fs.statSync = function (...args) {
+            calls++;
+            return original.apply(this, args);
+          };
+          syncBuiltinESMExports();
+          subject = buildPlanSubject(repo);
+        } finally {
+          fs.statSync = original;
+          syncBuiltinESMExports();
+        }
+        assert.equal(
+          sha256(JSON.stringify(subject)),
+          "sha256:85f125dae6144d26d6f714021665654645a8a5c985292f04083a135be42f87ef",
+        );
+        assert.ok(calls < 100, `subject builder made ${calls} statSync calls`);
+        t.diagnostic(`subject builder statSync calls: ${calls}`);
+      },
+    );
+    await check(
+      "WO-134 both refutation paths select the gate's missing same-day pass independent of ledger order",
+      async () => {
+        for (const transport of ["direct", "fake"]) {
+          for (const newestFirst of [false, true]) {
+            const repo = makeRepo(
+              parent,
+              `same-day-${transport}-${newestFirst}`,
+            );
+            const first = passFor(repo);
+            const original = read(repo, PLAN_LEDGER);
+            assert.deepEqual(await latestPlanningPass(repo), first);
+            write(repo, PLAN_LEDGER, `# Ledger\n\n## ${first.heading}\n`);
+            assert.deepEqual(await latestPlanningPass(repo), first);
+            write(repo, PLAN_LEDGER, original);
+            const resultPath = "docs/control/local/result.json";
+            const statementPath = "docs/control/local/statement.txt";
+            const subject = buildPlanSubject(repo, "HEAD", {
+              goalReview: true,
+            });
+            write(repo, resultPath, JSON.stringify(cannedGoalReview(subject)));
+            write(
+              repo,
+              statementPath,
+              "Synthetic same-day regression judgment; canonical fixture subject only.",
+            );
+            let prior, priorRequest;
+            if (transport === "direct") {
+              await plan(["refute", "--direct", "--scope", "full"], repo);
+              const pointer = JSON.parse(
+                read(repo, "docs/control/local/plan/current-direct.json"),
+              );
+              priorRequest = {
+                path: pointer.path,
+                bytes: read(repo, pointer.path),
+              };
+              // Requests saved before pass-specific filenames remain fileable.
+              const legacyPath = pointer.path.replace(`-${first.id}`, "");
+              write(repo, legacyPath, priorRequest.bytes);
+              write(
+                repo,
+                "docs/control/local/plan/current-direct.json",
+                JSON.stringify({ path: legacyPath }),
+              );
+              await fileDirectRefutation(repo, resultPath, statementPath, {
+                commit: false,
+              });
+              prior = (await readReceipts(repo)).at(-1);
+            } else {
+              prior = await writeDirectReceipt(repo);
+            }
+            commit(repo, "first planning receipt");
+            const priorBytes = read(
+              repo,
+              `${RECEIPTS}/${prior.receiptId}.json`,
+            );
+            const heading = "2030-01-02 second planning pass";
+            const second = {
+              id: planningPasses(`## ${heading}`)[0].id,
+              kind: "planning",
+              heading,
+            };
+            const section = `\n## ${heading}\n\nAnother pass.\n`;
+            const ledgers = [
+              original + section,
+              `# Ledger\n${section}${original.slice(original.indexOf("## "))}`,
+            ];
+            for (const ledger of ledgers) {
+              write(repo, PLAN_LEDGER, ledger);
+              await assert.rejects(checkPlanGate(repo), (error) =>
+                error.message.includes(
+                  `planning pass ${second.id} needs a receipt`,
+                ),
+              );
+              assert.deepEqual(await latestPlanningPass(repo), second);
+              assert.equal(
+                buildPlanSubject(repo, "HEAD", {
+                  workspace: true,
+                  goalReview: true,
+                }).hash,
+                subject.hash,
+              );
+            }
+            write(repo, PLAN_LEDGER, ledgers[Number(newestFirst)]);
+            commit(repo, "second same-day planning pass");
+            if (transport === "direct") {
+              await plan(["refute", "--direct", "--scope", "full"], repo);
+              const pointer = JSON.parse(
+                read(repo, "docs/control/local/plan/current-direct.json"),
+              );
+              assert.deepEqual(
+                JSON.parse(read(repo, pointer.path)).pass,
+                second,
+              );
+              assert.notEqual(pointer.path, priorRequest.path);
+              assert.equal(read(repo, priorRequest.path), priorRequest.bytes);
+              const result = await fileDirectRefutation(
+                repo,
+                resultPath,
+                statementPath,
+                { commit: false },
+              );
+              assert.equal(result.gate.passes, 2);
+            } else {
+              const result = await plan(
+                ["refute", "--transport", "fake"],
+                repo,
+              );
+              const receipt = JSON.parse(
+                read(repo, result.receipt.replace(/\.md$/u, ".json")),
+              );
+              assert.deepEqual(receipt.pass, second);
+            }
+            for (const ledger of ledgers) {
+              write(repo, PLAN_LEDGER, ledger);
+              assert.deepEqual(await latestPlanningPass(repo), second);
+            }
+            // A later evidence receipt cannot supersede the planning chain.
+            await plan(
+              ["refute", "--transport", "fake", "--evidence-only"],
+              repo,
+            );
+            assert.deepEqual(await latestPlanningPass(repo), second);
+            assert.equal(
+              read(repo, `${RECEIPTS}/${prior.receiptId}.json`),
+              priorBytes,
+            );
+            const laterHeading = "2030-01-03 later planning pass";
+            write(
+              repo,
+              PLAN_LEDGER,
+              `${original}${section}\n## ${laterHeading}\n`,
+            );
+            assert.equal(
+              (await latestPlanningPass(repo)).heading,
+              laterHeading,
+            );
+          }
+        }
+        for (const oldDate of ["2030-01-02", "2031-01-01"]) {
+          const repo = makeRepo(parent, `exempt-${oldDate}`, oldDate);
+          const current = passFor(repo);
+          await assert.rejects(checkPlanGate(repo), (error) =>
+            error.message.includes(
+              `planning pass ${current.id} needs a receipt`,
+            ),
+          );
+          assert.deepEqual(await latestPlanningPass(repo), current);
+          await writeDirectReceipt(repo);
+          assert.equal((await checkPlanGate(repo)).passes, 1);
+          assert.deepEqual(await latestPlanningPass(repo), current);
+        }
+        const repo = makeRepo(parent, "same-day-ambiguous");
+        const original = read(repo, PLAN_LEDGER);
+        const section = "\n## 2030-01-02 unjudged planning pass\n";
+        for (const ledger of [original + section, section + original]) {
+          write(repo, PLAN_LEDGER, ledger);
+          await assert.rejects(
+            latestPlanningPass(repo),
+            /ambiguous planning passes on 2030-01-02/u,
+          );
+          await assert.rejects(
+            plan(["refute"], repo),
+            /ambiguous planning passes/u,
+          );
+          await assert.rejects(
+            plan(["refute", "--transport", "fake"], repo),
+            /ambiguous planning passes/u,
+          );
+        }
+        write(repo, PLAN_LEDGER, "# No planning headings\n");
+        await assert.rejects(
+          latestPlanningPass(repo),
+          /no dated planning-pass ledger heading/u,
+        );
+      },
+    );
+    await check(
+      "WO-132 goal review preserves hypothetical findings without holding and requires observed evidence",
+      async () => {
+        const repo = makeRepo(parent, "goal-findings");
+        const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
+        const input = cannedGoalReview(subject);
+        input.orders[0].verdict = "misaligned";
+        input.orders[0].findings = [
+          {
+            criterionId: "criterion:1",
+            kind: "observed-failure",
+            reason: "A constructed failure could happen.",
+            evidence: null,
+            reopenWhen: "A recorded run exhibits the failure.",
+          },
+        ];
+        input.planVerdict = "misaligned";
+        input.holdReasons = [
+          {
+            workOrderId: "WO-901",
+            criterionId: "criterion:1",
+            reason: "The hypothetical must hold.",
+          },
+        ];
+        const known = validatePlanResult(input, subject);
+        assert.equal(known.planVerdict, "aligned-with-findings");
+        assert.equal(known.orders[0].findings[0].kind, "known-issue");
+        assert.equal(known.holdReasons.length, 0);
+        input.orders[0].findings[0] = {
+          ...input.orders[0].findings[0],
+          kind: "vision-contradiction",
+          evidence: subject.standard.exclusions[0].id,
+        };
+        assert.equal(
+          validatePlanResult(input, subject).planVerdict,
+          "misaligned",
+        );
+        assert.equal(
+          validatePlanResult(cannedGoalReview(subject), subject).planVerdict,
+          "aligned",
+          "missing Cost produces no structural hold",
+        );
+        const prompt = JSON.parse(
+          await beginDirectRefutation(repo, {
+            now: () => "2030-01-02T12:00:00.000Z",
+          }),
+        );
+        assert.equal(
+          prompt.subject.goalReview.platformStandard,
+          subject.goalReview.platformStandard,
+        );
+        assert.match(
+          prompt.subject.goalReview.platformStandard,
+          /^the point is to create a platform,/u,
+        );
+        assert.match(prompt.outputInstructions, /all eight system traps/u);
+        assert.equal(
+          prompt.resultSchema.properties.planVerdict.enum.join(","),
+          "aligned,aligned-with-findings,misaligned",
+        );
+      },
+    );
+    await check(
+      "WO-132 legacy holds accept bound criterion repairs without replacing their immutable receipt",
+      async () => {
+        const repo = makeRepo(parent, "legacy-disposition-repair");
+        const held = await writeDirectReceipt(repo, (subject) => ({
+          ...passResult(subject),
+          planVerdict: "hold",
+          holdReasons: [
+            {
+              workOrderId: "WO-901",
+              criterionId: "criterion:1",
+              reason: "Recorded fixture behavior needs repair.",
+            },
+          ],
+        }));
+        commit(repo, "immutable legacy judgment");
+        const originals = Object.fromEntries(
+          ["json", "md"].map((extension) => [
+            extension,
+            read(repo, `${RECEIPTS}/${held.receiptId}.${extension}`),
+          ]),
+        );
+        const path = orderPath("WO-901");
+        write(
+          repo,
+          path,
+          read(repo, path).replace(
+            "Evidence confirms a useful shape.",
+            "Evidence confirms the repaired useful shape.",
+          ),
+        );
+        await disposePlanHold(repo, {
+          receiptId: held.receiptId,
+          holdId: held.holds[0].id,
+          reason: "The criterion now requires the repaired behavior.",
+          now: () => "2030-01-02T12:01:00.000Z",
+        });
+        const dirty = await checkPlanGate(repo);
+        assert.ok(
+          dirty.continuation.workspaceUpdates.some(
+            (row) => row.kind === "disposed-criterion",
+          ),
+        );
+        assert.deepEqual(dirty.continuation.committedUpdates, []);
+        commit(repo, "record only criterion repair and disposition");
+        const committed = await checkPlanGate(repo);
+        assert.deepEqual(
+          committed.continuation.committedUpdates,
+          dirty.continuation.workspaceUpdates,
+        );
+        assert.equal((await readReceipts(repo)).length, 1);
+        for (const extension of ["json", "md"])
+          assert.equal(
+            read(repo, `${RECEIPTS}/${held.receiptId}.${extension}`),
+            originals[extension],
+          );
+        write(
+          repo,
+          path,
+          read(repo, path).replace(
+            "Keep a bounded result.",
+            "Change a different criterion.",
+          ),
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /changed criterion has no text-bound disposition/u,
+        );
+        commit(repo, "unrelated criterion edit is still refused");
+        await assert.rejects(
+          checkPlanGate(repo),
+          /changed criterion has no text-bound disposition/u,
+        );
+      },
+    );
+    await check(
+      "WO-132 goal dispositions and overrides bind only the exact repaired Cost declaration",
+      async () => {
+        for (const [label, beforeCost, afterCost, override] of [
+          [
+            "replace",
+            "**Cost:** Adds one check.\n\n",
+            "**Cost:** Removes two recurring checks for one addition.\n\n",
+            false,
+          ],
+          ["add", "", "**Cost:** Removes the recurring gate.\n\n", true],
+          ["remove", "**Cost:** Adds one check.\n\n", "", false],
+        ]) {
+          const repo = makeRepo(parent, `goal-cost-disposition-${label}`);
+          const path = orderPath("WO-901");
+          write(
+            repo,
+            path,
+            order("WO-901").replace("**Model:**", `${beforeCost}**Model:**`),
+          );
+          if (beforeCost) commit(repo, "goal Cost subject");
+          const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
+          const result = cannedGoalReview(subject);
+          result.orders[0].verdict = "misaligned";
+          result.orders[0].findings = [
+            {
+              criterionId: "criterion:1",
+              kind: "vision-contradiction",
+              reason: "The Cost promise conflicts with the fixture vision.",
+              evidence: subject.standard.theses[0].id,
+              reopenWhen: null,
+            },
+          ];
+          const held = await writePlanReceipt(repo, {
+            pass: passFor(repo),
+            slug: "cost",
+            subject,
+            episode: directEpisode(validatePlanResult(result, subject)),
+          });
+          commit(repo, "immutable goal judgment");
+          const originals = Object.fromEntries(
+            ["json", "md"].map((extension) => [
+              extension,
+              read(repo, `${RECEIPTS}/${held.receiptId}.${extension}`),
+            ]),
+          );
+          const repaired = order("WO-901")
+            .replace("**Model:**", `${afterCost}**Model:**`)
+            .replace(
+              "Evidence confirms a useful shape.",
+              label === "replace"
+                ? "Evidence confirms the repaired useful shape."
+                : "Evidence confirms a useful shape.",
+            );
+          write(repo, path, repaired);
+          commit(repo, "repair only the Cost field");
+          await assert.rejects(
+            beginDirectRefutation(repo),
+            /one judgment per pass/u,
+          );
+          const args = {
+            receiptId: held.receiptId,
+            holdId: held.holds[0].id,
+            reason: "Accept the exact repaired Cost declaration.",
+            now: () => "2030-01-02T12:01:00.000Z",
+          };
+          let event;
+          if (override) {
+            const capture = "docs/intake/operator.md",
+              bytes = "Operator accepts this fixture Cost repair.\n";
+            write(repo, capture, bytes);
+            event = await overridePlanHold(repo, {
+              ...args,
+              capture,
+              captureHash: sha256(bytes),
+            });
+          } else event = await disposePlanHold(repo, args);
+          assert.equal(event.sourceCostHash, sha256(beforeCost));
+          assert.equal(event.costHash, sha256(afterCost));
+          const accepted = await checkPlanGate(repo);
+          assert.ok(
+            accepted.continuation.workspaceUpdates.some(
+              (row) => row.kind === "disposed-cost",
+            ),
+          );
+          assert.equal(
+            accepted.continuation.workspaceUpdates.some(
+              (row) => row.kind === "disposed-criterion",
+            ),
+            label === "replace",
+          );
+          assert.equal((await readReceipts(repo)).length, 1);
+          for (const extension of ["json", "md"])
+            assert.equal(
+              read(repo, `${RECEIPTS}/${held.receiptId}.${extension}`),
+              originals[extension],
+            );
+          commit(repo, "record Cost disposition without another judgment");
+          assert.ok(
+            (await checkPlanGate(repo)).continuation.committedUpdates.some(
+              (row) => row.kind === "disposed-cost",
+            ),
+          );
+          write(
+            repo,
+            path,
+            repaired
+              .replace(
+                "**Model:**",
+                "**Cost:** An unrelated replacement.\n\n**Model:**",
+              )
+              .replace(afterCost, ""),
+          );
+          await assert.rejects(
+            checkPlanGate(repo),
+            /changed Cost declaration has no text-bound disposition/u,
+          );
+          write(
+            repo,
+            path,
+            repaired.replace(
+              "Keep a bounded result.",
+              "Change a different criterion.",
+            ),
+          );
+          await assert.rejects(
+            checkPlanGate(repo),
+            /changed criterion has no text-bound disposition/u,
+          );
+          write(
+            repo,
+            path,
+            repaired.replace(
+              "**Objective:** Move the shape.",
+              "**Objective:** An unrelated objective.",
+            ),
+          );
+          await assert.rejects(
+            checkPlanGate(repo),
+            /existing work-order bytes changed/u,
+          );
+        }
+      },
+    );
+    await check(
+      "WO-132 one judgment survives a disposed criterion repair and later findings cannot reopen its text",
+      async () => {
+        const repo = makeRepo(parent, "goal-disposition");
+        const tablePath = "docs/planning/cost-table.json";
+        const table = {
+          rows: [{ workOrder: "WO-901", metrics: { gateMs: 605000 } }],
+          traps: [],
+        };
+        write(repo, tablePath, JSON.stringify(table));
+        commit(repo, "observed gate row");
+        const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
+        const heldResult = cannedGoalReview(subject);
+        heldResult.orders[0].verdict = "misaligned";
+        heldResult.orders[0].findings = [
+          {
+            criterionId: "criterion:1",
+            kind: "observed-failure",
+            reason: "The recorded gate exceeded the target.",
+            evidence: subject.goalReview.observations[0].id,
+            reopenWhen: "A later gate still exceeds the target.",
+          },
+        ];
+        const validated = validatePlanResult(heldResult, subject);
+        const held = await writePlanReceipt(repo, {
+          pass: passFor(repo),
+          slug: "goal",
+          subject,
+          episode: directEpisode(validated),
+        });
+        await assert.rejects(checkPlanGate(repo), /unanswered hold/u);
+        const beforeBytes = read(repo, `${RECEIPTS}/${held.receiptId}.json`);
+        mutate(
+          repo,
+          orderPath("WO-901"),
+          "Evidence confirms a useful shape.",
+          "Evidence confirms a useful shape in under six minutes.",
+        );
+        await assert.rejects(
+          beginDirectRefutation(repo),
+          /one judgment per pass/u,
+        );
+        await disposePlanHold(repo, {
+          receiptId: held.receiptId,
+          holdId: held.holds[0].id,
+          reason: "The criterion now sets the observed operator target.",
+          now: () => "2030-01-02T12:01:00.000Z",
+        });
+        const gate = await checkPlanGate(repo);
+        assert.ok(
+          gate.continuation.workspaceUpdates.some(
+            (row) => row.kind === "disposed-criterion",
+          ),
+        );
+        assert.equal((await readReceipts(repo)).length, 1);
+        assert.equal(
+          read(repo, `${RECEIPTS}/${held.receiptId}.json`),
+          beforeBytes,
+        );
+        table.rows[0].observedAt = "2030-01-02T12:01:30.000Z";
+        write(repo, tablePath, JSON.stringify(table));
+        commit(repo, "observation timestamp only");
+        await assert.rejects(
+          beginDirectRefutation(repo),
+          /one judgment per pass/u,
+        );
+        assert.equal(
+          (await checkPlanGate(repo)).passes,
+          1,
+          "timestamp refresh keeps the original judgment",
+        );
+        // A new recorded observation, rather than the criterion edit, permits a new judgment.
+        table.rows[0].metrics.gateMs = 610000;
+        write(repo, tablePath, JSON.stringify(table));
+        commit(repo, "new observed gate row");
+        const prompt = JSON.parse(
+          await beginDirectRefutation(repo, {
+            now: () => "2030-01-02T12:02:00.000Z",
+          }),
+        );
+        const next = buildPlanSubject(repo, "HEAD", { goalReview: true });
+        const repeated = cannedGoalReview(next);
+        repeated.orders = repeated.orders.filter((row) =>
+          prompt.subject.orders.some(
+            (order) => order.workOrderId === row.workOrderId,
+          ),
+        );
+        repeated.orders[0].verdict = "misaligned";
+        repeated.orders[0].findings = heldResult.orders[0].findings;
+        write(repo, "docs/control/local/result.json", JSON.stringify(repeated));
+        write(
+          repo,
+          "docs/control/local/statement.txt",
+          "Reviewed the changed recorded observation.",
+        );
+        const filed = await fileDirectRefutation(
+          repo,
+          "docs/control/local/result.json",
+          "docs/control/local/statement.txt",
+          { commit: false, now: () => "2030-01-02T12:05:00.000Z" },
+        );
+        assert.equal(filed.verdict, "aligned-with-findings");
+        const latest = (await readReceipts(repo)).at(-1);
+        assert.equal(latest.holds.length, 0);
+        assert.equal(latest.result.orders[0].findings[0].kind, "known-issue");
+      },
+    );
+    await check(
+      "WO-132 override command accepts capture authority without actor flags",
+      async () => {
+        const repo = makeRepo(parent, "goal-override");
+        const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
+        const input = cannedGoalReview(subject);
+        input.orders[0].verdict = "misaligned";
+        input.orders[0].findings = [
+          {
+            criterionId: "criterion:1",
+            kind: "vision-contradiction",
+            reason: "The criterion contradicts the supplied exclusion.",
+            evidence: subject.standard.exclusions[0].id,
+            reopenWhen: null,
+          },
+        ];
+        const result = validatePlanResult(input, subject);
+        const receipt = await writePlanReceipt(repo, {
+          pass: passFor(repo),
+          slug: "override",
+          subject,
+          episode: {
+            ...directEpisode(result),
+            completedAt: "2020-01-02T12:00:00.000Z",
+          },
+        });
+        const capture = "docs/intake/notes/override.md";
+        write(repo, capture, "The fixture operator accepts this criterion.\n");
+        const event = await plan(
+          [
+            "override",
+            receipt.receiptId,
+            receipt.holds[0].id,
+            "Accept the criterion.",
+            "--capture",
+            capture,
+            "--capture-hash",
+            sha256(read(repo, capture)),
+          ],
+          repo,
+        );
+        assert.equal(event.actor.model, "unknown");
+        assert.equal((await checkPlanGate(repo)).passes, 1);
+        write(
+          repo,
+          PLAN_LEDGER,
+          read(repo, PLAN_LEDGER) +
+            "\n## 2030-01-03 next planning pass\n\nOne changed order.\n",
+        );
+        write(
+          repo,
+          orderPath("WO-902"),
+          order("WO-902").replace("useful shape", "another useful shape"),
+        );
+        commit(repo, "next pass carries accepted criterion");
+        const prompt = JSON.parse(
+          await beginDirectRefutation(repo, {
+            now: () => "2030-01-03T12:00:00.000Z",
+          }),
+        );
+        assert.deepEqual(
+          prompt.subject.orders.map((row) => row.workOrderId),
+          ["WO-902"],
+        );
+        const next = cannedGoalReview(
+          buildPlanSubject(repo, "HEAD", { goalReview: true }),
+        );
+        next.orders = next.orders.filter((row) => row.workOrderId === "WO-902");
+        write(repo, "docs/control/local/result.json", JSON.stringify(next));
+        write(
+          repo,
+          "docs/control/local/statement.txt",
+          "Judged only the changed order.",
+        );
+        const filed = await fileDirectRefutation(
+          repo,
+          "docs/control/local/result.json",
+          "docs/control/local/statement.txt",
+          { commit: false, now: () => "2030-01-03T12:00:01.000Z" },
+        );
+        assert.equal(filed.carried, 1);
+        assert.equal(filed.verdict, "aligned-with-findings");
+        assert.equal(
+          (await readReceipts(repo)).at(-1).result.orders[0].findings[0].kind,
+          "known-issue",
+        );
+      },
+    );
+    await check(
+      "direct-session frozen result round-trips and gates without invented launch provenance",
+      async () => {
+        const repo = makeRepo(parent, "direct-pass");
+        const receipt = await writeDirectReceipt(repo);
+        assert.deepEqual(await readReceipts(repo), [receipt]);
+        assert.equal((await checkPlanGate(repo)).passes, 1);
+        const markdown = read(repo, `${RECEIPTS}/${receipt.receiptId}.md`);
+        assert.equal(markdown, renderPlanReceipt(receipt));
+        assert.match(markdown, /direct Codex session/u);
+        assert.match(markdown, /settings verification: unverified/u);
+        assert.match(markdown, /Independence is session-attested/u);
+        assert.match(markdown, /model tools were available/u);
+        assert.doesNotMatch(markdown, /Selection source: host-launch/u);
+        assert.doesNotMatch(markdown, /Dispatched:|empty scratch/u);
+        for (const key of [
+          "transport",
+          "commandReceipt",
+          "dispatchedAt",
+          "semanticHash",
+          "selectionSource",
+        ])
+          assert.equal(key in receipt.episode, false);
+        assert.throws(
+          () =>
+            checkPassReceipt(
+              passFor(repo),
+              receipt.subject,
+              [{ ...receipt, episode: { transport: "fake" } }],
+              [],
+            ),
+          /requires an actual/u,
+        );
+        // Committed receipt bytes, including the legacy rendering in other
+        // fixtures, still pass through the same immutable-history reader.
+        commit(repo, "direct receipt");
+        write(repo, `${RECEIPTS}/${receipt.receiptId}.md`, `${markdown}\n`);
+        await assert.rejects(readReceipts(repo), /immutable Markdown/u);
+        write(repo, `${RECEIPTS}/${receipt.receiptId}.md`, markdown);
+        await assert.rejects(writeDirectReceipt(repo), /same subject/u);
+        assert.deepEqual(await readReceipts(repo), [receipt]);
+      },
+    );
+    await check(
+      "direct-session closed provenance rejects launch claims, verified settings and changed frozen results",
+      async () => {
+        const repo = makeRepo(parent, "direct-shape");
+        const receipt = await writeDirectReceipt(repo);
+        for (const change of [
+          { kind: "other" },
+          { harness: "other" },
+          { harnessVersion: "claimed-version" },
+          { model: "claimed-model" },
+          { effort: "max" },
+          { settingsVerification: "verified" },
+          { profileId: "other" },
+          { completedAt: "not-a-timestamp" },
+          { resultHash: sha256("other") },
+          { judgmentBasis: "planner-narrative" },
+          { independence: "host-verified" },
+          { contextIsolation: "enforced" },
+          { modelTools: "disabled" },
+          { statement: "" },
+          { transport: "codex-cli-exec" },
+          { commandReceipt: { acceptedAt: now() } },
+          { dispatchedAt: new Date(now()).toISOString() },
+          { semanticHash: "invented-build" },
+          { selectionSource: "host-launch" },
+        ])
+          await assert.rejects(
+            validateReceipt(
+              repo,
+              rehash({
+                ...receipt,
+                episode: { ...receipt.episode, ...change },
+              }),
+            ),
+            /provenance/u,
+          );
+        const changed = structuredClone(receipt);
+        changed.result.orders[0].reason =
+          "A different judgment after freezing.";
+        await assert.rejects(
+          validateReceipt(repo, rehash(changed)),
+          /frozen result hash/u,
+        );
+        const forgedSubject = structuredClone(receipt);
+        forgedSubject.subject.orders[0].objective = "An uncommitted objective.";
+        await assert.rejects(
+          validateReceipt(repo, rehash(forgedSubject)),
+          /committed sources/u,
+        );
+        const incomplete = structuredClone(receipt);
+        incomplete.result.orders.pop();
+        incomplete.episode = directEpisode(incomplete.result);
+        delete incomplete.episode.result;
+        await assert.rejects(
+          validateReceipt(repo, rehash(incomplete)),
+          /one result per subject order/u,
+        );
+      },
+    );
+    await check(
+      "direct-session publication rejects dirty or stale planning subjects and screens session metadata",
+      async () => {
+        const repo = makeRepo(parent, "direct-inputs");
+        const subject = buildPlanSubject(repo);
+        const input = {
+          pass: passFor(repo),
+          slug: "direct-inputs",
+          subject,
+          episode: directEpisode(passResult(subject)),
+        };
+        write(repo, orderPath("WO-901"), `${order("WO-901")}\n`);
+        await assert.rejects(
+          writePlanReceipt(repo, input),
+          /current committed and workspace subject/u,
+        );
+        commit(repo, "changed source bytes");
+        await assert.rejects(
+          writePlanReceipt(repo, input),
+          /current committed and workspace subject/u,
+        );
+        write(repo, "docs/control/local/terms.txt", "Synthetic Forbidden\n");
+        const current = buildPlanSubject(repo);
+        await assert.rejects(
+          writePlanReceipt(repo, {
+            ...input,
+            subject: current,
+            episode: {
+              ...directEpisode(passResult(current)),
+              statement: "Synthetic Forbidden",
+            },
+          }),
+          /local-terms list present; refused/u,
+        );
+        assert.deepEqual(await readReceipts(repo), []);
+        assert.deepEqual(readdirSync(join(repo, RECEIPTS)), []);
+      },
+    );
+    await check(
+      "direct-session receipts retain structural and addressed holds and cannot freeze an omitted hold as pass",
+      async () => {
+        for (const condition of [
+          "drift",
+          "machinery",
+          "uncovered-gap",
+          "addressed-gap",
+        ]) {
+          const repo = makeRepo(parent, `direct-${condition}`);
+          const subject = buildPlanSubject(repo);
+          const result = passResult(subject);
+          if (condition === "drift") {
+            result.orders[0] = cannedPlanDrift(subject).orders[0];
+          } else if (condition === "machinery") {
+            result.orders = result.orders.map((item) => ({
+              ...item,
+              verdict: "machinery",
+              thesis: null,
+              capabilityRow: null,
+            }));
+          } else if (condition === "uncovered-gap") {
+            result.largestGap.thesis = subject.standard.theses[1].id;
+          } else {
+            result.holdReasons = [
+              {
+                workOrderId: subject.orders[0].workOrderId,
+                criterionId: subject.orders[0].criteria[0].id,
+                reason: "A concrete unresolved gap within the touched thesis.",
+              },
+            ];
+          }
+          await assert.rejects(
+            writePlanReceipt(repo, {
+              pass: passFor(repo),
+              slug: "omitted",
+              subject,
+              episode: directEpisode(result),
+            }),
+            /frozen result hash/u,
+          );
+          assert.deepEqual(await readReceipts(repo), []);
+          const receipt = await writeDirectReceipt(repo, () => result);
+          assert.equal(receipt.result.planVerdict, "hold");
+          assert.ok(receipt.holds.length > 0);
+          await assert.rejects(checkPlanGate(repo), /unanswered hold/u);
+        }
+      },
+    );
+    await check(
+      "direct-session and CLI histories share held-criterion repair and disposition requirements",
+      async () => {
+        const repo = makeRepo(parent, "direct-chain");
+        const held = await writeReceipt(repo);
+        await assert.rejects(writeDirectReceipt(repo), /same subject/u);
+        mutate(repo, orderPath("WO-902"), "useful shape", "different shape");
+        await assert.rejects(
+          writeDirectReceipt(repo, passResult, accept(held)),
+          /outside the held criteria/u,
+        );
+        mutate(repo, orderPath("WO-901"), "useful shape", "repaired shape");
+        await assert.rejects(
+          writeDirectReceipt(repo),
+          /no accepted disposition/u,
+        );
+        const repaired = await writeDirectReceipt(
+          repo,
+          passResult,
+          accept(held),
+        );
+        assert.equal(repaired.previousReceiptHash, held.receiptHash);
+        assert.equal(repaired.ordinal, 2);
+        assert.equal((await checkPlanGate(repo)).receipts, 2);
+      },
+    );
+    await check(
+      "historical direct-session receipts retain identities without a third-hold stop",
+      async () => {
+        const repo = makeRepo(parent, "direct-limit");
+        const receipts = [];
+        for (let i = 0; i < 3; i++) {
+          if (i) mutate(repo, orderPath("WO-901"), "useful", `useful-${i}`);
+          receipts.push(await writeDirectReceipt(repo, cannedPlanDrift));
+        }
+        mutate(repo, orderPath("WO-901"), "useful", "useful-final");
+        const repaired = await writeDirectReceipt(
+          repo,
+          passResult,
+          receipts.flatMap(accept),
+        );
+        assert.equal(repaired.result.planVerdict, "pass");
+        assert.equal((await readReceipts(repo)).length, 4);
+      },
+    );
+    await check(
+      "AC1 committed-only deterministic subject; narrative blinding; all five hash inputs",
+      async () => {
+        const repo = makeRepo(parent, "subject");
+        const base = buildPlanSubject(repo);
+        assert.deepEqual(base, buildPlanSubject(repo));
+        assert.equal(base.orders[0].criteria.length, 2);
+        assert.equal(
+          JSON.stringify(base).includes("PLANNER_NARRATIVE_SENTINEL"),
+          false,
+        );
+        write(
+          repo,
+          orderPath("WO-901"),
+          read(repo, orderPath("WO-901")).replace(
+            "useful shape",
+            "different shape",
+          ),
+        );
+        assert.equal(buildPlanSubject(repo).hash, base.hash);
+        assert.notEqual(
+          buildPlanSubject(repo, "HEAD", { workspace: true }).hash,
+          base.hash,
+        );
+        await assert.rejects(
+          plan(["refute", "--transport", "fake"], repo),
+          /commit the planning subject/u,
+        );
+        write(repo, orderPath("WO-901"), order("WO-901"));
+        for (const [path, from, to] of [
+          [PLAN_MAP, "First", "first"],
+          [orderPath("WO-901"), "useful shape.", "useful shape!"],
+          [
+            "docs/product/00-vision.md",
+            "Evidence describes",
+            "evidence describes",
+          ],
+          [
+            "docs/product/13-uifa-roles.md",
+            "A useful shape.",
+            "A useful shape!",
+          ],
+          ["docs/planning/capability-table.md", "**0", "**1"],
+        ]) {
+          const prior = buildPlanSubject(repo);
+          mutate(repo, path, from, to);
+          assert.notEqual(buildPlanSubject(repo).hash, prior.hash);
+          assert.deepEqual(buildPlanSubject(repo, prior.revision), prior);
+        }
+        const before = buildPlanSubject(repo);
+        mutate(
+          repo,
+          PLAN_MAP,
+          "PLANNER_NARRATIVE_SENTINEL",
+          "REWRITTEN_NARRATIVE",
+        );
+        assert.equal(buildPlanSubject(repo).hash, before.hash);
+        mutate(
+          repo,
+          "docs/planning/capability-table.md",
+          "PLANNER_NARRATIVE_SENTINEL",
+          "REWRITTEN_NARRATIVE",
+        );
+        assert.equal(buildPlanSubject(repo).hash, before.hash);
+        // Whole order bytes are hashed even though its narrative is never sent.
+        mutate(
+          repo,
+          orderPath("WO-901"),
+          "PLANNER_NARRATIVE_SENTINEL",
+          "CHANGED_ORDER_NARRATIVE",
+        );
+        assert.notEqual(buildPlanSubject(repo).hash, before.hash);
+        assert.equal(
+          JSON.stringify(buildPlanSubject(repo)).includes(
+            "CHANGED_ORDER_NARRATIVE",
+          ),
+          false,
+        );
+      },
+    );
+    await check(
+      "AC2 compiled identity, mask, lens, pinned questions, one-shot cadence and authority refusals",
+      async () => {
+        const compiled = compilePlanRefuter("fixture", now());
+        assert.deepEqual(compiled.program.workOrder.acceptanceCriteria, [
+          "For each order, which critical-path gate does it unblock and what is the NoOp cost in the records?",
+          "How do all eight system traps apply to the order's own process cost?",
+          "Does the Cost line name a removal larger than the addition?",
+          "Does failure of the mechanism degrade to the old behavior rather than refusing?",
+        ]);
+        assert.equal(compiled.mask.mask, "Contra-Auguste");
+        assert.equal(compiled.lens, "architecture-and-semantics");
+        assert.deepEqual(compiled.cadence, { kind: "Once", at: now() });
+        const context = {
+          now: now(),
+          actorId: "entropy-reducer",
+          workstreamId: "ws_test",
+          episodeId: "ep_test",
+          decisionIndex: 0,
+          intentIndex: 0,
+          evidence: [],
+          revokedBy: [],
+        };
+        for (const effect of [
+          "repo.write.file",
+          "git.mutate.commit",
+          "remote.push",
+          "settings.edit",
+          "decision.edit",
+          "decision.override",
+          "unknown.effect",
+        ])
+          assert.equal(
+            authorize(
+              { kind: "Act", effect, payload: {} },
+              compiled.program.authorityEnvelope,
+              context,
+            ).authorized,
+            false,
+            effect,
+          );
+        for (const effect of ["repo.read", "repo.read.file", "report.emit"])
+          assert.equal(
+            authorize(
+              { kind: "Act", effect, payload: {} },
+              compiled.program.authorityEnvelope,
+              context,
+            ).authorized,
+            true,
+            effect,
+          );
+        assert.equal(
+          authorize(
+            { kind: "Act", effect: "report.emit", payload: {} },
+            compiled.program.authorityEnvelope,
+            { ...context, now: compiled.program.authorityEnvelope.expiresAt },
+          ).authorized,
+          false,
+        );
+      },
+    );
+    await check(
+      "AC3 closed schema, exhaustive ids, verdict construction, row-less exclusion drift and gap deferrals",
+      async () => {
+        const repo = makeRepo(parent, "schema");
+        const subject = buildPlanSubject(repo);
+        const valid = passResult(subject);
+        assert.equal(validatePlanResult(valid, subject).planVerdict, "pass");
+        for (const bad of [
+          { ...valid, extra: true },
+          { ...valid, orders: [] },
+          { ...valid, orders: [valid.orders[0], valid.orders[0]] },
+          { ...valid, largestGap: { ...valid.largestGap, extra: true } },
+          {
+            ...valid,
+            holdReasons: [
+              { ...cannedPlanDrift(subject).holdReasons[0], extra: true },
+            ],
+          },
+          ...[
+            { extra: true },
+            { workOrderId: "WO-999" },
+            { thesis: "unknown" },
+            { capabilityRow: null },
+            { rolesServed: ["unknown"] },
+            { rolesServed: ["UIFA tester", "UIFA tester"] },
+            { reason: "" },
+          ].map((change) => ({
+            ...valid,
+            orders: [{ ...valid.orders[0], ...change }, valid.orders[1]],
+          })),
+        ])
+          assert.throws(() => validatePlanResult(bad, subject));
+        const drift = {
+          ...cannedPlanDrift(subject),
+          planVerdict: "pass",
+          holdReasons: [],
+        };
+        const held = validatePlanResult(drift, subject);
+        assert.equal(held.planVerdict, "hold");
+        assert.equal(held.orders[0].capabilityRow, null);
+        assert.deepEqual(validatePlanResult(held, subject), held);
+        const machinery = {
+          ...valid,
+          orders: valid.orders.map((item) => ({
+            ...item,
+            verdict: "machinery",
+            thesis: null,
+            capabilityRow: null,
+          })),
+        };
+        assert.equal(
+          validatePlanResult(machinery, subject).planVerdict,
+          "hold",
+        );
+        const uncovered = {
+          ...valid,
+          largestGap: {
+            ...valid.largestGap,
+            thesis: subject.standard.theses[1].id,
+          },
+        };
+        assert.equal(
+          validatePlanResult(uncovered, subject).planVerdict,
+          "hold",
+        );
+        mutate(
+          repo,
+          orderPath("WO-901"),
+          "**Non-goals:** Other shapes.",
+          "**Non-goals:** Other shapes.\n<!-- dotln-plan-defer: the-core-bet -> WO-902 -->",
+        );
+        assert.equal(
+          validatePlanResult(uncovered, buildPlanSubject(repo)).planVerdict,
+          "pass",
+        );
+        assert.equal(
+          validatePlanResult(
+            {
+              ...valid,
+              orders: [
+                {
+                  ...valid.orders[0],
+                  verdict: "machinery",
+                  thesis: null,
+                  capabilityRow: null,
+                },
+                valid.orders[1],
+              ],
+            },
+            subject,
+          ).planVerdict,
+          "pass",
+        );
+      },
+    );
+    await check(
+      "AC3/5 deferrals require a later sequence member; outside, closed, self, earlier and missing orders refuse",
+      async () => {
+        const repo = makeRepo(parent, "deferrals");
+        for (const id of ["WO-900", "WO-903"])
+          write(repo, orderPath(id), order(id));
+        const closedLog = "docs/control/orders/WO-900.jsonl";
+        write(
+          repo,
+          closedLog,
+          [
+            {
+              type: "WorkOrderActivated",
+              workOrderPath: orderPath("WO-900"),
+            },
+            { type: "ImplementationReady", actor },
+            {
+              type: "VerificationRequested",
+              verificationId: "VER-001",
+              reportPath: "docs/verifications/WO-900/VER-001.md",
+            },
+            {
+              type: "VerificationCompleted",
+              verificationId: "VER-001",
+              verdict: "pass",
+              actor,
+            },
+            {
+              type: "FinalReviewRequested",
+              finalReviewId: "FINAL-001",
+              reportPath: "docs/final-reviews/WO-900/FINAL-001.md",
+            },
+            {
+              type: "FinalReviewCompleted",
+              finalReviewId: "FINAL-001",
+              verdict: "pass",
+              actor,
+            },
+          ]
+            .map((event) =>
+              JSON.stringify({
+                schemaVersion: 1,
+                workOrderId: "WO-900",
+                ...event,
+              }),
+            )
+            .join("\n") + "\n",
+        );
+        commit(repo, "outside-sequence draft and closed order");
+        assert.equal(
+          fold(parseControlEvents(read(repo, closedLog))).phase,
+          "closed",
+        );
+        for (const [from, to, thesis] of [
+          ["WO-901", "WO-903", "the-core-bet"],
+          ["WO-902", "WO-900", "the-core-bet"],
+          ["WO-901", "WO-901", "the-core-bet"],
+          ["WO-902", "WO-901", "the-core-bet"],
+          ["WO-901", "WO-999", "the-core-bet"],
+          ["WO-901", "WO-902", "unknown-thesis"],
+        ]) {
+          for (const id of ["WO-901", "WO-902"])
+            write(repo, orderPath(id), order(id));
+          write(
+            repo,
+            orderPath(from),
+            order(from).replace(
+              "**Non-goals:** Other shapes.",
+              `**Non-goals:** Other shapes.\n<!-- dotln-plan-defer: ${thesis} -> ${to} -->`,
+            ),
+          );
+          assert.throws(
+            () => buildPlanSubject(repo, "HEAD", { workspace: true }),
+            /invalid named later-order deferral/u,
+            `${from} -> ${to} (${thesis}), workspace`,
+          );
+          commit(repo, "invalid deferral fixture");
+          assert.throws(
+            () => buildPlanSubject(repo),
+            /invalid named later-order deferral/u,
+            `${from} -> ${to} (${thesis}), committed`,
+          );
+          await assert.rejects(
+            checkPlanGate(repo),
+            /invalid named later-order deferral/u,
+          );
+        }
+      },
+    );
+    await check(
+      "AC3 local-terms phrases across separators and lines, private diagnostics, and atomic receipt refusal",
+      async () => {
+        const repo = makeRepo(parent, "terms");
+        const subject = buildPlanSubject(repo);
+        assert.deepEqual(checkLocalTerms(repo, []), { status: "unavailable" });
+        write(
+          repo,
+          "docs/control/local/terms.txt",
+          "# Synthetic fixture terms only\nSyntheticForbidden\nWibble Sprocket Cloud\nBig Fizzle Widget Cloud\n",
+        );
+        assert.deepEqual(
+          checkLocalTerms(repo, [
+            {
+              name: "fixture",
+              text: "ordinary text; Wibble Sprocket Clouds; PreSyntheticForbidden",
+            },
+            { name: "first", text: "Wibble" },
+            { name: "second", text: "Sprocket Cloud" },
+          ]),
+          { status: "present" },
+        );
+        for (const [text, line] of [
+          ["Synthetic-Forbidden", 1],
+          ["Synthetic\nForbidden", 1],
+          ["Synthetic For bid den", 1],
+          ["Wibble Sprocket Cloud", 1],
+          ["wibbleSprocketCloud", 1],
+          ["ＷＩＢＢＬＥ－ＳＰＲＯＣＫＥＴ　ＣＬＯＵＤ", 1],
+          ["prefix\nWibble\r\nSprocket Cloud", 2],
+          ["Big Fizzle Widget Cloud", 1],
+          ["Big Fizzle-\nWidget\tCloud", 1],
+        ]) {
+          assert.throws(
+            () => checkLocalTerms(repo, [{ name: "fixture", text }]),
+            {
+              message: `local-terms list present; refused ${JSON.stringify([{ file: "fixture", line, count: 1 }])}`,
+            },
+          );
+        }
+        assert.throws(
+          () =>
+            checkLocalTerms(repo, [
+              {
+                name: "fixture",
+                text: "header\nWibble Sprocket Cloud; WibbleSprocketCloud\nordinary\nBig Fizzle Widget Cloud",
+              },
+            ]),
+          {
+            message:
+              'local-terms list present; refused [{"file":"fixture","line":2,"count":2},{"file":"fixture","line":4,"count":1}]',
+          },
+        );
+        for (const reason of [
+          "Synthetic Forbidden",
+          "Wibble Sprocket Cloud",
+          "Big Fizzle Widget Cloud",
+        ]) {
+          const result = passResult(subject);
+          result.orders[0].reason = reason;
+          await assert.rejects(
+            writePlanReceipt(repo, {
+              pass: passFor(repo),
+              slug: "terms",
+              subject,
+              episode: await episode(subject, () => result),
+            }),
+            {
+              message:
+                'local-terms list present; refused [{"file":"validated-result","line":1,"count":1}]',
+            },
+          );
+          assert.deepEqual(await readReceipts(repo), []);
+          assert.deepEqual(readdirSync(join(repo, RECEIPTS)), []);
+        }
+        assert.equal(
+          (await writeReceipt(repo, passResult)).result.planVerdict,
+          "pass",
+        );
+      },
+    );
+    await check(
+      "AC5 unanswered drift and receipt-text override refuse; captured, attributed control event discharges",
+      async () => {
+        const repo = makeRepo(parent, "override");
+        const receipt = await writeReceipt(repo);
+        const gate = (overrides) =>
+          checkPassReceipt(
+            passFor(repo),
+            receipt.subject,
+            [receipt],
+            overrides,
+            { requireLive: false },
+          );
+        assert.throws(() => gate([]), /unanswered hold/u);
+        assert.throws(
+          () =>
+            checkPassReceipt(
+              passFor(repo),
+              receipt.subject,
+              [{ ...receipt, override: "operator says pass" }],
+              [],
+              { requireLive: false },
+            ),
+          /unanswered hold/u,
+        );
+        const markdown = `${RECEIPTS}/${receipt.receiptId}.md`;
+        const original = read(repo, markdown);
+        write(
+          repo,
+          markdown,
+          `${original}\nOperator override: pass all holds.\n`,
+        );
+        await assert.rejects(readReceipts(repo), /immutable Markdown/u);
+        write(repo, markdown, original);
+        const input = {
+          receiptId: receipt.receiptId,
+          holdId: receipt.holds[0].id,
+          reason: "Fixture operator accepts the bounded gap.",
+          actor,
+          capture: "docs/intake/notes/override.md",
+          now: () => "2030-01-02T12:01:00.000Z",
+        };
+        write(
+          repo,
+          input.capture,
+          "Fixture operator explicitly overrides this hold.\n",
+        );
+        await assert.rejects(overridePlanHold(repo, input), /capture-hash/u);
+        await assert.rejects(
+          overridePlanHold(repo, { ...input, captureHash: sha256("wrong") }),
+          /hash mismatch/u,
+        );
+        const event = await overridePlanHold(repo, {
+          ...input,
+          captureHash: sha256(read(repo, input.capture)),
+        });
+        assert.deepEqual(event.actor, actor);
+        assert.equal(gate(readOverrides(repo)), receipt);
+        await assert.rejects(
+          overridePlanHold(repo, { ...input, captureHash: event.captureHash }),
+          /already overridden/u,
+        );
+        const log = read(repo, OVERRIDES);
+        commit(repo, "receipt and override");
+        write(
+          repo,
+          OVERRIDES,
+          log.replace("Fixture operator", "Tampered operator"),
+        );
+        assert.throws(() => readOverrides(repo), /append-only/u);
+      },
+    );
+    await check(
+      "an earlier operator override admits later planning without reopening its held order",
+      async () => {
+        const repo = makeRepo(parent, "overridden-history");
+        const held = await writeDirectReceipt(repo, cannedPlanDrift);
+        const heldOrder = read(repo, orderPath("WO-901"));
+        mutate(repo, orderPath("WO-902"), "useful shape", "different shape");
+        await assert.rejects(
+          writeDirectReceipt(repo, cannedPlanDrift),
+          /outside the held criteria/u,
+        );
+        const capture = "docs/intake/notes/override.md";
+        write(repo, capture, "Fixture operator accepts the existing holds.\n");
+        for (const hold of held.holds)
+          await overridePlanHold(repo, {
+            receiptId: held.receiptId,
+            holdId: hold.id,
+            reason: "Fixture operator accepts this existing hold.",
+            actor,
+            capture,
+            captureHash: sha256(read(repo, capture)),
+            now: () => "2030-01-02T12:01:00.000Z",
+          });
+        // A later override cannot retroactively authorize an earlier receipt.
+        await assert.rejects(
+          writeDirectReceipt(repo, cannedPlanDrift),
+          /outside the held criteria/u,
+        );
+        const subject = buildPlanSubject(repo);
+        const fresh = await writePlanReceipt(repo, {
+          pass: passFor(repo),
+          slug: "after-override",
+          subject,
+          episode: {
+            ...directEpisode(
+              validatePlanResult(cannedPlanDrift(subject), subject),
+            ),
+            completedAt: "2030-01-02T12:02:00.000Z",
+          },
+        });
+        assert.equal(read(repo, orderPath("WO-901")), heldOrder);
+        assert.equal(fresh.dispositions.length, 0);
+        assert.equal(fresh.result.planVerdict, "hold");
+        commit(repo, "receipts and attributed override");
+        assert.deepEqual(await readReceipts(repo), [held, fresh]);
+        assert.equal(
+          checkPassReceipt(
+            passFor(repo),
+            fresh.subject,
+            [held, fresh],
+            readOverrides(repo),
+          ),
+          fresh,
+        );
+      },
+    );
+    await check(
+      "a partial historical override preserves accepted repairs and repeated holds",
+      async () => {
+        const repo = makeRepo(parent, "partly-overridden-history");
+        const twoHolds = (subject) => {
+          const result = cannedPlanDrift(subject);
+          return {
+            ...result,
+            holdReasons: [
+              ...result.holdReasons,
+              {
+                workOrderId: "WO-901",
+                criterionId: "criterion:2",
+                reason: "The second criterion still has a bounded gap.",
+              },
+            ],
+          };
+        };
+        const held = await writeDirectReceipt(repo, twoHolds);
+        const capture = "docs/intake/notes/override.md";
+        write(repo, capture, "Fixture operator accepts only the first hold.\n");
+        await overridePlanHold(repo, {
+          receiptId: held.receiptId,
+          holdId: held.holds[0].id,
+          reason: "Fixture operator accepts only this first hold.",
+          actor,
+          capture,
+          captureHash: sha256(read(repo, capture)),
+          now: () => "2030-01-02T12:01:00.000Z",
+        });
+        mutate(repo, orderPath("WO-901"), "useful shape", "repaired shape");
+        const subject = buildPlanSubject(repo);
+        const fresh = await writePlanReceipt(repo, {
+          pass: passFor(repo),
+          slug: "partial-override",
+          subject,
+          episode: {
+            ...directEpisode(validatePlanResult(twoHolds(subject), subject)),
+            completedAt: "2030-01-02T12:02:00.000Z",
+          },
+          dispositions: [accept(held)[0]],
+        });
+        commit(repo, "historical partial override and accepted repair");
+        assert.deepEqual(await readReceipts(repo), [held, fresh]);
+      },
+    );
+    await check(
+      "AC5 pass after held criterion repair; elsewhere and whitespace edits cannot re-roll",
+      async () => {
+        const repo = makeRepo(parent, "repair");
+        const held = await writeReceipt(repo);
+        await assert.rejects(
+          writeReceipt(repo, passResult, accept(held)),
+          /same subject/u,
+        );
+        mutate(repo, orderPath("WO-902"), "useful shape", "different shape");
+        await assert.rejects(
+          writeReceipt(repo, passResult, accept(held)),
+          /outside the held criteria/u,
+        );
+        mutate(repo, orderPath("WO-901"), "useful shape", "useful  shape");
+        await assert.rejects(
+          writeReceipt(repo, passResult, accept(held)),
+          /outside the held criteria/u,
+        );
+        mutate(
+          repo,
+          orderPath("WO-901"),
+          "useful  shape",
+          "useful repaired shape",
+        );
+        await assert.rejects(
+          writeReceipt(repo, passResult),
+          /no accepted disposition/u,
+        );
+        const fresh = await writeReceipt(repo, passResult, accept(held));
+        assert.equal(
+          checkPassReceipt(passFor(repo), fresh.subject, [held, fresh], [], {
+            requireLive: false,
+          }),
+          fresh,
+        );
+        assert.equal((await readReceipts(repo)).length, 2);
+        assert.throws(
+          () =>
+            checkPassReceipt(passFor(repo), fresh.subject, [held], [], {
+              requireLive: false,
+            }),
+          /matching the current subject/u,
+        );
+      },
+    );
+    await check(
+      "historical holds remain addressed and immutable after removing the third-hold stop",
+      async () => {
+        const repo = makeRepo(parent, "limit");
+        const receipts = [await writeReceipt(repo)];
+        for (let i = 2; i <= 3; i++) {
+          mutate(repo, orderPath("WO-901"), "useful", `useful-${i}`);
+          receipts.push(
+            await writeReceipt(repo, cannedPlanDrift, receipts.flatMap(accept)),
+          );
+        }
+        mutate(repo, orderPath("WO-901"), "useful", "useful-final");
+        // Old receipts remain immutable, but a fourth attempt has no count gate.
+        const third = receipts[2];
+        assert.equal(
+          checkPassReceipt(passFor(repo), third.subject, receipts, [], {
+            requireLive: false,
+          }),
+          third,
+          "accepted dispositions bind the repaired criterion even when a later old-format receipt repeats its hold",
+        );
+        assert.equal((await readReceipts(repo)).length, 3);
+        write(
+          repo,
+          PLAN_LEDGER,
+          `${read(repo, PLAN_LEDGER)}\n## 2030-01-02 subsequent planning pass\n\nRepair the held horizon.\n`,
+        );
+        commit(repo, "next planning pass");
+        const repaired = await writeReceipt(
+          repo,
+          passResult,
+          receipts.flatMap(accept),
+        );
+        assert.equal(repaired.ordinal, 4);
+        assert.equal(repaired.result.planVerdict, "pass");
+        assert.equal((await readReceipts(repo)).length, 4);
+        commit(repo, "immutable receipts");
+        const path = join(repo, RECEIPTS, `${receipts[0].receiptId}.json`);
+        renameSync(path, `${path}.hidden`);
+        await assert.rejects(readReceipts(repo), /contained regular evidence/u);
+        renameSync(`${path}.hidden`, path);
+      },
+    );
+    await check(
+      "AC2/4 transport adapters keep fixed schema, empty cwd and no model tools; host rejects a mismatched receipt",
+      async () => {
+        const repo = makeRepo(parent, "transport");
+        const subject = buildPlanSubject(repo);
+        const launches = [];
+        for (const [Transport, wire] of [
+          [
+            ClaudeCliPrintWorkOrderTransport,
+            (result) =>
+              JSON.stringify({
+                type: "result",
+                subtype: "success",
+                structured_output: result,
+              }),
+          ],
+          [
+            CodexCliExecWorkOrderTransport,
+            (result) =>
+              `${JSON.stringify({ type: "item.completed", item: { type: "agent_message", text: JSON.stringify(result) } })}\n${JSON.stringify({ type: "turn.completed" })}\n`,
+          ],
+        ]) {
+          const runner = (launch) => {
+            launches.push(launch);
+            assert.ok(
+              existsSync(join(launch.cwd, ".git")),
+              "scratch cwd is a repository",
+            );
+            assert.equal(
+              launch.input.includes("PLANNER_NARRATIVE_SENTINEL"),
+              false,
+            );
+            return {
+              accepted: Promise.resolve(),
+              completed: Promise.resolve({
+                stdout: wire(passResult(subject)),
+                stderr: "",
+                exitCode: 0,
+              }),
+              alive: () => false,
+              kill: () => {},
+            };
+          };
+          const transport = new Transport(
+            runner,
+            Transport === ClaudeCliPrintWorkOrderTransport
+              ? "2.1.270"
+              : "0.154.0",
+          );
+          const output = await runPlanRefutation(
+            subject,
+            transport,
+            "fixture-model",
+            Transport === ClaudeCliPrintWorkOrderTransport ? "max" : "unknown",
+            now,
+          );
+          assert.equal(output.result.planVerdict, "pass");
+          assert.equal(output.selectionSource, "host-launch");
+        }
+        assert.ok(launches[0].args.includes("--strict-mcp-config"));
+        assert.equal(
+          launches[0].args[launches[0].args.indexOf("--tools") + 1],
+          "",
+        );
+        assert.ok(launches[1].args.includes("--ignore-user-config"));
+        assert.ok(launches[1].args.includes("project_doc_max_bytes=0"));
+        assert.notEqual(launches[0].cwd, repo);
+        const fake = new FakePlanRefutationTransport();
+        const original = fake.dispatch.bind(fake);
+        fake.dispatch = (request, clock) => ({
+          ...original(request, clock),
+          receipt: Promise.resolve({
+            commandId: "wrong",
+            transport: "fake",
+            acceptedAt: clock(),
+          }),
+        });
+        await assert.rejects(
+          runPlanRefutation(subject, fake, "fixture", "max", now),
+        );
+      },
+    );
+    await check(
+      "WO-142 B4 rejected paid return and statement survive in local lane",
+      async () => {
+        const repo = makeRepo(parent, "rejected-plan-return");
+        const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
+        const bad = cannedGoalReview(subject);
+        bad.orders[0].findings = [
+          {
+            criterionId: subject.orders[0].criteria[0].id,
+            kind: "known-issue",
+            reason: "Synthetic issue",
+            evidence: null,
+            reopenWhen: null,
+          },
+        ];
+        const statement = "Synthetic worker statement preserved exactly.";
+        const transport = new ClaudeCliPrintWorkOrderTransport(
+          () => ({
+            accepted: Promise.resolve(),
+            completed: Promise.resolve({
+              stdout: JSON.stringify({
+                type: "result",
+                subtype: "success",
+                structured_output: bad,
+                result: statement,
+              }),
+              stderr: "",
+              exitCode: 0,
+            }),
+            alive: () => false,
+            kill: () => {},
+          }),
+          "2.1.270",
+        );
+        const lane = join(repo, "docs/control/local/refutations");
+        await assert.rejects(
+          runPlanRefutation(subject, transport, "fixture", "max", now, lane),
+          /known issue requires a reopening observation; rejected result and statement retained at/,
+        );
+        const retained = join(lane, readdirSync(lane)[0]);
+        assert.deepEqual(
+          JSON.parse(readFileSync(join(retained, "result.json"), "utf8")),
+          bad,
+        );
+        assert.equal(
+          readFileSync(join(retained, "statement.txt"), "utf8"),
+          statement,
+        );
+        assert.ok(existsSync(join(retained, "wire.jsonl")));
+        const branches =
+          planResultSchema(subject).properties.orders.items.properties.findings
+            .items.anyOf;
+        const known = branches.find((branch) =>
+          branch.properties.kind.enum?.includes("known-issue"),
+        );
+        assert.equal(known.properties.reopenWhen.type, "string");
+        assert.equal(known.properties.reopenWhen.minLength, 1);
+        for (const branch of branches.filter((branch) => branch !== known)) {
+          assert.equal(branch.properties.evidence.type, "string");
+          assert.ok(branch.properties.evidence.enum.length > 0);
+        }
+      },
+    );
+    await check(
+      "WO-125 plan CLI accepts Codex GPT-6 Astra/max and records only a launch claim",
+      async () => {
+        const repo = makeRepo(parent, "codex-effort-cli");
+        const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
+        const bin = join(repo, "bin");
+        mkdirSync(bin);
+        const argsPath = join(repo, "codex-args.json");
+        const wire =
+          [
+            {
+              type: "item.completed",
+              item: {
+                type: "agent_message",
+                text: JSON.stringify(cannedGoalReview(subject)),
+              },
+            },
+            {
+              type: "turn.completed",
+              usage: { input_tokens: 10, output_tokens: 5 },
+            },
+          ]
+            .map((row) => JSON.stringify(row))
+            .join("\n") + "\n";
+        writeFileSync(
+          join(bin, "codex"),
+          `#!/usr/bin/env node
+const fs = require("node:fs");
+if (process.argv[2] === "--version") console.log("codex-cli 0.154.0");
+else {
+  fs.readFileSync(0, "utf8");
+  fs.writeFileSync(${JSON.stringify(argsPath)}, JSON.stringify(process.argv.slice(2)));
+  process.stdout.write(${JSON.stringify(wire)});
+}
+`,
+          { mode: 0o755 },
+        );
+        const previousPath = process.env.PATH;
+        try {
+          process.env.PATH = `${bin}:${previousPath ?? ""}`;
+          const result = await plan(
+            [
+              "refute",
+              "--transport",
+              "codex-cli-exec",
+              "--model",
+              "gpt-6-astra",
+              "--effort",
+              "max",
+            ],
+            repo,
+          );
+          assert.equal(result.verdict, "aligned");
+        } finally {
+          if (previousPath === undefined) delete process.env.PATH;
+          else process.env.PATH = previousPath;
+        }
+        const args = JSON.parse(readFileSync(argsPath, "utf8"));
+        assert.equal(args[args.indexOf("--model") + 1], "gpt-6-astra");
+        assert.deepEqual(args.slice(-3), [
+          "-c",
+          'model_reasoning_effort="max"',
+          "-",
+        ]);
+        assert.ok(args.includes("--ignore-user-config"));
+        const receipt = (await readReceipts(repo))[0];
+        assert.equal(receipt.episode.model, "gpt-6-astra");
+        assert.equal(receipt.episode.effort, "max");
+        assert.equal(receipt.episode.selectionSource, "host-launch");
+        assert.equal(receipt.episode.effectiveEffort, "unknown");
+      },
+    );
+    await check(
+      "plan refute --transport codex-cli-exec launches the pinned model and effort without flags",
+      async () => {
+        const repo = makeRepo(parent, "codex-default-cli");
+        const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
+        const bin = join(repo, "bin");
+        mkdirSync(bin);
+        const argsPath = join(repo, "codex-args.json");
+        const wire =
+          [
+            {
+              type: "item.completed",
+              item: {
+                type: "agent_message",
+                text: JSON.stringify(cannedGoalReview(subject)),
+              },
+            },
+            {
+              type: "turn.completed",
+              usage: { input_tokens: 10, output_tokens: 5 },
+            },
+          ]
+            .map((row) => JSON.stringify(row))
+            .join("\n") + "\n";
+        writeFileSync(
+          join(bin, "codex"),
+          `#!/usr/bin/env node
+const fs = require("node:fs");
+if (process.argv[2] === "--version") console.log("codex-cli 0.154.0");
+else {
+  fs.readFileSync(0, "utf8");
+  fs.writeFileSync(${JSON.stringify(argsPath)}, JSON.stringify(process.argv.slice(2)));
+  process.stdout.write(${JSON.stringify(wire)});
+}
+`,
+          { mode: 0o755 },
+        );
+        const previousPath = process.env.PATH;
+        try {
+          process.env.PATH = `${bin}:${previousPath ?? ""}`;
+          const result = await plan(
+            ["refute", "--transport", "codex-cli-exec"],
+            repo,
+          );
+          assert.equal(result.verdict, "aligned");
+        } finally {
+          if (previousPath === undefined) delete process.env.PATH;
+          else process.env.PATH = previousPath;
+        }
+        const args = JSON.parse(readFileSync(argsPath, "utf8"));
+        assert.equal(args[args.indexOf("--model") + 1], "gpt-6.1-sol");
+        assert.deepEqual(args.slice(-3), [
+          "-c",
+          'model_reasoning_effort="max"',
+          "-",
+        ]);
+        assert.ok(args.includes("--ignore-user-config"));
+        const receipt = (await readReceipts(repo))[0];
+        assert.equal(receipt.episode.model, "gpt-6.1-sol");
+        assert.equal(receipt.episode.effort, "max");
+      },
+    );
+    await check(
+      "plan failures counts a decision whose dispatch the persisted direction reading names as an operator correction",
+      async () => {
+        const repo = failureRepo(parent, "failures-dispatch-correction");
+        write(
+          repo,
+          "docs/evidence/WO-804/decisions.md",
+          "# WO-804 decisions\n\n" +
+            failureDecision("WO-804-D001", "2030-01-03", {
+              dispatch:
+                "resume: next; operator correction during implementation",
+            }),
+        );
+        const before = await plan(["failures"], repo);
+        assert.equal(
+          before.counts.window.corrections,
+          windowCounts.corrections,
+          "neither the kind nor a misread field: uncounted until the reading names it",
+        );
+        write(
+          repo,
+          "docs/evidence/WO-172/direction-agreement.json",
+          prettyJson({ correctionsNotRecorded: ["WO-804-D001"] }),
+        );
+        const page = await plan(["failures"], repo);
+        assert.equal(
+          page.counts.window.corrections,
+          windowCounts.corrections + 1,
+        );
+        assert.ok(
+          page.rows.some(
+            (row) =>
+              row.kind === "correction" &&
+              row.decision === "WO-804-D001" &&
+              row.date === "2030-01-03" &&
+              row.phase === "implementation",
+          ),
+        );
+        assert.ok(
+          isCorrection({ id: "WO-1", kind: "finding" }, new Set(["WO-1"])),
+        );
+        assert.ok(!isCorrection({ id: "WO-1", kind: "finding" }));
+        write(repo, "docs/evidence/WO-172/direction-agreement.json", "{\n");
+        await assert.rejects(
+          plan(["failures"], repo),
+          /persisted correction ids are unreadable/,
+        );
+      },
+    );
+    await check(
+      "WO-139 source-bound execution amendments admit only authorized bytes and preserve receipt/hold semantics",
+      async () => {
+        const laterHeading = "intro\n# Later (v1.2.3)\n";
+        assert.equal(
+          executionAmendmentSource(laterHeading),
+          laterHeading.trimEnd(),
+        );
+        assert.equal(
+          executionAmendmentSource("# First (v1.2.3)\n"),
+          "# First (version assigned at activation)",
+        );
+        const repo = makeRepo(parent, "execution-amendment");
+        const path = orderPath("WO-901");
+        mutate(
+          repo,
+          path,
+          "# WO-901 — Fixture",
+          "# WO-901 — Fixture (version assigned at activation)",
+        );
+        const receipt = await writeDirectReceipt(repo);
+        commit(repo, "record reviewed plan");
+        const receiptBytes = read(
+          repo,
+          `${RECEIPTS}/${receipt.receiptId}.json`,
+        );
+        const decision = {
+          id: "WO-901-D001",
+          date: "2030-01-02",
+          dispatch:
+            "scope expand: operator authorizes bounded execution repair",
+          decision: "Repair the observed fixture defect within the order",
+          evidence: ["operator direction; reproduced failure"],
+          rejected: ["NoOp retains a failing check"],
+          reopenWhen: "A distinct defect changes scope",
+        };
+        const decisionPath = "docs/evidence/WO-901/decisions.md";
+        write(
+          repo,
+          decisionPath,
+          `# Decisions\n\n\`\`\`json\n${JSON.stringify(decision)}\n\`\`\`\n`,
+        );
+        write(
+          repo,
+          path,
+          read(repo, path).replace("useful shape", "repaired useful shape"),
+        );
+        write(
+          repo,
+          path,
+          read(repo, path).replace(
+            "Other shapes.",
+            "Other shapes except the authorized repair.",
+          ),
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /work-order bytes changed|no text-bound disposition|unmatched execution amendment/,
+        );
+        write(
+          repo,
+          path,
+          read(repo, path) +
+            "\n## Execution record\n\nExisting approved evidence.\n",
+        );
+        const event = await amendPlanOrder(repo, {
+          workOrderId: "WO-901",
+          decisionId: decision.id,
+          reason: "Operator authorized the bounded repair",
+          now: () => "2030-01-02T13:00:00.000Z",
+        });
+        assert.equal(event.type, "PlanExecutionAmended");
+        assert.deepEqual(
+          criterionDispositions([receipt], [event]),
+          [],
+          "amendments are never hold dispositions",
+        );
+        const log = read(repo, OVERRIDES);
+        assert.deepEqual(
+          await amendPlanOrder(repo, {
+            workOrderId: "WO-901",
+            decisionId: decision.id,
+            reason: "Repeat same authorization",
+            now: () => "2030-01-02T14:00:00.000Z",
+          }),
+          event,
+        );
+        assert.equal(read(repo, OVERRIDES), log);
+        assert.equal(
+          (await checkPlanGate(repo)).continuation.workspaceUpdates[0].kind,
+          "authorized-execution-amendment",
+        );
+        for (const field of [
+          "receiptHash",
+          "sourceOrderHash",
+          "orderHash",
+          "decisionHash",
+        ]) {
+          write(
+            repo,
+            OVERRIDES,
+            JSON.stringify({ ...event, [field]: sha256("wrong") }) + "\n",
+          );
+          await assert.rejects(
+            checkPlanGate(repo),
+            /execution amendment|planning pass needs a receipt matching/,
+          );
+        }
+        write(
+          repo,
+          OVERRIDES,
+          JSON.stringify({ ...event, orderLength: event.orderLength + 1 }) +
+            "\n",
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /planning pass needs a receipt matching/,
+        );
+        write(repo, OVERRIDES, log);
+        write(
+          repo,
+          decisionPath,
+          read(repo, decisionPath).replace(
+            "Repair the observed",
+            "Change the observed",
+          ),
+        );
+        await assert.rejects(checkPlanGate(repo), /decision binding differs/);
+        // A decision corrected in place is re-bound through amend-order; the
+        // later row carries the binding and a further unbound edit fails.
+        const rebound = await amendPlanOrder(repo, {
+          workOrderId: "WO-901",
+          decisionId: decision.id,
+          reason: "Operator authorized the corrected decision",
+          now: () => "2030-01-02T15:00:00.000Z",
+        });
+        assert.notEqual(rebound.decisionHash, event.decisionHash);
+        assert.equal(
+          (await checkPlanGate(repo)).continuation.workspaceUpdates[0].kind,
+          "authorized-execution-amendment",
+        );
+        write(
+          repo,
+          decisionPath,
+          read(repo, decisionPath).replace(
+            "Change the observed",
+            "Alter the observed",
+          ),
+        );
+        await assert.rejects(checkPlanGate(repo), /decision binding differs/);
+        write(repo, OVERRIDES, log);
+        write(
+          repo,
+          decisionPath,
+          `# Decisions\n\n\`\`\`json\n${JSON.stringify(decision)}\n\`\`\`\n`,
+        );
+        const approved = read(repo, path);
+        write(
+          repo,
+          path,
+          approved.replace(
+            "Existing approved evidence.",
+            "Rewritten evidence.",
+          ),
+        );
+        await assert.rejects(checkPlanGate(repo));
+        write(repo, path, approved);
+        const decisionBytes = read(repo, decisionPath);
+        const outside = join(parent, "outside-decision.md");
+        writeFileSync(outside, decisionBytes);
+        rmSync(join(repo, decisionPath));
+        symlinkSync(outside, join(repo, decisionPath));
+        await assert.rejects(checkPlanGate(repo), /contained regular file/);
+        rmSync(join(repo, decisionPath));
+        write(repo, decisionPath, decisionBytes);
+        write(
+          repo,
+          path,
+          approved.replace("bounded result", "unbounded result"),
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /work-order bytes changed|no text-bound disposition|unmatched execution amendment/,
+        );
+        write(
+          repo,
+          path,
+          approved.replace("(version assigned at activation)", "(v1.2.3)") +
+            "\n## Execution record\n\nVerified bounded repair.\n",
+        );
+        assert.equal(
+          (await checkPlanGate(repo)).continuation.workspaceUpdates[0].kind,
+          "authorized-execution-amendment",
+        );
+        commit(repo, "authorized execution repair");
+        assert.equal(
+          (await checkPlanGate(repo)).continuation.committedUpdates[0].kind,
+          "authorized-execution-amendment",
+        );
+        assert.equal(
+          read(repo, `${RECEIPTS}/${receipt.receiptId}.json`),
+          receiptBytes,
+        );
+        write(repo, OVERRIDES, "");
+        assert.throws(() => readOverrides(repo), /append-only/);
+        write(repo, OVERRIDES, log);
+      },
+    );
+    for (const goalReview of [false, true])
+      await check(
+        `execution writeback admits only exact authorized story bytes with an unchanged reviewed criterion (goal review: ${goalReview})`,
+        async () => {
+          const repo = makeRepo(parent, `execution-writeback-${goalReview}`);
+          const path = orderPath("WO-901");
+          const vision = "docs/product/00-vision.md";
+          const decisionPath = "docs/evidence/WO-901/decisions.md";
+          write(
+            repo,
+            path,
+            read(repo, path).replace(
+              "Keep a bounded result.",
+              "Record the observed status in The one-paragraph story of product 00.",
+            ),
+          );
+          commit(repo, "declare status writeback");
+          const receipt = await writeDirectReceipt(
+            repo,
+            goalReview ? cannedGoalReview : passResult,
+            [],
+            { goalReview },
+          );
+          commit(repo, "record judged status writeback");
+          const receiptBytes = read(
+            repo,
+            `${RECEIPTS}/${receipt.receiptId}.json`,
+          );
+          const beforeVision = read(repo, vision);
+          const afterVision = beforeVision.replace(
+            "Evidence describes the shape.",
+            "Evidence describes the shape. The bounded run was observed.",
+          );
+          write(repo, vision, afterVision);
+          const approvedOrder = read(repo, path).replace(
+            "Other shapes.",
+            "Other shapes beyond the authorized repair.",
+          );
+          write(repo, path, approvedOrder);
+          const inputName = "vision:the-one-paragraph-story";
+          const writeback = {
+            path: vision,
+            section: "The one-paragraph story",
+            criterionId: "criterion:2",
+            criterionHash: sha256(
+              receipt.subject.orders.find((o) => o.workOrderId === "WO-901")
+                .criteria[1].text,
+            ),
+            sourceHash: receipt.subject.inputs.find(
+              (row) => row.name === inputName,
+            ).hash,
+            acceptedHash: buildPlanSubject(repo, "HEAD", {
+              workspace: true,
+            }).inputs.find((row) => row.name === inputName).hash,
+          };
+          const decision = {
+            id: "WO-901-D001",
+            date: "2030-01-02",
+            dispatch:
+              "scope expand: operator authorizes exact status writeback",
+            decision: "Bind the required status writeback",
+            evidence: ["operator authorization; observed run"],
+            rejected: ["NoOp leaves the required writeback blocked"],
+            reopenWhen: "Different accepted bytes",
+            executionWritebacks: [writeback],
+          };
+          const saveDecision = (value) =>
+            write(
+              repo,
+              decisionPath,
+              "# Decisions\n\n```json\n" + JSON.stringify(value) + "\n```\n",
+            );
+          const amend = () =>
+            amendPlanOrder(repo, {
+              workOrderId: "WO-901",
+              decisionId: decision.id,
+              reason: "Operator authorized the exact status writeback",
+              now: () => "2030-01-02T13:00:00.000Z",
+            });
+          saveDecision({ ...decision, executionWritebacks: undefined });
+          await amend();
+          await assert.rejects(
+            checkPlanGate(repo),
+            /sequence, vision, roles or order inventory changed/,
+          );
+          saveDecision(decision);
+          const event = await amend();
+          const approvedLog = read(repo, OVERRIDES);
+          const accepted = await checkPlanGate(repo);
+          assert.ok(
+            accepted.continuation.workspaceUpdates.some(
+              (row) =>
+                row.kind === "authorized-execution-writeback" &&
+                row.decisionId === decision.id,
+            ),
+          );
+          for (const change of [
+            { path: "docs/product/13-uifa-roles.md" },
+            { section: "The core bet" },
+            { sourceHash: sha256("stale") },
+            { criterionHash: sha256("different criterion") },
+          ]) {
+            saveDecision({
+              ...decision,
+              executionWritebacks: [{ ...writeback, ...change }],
+            });
+            await assert.rejects(amend, /execution writeback/);
+            saveDecision(decision);
+          }
+          // A declaration cannot approve bytes by changing an existing bound decision.
+          saveDecision({
+            ...decision,
+            executionWritebacks: [
+              { ...writeback, acceptedHash: sha256("different") },
+            ],
+          });
+          await assert.rejects(checkPlanGate(repo), /decision binding differs/);
+          saveDecision(decision);
+          for (const [file, changed] of [
+            [
+              vision,
+              afterVision.replace(
+                "bounded run was observed.",
+                "bounded run was observed. ",
+              ),
+            ],
+            [
+              vision,
+              afterVision.replace(
+                "## The core bet\n\nEvidence describes the shape.",
+                "## The core bet\n\nAnother thesis.",
+              ),
+            ],
+            [
+              "docs/product/13-uifa-roles.md",
+              read(repo, "docs/product/13-uifa-roles.md").replace(
+                "A useful shape.",
+                "Another role.",
+              ),
+            ],
+            [
+              PLAN_MAP,
+              read(repo, PLAN_MAP).replace(
+                "- WO-901 — First\n- WO-902 — Second",
+                "- WO-902 — Second\n- WO-901 — First",
+              ),
+            ],
+          ]) {
+            const original = read(repo, file);
+            assert.notEqual(changed, original);
+            write(repo, file, changed);
+            await assert.rejects(checkPlanGate(repo));
+            write(repo, file, original);
+          }
+          if (goalReview) {
+            const guide = "docs/product/07-execution-guide.md";
+            const originalGuide = read(repo, guide);
+            write(
+              repo,
+              guide,
+              originalGuide.replace(
+                "Consider all eight system traps",
+                "Ignore all eight system traps",
+              ),
+            );
+            await assert.rejects(
+              checkPlanGate(repo),
+              /observed evidence or goal standard changed/,
+            );
+            write(repo, guide, originalGuide);
+            const costs = "docs/planning/cost-table.json";
+            const previousCosts = existsSync(join(repo, costs))
+              ? read(repo, costs)
+              : null;
+            write(
+              repo,
+              costs,
+              JSON.stringify({
+                rows: [{ workOrder: "WO-901", metrics: { gateMs: 605000 } }],
+              }),
+            );
+            await assert.rejects(
+              checkPlanGate(repo),
+              /observed evidence or goal standard changed/,
+            );
+            if (previousCosts === null) rmSync(join(repo, costs));
+            else write(repo, costs, previousCosts);
+          }
+          saveDecision({
+            ...decision,
+            executionWritebacks: [
+              { ...writeback, acceptedHash: sha256("stale accepted bytes") },
+            ],
+          });
+          await amend();
+          await assert.rejects(
+            checkPlanGate(repo),
+            /sequence, vision, roles or order inventory changed/,
+          );
+          saveDecision(decision);
+          write(repo, OVERRIDES, approvedLog);
+          // Even a newly rebound order may not change the criterion used as authority.
+          write(
+            repo,
+            path,
+            approvedOrder.replace(
+              "Record the observed status",
+              "Record a different status",
+            ),
+          );
+          await amend();
+          await assert.rejects(
+            checkPlanGate(repo),
+            /unchanged reviewed criterion/,
+          );
+          write(repo, path, approvedOrder);
+          write(repo, OVERRIDES, approvedLog);
+          const row = readOverrides(repo).find(
+            (e) => e.decisionHash === event.decisionHash,
+          );
+          await withdrawPlanAmendment(repo, {
+            workOrderId: "WO-901",
+            ordinal: row.rowOrdinal,
+            reason: "Operator withdrew this amendment",
+            now: () => "2030-01-02T14:00:00.000Z",
+          });
+          await assert.rejects(checkPlanGate(repo));
+          write(repo, OVERRIDES, approvedLog);
+          assert.equal((await checkPlanGate(repo)).passes, 1);
+          commit(repo, "record exact authorized execution writeback");
+          assert.ok(
+            (await checkPlanGate(repo)).continuation.committedUpdates.some(
+              (row) => row.kind === "authorized-execution-writeback",
+            ),
+          );
+          assert.equal(
+            read(repo, `${RECEIPTS}/${receipt.receiptId}.json`),
+            receiptBytes,
+          );
+        },
+      );
+    await check(
+      "WO-160 unmatched amendments name their physical row and withdrawal preserves history",
+      async () => {
+        const repo = makeRepo(parent, "amendment-withdrawal");
+        const path = orderPath("WO-901");
+        await writeDirectReceipt(repo);
+        commit(repo, "judged plan");
+        const before = read(repo, path);
+        write(
+          repo,
+          "docs/evidence/WO-901/decisions.md",
+          "# Decisions\n\n```json\n" +
+            JSON.stringify({
+              id: "WO-901-D001",
+              date: "2030-01-02",
+              dispatch: "scope expand: fixture",
+              decision: "Approved fixture change",
+              evidence: ["operator"],
+              rejected: ["NoOp"],
+              reopenWhen: "New evidence",
+            }) +
+            "\n```\n",
+        );
+        write(
+          repo,
+          path,
+          before.replace("useful shape", "amended useful shape"),
+        );
+        const amended = await amendPlanOrder(repo, {
+          workOrderId: "WO-901",
+          decisionId: "WO-901-D001",
+          reason: "Authorized fixture",
+          now: () => "2030-01-02T13:00:00.000Z",
+        });
+        await checkPlanGate(repo); // uncommitted approved text is admitted
+        const history = read(repo, OVERRIDES);
+        write(repo, path, before);
+        await assert.rejects(
+          checkPlanGate(repo),
+          /unmatched execution amendment WO-901 row 1/,
+        );
+        await assert.rejects(
+          withdrawPlanAmendment(repo, {
+            workOrderId: "WO-902",
+            ordinal: 1,
+            reason: "wrong order",
+          }),
+          /named order/,
+        );
+        await assert.rejects(
+          withdrawPlanAmendment(repo, {
+            workOrderId: "WO-901",
+            ordinal: 99,
+            reason: "absent row",
+          }),
+          /named order/,
+        );
+        const withdrawal = await withdrawPlanAmendment(repo, {
+          workOrderId: "WO-901",
+          ordinal: 1,
+          reason: "Restore judged source",
+          now: () => "2030-01-02T14:00:00.000Z",
+        });
+        assert.equal(withdrawal.type, "PlanExecutionAmendmentWithdrawn");
+        assert.equal(withdrawal.orderHash, amended.orderHash);
+        assert.ok(read(repo, OVERRIDES).startsWith(history));
+        await checkPlanGate(repo);
+        const once = read(repo, OVERRIDES);
+        await plan(
+          ["amend-order", "WO-901", "--withdraw", "1", "Repeated"],
+          repo,
+        );
+        assert.equal(read(repo, OVERRIDES), once);
+        assert.deepEqual(criterionDispositions([], [withdrawal]), []);
+        write(
+          repo,
+          OVERRIDES,
+          history +
+            JSON.stringify({ ...withdrawal, orderHash: sha256("wrong") }) +
+            "\n",
+        );
+        assert.throws(() => readOverrides(repo), /withdrawal binding differs/);
+        write(repo, OVERRIDES, once);
+        write(
+          repo,
+          path,
+          before.replace("useful shape", "amended useful shape"),
+        );
+        const reauthorized = await amendPlanOrder(repo, {
+          workOrderId: "WO-901",
+          decisionId: "WO-901-D001",
+          reason: "Renewed authorization",
+          now: () => "2030-01-02T15:00:00.000Z",
+        });
+        assert.equal(reauthorized.recordedAt, "2030-01-02T15:00:00.000Z");
+        await checkPlanGate(repo);
+        const approvedA = read(repo, path);
+        write(
+          repo,
+          path,
+          before.replace("useful shape", "another useful shape"),
+        );
+        await amendPlanOrder(repo, {
+          workOrderId: "WO-901",
+          decisionId: "WO-901-D001",
+          reason: "Approve replacement B",
+          now: () => "2030-01-02T16:00:00.000Z",
+        });
+        await checkPlanGate(repo);
+        write(repo, path, approvedA);
+        await assert.rejects(
+          checkPlanGate(repo),
+          /unmatched execution amendment/,
+        );
+        const restoredA = await amendPlanOrder(repo, {
+          workOrderId: "WO-901",
+          decisionId: "WO-901-D001",
+          reason: "Reapprove A after B",
+          now: () => "2030-01-02T17:00:00.000Z",
+        });
+        assert.equal(restoredA.recordedAt, "2030-01-02T17:00:00.000Z");
+        await checkPlanGate(repo);
+        const currentLog = read(repo, OVERRIDES);
+        await amendPlanOrder(repo, {
+          workOrderId: "WO-901",
+          decisionId: "WO-901-D001",
+          reason: "Repeat current A",
+          now: () => "2030-01-02T18:00:00.000Z",
+        });
+        assert.equal(read(repo, OVERRIDES), currentLog);
+      },
+    );
+    await check(
+      "WO-160 legacy activation amendment admits a later execution appendix",
+      async () => {
+        const repo = makeRepo(parent, "legacy-activation-appendix");
+        const path = orderPath("WO-901");
+        await writeDirectReceipt(repo);
+        commit(repo, "judged plan");
+        const filed = read(repo, path);
+        write(
+          repo,
+          "docs/evidence/WO-901/decisions.md",
+          "# Decisions\n\n```json\n" +
+            JSON.stringify({
+              id: "WO-901-D001",
+              date: "2030-01-02",
+              dispatch: "scope expand: fixture",
+              decision: "Approve the version label",
+              evidence: ["operator"],
+              rejected: ["NoOp"],
+              reopenWhen: "New evidence",
+            }) +
+            "\n```\n",
+        );
+        write(
+          repo,
+          path,
+          filed.replace("useful shape", "amended useful shape"),
+        );
+        const event = await amendPlanOrder(repo, {
+          workOrderId: "WO-901",
+          decisionId: "WO-901-D001",
+          reason: "Fixture legacy activation row",
+          now: () => "2030-01-02T13:00:00.000Z",
+        });
+        const versioned = filed.replace(
+          "# WO-901 — Fixture",
+          "# WO-901 — Fixture (v1.2.3)",
+        );
+        const legacy = executionAmendmentSource(versioned);
+        write(
+          repo,
+          OVERRIDES,
+          JSON.stringify({
+            ...event,
+            orderHash: sha256(legacy),
+            orderLength: legacy.length,
+          }) + "\n",
+        );
+        const appendix = "\n## Execution record\n\nLater execution evidence.\n";
+        write(repo, path, versioned + appendix);
+        assert.equal(
+          (await checkPlanGate(repo)).continuation.workspaceUpdates[0].kind,
+          "authorized-execution-amendment",
+        );
+        write(
+          repo,
+          path,
+          versioned.replace("useful shape", "changed shape") + appendix,
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /unmatched execution amendment|work-order bytes changed/,
+        );
+      },
+    );
+    await check(
+      "WO-139 execution amendments do not discharge an independent hold",
+      async () => {
+        const repo = makeRepo(parent, "execution-amendment-held");
+        const receipt = await writeDirectReceipt(repo, cannedPlanDrift);
+        commit(repo, "held plan");
+        const decision = {
+          id: "WO-901-D001",
+          date: "2030-01-02",
+          dispatch: "scope expand: authorized repair",
+          decision: "Repair the fixture",
+          evidence: ["operator direction"],
+          rejected: [],
+          reopenWhen: "More evidence",
+        };
+        write(
+          repo,
+          "docs/evidence/WO-901/decisions.md",
+          `# Decisions\n\n\`\`\`json\n${JSON.stringify(decision)}\n\`\`\`\n`,
+        );
+        mutate(repo, orderPath("WO-901"), "useful shape", "repaired shape");
+        await amendPlanOrder(repo, {
+          workOrderId: "WO-901",
+          decisionId: decision.id,
+          reason: "Authorized repair, no hold waiver",
+          now: () => "2030-01-02T13:00:00.000Z",
+        });
+        assert.deepEqual(
+          criterionDispositions([receipt], readOverrides(repo)),
+          [],
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /hold|unaddressed|unanswered/,
+        );
+      },
+    );
+    await check(
+      "WO-139 inherited capability rows can be restored only with exact dated preservation",
+      async () => {
+        const repo = makeRepo(parent, "capability-history-repair");
+        const path = "docs/planning/capability-table.md";
+        write(
+          repo,
+          path,
+          read(repo, path) +
+            "| `fixture.second` | **0 — latent** | Second fixture observation. |\n",
+        );
+        commit(repo, "two capability rows");
+        const receipt = await writeDirectReceipt(repo);
+        commit(repo, "record reviewed plan");
+        const original = read(repo, path);
+        const changed = original.replace("**0", "**1");
+        assert.notEqual(changed, original);
+        const changedRows = changed
+          .split("\n")
+          .filter((line, index) => line !== original.split("\n")[index]);
+        const appendix =
+          "\n\n## WO-901 dated reassessment (2030-01-02)\n\n" +
+          "| Capability | Observation | Evidence |\n| --- | --- | --- |\n" +
+          changedRows.join("\n") +
+          "\n";
+        const repaired = original.trimEnd() + appendix;
+        const proof = (head, workspace = repaired) =>
+          capabilityHistoryRepair(original, head, workspace, receipt.subject);
+        assert.equal(proof(changed).kind, "pending-capability-history-repair");
+        for (const [head, workspace] of [
+          [changed, original],
+          [changed, repaired.replace("**1", "**2")],
+          [changed, repaired.replace("**0", "**2")],
+          [changed.replace("`fixture.first`", "`fixture.other`"), repaired],
+          [changed + "extra\n", repaired],
+          [changed.replace(/^# /u, "# Changed "), repaired],
+        ])
+          assert.throws(
+            () => proof(head, workspace),
+            /matching the current subject/u,
+          );
+        // More than one inherited edit must preserve every changed row.
+        const two = original.replaceAll("**0", "**1");
+        assert.notEqual(two, changed);
+        assert.throws(() => proof(two), /every changed committed row/u);
+        const secondRow = two
+          .split("\n")
+          .find((line) => line.includes("`fixture.second`"));
+        assert.equal(proof(two, repaired + secondRow + "\n").ids.length, 2);
+        write(repo, path, changed);
+        commit(repo, "inherited overwritten observation");
+        await assert.rejects(
+          checkPlanGate(repo),
+          /matching the current subject/u,
+        );
+        write(repo, path, original);
+        await assert.rejects(
+          checkPlanGate(repo),
+          /matching the current subject/u,
+        );
+        write(repo, path, repaired);
+        const pending = await checkPlanGate(repo);
+        assert.equal(
+          pending.continuation.committedUpdates[0].kind,
+          "pending-capability-history-repair",
+        );
+        assert.equal(
+          pending.continuation.workspaceUpdates[0].kind,
+          "dated-capability-reassessment",
+        );
+        commit(repo, "restore history and preserve dated observation");
+        const completed = await checkPlanGate(repo);
+        assert.equal(
+          completed.continuation.committedUpdates[0].kind,
+          "dated-capability-reassessment",
+        );
+        assert.deepEqual(
+          completed.continuation.committedUpdates,
+          completed.continuation.workspaceUpdates,
+        );
+        assert.equal(
+          (await readReceipts(repo))[0].receiptHash,
+          receipt.receiptHash,
+        );
+      },
+    );
+    await check(
+      "WO-042 continuation admits required execution metadata before and after commit without rewriting the receipt",
+      async () => {
+        const repo = makeRepo(parent, "execution-continuation");
+        mutate(
+          repo,
+          orderPath("WO-901"),
+          "# WO-901 — Fixture",
+          "# WO-901 — Fixture (version assigned at activation)",
+        );
+        const receipt = await writeDirectReceipt(repo);
+        commit(repo, "record reviewed plan");
+        const receiptJson = read(repo, `${RECEIPTS}/${receipt.receiptId}.json`);
+        const source = read(repo, orderPath("WO-901"));
+        write(
+          repo,
+          orderPath("WO-901"),
+          source.replace("(version assigned at activation)", "(v1.2.3)") +
+            "\n## Execution record\n\nThe required evidence and its independent review are recorded separately.\n",
+        );
+        write(
+          repo,
+          "docs/planning/capability-table.md",
+          read(repo, "docs/planning/capability-table.md") +
+            "\n## WO-901 dated reassessment (2030-01-02)\n\n| Capability | Observation | Evidence |\n| --- | --- | --- |\n| `fixture.first` | **1 — demonstrable** | Executed fixture; pending independent verification. |\n",
+        );
+        const dirty = await checkPlanGate(repo);
+        assert.deepEqual(
+          dirty.continuation.workspaceUpdates.map(({ kind }) => kind),
+          [
+            "release-assignment",
+            "execution-record",
+            "dated-capability-reassessment",
+          ],
+        );
+        assert.deepEqual(dirty.continuation.committedUpdates, []);
+        assert.equal(dirty.continuation.judgedSubject, receipt.subject.hash);
+        assert.notEqual(
+          dirty.continuation.workspaceSubject,
+          receipt.subject.hash,
+        );
+        await assert.rejects(
+          writeDirectReceipt(repo),
+          /current committed and workspace subject/u,
+        );
+        commit(repo, "required executor observations");
+        const committed = await checkPlanGate(repo);
+        assert.deepEqual(
+          committed.continuation.committedUpdates,
+          dirty.continuation.workspaceUpdates,
+        );
+        assert.deepEqual(
+          committed.continuation.workspaceUpdates,
+          dirty.continuation.workspaceUpdates,
+        );
+        assert.equal(
+          read(repo, `${RECEIPTS}/${receipt.receiptId}.json`),
+          receiptJson,
+        );
+        assert.deepEqual(await readReceipts(repo), [receipt]);
+      },
+    );
+    await check(
+      "WO-135/WO-138 admit only equivalent evidence-only release-header formatting",
+      async () => {
+        for (const [axis, article, presentation] of [
+          ["patch", "A", ": a"],
+          ["minor", "A", ": a"],
+          ["major", "A", ": a"],
+          ["patch", "An", ". An"],
+          ["minor", "An", ": an"],
+          ["major", "A", ". A"],
+        ]) {
+          const repo = makeRepo(
+            parent,
+            `release-header-${axis}-${article}-${presentation[0] === ":" ? "colon" : "sentence"}`,
+          );
+          const path = orderPath("WO-901");
+          const description =
+            article === "An" ? "evaluation harness" : "probe extension";
+          const legacy = `**Release classification:** ${axis}, evidence-only. ${article} ${description} under the existing contract.`;
+          const canonical = `**Release classification:** ${axis}. Evidence-only${presentation} ${description} under the existing contract.`;
+          const source = read(repo, path).replace(
+            "# WO-901 — Fixture\n",
+            `# WO-901 — Fixture (version assigned at activation)\n\n${legacy}\n`,
+          );
+          write(repo, path, source);
+          commit(repo, "legacy release declaration subject");
+          const receipt = await writeDirectReceipt(repo);
+          commit(repo, "judge the legacy release declaration");
+          const receiptJson = read(
+            repo,
+            `${RECEIPTS}/${receipt.receiptId}.json`,
+          );
+          const corrected = source
+            .replace(legacy, canonical)
+            .replace("(version assigned at activation)", "(v1.2.3)");
+          write(repo, path, corrected);
+          const result = await checkPlanGate(repo);
+          assert.deepEqual(
+            result.continuation.workspaceUpdates.map(({ kind }) => kind),
+            ["release-classification-format", "release-assignment"],
+          );
+          for (const invalid of [
+            corrected.replace(
+              `${axis}. Evidence-only`,
+              `${axis === "patch" ? "minor" : "patch"}. Evidence-only`,
+            ),
+            corrected.replace("the existing contract", "a changed contract"),
+            corrected.replace(`Evidence-only${presentation}`, article),
+            corrected.replace(
+              `Evidence-only${presentation}`,
+              "Evidence-only: another",
+            ),
+            corrected.replace(
+              `Evidence-only${presentation}`,
+              article === "An" ? "Evidence-only: a" : "Evidence-only: an",
+            ),
+          ]) {
+            write(repo, path, invalid);
+            await assert.rejects(
+              checkPlanGate(repo),
+              /existing work-order bytes changed/u,
+            );
+          }
+          write(repo, path, corrected);
+          commit(repo, "canonical release declaration and assigned version");
+          assert.deepEqual(
+            (await checkPlanGate(repo)).continuation.committedUpdates,
+            result.continuation.workspaceUpdates,
+          );
+          assert.equal(
+            read(repo, `${RECEIPTS}/${receipt.receiptId}.json`),
+            receiptJson,
+          );
+        }
+        const repo = makeRepo(parent, "release-header-without-legacy");
+        const path = orderPath("WO-901");
+        write(
+          repo,
+          path,
+          read(repo, path) +
+            "\n**Release classification:** patch. A probe extension under the existing contract.\n",
+        );
+        commit(repo, "release declaration without legacy prefix");
+        await writeDirectReceipt(repo);
+        commit(repo, "judge a declaration without evidence-only status");
+        mutate(repo, path, "patch. A probe", "patch. Evidence-only: a probe");
+        await assert.rejects(
+          checkPlanGate(repo),
+          /existing work-order bytes changed/u,
+        );
+      },
+    );
+    await check(
+      "WO-135 replays the actual WO-068/WO-052 additions against receipts 014/015",
+      () => {
+        const receipts = readdirSync(join(root, RECEIPTS))
+          .filter((name) => /-01[456]\.json$/.test(name))
+          .map((name) => JSON.parse(read(root, `${RECEIPTS}/${name}`)))
+          .sort((a, b) => a.ordinal - b.ordinal);
+        assert.deepEqual(
+          receipts.map((row) => row.ordinal),
+          [14, 15, 16],
+        );
+        for (const [index, workOrderId, id] of [
+          [0, "WO-068", "runtime.resident"],
+          [1, "WO-052", "worker.source-change"],
+        ]) {
+          const judged = receipts[index].subject;
+          const before = committedReader(root, judged.revision).read(
+            "docs/planning/capability-table.md",
+          );
+          const later = committedReader(
+            root,
+            receipts[index + 1].subject.revision,
+          ).read("docs/planning/capability-table.md");
+          const section = later.match(
+            new RegExp(
+              `^## ${workOrderId} dated addition[^\n]*\n[\\s\\S]*?(?=^## |$(?![\\s\\S]))`,
+              "m",
+            ),
+          )?.[0];
+          assert.ok(section, `${workOrderId} historical section`);
+          assert.equal(
+            judged.standard.capabilities.some((row) => row.id === id),
+            false,
+          );
+          const snapshot = JSON.stringify(judged);
+          assert.deepEqual(
+            reassessments(
+              before,
+              before.trimEnd() + "\n\n" + section,
+              judged,
+            ).map(({ kind, ids }) => ({ kind, ids })),
+            [{ kind: "dated-capability-addition", ids: [id] }],
+          );
+          assert.equal(JSON.stringify(judged), snapshot);
+        }
+      },
+    );
+    await check(
+      "WO-135 historical sequence failures reach both gates and original pair separators are pinned",
+      async () => {
+        const path = "docs/planning/sequence.md";
+        const prior = committedReader(
+          root,
+          "ec502c991ca5cde39b131fdbb6432644328cc22f",
+        ).read(path);
+        const corrected = committedReader(
+          root,
+          "45765940a9715c8aee52215c3bfbed74de0ce838",
+        ).read(path);
+        const grouped = (source) =>
+          parseSequenceGroups(source).map((group) =>
+            group.map((row) => row.id),
+          );
+        const expectedPairs = [
+          ["WO-135", "WO-136"],
+          ["WO-053", "WO-139"],
+          ["WO-054", "WO-137"],
+          ["WO-055", "WO-140"],
+          ["WO-056", "WO-110"],
+          ["WO-099", "WO-079"],
+          ["WO-069", "WO-138"],
+          ["WO-071", "WO-120"],
+          ["WO-063", "WO-100"],
+          ["WO-064", "WO-111"],
+          ["WO-114", "WO-070"],
+          ["WO-115", "WO-060"],
+          ["WO-116", "WO-065"],
+          ["WO-117", "WO-066"],
+        ];
+        assert.equal(grouped(corrected)[0].length, 24);
+        assert.deepEqual(grouped(corrected).slice(1, -1), expectedPairs);
+        assert.equal(grouped(corrected).at(-1).length, 36);
+        const lost = corrected.replace(/(^- WO-136[^\n]*\n)\n/m, "$1");
+        const added = corrected.replace(/(^- WO-135[^\n]*\n)/m, "$1\n");
+        assert.notDeepEqual(grouped(lost), grouped(corrected));
+        assert.notDeepEqual(grouped(added), grouped(corrected));
+        assert.doesNotThrow(() => checkSequenceTopology(readIndex(root, [])));
+        const repo = makeRepo(parent, "historical-topology");
+        // Every open order needs a place in the sequence (WO-190). The frozen
+        // tree's five unsequenced drafts and the fixture's own two take a final
+        // group of the written copy; `corrected` itself stays the receipt
+        // subject the pair assertions above inspect.
+        write(
+          repo,
+          PLAN_MAP,
+          corrected.replace(
+            "<!-- dotln-work-order-sequence:end -->",
+            `\n${["WO-014", "WO-102", "WO-103", "WO-105", "WO-107", "WO-901", "WO-902"].map((id) => `- ${id} — Unsequenced draft at the frozen revision`).join("\n")}\n<!-- dotln-work-order-sequence:end -->`,
+          ),
+        );
+        const frozen = committedReader(
+          root,
+          "45765940a9715c8aee52215c3bfbed74de0ce838",
+        );
+        for (const path of frozen.paths.filter((path) =>
+          /^docs\/work-orders\/WO-\d{3}-[^/]+\.md$/.test(path),
+        ))
+          write(repo, path, frozen.read(path));
+        // Freeze satisfaction at the original pass; future closes cannot erase the failures.
+        for (const [path, source] of (
+          await import("./lib/control-store.mjs")
+        ).readControl(root, frozen.revision).sources)
+          write(repo, path, source);
+        const groups = parseSequenceGroups(corrected);
+        assert.doesNotThrow(() =>
+          checkSequenceTopology({
+            ...readIndex(repo, []),
+            groups,
+            sequence: groups.flat(),
+          }),
+        );
+        commit(repo, "frozen corrected planning fixture");
+        await writeDirectReceipt(repo);
+        commit(repo, "record historical fixture receipt");
+        workOrders(["index"], repo);
+        assert.doesNotThrow(() => workOrders(["index", "--check"], repo));
+        await assert.doesNotReject(plan(["check"], repo));
+        write(repo, PLAN_MAP, prior);
+        const failures = ["WO-114 -> WO-120 (hard)", "WO-115 -> WO-100 (hard)"];
+        const diagnostic = (error) => {
+          for (const failure of failures)
+            assert.ok(error.message.includes(failure), error.message);
+          return true;
+        };
+        assert.throws(() => workOrders(["index", "--check"], repo), diagnostic);
+        await assert.rejects(plan(["check"], repo), diagnostic);
+      },
+    );
+    await check(
+      "WO-135 dated additions are execution updates in plan check, with unchanged refusal messages",
+      async () => {
+        const repo = makeRepo(parent, "capability-additions");
+        const receipt = await writeDirectReceipt(repo);
+        commit(repo, "record reviewed plan");
+        const path = "docs/planning/capability-table.md";
+        const before = read(repo, path);
+        for (const heading of ["addition", "reassessment"]) {
+          const appended = `\n## WO-901 dated ${heading} (2030-01-02)\n\n| Capability | Observation |\n| --- | --- |\n| \`fixture.new\` | **1 — demonstrable** |\n`;
+          write(repo, path, before + appended);
+          const result = await plan(["check"], repo);
+          assert.match(JSON.stringify(result), /dated-capability-addition/);
+          assert.deepEqual(
+            reassessments(before, before + appended, receipt.subject)[0].ids,
+            ["fixture.new"],
+          );
+          assert.throws(
+            () =>
+              reassessments(
+                before,
+                before + appended.replace("**1 — demonstrable**", ""),
+                receipt.subject,
+              ),
+            /missing capability observation fixture.new/,
+          );
+          assert.throws(
+            () =>
+              reassessments(
+                before,
+                before + appended + "\n## Stray\n",
+                receipt.subject,
+              ),
+            /capability additions must be appended dated reassessment sections/,
+          );
+        }
+        write(
+          repo,
+          path,
+          before +
+            "\n## WO-901 dated addition (2030-01-02)\n\n| `fixture.first` | 1 |\n",
+        );
+        assert.equal(
+          (await checkPlanGate(repo)).continuation.workspaceUpdates[0].kind,
+          "dated-capability-reassessment",
+        );
+        assert.deepEqual(await readReceipts(repo), [receipt]);
+      },
+    );
+    await check(
+      "WO-135 both current gates refuse dependency reversals and pairs using typed satisfaction",
+      async () => {
+        const repo = makeRepo(parent, "sequence-topology");
+        const block = (entries) =>
+          `\n<!-- dotln-dependencies:start -->\n${JSON.stringify(entries)}\n<!-- dotln-dependencies:end -->\n`;
+        const sequence = (groups) =>
+          `<!-- dotln-work-order-sequence:start -->\n${groups.map((group) => group.map((id) => `- ${id} — Fixture`).join("\n")).join("\n\n")}\n<!-- dotln-work-order-sequence:end -->\n`;
+        const edge = {
+          workOrderId: "WO-902",
+          relation: "hard",
+          reason: "Fixture prerequisite",
+        };
+        write(
+          repo,
+          orderPath("WO-901"),
+          order("WO-901").replace(
+            "**Objective:**",
+            block([edge]) + "\n**Objective:**",
+          ),
+        );
+        workOrders(["index"], repo);
+        const bothRefuse = async () => {
+          await assert.rejects(
+            plan(["check"], repo),
+            /WO-901 -> WO-902 \(hard\)/,
+          );
+          assert.throws(
+            () => workOrders(["index", "--check"], repo),
+            /WO-901 -> WO-902 \(hard\)/,
+          );
+        };
+        await bothRefuse();
+        write(repo, PLAN_MAP, sequence([["WO-902", "WO-901"]]));
+        await bothRefuse(); // Ordered, but the pair cannot execute independently.
+        write(repo, orderPath("WO-903"), order("WO-903"));
+        write(repo, PLAN_MAP, sequence([["WO-902", "WO-901", "WO-903"]]));
+        assert.doesNotThrow(() => checkSequenceTopology(readIndex(repo, [])));
+        write(repo, PLAN_MAP, sequence([["WO-901", "WO-902", "WO-903"]]));
+        await bothRefuse();
+        for (const relation of [
+          "hard",
+          "satisfied-by-close",
+          "satisfied-by-release",
+          "planning-deferral",
+        ]) {
+          const entry = {
+            ...edge,
+            relation,
+            ...(relation === "satisfied-by-release"
+              ? { release: "v1.0.0" }
+              : {}),
+            ...(relation === "planning-deferral"
+              ? { workOrderId: "WO-999", until: "WO-902" }
+              : {}),
+          };
+          const groups = parseSequenceGroups(sequence([["WO-901", "WO-902"]]));
+          const view = (closed, releases) => ({
+            groups,
+            sequence: groups.flat(),
+            rows: [
+              {
+                id: "WO-901",
+                dependencies: projectDependencies(
+                  { source: "typed", entries: [entry] },
+                  closed,
+                  releases,
+                ),
+              },
+            ],
+          });
+          assert.throws(
+            () => checkSequenceTopology(view(new Map(), new Set())),
+            (error) => error.message.includes(`WO-901 -> WO-902 (${relation})`),
+          );
+          assert.doesNotThrow(() =>
+            checkSequenceTopology(
+              view(new Map([["WO-902", "pass"]]), new Set(["v1.0.0"])),
+            ),
+          );
+        }
+      },
+    );
+    await check(
+      "WO-043 continuation admits only the reviewed dependency transcription and preserves receipt bytes",
+      async () => {
+        const repo = makeRepo(parent, "dependency-continuation");
+        renameSync(
+          join(repo, orderPath("WO-901")),
+          join(repo, orderPath("WO-043")),
+        );
+        write(
+          repo,
+          orderPath("WO-043"),
+          read(repo, orderPath("WO-043"))
+            .replaceAll("WO-901", "WO-043")
+            .replace(
+              "Keep a bounded result.",
+              "Every open order carries a typed block matching docs/planning/critical-path-2026-09-08.json.",
+            ),
+        );
+        write(
+          repo,
+          PLAN_MAP,
+          read(repo, PLAN_MAP)
+            .replace("WO-901", "WO-043")
+            .replace(
+              "<!-- dotln-work-order-sequence:end -->",
+              "- WO-033 — Umbrella\n- WO-036 — Later umbrella\n- WO-102 — Corpus\n<!-- dotln-work-order-sequence:end -->",
+            ),
+        );
+        const metadata = (source, value) =>
+          source.replace("**Objective:**", `${value}\n\n**Objective:**`);
+        write(
+          repo,
+          orderPath("WO-033"),
+          metadata(
+            order("WO-033"),
+            "**Umbrella record (2026-09-08):** superseded whole by WO-902; not activatable. WO-039 supplied earlier evidence.",
+          ),
+        );
+        write(
+          repo,
+          orderPath("WO-036"),
+          metadata(
+            order("WO-036"),
+            "**Umbrella record (2026-09-09):** superseded whole by WO-126 criterion 6; not activatable.",
+          ),
+        );
+        write(
+          repo,
+          orderPath("WO-102"),
+          metadata(
+            order("WO-102"),
+            "**Depends on:** WO-004 merged; independent of WO-101.",
+          ),
+        );
+        const seedPath = "docs/planning/critical-path-2026-09-08.json";
+        const seed = JSON.stringify({
+          nodes: [{ id: "WO-033", supersededBy: { workOrderIds: ["WO-902"] } }],
+          edges: [
+            {
+              from: "WO-902",
+              to: "WO-043",
+              relation: "hard",
+              reason: "Required baseline.",
+            },
+            {
+              from: "WO-036",
+              to: "WO-018",
+              relation: "satisfied-by-release",
+              release: "v0.4.1",
+              reason: "Earlier baseline.",
+            },
+          ],
+        });
+        write(repo, seedPath, seed);
+        commit(repo, "reviewed dependency migration authority");
+        const receipt = await writeDirectReceipt(repo);
+        commit(repo, "record reviewed dependency plan");
+        const receiptBytes = read(
+          repo,
+          `${RECEIPTS}/${receipt.receiptId}.json`,
+        );
+        const entries = new Map([
+          ["WO-043", []],
+          [
+            "WO-902",
+            [
+              {
+                workOrderId: "WO-043",
+                relation: "hard",
+                reason: "Required baseline.",
+              },
+            ],
+          ],
+          [
+            "WO-033",
+            [
+              {
+                workOrderId: "WO-902",
+                relation: "superseded",
+                by: "WO-902",
+                reason: "Reviewed umbrella successor.",
+              },
+            ],
+          ],
+          [
+            "WO-036",
+            [
+              {
+                workOrderId: "WO-126",
+                relation: "superseded",
+                by: "WO-126",
+                reason: "Later reviewed successor.",
+              },
+            ],
+          ],
+          [
+            "WO-102",
+            [
+              {
+                workOrderId: "WO-004",
+                relation: "satisfied-by-close",
+                reason: "Merged baseline.",
+              },
+              {
+                workOrderId: "WO-101",
+                relation: "reference-only",
+                reason: "Independent corpus.",
+              },
+            ],
+          ],
+        ]);
+        const originals = new Map(
+          [...entries.keys()].map((id) => [id, read(repo, orderPath(id))]),
+        );
+        const migrate = (id, relations) =>
+          metadata(
+            originals.get(id),
+            `<!-- dotln-dependencies:start -->\n${JSON.stringify(relations, null, 2)}\n<!-- dotln-dependencies:end -->`,
+          );
+        for (const [id, relations] of entries)
+          write(repo, orderPath(id), migrate(id, relations));
+        const dirty = await checkPlanGate(repo);
+        assert.equal(dirty.continuation.workspaceUpdates.length, entries.size);
+        assert.ok(
+          dirty.continuation.workspaceUpdates.every(
+            ({ kind }) => kind === "typed-dependency-migration",
+          ),
+        );
+        for (const relations of [
+          [],
+          [
+            {
+              workOrderId: "WO-043",
+              relation: "reference-only",
+              reason: "Required baseline.",
+            },
+          ],
+          [
+            {
+              workOrderId: "WO-043",
+              relation: "waived",
+              date: "2030-01-02",
+              reason: "Unreviewed waiver.",
+            },
+          ],
+        ]) {
+          write(repo, orderPath("WO-902"), migrate("WO-902", relations));
+          await assert.rejects(
+            checkPlanGate(repo),
+            /does not transcribe the reviewed relations/u,
+          );
+        }
+        write(
+          repo,
+          orderPath("WO-902"),
+          migrate("WO-902", entries.get("WO-902")).replace(
+            "Move the shape.",
+            "Change the objective.",
+          ),
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /existing work-order bytes changed/u,
+        );
+        write(
+          repo,
+          orderPath("WO-902"),
+          migrate("WO-902", entries.get("WO-902")),
+        );
+        write(repo, seedPath, seed + "\n");
+        await assert.rejects(checkPlanGate(repo), /changed its reviewed seed/u);
+        write(repo, seedPath, seed);
+        commit(repo, "transcribe reviewed dependencies");
+        const committed = await checkPlanGate(repo);
+        assert.deepEqual(
+          committed.continuation.committedUpdates,
+          dirty.continuation.workspaceUpdates,
+        );
+        assert.equal(
+          read(repo, `${RECEIPTS}/${receipt.receiptId}.json`),
+          receiptBytes,
+        );
+        assert.deepEqual(await readReceipts(repo), [receipt]);
+
+        const unrelated = makeRepo(parent, "dependency-without-authority");
+        await writeDirectReceipt(unrelated);
+        commit(unrelated, "record unrelated reviewed plan");
+        write(
+          unrelated,
+          orderPath("WO-902"),
+          metadata(
+            read(unrelated, orderPath("WO-902")),
+            "<!-- dotln-dependencies:start -->\n[]\n<!-- dotln-dependencies:end -->",
+          ),
+        );
+        await assert.rejects(
+          checkPlanGate(unrelated),
+          /existing work-order bytes changed/u,
+        );
+      },
+    );
+    await check(
+      "WO-087 continuation proves relocated vision and capability citations without changing receipts",
+      async () => {
+        const repo = makeRepo(parent, "relocated-planning-citations");
+        const vision = "docs/product/00-vision.md";
+        const capability = "docs/planning/capability-table.md";
+        const roadmap = "docs/product/06-roadmap.md";
+        const destination = "docs/planning/candidates.md";
+        const anchor = "candidate--bounded-system-baseline";
+        const candidate =
+          "### Candidate — bounded system baseline\n\nKeep this exact baseline.\n\n";
+        const oldHref = `06-roadmap.md#${anchor}`;
+        const newHref = `../planning/candidates.md#${anchor}`;
+        const originalVision = read(repo, vision).replace(
+          "## Other narrative",
+          `[Baseline](${oldHref})\n\n## Other narrative`,
+        );
+        const originalCapability =
+          `[Baseline](../product/${oldHref})\n\n` + read(repo, capability);
+        write(repo, vision, originalVision);
+        write(repo, capability, originalCapability);
+        write(
+          repo,
+          roadmap,
+          `# Roadmap\n\n${candidate}## Retained rung\n\nKeep the rung.\n`,
+        );
+        write(repo, destination, "# Planning candidates\n\n");
+        commit(repo, "prepare the citations to be relocated");
+        const receipt = await writeDirectReceipt(repo);
+        commit(repo, "record the unchanged planning judgment");
+        const receiptPath = `${RECEIPTS}/${receipt.receiptId}.json`;
+        const receiptBytes = read(repo, receiptPath);
+        const move = (append = true) => {
+          write(repo, vision, originalVision.replace(oldHref, newHref));
+          write(
+            repo,
+            capability,
+            originalCapability.replace(
+              `../product/${oldHref}`,
+              `candidates.md#${anchor}`,
+            ) +
+              (append
+                ? "\n## WO-901 dated reassessment (2030-01-03)\n\n| Capability | Level |\n| --- | --- |\n| `fixture.first` | **1 — demonstrable** |\n"
+                : ""),
+          );
+          write(
+            repo,
+            roadmap,
+            "# Roadmap\n\n## Retained rung\n\nKeep the rung.\n",
+          );
+          write(
+            repo,
+            destination,
+            `# Planning candidates\n\n${candidate}## Next candidate\n\nAnother proposal.\n`,
+          );
+        };
+        move(false);
+        const linkOnly = await checkPlanGate(repo);
+        // Capability identity binds ID/level rows; unchanged rows require no
+        // capability continuation. The vision citation still needs proof.
+        assert.deepEqual(
+          linkOnly.continuation.workspaceUpdates.map(({ kind }) => kind),
+          ["relocated-planning-link"],
+        );
+        move();
+        const dirty = await checkPlanGate(repo);
+        assert.deepEqual(
+          dirty.continuation.workspaceUpdates.map(({ kind }) => kind),
+          [
+            "relocated-planning-link",
+            "relocated-planning-link",
+            "dated-capability-reassessment",
+          ],
+        );
+        const proof = dirty.continuation.workspaceUpdates[0];
+        assert.equal(proof.targetSectionHash, proof.currentTargetSectionHash);
+        assert.equal(proof.from, oldHref);
+        assert.equal(proof.to, newHref);
+        assert.equal(read(repo, receiptPath), receiptBytes);
+
+        const refusals = [
+          [
+            "changed target wording",
+            () =>
+              write(
+                repo,
+                destination,
+                read(repo, destination).replace(
+                  "exact baseline",
+                  "different baseline",
+                ),
+              ),
+          ],
+          [
+            "changed vision wording",
+            () =>
+              write(
+                repo,
+                vision,
+                read(repo, vision).replace(
+                  "Not a compulsory doctrine",
+                  "A compulsory doctrine",
+                ),
+              ),
+          ],
+          [
+            "changed link label",
+            () =>
+              write(
+                repo,
+                vision,
+                read(repo, vision).replace("[Baseline]", "[Changed baseline]"),
+              ),
+          ],
+          [
+            "missing target anchor",
+            () => write(repo, destination, "# Missing target\n"),
+          ],
+          [
+            "ambiguous target heading",
+            () => write(repo, destination, read(repo, destination) + candidate),
+          ],
+          [
+            "copy without removing the old section",
+            () => write(repo, roadmap, `# Roadmap\n\n${candidate}`),
+          ],
+          [
+            "duplicate old headings still present",
+            () => write(repo, roadmap, `# Roadmap\n\n${candidate}${candidate}`),
+          ],
+          [
+            "external destination",
+            () =>
+              write(
+                repo,
+                vision,
+                read(repo, vision).replace(
+                  newHref,
+                  `https://example.invalid/candidates.md#${anchor}`,
+                ),
+              ),
+          ],
+          [
+            "private destination",
+            () => {
+              write(
+                repo,
+                "docs/intake/candidates.md",
+                `# Private\n\n${candidate}`,
+              );
+              write(
+                repo,
+                vision,
+                read(repo, vision).replace(
+                  newHref,
+                  `../intake/candidates.md#${anchor}`,
+                ),
+              );
+            },
+          ],
+          [
+            "symlink destination",
+            () => {
+              write(
+                repo,
+                "docs/planning/real-candidates.md",
+                read(repo, destination),
+              );
+              rmSync(join(repo, destination));
+              symlinkSync("real-candidates.md", join(repo, destination));
+            },
+          ],
+          [
+            "changed capability history",
+            () =>
+              write(
+                repo,
+                capability,
+                read(repo, capability).replace(
+                  "**0 — latent**",
+                  "**2 — dependable**",
+                ),
+              ),
+          ],
+          [
+            "changed sequence",
+            () =>
+              write(
+                repo,
+                PLAN_MAP,
+                read(repo, PLAN_MAP).replace(
+                  "WO-901 — First",
+                  "WO-901 — Reordered purpose",
+                ),
+              ),
+          ],
+          [
+            "changed roles",
+            () =>
+              write(
+                repo,
+                "docs/product/13-uifa-roles.md",
+                read(repo, "docs/product/13-uifa-roles.md").replace(
+                  "A useful shape.",
+                  "A changed responsibility.",
+                ),
+              ),
+          ],
+        ];
+        const sequence = read(repo, PLAN_MAP);
+        const roles = read(repo, "docs/product/13-uifa-roles.md");
+        for (const [label, mutate] of refusals) {
+          if (existsSync(join(repo, destination)))
+            rmSync(join(repo, destination));
+          move();
+          write(repo, PLAN_MAP, sequence);
+          write(repo, "docs/product/13-uifa-roles.md", roles);
+          mutate();
+          await assert.rejects(
+            checkPlanGate(repo),
+            /matching the current subject/u,
+            label,
+          );
+          assert.equal(read(repo, receiptPath), receiptBytes, label);
+        }
+        if (existsSync(join(repo, destination)))
+          rmSync(join(repo, destination));
+        move();
+        write(repo, PLAN_MAP, sequence);
+        write(repo, "docs/product/13-uifa-roles.md", roles);
+        commit(repo, "commit the proved relocation");
+        const committed = await checkPlanGate(repo);
+        assert.deepEqual(
+          committed.continuation.committedUpdates,
+          dirty.continuation.workspaceUpdates,
+        );
+        assert.equal(read(repo, receiptPath), receiptBytes);
+        write(
+          repo,
+          destination,
+          read(repo, destination).replace("exact baseline", "changed baseline"),
+        );
+        commit(repo, "record a changed committed target");
+        await assert.rejects(
+          checkPlanGate(repo),
+          /matching the current subject/u,
+        );
+        assert.equal(read(repo, receiptPath), receiptBytes);
+      },
+    );
+    await check(
+      "WO-087 relocated target content rebases actual links and preserves code examples and the next rung directive",
+      async () => {
+        const repo = makeRepo(parent, "relocated-citation-content");
+        const vision = "docs/product/00-vision.md";
+        const roadmap = "docs/product/06-roadmap.md";
+        const destination = "docs/planning/candidates.md";
+        const anchor = "capability-progression-policies";
+        const section =
+          "## Capability progression policies\n\n[Roles](13-uifa-roles.md#the-five-roles)\n\n```text\n[Example](13-uifa-roles.md#the-five-roles)\n```\n\n<!-- retained content comment -->\n\n";
+        const directive = "<!-- prettier-ignore -->\n";
+        const rung = "## Retained rung\n\nKeep the rung.\n";
+        const originalVision = read(repo, vision).replace(
+          "## Other narrative",
+          `[Policies](06-roadmap.md#${anchor})\n\n## Other narrative`,
+        );
+        write(repo, vision, originalVision);
+        write(repo, roadmap, `# Roadmap\n\n${section}${directive}${rung}`);
+        write(repo, destination, "# Candidates\n\n");
+        commit(repo, "prepare a citation with a rebased nested link");
+        await writeDirectReceipt(repo);
+        commit(repo, "record the unchanged judgment");
+        const moved = section.replace(
+          "[Roles](13-uifa-roles.md#",
+          "[Roles](../product/13-uifa-roles.md#",
+        );
+        write(
+          repo,
+          vision,
+          originalVision.replace(
+            `06-roadmap.md#${anchor}`,
+            `../planning/candidates.md#${anchor}`,
+          ),
+        );
+        write(repo, roadmap, `# Roadmap\n\n${directive}${rung}`);
+        write(repo, destination, `# Candidates\n\n${moved}## Next heading\n`);
+        const passed = await checkPlanGate(repo);
+        assert.equal(
+          passed.continuation.workspaceUpdates[0].kind,
+          "relocated-planning-link",
+        );
+        assert.notEqual(
+          passed.continuation.workspaceUpdates[0].targetSectionHash,
+          passed.continuation.workspaceUpdates[0].currentTargetSectionHash,
+        );
+        for (const [before, after] of [
+          [
+            "[Example](13-uifa-roles.md#",
+            "[Example](../product/13-uifa-roles.md#",
+          ],
+          ["retained content comment", "rewritten content comment"],
+          [
+            "../product/13-uifa-roles.md#the-five-roles",
+            "../product/13-uifa-roles.md#other-target",
+          ],
+        ]) {
+          write(
+            repo,
+            destination,
+            `# Candidates\n\n${moved.replace(before, after)}## Next heading\n`,
+          );
+          await assert.rejects(
+            checkPlanGate(repo),
+            /matching the current subject/u,
+          );
+        }
+      },
+    );
+    await check(
+      "WO-087 relocation refuses changed link contexts, preexisting targets and hidden fenced changes",
+      async () => {
+        const cases = [
+          ["fragment", "[Other](#retained-rung)\n\n"],
+          ["empty", "[Self]()\n\n"],
+          ["query", "[Self](?print=1)\n\n"],
+          ["query-path", "[Self](roles.md?x/../bar)\n\n"],
+          ["title", '[Roles](13-uifa-roles.md "Roles")\n\n'],
+          ["reference", "[Roles][roles]\n\n[roles]: 13-uifa-roles.md\n\n"],
+          ["outside-reference", "[Roles][roles]\n\n"],
+          ["activated-reference", "[Roles][roles]\n\n"],
+          ["footnote", "Text[^1]\n\n"],
+          ["activated-footnote", "Text[^1]\n\n"],
+          ["image", "![Image](image.png)\n\n"],
+          ["html", '<a href="13-uifa-roles.md">Roles</a>\n\n'],
+          ["html-srcset", '<img srcset="image.png 1x">\n\n'],
+          ["html-poster", '<video poster="image.png"></video>\n\n'],
+          [
+            "html-comment-wrapper",
+            '<!-- noop --><img srcset="image.png 1x"><!-- tail -->\n\n',
+          ],
+          [
+            "html-style",
+            "<style>body {background: url(image.png)}</style>\n\n",
+          ],
+          [
+            "fence",
+            "````text\nBefore\n```\n## Fake rung\nKeep this code.\n````\n\n",
+          ],
+          ["preexisting", "Keep this policy.\n\n"],
+        ];
+        for (const [label, body] of cases) {
+          const repo = makeRepo(parent, `relocation-context-${label}`);
+          const vision = "docs/product/00-vision.md";
+          const roadmap = "docs/product/06-roadmap.md";
+          const destination = "docs/planning/candidates.md";
+          const anchor = "capability-progression-policies";
+          const section = `## Capability progression policies\n\n${body}`;
+          const originalVision = read(repo, vision).replace(
+            "## Other narrative",
+            `[Policies](06-roadmap.md#${anchor})\n\n## Other narrative`,
+          );
+          write(repo, vision, originalVision);
+          write(
+            repo,
+            roadmap,
+            `# Roadmap\n\n${section}## Retained rung\n${label === "outside-reference" ? "\n[roles]: 13-uifa-roles.md\n" : label === "footnote" ? "\n[^1]: Original note.\n" : ""}`,
+          );
+          write(
+            repo,
+            destination,
+            `# Candidates\n\n${label === "preexisting" ? section + section : ""}`,
+          );
+          commit(repo, "prepare context-sensitive citation");
+          const receipt = await writeDirectReceipt(repo);
+          commit(repo, "record the unchanged judgment");
+          const receiptPath = `${RECEIPTS}/${receipt.receiptId}.json`;
+          const receiptBytes = read(repo, receiptPath);
+          write(
+            repo,
+            vision,
+            originalVision.replace(
+              `06-roadmap.md#${anchor}`,
+              `../planning/candidates.md#${anchor}`,
+            ),
+          );
+          write(repo, roadmap, "# Roadmap\n\n## Retained rung\n");
+          const moved =
+            label === "fence"
+              ? section.replace("Keep this code.", "Changed code.")
+              : label === "empty"
+                ? section.replace("[Self]()", "[Self](../product)")
+                : label === "query"
+                  ? section.replace("?print=1", "../product/?print=1")
+                  : label === "query-path"
+                    ? section.replace("roles.md?x/../bar", "../product/bar")
+                    : section;
+          write(
+            repo,
+            destination,
+            `# Candidates\n\n${moved}## Next heading\n${["outside-reference", "activated-reference"].includes(label) ? "\n[roles]: ../product/13-uifa-roles.md\n" : ["footnote", "activated-footnote"].includes(label) ? "\n[^1]: Changed note.\n" : ""}`,
+          );
+          await assert.rejects(
+            checkPlanGate(repo),
+            /matching the current subject/u,
+            label,
+          );
+          assert.equal(read(repo, receiptPath), receiptBytes, label);
+        }
+      },
+    );
+    await check(
+      "WO-158 continuation admits one release label appended to a title filed without the placeholder, and nothing else",
+      async () => {
+        const repo = makeRepo(parent, "unlabelled-release-assignment");
+        await writeDirectReceipt(repo);
+        commit(repo, "record reviewed plan");
+        const path = orderPath("WO-901");
+        const original = read(repo, path);
+        assert.ok(original.startsWith("# WO-901 — Fixture\n"));
+        write(
+          repo,
+          path,
+          original.replace("# WO-901 — Fixture", "# WO-901 — Fixture (v1.2.3)"),
+        );
+        const assigned = await checkPlanGate(repo);
+        assert.deepEqual(
+          assigned.continuation.workspaceUpdates.map(({ kind, version }) => [
+            kind,
+            version,
+          ]),
+          [["release-assignment", "v1.2.3"]],
+        );
+        for (const title of [
+          "# WO-901 — Fixture(v1.2.3)",
+          "# WO-901 — Fixture (v01.2.3)",
+          "# WO-901 — Fixture (v1.2.3) (v1.2.4)",
+          "# WO-901 — Fixture renamed (v1.2.3)",
+        ]) {
+          write(repo, path, original.replace("# WO-901 — Fixture", title));
+          await assert.rejects(
+            checkPlanGate(repo),
+            /matching the current subject/u,
+            title,
+          );
+        }
+        write(repo, path, original);
+        // amend-order sees a label-only change as no amendment (review finding).
+        const { executionAmendmentSource } =
+          await import("./lib/plan-continuation.mjs");
+        assert.equal(
+          executionAmendmentSource(
+            original.replace(
+              "# WO-901 — Fixture",
+              "# WO-901 — Fixture (v1.2.3)",
+            ),
+            original,
+          ),
+          executionAmendmentSource(original),
+        );
+      },
+    );
+    await check(
+      "WO-167 continuation admits one collision retime of a judged release label, and nothing else",
+      async () => {
+        const repo = makeRepo(parent, "judged-release-retiming");
+        const path = orderPath("WO-901");
+        const unlabelled = read(repo, path);
+        const original = unlabelled.replace(
+          "# WO-901 — Fixture",
+          "# WO-901 — Fixture (v1.2.3)",
+        );
+        write(repo, path, original);
+        commit(repo, "assign the fixture release");
+        await writeDirectReceipt(repo);
+        commit(repo, "record reviewed plan");
+        write(
+          repo,
+          path,
+          original.replace("Fixture (v1.2.3)", "Fixture (v1.3.1)"),
+        );
+        const retimed = await checkPlanGate(repo);
+        assert.deepEqual(
+          retimed.continuation.workspaceUpdates.map(
+            ({ kind, from, version }) => [kind, from, version],
+          ),
+          [["release-retiming", "v1.2.3", "v1.3.1"]],
+        );
+        for (const title of [
+          "# WO-901 — Fixture",
+          "# WO-901 — Fixture(v1.3.1)",
+          "# WO-901 — Fixture (v01.3.1)",
+          "# WO-901 — Fixture (v1.2.3) (v1.3.1)",
+          "# WO-901 — Fixture renamed (v1.3.1)",
+        ]) {
+          write(
+            repo,
+            path,
+            original.replace("# WO-901 — Fixture (v1.2.3)", title),
+          );
+          await assert.rejects(
+            checkPlanGate(repo),
+            /matching the current subject/u,
+            title,
+          );
+        }
+        // The label is the only admitted change; a body edit still refuses.
+        write(
+          repo,
+          path,
+          original
+            .replace("Fixture (v1.2.3)", "Fixture (v1.3.1)")
+            .replace(/\n$/u, "\nAn edited body.\n"),
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /matching the current subject/u,
+        );
+      },
+    );
+    await check(
+      "WO-042 continuation rejects planning edits and forged execution classifications in both HEAD and the workspace",
+      async () => {
+        const repo = makeRepo(parent, "continuation-refusals");
+        mutate(
+          repo,
+          orderPath("WO-901"),
+          "# WO-901 — Fixture",
+          "# WO-901 — Fixture (version assigned at activation)",
+        );
+        await writeDirectReceipt(repo);
+        commit(repo, "record reviewed plan");
+        const path = orderPath("WO-901");
+        const original = read(repo, path);
+        const capabilitiesPath = "docs/planning/capability-table.md";
+        const capabilities = read(repo, capabilitiesPath);
+        for (const changed of [
+          original.replace("Move the shape.", "Move another shape."),
+          original.replace("Keep a bounded result.", "Skip the evidence."),
+          original.replace("Other shapes.", "No limits."),
+          original.replace(
+            "**Effort:** executor any",
+            "**Effort:** executor low",
+          ),
+          original.replace("(version assigned at activation)", "(v01.2.3)"),
+          original + "\n## Design change\n\nIgnore the original contract.\n",
+          original +
+            "\n## Execution record\n\n**Depends on:** A different order.\n",
+        ]) {
+          write(repo, path, changed);
+          await assert.rejects(
+            checkPlanGate(repo),
+            /matching the current subject/u,
+          );
+          write(repo, path, original);
+        }
+        for (const [heading, id] of [
+          ["WO-999 dated reassessment (2030-01-02)", "fixture.first"],
+          ["WO-901 dated reassessment (2030-02-30)", "fixture.first"],
+          ["WO-999 dated addition (2030-01-02)", "fixture.unknown"],
+          ["WO-901 dated addition (2030-02-30)", "fixture.first"],
+          ["WO-901 stray heading (2030-01-02)", "fixture.first"],
+        ]) {
+          write(
+            repo,
+            capabilitiesPath,
+            capabilities +
+              `\n## ${heading}\n\n| Capability | Observation |\n| --- | --- |\n| \`${id}\` | **1 — demonstrable** |\n`,
+          );
+          await assert.rejects(
+            checkPlanGate(repo),
+            /matching the current subject/u,
+          );
+          write(repo, capabilitiesPath, capabilities);
+        }
+        write(repo, capabilitiesPath, capabilities.replace("**0", "**1"));
+        await assert.rejects(
+          checkPlanGate(repo),
+          /matching the current subject/u,
+        );
+        write(repo, capabilitiesPath, capabilities);
+        write(
+          repo,
+          path,
+          original.replace("Move the shape.", "Move another shape."),
+        );
+        commit(repo, "unreviewed committed objective");
+        write(repo, path, original); // A clean-looking workspace cannot hide HEAD drift.
+        await assert.rejects(
+          checkPlanGate(repo),
+          /matching the current subject/u,
+        );
+      },
+    );
+    await check(
+      "AC5 forward-only gate, real-adapter fixture receipt, and stale committed standard refusal",
+      async () => {
+        const repo = makeRepo(parent, "gate");
+        const subject = buildPlanSubject(repo);
+        await assert.rejects(checkPlanGate(repo), /needs a receipt/u);
+        const runner = () => ({
+          accepted: Promise.resolve(),
+          completed: Promise.resolve({
+            stdout: JSON.stringify({
+              type: "result",
+              subtype: "success",
+              structured_output: passResult(subject),
+            }),
+            stderr: "",
+            exitCode: 0,
+          }),
+          alive: () => false,
+          kill: () => {},
+        });
+        const output = await runPlanRefutation(
+          subject,
+          new ClaudeCliPrintWorkOrderTransport(runner, "2.1.270"),
+          "fixture-model",
+          "max",
+          now,
+        );
+        await writePlanReceipt(repo, {
+          pass: passFor(repo),
+          slug: "gate",
+          subject,
+          episode: output,
+        });
+        commit(repo, "commit receipt");
+        assert.equal((await checkPlanGate(repo)).passes, 1); // 2029 pass is pre-mechanism.
+        for (const [path, from, to] of [
+          [PLAN_MAP, "First", "first"],
+          [orderPath("WO-901"), "useful shape", "useful Shape"],
+          [
+            "docs/product/00-vision.md",
+            "Evidence describes",
+            "evidence describes",
+          ],
+          ["docs/product/13-uifa-roles.md", "A useful shape", "a useful shape"],
+          ["docs/planning/capability-table.md", "**0", "**1"],
+        ]) {
+          mutate(repo, path, from, to);
+          await assert.rejects(
+            checkPlanGate(repo),
+            /matching the current subject/u,
+          );
+        }
+      },
+    );
+    await check(
+      "receipt source symlinks refuse and CLI override retains the acting account label",
+      async () => {
+        const repo = makeRepo(parent, "cli");
+        const receipt = await writeReceipt(repo);
+        const capture = "docs/intake/notes/dispatch.md";
+        write(repo, capture, "Fixture operator instruction.\n");
+        const args = [
+          "override",
+          receipt.receiptId,
+          receipt.holds[0].id,
+          "Fixture override",
+          "--capture",
+          capture,
+          "--harness",
+          "human",
+          "--harness-version",
+          "fixture",
+          "--model",
+          "human",
+          "--effort",
+          "unknown",
+          "--source",
+          "operator-attested",
+          "--account-label",
+          "fixture",
+        ];
+        await assert.rejects(plan(args, repo), /capture-hash/u);
+        // Keep this fixture's clock in the past for the real CLI clock read.
+        const subject = buildPlanSubject(repo);
+        const liveTime = await runPlanRefutation(
+          subject,
+          new FakePlanRefutationTransport(),
+          "fixture",
+          "max",
+        );
+        const secondPass = {
+          id: "evidence-cli",
+          kind: "evidence",
+          heading: null,
+        };
+        const cliReceipt = await writePlanReceipt(repo, {
+          pass: secondPass,
+          slug: "cli",
+          subject,
+          episode: liveTime,
+        });
+        args[1] = cliReceipt.receiptId;
+        args[2] = cliReceipt.holds[0].id;
+        const response = await plan(
+          [...args, "--capture-hash", sha256(read(repo, capture))],
+          repo,
+        );
+        assert.equal(response.actor.accountLabel, "fixture");
+        const invalid = join(repo, "docs/work-orders/WO-903-fixture.md");
+        symlinkSync(orderPath("WO-901"), invalid);
+        commit(repo, "symlink fixture");
+        mutate(repo, PLAN_MAP, "WO-902", "WO-903");
+        assert.throws(() => buildPlanSubject(repo), /committed regular file/u);
+      },
+    );
+
+    await check(
+      "WO-126 direct command files an immutable committed receipt, rejects bad input and carries unchanged verdicts",
+      async () => {
+        const repo = makeRepo(parent, "direct-command");
+        runGit(repo, ["config", "user.name", "Direct Fixture"]);
+        runGit(repo, ["config", "user.email", "fixture@example.invalid"]);
+        await assert.rejects(
+          plan(["refute", "--model", "fixture"], repo),
+          /explicit --transport/u,
+        );
+        const prompt = await plan(["refute"], repo);
+        assert.ok(typeof prompt === "string");
+        assert.ok(JSON.parse(prompt).resultSchema);
+        assert.ok(!prompt.includes("PLANNER_NARRATIVE_SENTINEL"));
+        const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
+        const resultPath = "docs/control/local/result.json",
+          statementPath = "docs/control/local/statement.txt";
+        write(repo, resultPath, "{}");
+        write(
+          repo,
+          statementPath,
+          "Synthetic direct judgment; canonical prompt only.",
+        );
+        await assert.rejects(
+          plan(["receipt", resultPath, "--statement", statementPath], repo),
+          /plan-goal-review-v1/,
+        );
+        write(repo, resultPath, JSON.stringify(cannedGoalReview(subject)));
+        write(
+          repo,
+          orderPath("WO-901"),
+          read(repo, orderPath("WO-901")).replace(
+            "useful shape",
+            "changed shape",
+          ),
+        );
+        await assert.rejects(
+          plan(["receipt", resultPath, "--statement", statementPath], repo),
+          /stale/,
+        );
+        write(repo, orderPath("WO-901"), order("WO-901"));
+        const first = await plan(
+          ["receipt", resultPath, "--statement", statementPath],
+          repo,
+        );
+        assert.equal(first.scope, "pass");
+        assert.equal(first.verdict, "aligned");
+        assert.equal(runGit(repo, ["status", "--porcelain"]), "");
+        assert.match(
+          runGit(repo, ["log", "-1", "--format=%s"]),
+          /^Record planning refutation /,
+        );
+        await assert.rejects(
+          plan(["refute", "--direct"], repo),
+          /one judgment per pass/,
+        );
+        write(
+          repo,
+          PLAN_LEDGER,
+          read(repo, PLAN_LEDGER) +
+            "\n## 2030-01-03 next planning pass\n\nPLANNER_NARRATIVE_SENTINEL\n",
+        );
+        write(
+          repo,
+          orderPath("WO-901"),
+          order("WO-901").replace("useful shape", "new useful shape"),
+        );
+        write(
+          repo,
+          orderPath("WO-902"),
+          read(repo, orderPath("WO-902")).replace(
+            "# WO-902 — Fixture",
+            "# WO-902 — Fixture (v1.2.3)",
+          ),
+        );
+        commit(repo, "one-order pass");
+        const nextSubject = buildPlanSubject(repo, "HEAD", {
+          goalReview: true,
+        });
+        const scope = await planJudgmentScope(
+          repo,
+          nextSubject,
+          await latestPlanningPass(repo),
+        );
+        assert.deepEqual(scope.judgedOrderIds, ["WO-901"]);
+        assert.equal(scope.carried[0].workOrderId, "WO-902");
+        const currentOrder = nextSubject.orders.find(
+          (row) => row.workOrderId === "WO-902",
+        );
+        const previousOrder = subject.orders.find(
+          (row) => row.workOrderId === "WO-902",
+        );
+        assert.equal(planOrderHash(currentOrder), planOrderHash(previousOrder));
+        assert.ok(
+          carriedOrderHashMatches(
+            currentOrder,
+            previousOrder,
+            planOrderHash(previousOrder, { legacy: true }),
+          ),
+        );
+        assert.equal(
+          carriedOrderHashMatches(
+            { ...currentOrder, objective: "changed substantive objective" },
+            previousOrder,
+            planOrderHash(previousOrder, { legacy: true }),
+          ),
+          false,
+        );
+        const secondPrompt = await plan(["refute", "--direct"], repo);
+        assert.ok(!secondPrompt.includes("PLANNER_NARRATIVE_SENTINEL"));
+        const schema = JSON.parse(secondPrompt).resultSchema;
+        assert.equal(schema.properties.orders.minItems, 1);
+        assert.equal(schema.properties.orders.maxItems, 1);
+        assert.deepEqual(
+          schema.properties.orders.items.properties.workOrderId.enum,
+          ["WO-901"],
+        );
+        const nextResult = cannedGoalReview(nextSubject);
+        nextResult.orders = nextResult.orders.filter(
+          (row) => row.workOrderId === "WO-901",
+        );
+        write(repo, resultPath, JSON.stringify(nextResult));
+        const second = await plan(
+          ["receipt", resultPath, "--statement", statementPath],
+          repo,
+        );
+        assert.equal(second.carried, 1);
+        assert.equal(second.verdict, "aligned");
+        const receipts = await readReceipts(repo);
+        assert.deepEqual(
+          receipts[1].result.orders[1],
+          receipts[0].result.orders[1],
+        );
+        assert.equal(receipts[1].episode.review.scope, "pass");
+        assert.ok(receipts[1].episode.review.durationMs >= 0);
+        assert.equal((await checkPlanGate(repo)).passes, 2);
+      },
+    );
+    await check(
+      "WO-126 planning start requires clean main and full scope retains every judgment",
+      async () => {
+        const repo = makeRepo(parent, "planning-start");
+        runGit(repo, ["branch", "-M", "main"]);
+        write(repo, "dirty.txt", "uncommitted");
+        await assert.rejects(plan(["start", "fixture"], repo), /clean main/);
+        commit(repo, "fixture input");
+        const started = await plan(["start", "fixture"], repo);
+        assert.match(started.branch, /^planning\/\d{4}-\d{2}-\d{2}-fixture$/);
+        await assert.rejects(plan(["start", "second"], repo), /clean main/);
+        const prompt = await plan(
+          ["refute", "--direct", "--scope", "full"],
+          repo,
+        );
+        assert.equal(JSON.parse(prompt).subject.scope, "full");
+        const subject = buildPlanSubject(repo);
+        const scope = await planJudgmentScope(
+          repo,
+          subject,
+          await latestPlanningPass(repo),
+          "full",
+        );
+        assert.deepEqual(scope.judgedOrderIds, ["WO-901", "WO-902"]);
+        assert.deepEqual(scope.carried, []);
+      },
+    );
+    await check(
+      "WO-172 plan failures counts each kind of item in its window, lists an event without a time only under --all, and pages the record under the feed's bound",
+      async () => {
+        const repo = failureRepo(parent, "failures-record");
+        const snapshot = () => treeDigest(repo);
+        const before = snapshot();
+        // The default window opens at the latest planning receipt.
+        const page = await plan(["failures"], repo);
+        assert.deepEqual(page.window, {
+          since: "2030-01-02T12:00:00.000Z",
+          until: null,
+          opensAt: "latest planning receipt 2030-01-02-planning-fixture-001",
+          timeless: "excluded",
+        });
+        assert.deepEqual(page.counts.window, windowCounts);
+        assert.deepEqual(
+          page.counts.record,
+          failureCounts({
+            failedVerifications: 2,
+            failedFinalReviews: 1,
+            repairs: 3,
+            ordersMadeReady: 3,
+            failedFirstVerifications: 2,
+            corrections: 3,
+            offRamps: 2,
+            offRampEvents: { CriterionWaived: 1, RecordCorrected: 1 },
+            amendments: 2,
+            withdrawnAmendments: 1,
+            overriddenHolds: 1,
+          }),
+        );
+        assert.equal(page.items, 12);
+        assert.equal(page.next, null);
+        assert.deepEqual(
+          [...new Set(page.rows.map((row) => row.kind))].sort(),
+          ["amendment", "correction", "failed-judgment", "off-ramp", "repair"],
+        );
+        // Newest first; a decision's day sorts at its end; identifiers,
+        // dates and paths only. The withdrawal is its own item, and the
+        // correction of VER-001 replaces its path and judge.
+        assert.deepEqual(page.rows, [
+          {
+            kind: "correction",
+            decision: "WO-802-D001",
+            date: "2030-01-03",
+            phase: "repair",
+          },
+          {
+            kind: "correction",
+            decision: "WO-802-D002",
+            date: "2030-01-03",
+            phase: "implementation",
+          },
+          {
+            kind: "amendment",
+            event: "PlanHoldOverridden",
+            receipt: "2030-01-02-planning-fixture-001",
+            recordedAt: "2030-01-03T11:00:00.000Z",
+          },
+          {
+            kind: "amendment",
+            event: "PlanExecutionAmendmentWithdrawn",
+            order: "WO-802",
+            decision: "WO-802-D002",
+            recordedAt: "2030-01-03T10:00:00.000Z",
+          },
+          {
+            kind: "amendment",
+            event: "PlanExecutionAmended",
+            order: "WO-802",
+            decision: "WO-802-D002",
+            recordedAt: "2030-01-03T09:30:00.000Z",
+            withdrawn: true,
+          },
+          {
+            kind: "amendment",
+            event: "PlanExecutionAmended",
+            order: "WO-802",
+            decision: "WO-802-D001",
+            recordedAt: "2030-01-03T09:00:00.000Z",
+            withdrawn: false,
+          },
+          {
+            kind: "off-ramp",
+            event: "RecordCorrected",
+            order: "WO-802",
+            corrects: "VER-001",
+            recordedAt: "2030-01-03T06:45:00.000Z",
+          },
+          {
+            kind: "off-ramp",
+            event: "CriterionWaived",
+            order: "WO-802",
+            criterion: "2",
+            recordedAt: "2030-01-03T06:30:00.000Z",
+          },
+          {
+            kind: "repair",
+            order: "WO-802",
+            answers: "FINAL-001",
+            recordedAt: "2030-01-03T06:00:00.000Z",
+          },
+          {
+            kind: "failed-judgment",
+            order: "WO-802",
+            report: "FINAL-001",
+            phase: "finalReview",
+            recordedAt: "2030-01-03T05:00:00.000Z",
+            path: "docs/final-reviews/WO-802/FINAL-001.md",
+            judge: { harness: "unknown", model: "unknown", effort: "unknown" },
+          },
+          {
+            kind: "repair",
+            order: "WO-802",
+            answers: "VER-001",
+            recordedAt: "2030-01-03T03:00:00.000Z",
+          },
+          {
+            kind: "failed-judgment",
+            order: "WO-802",
+            report: "VER-001",
+            phase: "verification",
+            recordedAt: "2030-01-03T02:00:00.000Z",
+            path: "docs/verifications/WO-802/VER-001-corrected.md",
+            judge: {
+              harness: "codex-cli",
+              model: "corrected-model",
+              effort: "xhigh",
+            },
+            corrected: true,
+          },
+        ]);
+        assert.deepEqual(page.localGateFailures, {
+          source: "local",
+          counted:
+            "failed rows of this checkout's gate index, not runs (a run can leave a runner row and a host row); counted only",
+          failedRows: 1,
+          byOrder: { "WO-802": 1 },
+        });
+        assert.deepEqual(page.localShellDiagnostics, {
+          source: "local",
+          counted:
+            "diagnostics the shell printed about commands as written, as this checkout's observer saw them under Claude Code; a lower bound, counted only",
+          diagnostics: 3,
+          byKind: { "unmatched-pattern": 2, "program-not-found": 1 },
+          byOrder: { "WO-802": 2, unassigned: 1 },
+        });
+        // A window that ends before the withdrawal shows the amendment in
+        // force and counts no withdrawal.
+        const earlier = await plan(
+          ["failures", "--until", "2030-01-03T09:45:00.000Z"],
+          repo,
+        );
+        assert.equal(earlier.counts.window.withdrawnAmendments, 0);
+        assert.deepEqual(
+          earlier.rows
+            .filter((row) => row.event === "PlanExecutionAmended")
+            .map(({ decision, withdrawn }) => [decision, withdrawn]),
+          [
+            ["WO-802-D002", false],
+            ["WO-802-D001", false],
+          ],
+        );
+        // Events without a time belong to --all only, as `unknown`, oldest.
+        const all = await plan(["failures", "--all"], repo);
+        assert.deepEqual(all.counts.window, all.counts.record);
+        assert.equal(all.window.timeless, "included");
+        assert.deepEqual(
+          all.rows
+            .slice(-2)
+            .map(({ kind, order, recordedAt }) => [kind, order, recordedAt]),
+          [
+            ["failed-judgment", "WO-801", "unknown"],
+            ["repair", "WO-801", "unknown"],
+          ],
+        );
+        assert.deepEqual(all.localGateFailures.byOrder, {
+          "WO-802": 1,
+          "WO-803": 1,
+        });
+        assert.deepEqual(all.localShellDiagnostics.byKind, {
+          "unmatched-pattern": 2,
+          "program-not-found": 1,
+          "reserved-parameter": 1,
+        });
+        assert.deepEqual(all.localShellDiagnostics.byOrder, {
+          "WO-802": 2,
+          "WO-803": 1,
+          unassigned: 1,
+        });
+        const since = await plan(["failures", "--since", "2000-01-01"], repo);
+        assert.equal(since.window.since, "2000-01-01T00:00:00.000Z");
+        assert.ok(!since.rows.some((row) => row.recordedAt === "unknown"));
+        assert.equal(since.counts.window.failedVerifications, 1);
+        assert.equal(since.counts.window.corrections, 3);
+        // The upper bound includes its day for a decision and its instant
+        // for an event.
+        const until = await plan(
+          ["failures", "--all", "--until", "2030-01-03T02:00:00.000Z"],
+          repo,
+        );
+        assert.deepEqual(
+          until.counts.window,
+          failureCounts({
+            failedVerifications: 2,
+            repairs: 1,
+            ordersMadeReady: 3,
+            failedFirstVerifications: 2,
+            corrections: 3,
+          }),
+        );
+        // A bound in another zone names the same instant, and a leap day is
+        // a day its month holds.
+        const offset = await plan(
+          ["failures", "--all", "--until", "2030-01-03T07:30:00+05:30"],
+          repo,
+        );
+        assert.equal(offset.window.until, "2030-01-03T02:00:00.000Z");
+        assert.deepEqual(offset.counts.window, until.counts.window);
+        const leap = await plan(["failures", "--since", "2028-02-29"], repo);
+        assert.equal(leap.window.since, "2028-02-29T00:00:00.000Z");
+        for (const [args, message] of [
+          [["--all", "--since", "2030-01-01"], /usage: plan failures/],
+          [["--since"], /usage: plan failures/],
+          [["--all", "--all"], /usage: plan failures/],
+          [["--cursor", "x", "--export", "f.json"], /usage: plan failures/],
+          [
+            ["--since", "yesterday"],
+            /--since needs a UTC date or a time with its zone/,
+          ],
+          // A time without its zone would read as the host's local time.
+          [
+            ["--until", "2030-01-03T02:00"],
+            /--until needs a UTC date or a time with its zone/,
+          ],
+          // A day its month does not hold would roll into the next month and
+          // move the window (WO-172-D029): a date, a day absent from a common
+          // year, and a timestamp whose instant falls on a real day of the
+          // month it names, which only its own zone's reading exposes.
+          [
+            ["--since", "2026-09-31"],
+            /--since needs a UTC date or a time with its zone/,
+          ],
+          [
+            ["--all", "--until", "2026-02-30"],
+            /--until needs a UTC date or a time with its zone/,
+          ],
+          [
+            ["--since", "2030-02-29"],
+            /--since needs a UTC date or a time with its zone/,
+          ],
+          [
+            ["--all", "--until", "2030-09-31T04:00:00+05:30"],
+            /--until needs a UTC date or a time with its zone/,
+          ],
+          [
+            ["--all", "--until", "2030-01-03T24:00:00Z"],
+            /--until needs a UTC date or a time with its zone/,
+          ],
+          // An instant outside the years 0000 to 9999 has no text that
+          // sorts with the record's times, and the engine holds no leap
+          // second.
+          [
+            ["--since", "9999-12-31T23:59:59-23:59"],
+            /--since needs a UTC date or a time with its zone/,
+          ],
+          [
+            ["--all", "--until", "9999-12-31T23:59:59-23:59"],
+            /--until needs a UTC date or a time with its zone/,
+          ],
+          [
+            ["--all", "--until", "0000-01-01T00:00:00+00:01"],
+            /--until needs a UTC date or a time with its zone/,
+          ],
+          [
+            ["--all", "--until", "2016-12-31T23:59:60Z"],
+            /--until needs a UTC date or a time with its zone/,
+          ],
+          [
+            ["--since", "2030-01-05", "--until", "2030-01-04"],
+            /closes before it opens/,
+          ],
+          [["--cursor", `${"0".repeat(64)}:0`], /stale or invalid page cursor/],
+        ])
+          await assert.rejects(
+            plan(["failures", ...args], repo),
+            message,
+            args.join(" "),
+          );
+        // Enough items for several pages: each stays under 8 KB and the
+        // cursors reach every item once, in the export's order.
+        write(
+          repo,
+          "docs/control/orders/WO-804.jsonl",
+          lines([
+            {
+              type: "WorkOrderActivated",
+              workOrderId: "WO-804",
+              workOrderPath: "docs/work-orders/WO-804-fixture.md",
+              recordedAt: at("2030-01-05", 0),
+            },
+            ...Array.from({ length: 40 }, (_, index) => [
+              {
+                type: "VerificationCompleted",
+                workOrderId: "WO-804",
+                verificationId: `VER-${String(index + 1).padStart(3, "0")}`,
+                reportPath: `docs/verifications/WO-804/VER-${String(index + 1).padStart(3, "0")}.md`,
+                verdict: "fail",
+                actor: failureActor,
+                recordedAt: at("2030-01-05", 1, index),
+              },
+              {
+                type: "RepairCompleted",
+                workOrderId: "WO-804",
+                sourceVerificationId: `VER-${String(index + 1).padStart(3, "0")}`,
+                recordedAt: at("2030-01-05", 2, index),
+              },
+            ]).flat(),
+          ]),
+        );
+        const pages = [];
+        for (let next = ["failures"]; next;) {
+          const current = await plan(next, repo);
+          assert.ok(Buffer.byteLength(prettyJson(current)) <= 8192);
+          assert.ok(current.rows.length <= 32);
+          pages.push(current);
+          next = current.next?.replace(/^npm run plan -- /, "").split(" ");
+        }
+        assert.ok(pages.length > 2);
+        const outside = realpathSync(
+          mkdtempSync(join(tmpdir(), "dotln-failures-export-")),
+        );
+        try {
+          const printed = await plan(
+            ["failures", "--export", join(outside, "failures.json")],
+            repo,
+          );
+          assert.deepEqual(Object.keys(printed), [
+            "revision",
+            "kind",
+            "window",
+            "counts",
+            "finalReviewFindings",
+            "localGateFailures",
+            "localShellDiagnostics",
+            "localReleaseCloses",
+            "localHostDenials",
+            "interventions",
+            "longPhases",
+            "repeatedGateRuns",
+            "recentTracks",
+            "items",
+            "exported",
+            "exportedObservations",
+            "path",
+          ]);
+          assert.equal(printed.exported, 92);
+          const exported = JSON.parse(readFileSync(printed.path, "utf8"));
+          assert.deepEqual(
+            exported.rows,
+            pages.flatMap((current) => current.rows),
+          );
+          assert.equal(exported.revision, pages[0].revision);
+          // An export replaces only an export of its own kind.
+          await plan(["failures", "--export", printed.path, "--all"], repo);
+          write(
+            outside,
+            "rows.json",
+            '{"revision":"x","showing":"pending","rows":[]}\n',
+          );
+          await assert.rejects(
+            plan(["failures", "--export", join(outside, "rows.json")], repo),
+            /Failures export destination exists and is not a failures export; name a new file/,
+          );
+          await assert.rejects(
+            plan(["followups", "--export", printed.path], repo),
+            /Follow-up export destination exists and is not a follow-up export; name a new file/,
+          );
+          await assert.rejects(
+            plan(["failures", "--export", "docs/planning/failures.json"], repo),
+            /Failures export destination must be a file under the system temporary directory or the ignored local control lane/,
+          );
+        } finally {
+          rmSync(outside, { recursive: true, force: true });
+        }
+        // A cursor names the window's items: a new item stales it.
+        const stale = pages[0].next.split(" --cursor ")[1];
+        writeFileSync(
+          join(repo, "docs/control/orders/WO-804.jsonl"),
+          `${read(repo, "docs/control/orders/WO-804.jsonl")}${lines([
+            {
+              type: "RepairCompleted",
+              workOrderId: "WO-804",
+              sourceVerificationId: "VER-040",
+              recordedAt: at("2030-01-05", 3),
+            },
+          ])}`,
+        );
+        await assert.rejects(
+          plan(["failures", "--cursor", stale], repo),
+          /stale or invalid page cursor; restart plan failures/,
+        );
+        rmSync(join(repo, "docs/control/orders/WO-804.jsonl"));
+        // A receipt the chain would refuse is refused by name, never skipped.
+        const unreadable = `${RECEIPTS}/2030-01-06-planning-fixture-004.json`;
+        write(
+          repo,
+          unreadable,
+          '{"receiptId":"2030-01-06-planning-fixture-004"}\n',
+        );
+        await assert.rejects(
+          plan(["failures"], repo),
+          /Planning failures: receipt 2030-01-06-planning-fixture-004\.json names no receipt schema/,
+        );
+        rmSync(join(repo, unreadable));
+        // The local lane names the twelve orders with the most failed rows,
+        // counts the rest, and a row without an order is unassigned.
+        const checks = join(repo, "docs/control/local/harness/checks.json");
+        const kept = readFileSync(checks, "utf8");
+        writeFileSync(
+          checks,
+          JSON.stringify(
+            Array.from({ length: 15 }, (_, index) => ({
+              checkId: "npm test",
+              ...(index < 14
+                ? { workOrder: `WO-7${String(index).padStart(2, "0")}` }
+                : {}),
+              executed: true,
+              exitCode: 1,
+              recordedAt: at("2030-01-03", 1, index),
+            })),
+          ),
+        );
+        const lane = (await plan(["failures"], repo)).localGateFailures;
+        assert.equal(lane.failedRows, 15);
+        assert.equal(Object.keys(lane.byOrder).length, 12);
+        assert.equal(lane.otherOrders + Object.keys(lane.byOrder).length, 15);
+        assert.equal(lane.otherRows, 3);
+        assert.ok(
+          "unassigned" in lane.byOrder || lane.otherOrders === 3,
+          "a row without an order is counted as unassigned",
+        );
+        writeFileSync(checks, kept);
+        // The shell lane names twelve orders and counts the rest; without the
+        // file the page holds no block, and a lane that is not a regular file
+        // is reported and stops nothing.
+        const shell = join(
+          repo,
+          "docs/control/local/harness/shell-diagnostics.jsonl",
+        );
+        const keptShell = readFileSync(shell, "utf8");
+        writeFileSync(
+          shell,
+          Array.from({ length: 15 }, (_, index) =>
+            JSON.stringify({
+              at: at("2030-01-03", 1, index),
+              shell: "zsh",
+              kind: index % 2 ? "unmatched-pattern" : "equals-word",
+              workOrder:
+                index < 14 ? `WO-7${String(index).padStart(2, "0")}` : null,
+            }),
+          ).join("\n") + "\n",
+        );
+        const counted = (await plan(["failures"], repo)).localShellDiagnostics;
+        assert.equal(counted.diagnostics, 15);
+        assert.deepEqual(counted.byKind, {
+          "equals-word": 8,
+          "unmatched-pattern": 7,
+        });
+        assert.equal(Object.keys(counted.byOrder).length, 12);
+        assert.equal(counted.otherOrders, 3);
+        assert.equal(counted.otherRows, 3);
+        assert.equal("otherKinds" in counted, false);
+        // A kind is counted under its own name whatever the name is, a row
+        // marked failed is counted as any other, and a lane of many kinds
+        // names twenty-four, counts the rest and keeps the page.
+        writeFileSync(
+          shell,
+          [
+            ...["constructor", "constructor", "toString", "__proto__"].map(
+              (kind) => ({ kind }),
+            ),
+            { kind: "equals-word", marked: "failed", use: "0".repeat(64) },
+            ...Array.from({ length: 200 }, (_, index) => ({
+              kind: `kind-${"abcdefghij"[index % 10]}${"abcdefghij"[Math.floor(index / 10) % 10]}${"abc"[Math.floor(index / 100)]}`,
+            })),
+          ]
+            .map((row) =>
+              JSON.stringify({
+                at: at("2030-01-03", 1, 0),
+                shell: "zsh",
+                workOrder: "WO-700",
+                ...row,
+              }),
+            )
+            .join("\n") + "\n",
+        );
+        const kinds = (await plan(["failures"], repo)).localShellDiagnostics;
+        // Two of the names are no kind's: a kind is lower-case letters and
+        // hyphens.
+        assert.equal(kinds.diagnostics, 203);
+        assert.equal(kinds.byKind.constructor, 2);
+        assert.equal(kinds.byKind["equals-word"], 1);
+        assert.equal(Object.keys(kinds.byKind).length, 24);
+        assert.equal(kinds.otherKinds, 178);
+        assert.equal(kinds.otherKindRows, 178);
+        assert.ok(
+          Object.values(kinds.byKind).every((count) => Number.isInteger(count)),
+        );
+        rmSync(shell);
+        const without = await plan(["failures"], repo);
+        assert.equal("localShellDiagnostics" in without, false);
+        assert.ok(without.localGateFailures);
+        mkdirSync(shell);
+        assert.deepEqual(
+          (await plan(["failures"], repo)).localShellDiagnostics,
+          {
+            source: "local",
+            unavailable:
+              "Planning failures: the shell diagnostic log is not a regular file",
+          },
+        );
+        rmSync(shell, { recursive: true });
+        writeFileSync(shell, keptShell);
+        assert.equal(snapshot(), before, "the command writes nothing");
+      },
+    );
+    await check(
+      "WO-172 plan start prints the window's counts, the command and the orders passed since the latest Entropy Reducer review in at most 1 KB, and opens the branch when the counts cannot be computed",
+      async () => {
+        const repo = failureRepo(parent, "failures-start");
+        const started = await plan(["start", "failures"], repo);
+        assert.deepEqual(Object.keys(started), [
+          "branch",
+          "phase",
+          "authority",
+          "failures",
+          "readerScores",
+          "conditions",
+          "followups",
+        ]);
+        assert.equal(started.readerScores.readerDue, false);
+        assert.match(started.readerScores.unavailable, /reader-profiles\.json/);
+        assert.equal(started.conditions.command, "npm run plan -- conditions");
+        // This fixture has no numeric table sources; an unavailable count
+        // remains a bounded advisory alongside the failure counts.
+        assert.match(started.conditions.unavailable, /^count not computed: /);
+        assert.ok(Buffer.byteLength(prettyJson(started.conditions)) <= 1024);
+        assert.deepEqual(started.failures, {
+          command: "npm run plan -- failures",
+          since: "2030-01-02T12:00:00.000Z",
+          items: 12,
+          counts: windowCounts,
+          finalReviewEscapes:
+            "0/4 reviews; 3 orders; 0 unclassed; rate unknown (0 measured)",
+          localReleaseCloses: 0,
+          localHostDenials: 0,
+          interventions: { count: 0, unclassified: 0 },
+          longPhases: started.failures.longPhases,
+          repeatedGateRuns: 0,
+          recentTracks: {
+            counted: 3,
+            delivery: 0,
+            machinery: 0,
+            evidence: 0,
+            unknown: 3,
+          },
+          localCoverage: "local; Codex dispatch-only; incomplete",
+          // Only WO-802 passed between review completion and filing; WO-803's
+          // and WO-801's passes precede completion or carry no time.
+          sinceEntropyReview: {
+            review: "REVIEW-001",
+            endedAt: "2030-01-03T07:30:00.000Z",
+            finalReviewPassedOrders: 1,
+          },
+        });
+        assert.ok(Buffer.byteLength(prettyJson(started.failures)) <= 1024);
+        // Compare instants, excluding the exact endpoint and deduplicating
+        // orders. An offset timestamp can sort before its earlier UTC bound.
+        const passedAt = (workOrderId, recordedAt, verdict = "pass") => ({
+          type: "FinalReviewCompleted",
+          workOrderId,
+          recordedAt,
+          verdict,
+        });
+        assert.equal(
+          sinceEntropyReview(repo, {
+            eventSegments: new Map([
+              [
+                "fixture",
+                [
+                  passedAt("WO-901", "2030-01-03T07:30:00.000Z"),
+                  passedAt("WO-902", "2030-01-03T03:00:00.000-05:00"),
+                  passedAt("WO-902", "2030-01-03T09:00:00.000Z"),
+                  passedAt("WO-903", "2030-01-03T08:00:00.000Z", "fail"),
+                  passedAt("WO-904", undefined),
+                ],
+              ],
+            ]),
+          }).finalReviewPassedOrders,
+          1,
+        );
+        // An empty window prints zero counts.
+        runGit(repo, ["switch", "-q", "main"]);
+        write(
+          repo,
+          ...failureReceipt(3, "planning", "2031-01-01T00:00:00.000Z"),
+        );
+        commit(repo, "a later planning receipt");
+        const empty = await plan(["start", "empty"], repo);
+        assert.equal(empty.failures.since, "2031-01-01T00:00:00.000Z");
+        assert.equal(empty.failures.items, 0);
+        assert.deepEqual(empty.failures.counts, failureCounts({}));
+        // Counts that cannot be computed are one line; the branch opens.
+        runGit(repo, ["switch", "-q", "main"]);
+        writeFileSync(
+          join(repo, OVERRIDES),
+          `${read(repo, OVERRIDES)}${JSON.stringify({ schemaVersion: 9, type: "Unknown" })}\n`,
+        );
+        commit(repo, "an unreadable planning control event");
+        const unreadable = await plan(["start", "unreadable"], repo);
+        assert.match(
+          unreadable.branch,
+          /^planning\/\d{4}-\d{2}-\d{2}-unreadable$/,
+        );
+        assert.equal(
+          runGit(repo, ["symbolic-ref", "--short", "HEAD"]),
+          unreadable.branch,
+        );
+        assert.deepEqual(Object.keys(unreadable.failures), [
+          "command",
+          "unavailable",
+          "sinceEntropyReview",
+        ]);
+        assert.match(
+          unreadable.failures.unavailable,
+          /^counts not computed: [^\n]+$/,
+        );
+        assert.equal(
+          unreadable.failures.sinceEntropyReview.finalReviewPassedOrders,
+          1,
+        );
+        assert.ok(Buffer.byteLength(prettyJson(unreadable.failures)) <= 1024);
+        // With no filed Entropy Reducer review the count is unknown.
+        const unreviewed = failureRepo(parent, "failures-unreviewed", {
+          review: false,
+        });
+        const none = await plan(["start", "unreviewed"], unreviewed);
+        assert.deepEqual(none.failures.sinceEntropyReview, {
+          review: null,
+          finalReviewPassedOrders: "unknown",
+        });
+        assert.deepEqual(none.failures.counts, windowCounts);
+        // A filed receipt without a usable completion time never falls back
+        // to filing time or an older review; startup remains available.
+        const receiptPath =
+          "docs/instance/entropy-reducer/runs/REVIEW-001.json";
+        for (const [label, bytes] of [
+          ["missing", null],
+          ["malformed", "{"],
+          ["undated", prettyJson({ receiptId: "REVIEW-001" })],
+          ["invalid-time", prettyJson({ endedAt: "unknown" })],
+        ]) {
+          runGit(repo, ["switch", "-q", "main"]);
+          if (bytes === null) rmSync(join(repo, receiptPath));
+          else write(repo, receiptPath, bytes);
+          commit(repo, `a ${label} review receipt`);
+          const unavailable = await plan(["start", `review-${label}`], repo);
+          assert.match(
+            unavailable.failures.sinceEntropyReview,
+            /^unknown: [^\n]+$/,
+          );
+          assert.equal(
+            runGit(repo, ["symbolic-ref", "--short", "HEAD"]),
+            unavailable.branch,
+          );
+          assert.ok(
+            Buffer.byteLength(prettyJson(unavailable.failures)) <= 1024,
+          );
+        }
+      },
+    );
+    await check(
+      "WO-126 legacy cost adoption preserves receipts and refuses any substantive authority edit",
+      async () => {
+        const repo = makeRepo(parent, "legacy-cost-adoption");
+        renameSync(
+          join(repo, orderPath("WO-901")),
+          join(repo, orderPath("WO-126")),
+        );
+        write(
+          repo,
+          orderPath("WO-126"),
+          read(repo, orderPath("WO-126"))
+            .replaceAll("WO-901", "WO-126")
+            .replace(
+              "Keep a bounded result.",
+              "Keep a bounded result with a **Cost:** declaration.",
+            ),
+        );
+        write(
+          repo,
+          PLAN_MAP,
+          read(repo, PLAN_MAP).replaceAll("WO-901", "WO-126"),
+        );
+        commit(repo, "legacy reviewed cost contract");
+        const receipt = await writeDirectReceipt(repo);
+        commit(repo, "immutable legacy judgment");
+        const receiptBytes = read(
+          repo,
+          `${RECEIPTS}/${receipt.receiptId}.json`,
+        );
+        write(
+          repo,
+          "docs/control/budgets.json",
+          JSON.stringify({
+            ...JSON.parse(read(root, "docs/control/budgets.json")),
+            // This synthetic history has no operator budget exceptions.
+            acceptances: [],
+          }),
+        );
+        for (const id of ["WO-126", "WO-902"])
+          write(
+            repo,
+            orderPath(id),
+            read(repo, orderPath(id)).replace(
+              /^(# [^\n]+\n)/,
+              `$1\n${LEGACY_COST_HEADER}`,
+            ),
+          );
+        commit(repo, "adopt unavailable cost declarations");
+        const basis = buildPlanSubject(repo, "HEAD", { costTable: false });
+        write(
+          repo,
+          "docs/planning/cost-table.json",
+          JSON.stringify({
+            schemaVersion: 1,
+            observedAt: "2030-01-02T01:00:00.000Z",
+            subjectRevision: basis.revision,
+            subjectSourceHash: basis.costTable.subjectSourceHash,
+            acceptances: [],
+            rows: basis.orders.map((order) => ({
+              workOrder: order.workOrderId,
+              metrics: null,
+            })),
+            traps: [],
+          }),
+        );
+        commit(repo, "bind current cost observation");
+        const accepted = await checkPlanGate(repo);
+        assert.ok(
+          accepted.continuation.committedUpdates.some(
+            (row) => row.kind === "cost-contract-adoption",
+          ),
+        );
+        assert.equal(
+          read(repo, `${RECEIPTS}/${receipt.receiptId}.json`),
+          receiptBytes,
+        );
+        const original = read(repo, orderPath("WO-902"));
+        write(
+          repo,
+          orderPath("WO-902"),
+          original.replace(
+            "Keep a bounded result.",
+            "Skip the required evidence.",
+          ),
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /matching the current subject|stale/,
+        );
+        write(
+          repo,
+          orderPath("WO-902"),
+          original.replace(
+            LEGACY_COST_HEADER,
+            LEGACY_COST_HEADER.replace(
+              "No reduction is claimed",
+              "A reduction is claimed",
+            ),
+          ),
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /matching the current subject|stale/,
+        );
+      },
+    );
+    await check(
+      "WO-126 cost input holds missing or unbalanced additions and refuses stale subject evidence",
+      async () => {
+        const repo = makeRepo(parent, "planning-cost");
+        const budgets = {
+          ...JSON.parse(read(root, "docs/control/budgets.json")),
+          acceptances: [],
+        };
+        write(repo, "docs/control/budgets.json", JSON.stringify(budgets));
+        write(
+          repo,
+          orderPath("WO-901"),
+          order("WO-901").replace(
+            "**Model:**",
+            "**Cost:** Adds one process check; removes nothing.\n\n**Model:**",
+          ),
+        );
+        commit(repo, "cost-bearing subject");
+        const basis = buildPlanSubject(repo, "HEAD", { costTable: false });
+        const table = {
+          schemaVersion: 1,
+          observedAt: "2030-01-02T01:00:00.000Z",
+          subjectRevision: basis.revision,
+          subjectSourceHash: basis.costTable.subjectSourceHash,
+          acceptances: [],
+          rows: basis.orders.map((order) => ({
+            workOrder: order.workOrderId,
+            metrics: null,
+          })),
+          traps: [],
+        };
+        const tablePath = "docs/planning/cost-table.json";
+        write(repo, tablePath, JSON.stringify(table));
+        commit(repo, "cost observation");
+        const observationRevision = runGit(repo, ["rev-parse", "HEAD"]);
+        const originalOrder = read(repo, orderPath("WO-901"));
+        write(
+          repo,
+          orderPath("WO-901"),
+          originalOrder + "\n## Execution record\n\nChecks passed.\n",
+        );
+        commit(repo, "later execution record", "2030-01-03T00:00:00Z");
+        assert.equal(
+          buildPlanSubject(repo).costTable.subjectSourceHash,
+          table.subjectSourceHash,
+        );
+        const branch = runGit(repo, ["branch", "--show-current"]);
+        runGit(repo, ["switch", "-c", "integration-side", observationRevision]);
+        write(repo, "integration.txt", "unrelated integration bytes\n");
+        commit(repo, "integration side", "2030-01-04T00:00:00Z");
+        runGit(repo, ["switch", branch]);
+        runGit(
+          repo,
+          [
+            "-c",
+            "user.name=Plan Fixture",
+            "-c",
+            "user.email=fixture@example.invalid",
+            "merge",
+            "--no-ff",
+            "integration-side",
+            "-m",
+            "merge unchanged cost projection",
+          ],
+          {
+            env: {
+              ...process.env,
+              GIT_AUTHOR_DATE: "2030-01-05T00:00:00Z",
+              GIT_COMMITTER_DATE: "2030-01-05T00:00:00Z",
+            },
+          },
+        );
+        assert.equal(
+          buildPlanSubject(repo).costTable.subjectSourceHash,
+          table.subjectSourceHash,
+        );
+        write(
+          repo,
+          tablePath,
+          JSON.stringify({
+            ...table,
+            acceptances: [
+              { date: "2030-01-02", reason: "mismatched acceptance" },
+            ],
+          }),
+        );
+        assert.throws(
+          () => buildPlanSubject(repo, "HEAD", { workspace: true }),
+          /stale/,
+        );
+        write(
+          repo,
+          tablePath,
+          JSON.stringify({ ...table, subjectRevision: "missing-revision" }),
+        );
+        assert.throws(
+          () => buildPlanSubject(repo, "HEAD", { workspace: true }),
+          /revision|argument|object/,
+        );
+        runGit(repo, ["switch", "-c", "unmerged-cost-revision"]);
+        write(repo, "unmerged.txt", "not an ancestor\n");
+        commit(repo, "unmerged cost revision", "2030-01-06T00:00:00Z");
+        const unmergedRevision = runGit(repo, ["rev-parse", "HEAD"]);
+        runGit(repo, ["switch", branch]);
+        write(
+          repo,
+          tablePath,
+          JSON.stringify({ ...table, subjectRevision: unmergedRevision }),
+        );
+        assert.throws(
+          () => buildPlanSubject(repo, "HEAD", { workspace: true }),
+          /ancestor|merge-base/,
+        );
+        write(repo, tablePath, JSON.stringify(table));
+        let subject = buildPlanSubject(repo),
+          result = validatePlanResult(passResult(subject), subject);
+        assert.equal(result.planVerdict, "hold");
+        assert.ok(
+          result.holdReasons.some(
+            (row) => row.workOrderId === "WO-901" && /removal/.test(row.reason),
+          ),
+        );
+        assert.ok(
+          result.holdReasons.some(
+            (row) =>
+              row.workOrderId === "WO-902" && /Missing Cost/.test(row.reason),
+          ),
+        );
+        const acceptance = {
+          date: "2030-01-02",
+          metric: "process",
+          scope: "WO-901",
+          ceiling: 1,
+          dispatch: "Synthetic operator",
+          reason: "Accepted fixture cost",
+        };
+        const accepted = {
+          ...subject,
+          costTable: { ...subject.costTable, acceptances: [acceptance] },
+          orders: subject.orders.map((row) =>
+            row.workOrderId === "WO-902"
+              ? { ...row, cost: "Adds no process." }
+              : row,
+          ),
+        };
+        assert.equal(
+          validatePlanResult(passResult(accepted), accepted).planVerdict,
+          "pass",
+        );
+        const balanced = {
+          ...subject,
+          orders: subject.orders.map((row) => ({
+            ...row,
+            cost: "Adds one check; removes two repeated commands.",
+          })),
+        };
+        assert.equal(
+          validatePlanResult(passResult(balanced), balanced).planVerdict,
+          "pass",
+        );
+        await beginDirectRefutation(repo, {
+          now: () => "2030-01-02T12:00:00.000Z",
+        });
+        const pointer = JSON.parse(
+          read(repo, "docs/control/local/plan/current-direct.json"),
+        );
+        await beginDirectRefutation(repo, {
+          now: () => "2030-01-02T12:05:00.000Z",
+        });
+        assert.equal(
+          JSON.parse(read(repo, pointer.path)).dispatchedAt,
+          "2030-01-02T12:00:00.000Z",
+          "repeating the prompt must not reset the dispatch clock",
+        );
+        const goalSubject = buildPlanSubject(repo, "HEAD", {
+          goalReview: true,
+        });
+        write(
+          repo,
+          "docs/control/local/result.json",
+          JSON.stringify(cannedGoalReview(goalSubject)),
+        );
+        write(
+          repo,
+          "docs/control/local/statement.txt",
+          "Synthetic canonical-only judgment.",
+        );
+        const filed = await fileDirectRefutation(
+          repo,
+          "docs/control/local/result.json",
+          "docs/control/local/statement.txt",
+          { commit: false, now: () => "2030-01-02T12:02:00.001Z" },
+        );
+        assert.equal(filed.durationMs, 120001);
+        assert.equal(filed.verdict, "aligned");
+        assert.equal(
+          (await readReceipts(repo)).length,
+          1,
+          "elapsed time is recorded without a budget refusal",
+        );
+        write(
+          repo,
+          tablePath,
+          JSON.stringify({ ...table, observedAt: "2029-01-01T00:00:00.000Z" }),
+        );
+        commit(repo, "stale fixture date");
+        assert.throws(() => buildPlanSubject(repo), /predates/);
+        write(repo, tablePath, JSON.stringify(table));
+        write(
+          repo,
+          orderPath("WO-901"),
+          read(repo, orderPath("WO-901")).replace(
+            "Adds one process",
+            "Adds two process",
+          ),
+        );
+        commit(repo, "changed cost input");
+        assert.throws(() => buildPlanSubject(repo), /stale/);
+      },
+    );
+  } finally {
+    rmSync(parent, { recursive: true });
+  }
+}
+
+if (isMainModule(import.meta.url)) {
+  try {
+    if (!process.argv.includes("--check-only")) {
+      await fixtures();
+      // The Entropy Reducer dispatch host is compiled from the same identity
+      // and files the same shape of immutable receipt; it is judged in this
+      // suite.
+      const { entropyFixtures } = await import("./test-entropy-review.mjs");
+      await entropyFixtures();
+    }
+    if (!process.argv.includes("--fixtures-only"))
+      process.stdout.write(
+        `Plan gate: ${JSON.stringify(await checkPlanGate(root))}\n`,
+      );
+  } catch (error) {
+    console.error(error);
+    process.exitCode = 1;
+  }
+}

@@ -1,0 +1,148 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readdir, readFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import * as ts from "typescript/unstable/ast";
+import { API } from "typescript/unstable/sync";
+import { createVirtualFileSystem } from "typescript/unstable/fs";
+// The native compiler owns parsing; the returned tree is local after close.
+function parseSource(fileName, source) {
+    const path = `/source/${fileName.replaceAll("\\", "/").split("/").at(-1)}`;
+    const api = new API({
+        cwd: "/source",
+        fs: createVirtualFileSystem({
+            "/source/tsconfig.json": JSON.stringify({
+                files: [path],
+                compilerOptions: { noLib: true, noResolve: true, allowJs: true },
+            }),
+            [path]: source,
+        }),
+    });
+    try {
+        const snapshot = api.updateSnapshot({
+            openProject: "/source/tsconfig.json",
+        });
+        const tree = snapshot
+            .getProject("/source/tsconfig.json")
+            ?.program.getSourceFile(path);
+        assert.ok(tree, `native compiler parsed ${fileName}`);
+        return tree;
+    }
+    finally {
+        api.close();
+    }
+}
+import { compileLoadout, seiriEnvironment, seiriLoadout, } from "../src/index.js";
+/** Generated hook text is data; template substitutions are compiler code. */
+const assertSourcePurity = (source, file = "fixture.ts") => {
+    const syntax = parseSource(file, source);
+    const imports = [];
+    const ioCalls = [];
+    const module = (expression) => imports.push(expression &&
+        (ts.isStringLiteral(expression) ||
+            ts.isNoSubstitutionTemplateLiteral(expression))
+        ? expression.text
+        : "<dynamic module>");
+    const visit = (node) => {
+        if ((ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) &&
+            node.moduleSpecifier)
+            module(node.moduleSpecifier);
+        if (ts.isImportEqualsDeclaration(node) &&
+            ts.isExternalModuleReference(node.moduleReference))
+            module(node.moduleReference.expression);
+        if (ts.isCallExpression(node)) {
+            let callee = node.expression;
+            while (ts.isParenthesizedExpression(callee))
+                callee = callee.expression;
+            const name = ts.isIdentifier(callee)
+                ? callee.text
+                : ts.isPropertyAccessExpression(callee)
+                    ? callee.name.text
+                    : ts.isElementAccessExpression(callee) &&
+                        (ts.isStringLiteral(callee.argumentExpression) ||
+                            ts.isNoSubstitutionTemplateLiteral(callee.argumentExpression))
+                        ? callee.argumentExpression.text
+                        : undefined;
+            if (callee.kind === ts.SyntaxKind.ImportKeyword ||
+                name === "require" ||
+                name === "getBuiltinModule")
+                module(node.arguments[0]);
+            if (name === "fetch")
+                ioCalls.push(name);
+        }
+        node.forEachChild(visit);
+    };
+    visit(syntax);
+    assert.ok(imports.every((specifier) => specifier.startsWith("./")), `${file} imports only compiler-local modules: ${imports.join(", ")}`);
+    assert.deepEqual(ioCalls, [], `${file} must not perform I/O`);
+};
+test("WO-132 compiler purity inspects executable syntax while preserving emitted hook text", () => {
+    assert.doesNotThrow(() => assertSourcePurity([
+        'import { local } from "./local.js";',
+        'export { other } from "./other.js";',
+        'const hook = `const fs = await import("node:fs");',
+        'process.getBuiltinModule("node:fs"); fetch("fixture");`;',
+        '// import hidden from "node:net"; fetch("fixture");',
+        'const prose = \'from "node:fs"; fetch("fixture")\';',
+        'const dynamicLocal = import("./local.js");',
+    ].join("\n")));
+    for (const source of [
+        'import fs from "node:fs";',
+        'import "node:net";',
+        'export { request } from "node:http";',
+        'import fs = require("node:fs");',
+        'const fs = await import("node:fs");',
+        'const fs = require("node:fs");',
+        'const fs = process.getBuiltinModule("node:fs");',
+        "const loader = import(moduleName);",
+        'fetch("fixture");',
+        'globalThis.fetch("fixture");',
+        'globalThis["fetch"]("fixture");',
+        'const hook = `generated ${fetch("fixture")}`;',
+        'const hook = `generated ${await import("node:fs")}`;',
+    ])
+        assert.throws(() => assertSourcePurity(source), /compiler-local modules|must not perform I\/O/, source);
+});
+const deepFreeze = (value) => {
+    if (value !== null && typeof value === "object") {
+        Object.freeze(value);
+        for (const child of Object.values(value))
+            deepFreeze(child);
+    }
+    return value;
+};
+test("WO-008 constraint compiler is deterministic, input-immutable, I/O-free, and has zero runtime dependencies", async () => {
+    const packageRoot = fileURLToPath(new URL("../../", import.meta.url));
+    const manifest = JSON.parse(await readFile(new URL("../../package.json", import.meta.url), "utf8"));
+    assert.equal(manifest["dependencies"], undefined);
+    assert.equal(manifest["optionalDependencies"], undefined);
+    assert.equal(manifest["peerDependencies"], undefined);
+    const sourceDirectory = new URL("../../src/", import.meta.url);
+    const sourceFiles = (await readdir(sourceDirectory)).filter((file) => file.endsWith(".ts"));
+    for (const file of sourceFiles) {
+        const source = await readFile(new URL(`../../src/${file}`, import.meta.url), "utf8");
+        assertSourcePurity(source, file);
+    }
+    assert.match(packageRoot, /packages\/compiler\/$/u);
+    const input = structuredClone(seiriLoadout);
+    const before = structuredClone(input);
+    deepFreeze(input);
+    const originalNow = Date.now;
+    const originalRandom = Math.random;
+    Date.now = () => {
+        throw new Error("ambient clock read");
+    };
+    Math.random = () => {
+        throw new Error("ambient randomness read");
+    };
+    try {
+        const first = compileLoadout(input, seiriEnvironment());
+        const second = compileLoadout(input, seiriEnvironment());
+        assert.deepEqual(second, first);
+        assert.deepEqual(input, before);
+    }
+    finally {
+        Date.now = originalNow;
+        Math.random = originalRandom;
+    }
+});

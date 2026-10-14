@@ -1,0 +1,441 @@
+import { createHash } from "node:crypto";
+import { closeSync, constants, existsSync, fstatSync, lstatSync, mkdirSync, openSync, readFileSync, readdirSync, realpathSync, rmdirSync, unlinkSync, writeFileSync, } from "node:fs";
+import { dirname, join, resolve, sep } from "node:path";
+import { discoverySandbox } from "./discovery-sandbox.js";
+import { observedExecFileSync as execFileSync, observedSpawnSync as spawnSync, } from "./gate-deadlines.mjs";
+import { assertSourceCommit, assertSourceSurface, } from "./source-change-state.js";
+export const sourceDigest = (value) => createHash("sha256").update(value).digest("hex");
+// A writer, or the focused test the host runs after it, can write the target's
+// common Git directory, so the host's own Git calls run no hook (a planted
+// post-checkout would run on the next `worktree add`) and no fsmonitor
+// (WO-157).
+export const HOST_GIT = [
+    "-c",
+    "core.hooksPath=/dev/null",
+    "-c",
+    "core.fsmonitor=false",
+    // A writer could otherwise plant a replace ref that hides a file from the
+    // host's diff while the real commit is published (WO-112 D022).
+    "-c",
+    "core.useReplaceRefs=false",
+    // A writer-writable commit-graph can substitute a commit's tree or parents.
+    // Admission must parse the commit objects instead (WO-112 VER-003 F1).
+    "-c",
+    "core.commitGraph=false",
+];
+export const sourceGit = (cwd, ...args) => execFileSync("git", [...HOST_GIT, ...args], {
+    cwd,
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+    timeout: 15_000,
+    maxBuffer: 8 * 1024 * 1024,
+}).trim();
+const present = (path) => lstatSync(path, { throwIfNoEntry: false }) !== undefined;
+const ordinaryFile = (path) => {
+    const info = lstatSync(path);
+    if (!info.isFile() || info.nlink !== 1)
+        throw new Error("source-change shared entry is not an ordinary file");
+    const fd = openSync(path, constants.O_RDONLY | constants.O_NOFOLLOW);
+    try {
+        const opened = fstatSync(fd);
+        if (!opened.isFile() || opened.dev !== info.dev || opened.ino !== info.ino)
+            throw new Error("source-change shared entry identity changed");
+        return readFileSync(fd);
+    }
+    finally {
+        closeSync(fd);
+    }
+};
+const inside = (parent, path) => path.startsWith(`${parent}${sep}`);
+const canonicalDirectory = (path) => {
+    if (resolve(path) !== path ||
+        realpathSync(path) !== path ||
+        !lstatSync(path).isDirectory() ||
+        execFileSync("/bin/pwd", ["-P"], {
+            cwd: path,
+            encoding: "utf8",
+            stdio: ["ignore", "pipe", "pipe"],
+            timeout: 5_000,
+        }).replace(/\n$/u, "") !== path)
+        throw new Error("source-change paths must be canonical directories");
+    return path;
+};
+/** Branch-specific lifecycle; inspection's detached worktree contract is unchanged. */
+export class SourceChangeWorktree {
+    options;
+    path;
+    messagePath;
+    constructor(options) {
+        this.options = options;
+        const { requested, parent, launchpad, commandId, commitMessage } = options;
+        canonicalDirectory(parent);
+        canonicalDirectory(launchpad);
+        canonicalDirectory(requested.repo);
+        if (sourceGit(requested.repo, "rev-parse", "--show-toplevel") !==
+            requested.repo ||
+            sourceGit(launchpad, "rev-parse", "--show-toplevel") !== launchpad)
+            throw new Error("source-change repository and launchpad must be Git roots");
+        if (!/^cmd_[a-zA-Z0-9_-]+$/u.test(commandId))
+            throw new Error("invalid source-change command");
+        assertSourceCommit(requested.baseCommit);
+        if (sourceGit(requested.repo, "rev-parse", "--verify", `${requested.baseCommit}^{commit}`) !== requested.baseCommit)
+            throw new Error("source-change base is not a commit");
+        if (requested.branch.startsWith("-") || requested.branch === "HEAD")
+            throw new Error("invalid source-change branch");
+        sourceGit(requested.repo, "check-ref-format", `refs/heads/${requested.branch}`);
+        for (const surface of requested.surfaces)
+            assertSourceSurface(surface);
+        if (!commitMessage.trim() ||
+            commitMessage.includes("\0") ||
+            /(?:co-authored-by:.*(?:claude|codex|openai|anthropic)|generated (?:by|with)\s+(?:claude|codex|chatgpt))/iu.test(commitMessage))
+            throw new Error("source-change host message is invalid or attributed");
+        this.path = join(parent, commandId);
+        this.messagePath = join(this.path, ".dotln", "commit-message.txt");
+        if (this.path === launchpad ||
+            inside(launchpad, this.path) ||
+            inside(this.path, launchpad) ||
+            this.path === requested.repo ||
+            inside(this.path, requested.repo))
+            throw new Error("source-change target overlaps a protected checkout");
+    }
+    assertUnused() {
+        if (present(this.path))
+            throw new Error("source-change worktree path already exists");
+        const result = spawnSync("git", [
+            ...HOST_GIT,
+            "show-ref",
+            "--verify",
+            "--quiet",
+            `refs/heads/${this.options.requested.branch}`,
+        ], { cwd: this.options.requested.repo, timeout: 5_000 });
+        if (result.status !== 1)
+            throw new Error("source-change branch already exists or cannot be inspected");
+    }
+    create() {
+        const { requested } = this.options;
+        // Check again at the effect boundary: a variant or an unreadable identity
+        // must never leave a branch or a worktree registration behind.
+        canonicalDirectory(this.options.parent);
+        canonicalDirectory(this.options.launchpad);
+        canonicalDirectory(requested.repo);
+        if (!present(this.path)) {
+            this.assertUnused();
+            sourceGit(requested.repo, "worktree", "add", "-b", requested.branch, this.path, requested.baseCommit);
+        }
+        this.verify();
+    }
+    verify() {
+        const { requested, parent } = this.options;
+        if (dirname(this.path) !== parent ||
+            lstatSync(this.path).isSymbolicLink() ||
+            realpathSync(this.path) !== this.path ||
+            sourceGit(this.path, "rev-parse", "--show-toplevel") !== this.path ||
+            sourceGit(this.path, "symbolic-ref", "--short", "HEAD") !==
+                requested.branch)
+            throw new Error("source-change worktree identity drift");
+        const common = (root) => realpathSync(resolve(root, sourceGit(root, "rev-parse", "--git-common-dir")));
+        if (common(this.path) !== common(requested.repo))
+            throw new Error("source-change worktree belongs to another repository");
+        const head = sourceGit(this.path, "rev-parse", "HEAD");
+        assertSourceCommit(head);
+        sourceGit(this.path, "merge-base", "--is-ancestor", requested.baseCommit, head);
+        return head;
+    }
+    /** Observe shared state without following a substituted alternates entry.
+     * Differences are not attributable to this writer: independent Git clients
+     * may legitimately change any shared ref. Never restore them here. */
+    sharedState() {
+        const { repo, branch } = this.options.requested;
+        const common = resolve(repo, sourceGit(repo, "rev-parse", "--git-common-dir"));
+        const parents = [
+            common,
+            join(common, "objects"),
+            join(common, "objects/info"),
+        ];
+        const identities = parents.map((path) => {
+            const info = lstatSync(path);
+            if (!info.isDirectory() || realpathSync(path) !== path)
+                throw new Error("source-change shared object directory is not ordinary");
+            return info;
+        });
+        const alternates = join(common, "objects", "info", "alternates");
+        const info = lstatSync(alternates, { throwIfNoEntry: false });
+        const bytes = info ? ordinaryFile(alternates).toString("hex") : null;
+        // Git's ref iterator silently omits dangling and cyclic symbolic refs.
+        // Inspect loose symbolic entries too; do not claim coverage of another
+        // storage format whose unresolved entries this observer cannot enumerate.
+        const storage = spawnSync("git", [...HOST_GIT, "config", "--local", "--get", "extensions.refStorage"], {
+            cwd: repo,
+            encoding: "utf8",
+            timeout: 15_000,
+        });
+        if (!(storage.status === 1 ||
+            (storage.status === 0 && storage.stdout.trim() === "files")))
+            throw new Error("source-change shared ref storage is unsupported");
+        const symbolic = new Map();
+        const visit = (directory) => {
+            const before = lstatSync(directory);
+            if (!before.isDirectory() || realpathSync(directory) !== directory)
+                throw new Error("source-change shared refs directory is not ordinary");
+            for (const name of readdirSync(directory)) {
+                const path = join(directory, name);
+                if (lstatSync(path).isDirectory())
+                    visit(path);
+                else {
+                    const bytes = ordinaryFile(path);
+                    const text = bytes.toString("utf8");
+                    if (!Buffer.from(text, "utf8").equals(bytes))
+                        throw new Error("source-change shared ref text is not UTF-8");
+                    const value = text.trim();
+                    if (value.startsWith("ref: "))
+                        symbolic.set(path.slice(common.length + 1), value.slice(5));
+                    else
+                        assertSourceCommit(value);
+                }
+            }
+            const after = lstatSync(directory);
+            if (realpathSync(directory) !== directory ||
+                after.dev !== before.dev ||
+                after.ino !== before.ino)
+                throw new Error("source-change shared refs directory changed");
+        };
+        visit(join(common, "refs"));
+        const refs = new Map();
+        for (const line of sourceGit(repo, "for-each-ref", "--format=%(refname) %(objectname) %(symref)")
+            .split("\n")
+            .filter(Boolean)) {
+            const [ref, commit, target = ""] = line.split(" ");
+            refs.set(ref, [ref, commit, target]);
+        }
+        for (const [ref, target] of symbolic) {
+            const observed = refs.get(ref);
+            // The stored immediate target matters even if Git resolves a chain.
+            refs.set(ref, [ref, observed?.[1] ?? "", target]);
+        }
+        parents.forEach((path, index) => {
+            const info = lstatSync(path);
+            const before = identities[index];
+            if (!info.isDirectory() ||
+                realpathSync(path) !== path ||
+                info.dev !== before.dev ||
+                info.ino !== before.ino)
+                throw new Error("source-change shared object directory changed");
+        });
+        return {
+            commonDirectory: common,
+            refs: [...refs.values()]
+                .filter(([ref]) => ref !== `refs/heads/${branch}`)
+                .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)),
+            alternates: bytes,
+        };
+    }
+    bundle(action) {
+        execFileSync(process.execPath, [
+            join(this.options.launchpad, "scripts/harness.mjs"),
+            action,
+            "--target",
+            this.path,
+            "--runtime-root",
+            this.options.launchpad,
+            "--profile",
+            this.options.bundleProfile,
+        ], {
+            cwd: this.options.launchpad,
+            stdio: ["ignore", "pipe", "pipe"],
+            timeout: 60_000,
+            maxBuffer: 1024 * 1024,
+        });
+    }
+    prepare() {
+        this.create();
+        this.bundle(present(join(this.path, ".claude/target-worker-manifest.json"))
+            ? "check"
+            : "emit");
+        const directory = dirname(this.messagePath);
+        if (present(directory) &&
+            (lstatSync(directory).isSymbolicLink() ||
+                !lstatSync(directory).isDirectory()))
+            throw new Error("source-change scratch path is not an owned directory");
+        mkdirSync(directory, { recursive: true });
+        if (present(this.messagePath)) {
+            this.checkMessage();
+        }
+        else
+            writeFileSync(this.messagePath, this.options.commitMessage, {
+                flag: "wx",
+                mode: 0o600,
+            });
+        this.bundle("check");
+    }
+    checkMessage() {
+        if (lstatSync(dirname(this.messagePath)).isSymbolicLink() ||
+            !lstatSync(this.messagePath).isFile() ||
+            lstatSync(this.messagePath).isSymbolicLink() ||
+            readFileSync(this.messagePath, "utf8") !== this.options.commitMessage)
+            throw new Error("source-change host message drift");
+    }
+    clean() {
+        if (sourceGit(this.path, "status", "--porcelain", "--untracked-files=all"))
+            throw new Error("source-change committed tree is dirty; preserve for inspection");
+    }
+    /** The committed change, re-verified; `admit` also applies the envelope's
+     * change limits, which judge a change once, when it is first observed, so a
+     * receipt saved before WO-157 still finishes and recovers. */
+    effect(admit = false) {
+        const commit = this.verify();
+        if (commit === this.options.requested.baseCommit)
+            return undefined;
+        this.clean();
+        this.bundle("check");
+        this.checkMessage();
+        const { baseCommit, surfaces } = this.options.requested;
+        const paths = execFileSync("git", [
+            ...HOST_GIT,
+            "diff",
+            "--no-ext-diff",
+            "--no-textconv",
+            "--no-renames",
+            "--name-only",
+            "-z",
+            baseCommit,
+            commit,
+            "--",
+        ], { cwd: this.path, timeout: 15_000 })
+            .toString()
+            .split("\0")
+            .filter(Boolean);
+        if (!paths.length ||
+            paths.some((path) => path === "CLAUDE.local.md" ||
+                [".git", ".dotln", ".claude"].some((prefix) => path === prefix || path.startsWith(`${prefix}/`)) ||
+                !surfaces.some((surface) => path === surface || path.startsWith(`${surface}/`))))
+            throw new Error("source-change diff is empty or outside the declared surfaces");
+        // One commit carrying the host's message, whoever the writer was.
+        if (sourceGit(this.path, "rev-list", "--count", `${baseCommit}..${commit}`) !== "1" ||
+            sourceGit(this.path, "log", "-1", "--format=%B", commit).trimEnd() !==
+                this.options.commitMessage.trimEnd())
+            throw new Error("source-change result is not one commit with the host message");
+        if (admit)
+            this.checkChangeLimits(baseCommit, commit);
+        const diff = execFileSync("git", [
+            ...HOST_GIT,
+            "diff",
+            "--binary",
+            "--no-ext-diff",
+            "--no-textconv",
+            "--no-renames",
+            baseCommit,
+            commit,
+            "--",
+        ], { cwd: this.path, timeout: 15_000, maxBuffer: 8 * 1024 * 1024 });
+        return { commit, diffHash: sourceDigest(diff) };
+    }
+    /** Counts committed paths against the envelope's files ceiling and refuses
+     * a removal or type change the envelope does not allow. With renames off, a
+     * file replaced by a directory shows as the file's deletion. */
+    checkChangeLimits(baseCommit, commit) {
+        const limits = this.options.change;
+        if (!limits)
+            return;
+        const fields = execFileSync("git", [
+            ...HOST_GIT,
+            "diff",
+            "--no-ext-diff",
+            "--no-renames",
+            "--name-status",
+            "-z",
+            baseCommit,
+            commit,
+            "--",
+        ], { cwd: this.path, timeout: 15_000, maxBuffer: 8 * 1024 * 1024 })
+            .toString()
+            .split("\0")
+            .filter(Boolean);
+        const changes = [];
+        for (let i = 0; i + 1 < fields.length; i += 2)
+            changes.push({ status: fields[i], path: fields[i + 1] });
+        if (limits.files !== undefined && changes.length > limits.files)
+            throw new Error(`source-change diff touches ${changes.length} paths, above the envelope's files ceiling of ${limits.files}: ${changes.map(({ path }) => path).join(", ")}`);
+        const removed = changes
+            .filter(({ status, path }) => (status === "D" || status === "T") &&
+            !(status === "D" && path === limits.relocation?.from))
+            .map(({ status, path }) => `${status} ${path}`);
+        if (removed.length && !limits.deletion)
+            throw new Error(`source-change diff removes or changes the type of paths without repo.delete (${changes.length} paths against ${limits.files === undefined ? "no files ceiling" : `the envelope's files ceiling of ${limits.files}`}): ${removed.join(", ")}`);
+    }
+    finish(commit, diffHash) {
+        const effect = this.effect();
+        if (!effect || effect.commit !== commit || effect.diffHash !== diffHash)
+            throw new Error("source-change finish requires the persisted effect");
+        // Refuse every ignored residue except the exact governed set and message.
+        const manifestName = ".claude/target-worker-manifest.json";
+        const manifest = JSON.parse(readFileSync(join(this.path, manifestName), "utf8"));
+        const owned = new Set([
+            ...manifest.installed.map((file) => file.path),
+            manifestName,
+            ".dotln/commit-message.txt",
+        ]);
+        const ignored = execFileSync("git", [
+            ...HOST_GIT,
+            "ls-files",
+            "--others",
+            "--ignored",
+            "--exclude-standard",
+            "-z",
+        ], { cwd: this.path, timeout: 15_000 })
+            .toString()
+            .split("\0")
+            .filter(Boolean);
+        if (ignored.some((path) => !owned.has(path)))
+            throw new Error("source-change finish retains unowned ignored files");
+        if (readdirSync(dirname(this.messagePath)).some((name) => name !== "commit-message.txt"))
+            throw new Error("source-change scratch contains unowned files");
+        this.bundle("remove");
+        this.checkMessage();
+        unlinkSync(this.messagePath);
+        rmdirSync(dirname(this.messagePath));
+        if (sourceGit(this.path, "status", "--porcelain", "--untracked-files=all", "--ignored=matching"))
+            throw new Error("source-change finish retains unowned files");
+        sourceGit(this.options.requested.repo, "worktree", "remove", this.path);
+        if (existsSync(this.path))
+            throw new Error("source-change worktree removal failed");
+    }
+}
+export function runFocusedTest(path, command) {
+    if (!/^[a-zA-Z0-9_./-]+(?: [a-zA-Z0-9_./=-]+)*$/u.test(command))
+        throw new Error("source-change test requires a bounded argument vector");
+    const [binary, ...args] = command.split(" ");
+    if (process.platform !== "darwin")
+        return {
+            command,
+            exitCode: null,
+            signal: "confinement-unavailable",
+            stdoutHash: sourceDigest(""),
+            stderrHash: sourceDigest("macOS sandbox-exec required"),
+        };
+    const result = spawnSync("/usr/bin/sandbox-exec", ["-p", discoverySandbox(path), binary, ...args], {
+        cwd: path,
+        env: {
+            PATH: `${dirname(process.execPath)}:/usr/bin:/bin`,
+            // A read-only empty home avoids tool caches dirtying source. The
+            // profile still denies every write outside the target worktree.
+            HOME: "/var/empty",
+            TMPDIR: path,
+            // npm enables Node's cache under TMPDIR; it is not source output.
+            NODE_DISABLE_COMPILE_CACHE: "1",
+        },
+        timeout: 180_000,
+        maxBuffer: 1024 * 1024,
+    });
+    return {
+        command,
+        exitCode: result.error || result.stderr?.toString().startsWith("sandbox-exec:")
+            ? null
+            : result.status,
+        signal: result.signal ??
+            (result.error || result.stderr?.toString().startsWith("sandbox-exec:")
+                ? "confinement-unavailable"
+                : null),
+        stdoutHash: sourceDigest(result.stdout ?? Buffer.alloc(0)),
+        stderrHash: sourceDigest(result.stderr ?? Buffer.alloc(0)),
+    };
+}
