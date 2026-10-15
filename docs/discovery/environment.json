@@ -1,0 +1,548 @@
+{
+  "workOrder": "WO-001",
+  "observedOn": "2026-10-14",
+  "humanRecord": "docs/discovery/environment.md",
+  "labels": [
+    "observed",
+    "documented locally",
+    "documented officially",
+    "untested",
+    "blocked",
+    "not found",
+    "ambiguous",
+    "operator-attested"
+  ],
+  "provenance": {
+    "npm run discover -- harness <name>": [
+      "versions",
+      "versionLines",
+      "claude-code sessionEffortSelector",
+      "claude-code selectedSessionReadback"
+    ],
+    "WO-001 executor by hand, from the commands in environment.md": [
+      "printMode",
+      "modelSelector",
+      "codex-cli and copilot-cli sessionEffortSelector",
+      "persistedEffortSelector",
+      "copilot-cli selectedSessionReadback",
+      "effortReadbackNote",
+      "settingsSources",
+      "hooks",
+      "instructionFiles",
+      "toolchain",
+      "harnessSmoke",
+      "localTerms",
+      "checklist",
+      "auditQuestions",
+      "operatorNotes",
+      "startupContext"
+    ],
+    "convention": "a flag or value read from a harness installed --help is labeled observed, as npm run discover labels it"
+  },
+  "toolchain": {
+    "node": {
+      "classification": "observed",
+      "value": "v26.9.0",
+      "command": "node --version"
+    },
+    "npm": {
+      "classification": "observed",
+      "value": "11.19.1",
+      "command": "npm --version"
+    },
+    "git": {
+      "classification": "observed",
+      "value": "2.55.0",
+      "command": "git --version"
+    },
+    "gitWorktree": {
+      "classification": "observed",
+      "value": "one worktree (branch main) in this repository; in a scratch repository a linked worktree was added with a .git file, a second checkout of a branch held by another worktree was refused, and remove plus prune left one worktree",
+      "command": "git worktree list --porcelain; scratch: git init, git worktree add, git worktree add <path> main, git worktree remove, git worktree prune"
+    },
+    "os": {
+      "classification": "observed",
+      "value": "macOS 27.0.1 (build 26A434), Darwin 27.0.0 arm64",
+      "command": "sw_vers; uname -srm"
+    },
+    "shell": {
+      "classification": "observed",
+      "value": "login shell /bin/zsh (zsh 5.9); /bin/bash 3.2.57",
+      "command": "echo $SHELL; zsh --version; bash --version"
+    },
+    "hostConfinement": {
+      "classification": "observed",
+      "value": "not in force: the claude-code marker is present, an exclusive create in .claude/hooks succeeded and was removed (probeFilesLeft 0)",
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-001/probe-confinement.mjs",
+      "observedAt": "2026-10-14T09:17:57.962Z"
+    },
+    "hostKernelLock": {
+      "classification": "observed",
+      "value": "acquired and released twice under one name in a private scratch directory (126 ms including native helper compilation, then 3 ms)",
+      "command": "mkdir -m 700 <scratch dir>; node scripts/harness.mjs bounded -- node docs/evidence/WO-001/probe-host-lock.mjs <scratch dir>",
+      "observedAt": "2026-10-14T09:17:58.105Z"
+    },
+    "claudeBinary": {
+      "classification": "observed",
+      "value": "claude on PATH and CLAUDE_CODE_EXECPATH resolve to the same file, both 2.1.299",
+      "command": "claude --version; \"$CLAUDE_CODE_EXECPATH\" --version; realpath comparison"
+    }
+  },
+  "effortReadbackProbe": {
+    "harnesses": {
+      "claude-code": {
+        "versions": [
+          {
+            "classification": "observed",
+            "value": "2.1.299",
+            "observedAt": "2026-10-14T09:08:27.503Z",
+            "line": "2.1",
+            "probe": {
+              "versionChannel": "CLAUDE_CODE_EXECPATH",
+              "versionExitCode": 0,
+              "helpExitCode": 0,
+              "effortSelectorPresent": true,
+              "configSelectorPresent": false,
+              "readbackChannel": "CLAUDE_EFFORT",
+              "readbackChannelPresent": true
+            },
+            "observedEffort": "xhigh"
+          }
+        ],
+        "versionLines": [
+          {
+            "classification": "observed",
+            "line": "2.1",
+            "newestPatch": "2.1.299",
+            "observedAt": "2026-10-14T09:08:27.503Z",
+            "source": "bounded-cli-probe:CLAUDE_CODE_EXECPATH"
+          }
+        ],
+        "printMode": {
+          "classification": "observed",
+          "control": "-p/--print",
+          "outputFormats": [
+            "text",
+            "json",
+            "stream-json"
+          ],
+          "smoke": "claude -p \"Reply with exactly the word OK.\" --output-format json: one result object, subtype success, result OK, one turn, model claude-opus-5-5"
+        },
+        "modelSelector": {
+          "classification": "observed",
+          "control": "--model",
+          "persistedValue": "opus (user settings model)"
+        },
+        "sessionEffortSelector": {
+          "classification": "observed",
+          "control": "--effort",
+          "values": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        },
+        "persistedEffortSelector": {
+          "classification": "observed",
+          "control": "user settings modelSettings.<model>.effortLevel",
+          "value": "xhigh",
+          "source": "~/.claude/settings.json, effort keys only; every one of the four configured models carries xhigh"
+        },
+        "selectedSessionReadback": {
+          "classification": "observed",
+          "channel": "CLAUDE_EFFORT",
+          "setBy": "the Claude Code host for its own session; DotLn never sets it (its transports pass the parent environment through and select effort with --effort)",
+          "scope": "selected, not effective",
+          "value": "xhigh",
+          "harnessVersion": "2.1.299",
+          "observedAt": "2026-10-14T09:08:27.503Z"
+        },
+        "settingsSources": {
+          "classification": "observed",
+          "value": "user, project and local all apply: project hooks fire in this session and the local sandbox switch is in effect"
+        },
+        "hooks": {
+          "classification": "observed",
+          "value": "7 hook events registered in .claude/settings.json; their context reached this session"
+        },
+        "instructionFiles": {
+          "classification": "observed",
+          "value": "~/.claude/CLAUDE.md and CLAUDE.md both appear in this session context"
+        }
+      },
+      "codex-cli": {
+        "versions": [
+          {
+            "classification": "observed",
+            "value": "0.162.1",
+            "observedAt": "2026-10-14T09:08:27.771Z",
+            "line": "0.162",
+            "probe": {
+              "versionChannel": "PATH",
+              "versionExitCode": 0,
+              "helpExitCode": 0,
+              "effortSelectorPresent": false,
+              "configSelectorPresent": true,
+              "readbackChannel": "unavailable",
+              "readbackChannelPresent": false
+            }
+          }
+        ],
+        "versionLines": [
+          {
+            "classification": "observed",
+            "line": "0.162",
+            "newestPatch": "0.162.1",
+            "observedAt": "2026-10-14T09:08:27.771Z",
+            "source": "bounded-cli-probe:PATH"
+          }
+        ],
+        "printMode": {
+          "classification": "observed",
+          "control": "codex exec",
+          "outputFormats": [
+            "text",
+            "jsonl (--json)",
+            "schema-constrained final message (--output-schema <file>)"
+          ],
+          "smoke": "codex exec --json --skip-git-repo-check --ephemeral -s read-only \"Reply with exactly the word OK.\": events thread.started, turn.started, item.completed (agent_message OK), turn.completed with token usage; the events name no model"
+        },
+        "modelSelector": {
+          "classification": "observed",
+          "control": "-m/--model",
+          "persistedValue": "gpt-6.1-sol (user config model)"
+        },
+        "sessionEffortSelector": {
+          "classification": "documented locally",
+          "control": "-c model_reasoning_effort=\"<level>\"",
+          "values": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ],
+          "source": "codex --help shows -c/--config but lists no effort values; these are the five values scripts/probe-codex-effort.mjs passes through -c, so they document what DotLn sends, not a set Codex was seen to accept"
+        },
+        "persistedEffortSelector": {
+          "classification": "observed",
+          "control": "user config model_reasoning_effort",
+          "value": "max",
+          "source": "~/.codex/config.toml, model and effort keys only"
+        },
+        "effortReadbackNote": {
+          "classification": "not found",
+          "reason": "codex exec --json events carry no effort or model field (smoke, environment.md section 2)"
+        },
+        "settingsSources": {
+          "classification": "untested",
+          "reason": "the smoke ran outside the repository (WO-001-D003); the project .codex/config.toml holds one comment line"
+        },
+        "hooks": {
+          "classification": "untested",
+          "reason": "untested on 0.162.1 (WO-001-D003); the kit probe on 0.153.4 saw no project hook fire (documented locally, CLAUDE.md harness block)"
+        },
+        "instructionFiles": {
+          "classification": "untested",
+          "reason": "AGENTS.md symlinks to CLAUDE.md (observed); loading untested (WO-001-D003)"
+        }
+      },
+      "copilot-cli": {
+        "versions": [
+          {
+            "classification": "observed",
+            "value": "1.0.94",
+            "observedAt": "2026-10-14T09:08:28.228Z",
+            "line": "1.0",
+            "probe": {
+              "versionChannel": "PATH",
+              "versionExitCode": 0,
+              "helpExitCode": 0,
+              "effortSelectorPresent": false,
+              "configSelectorPresent": false,
+              "readbackChannel": "unavailable",
+              "readbackChannelPresent": false
+            }
+          }
+        ],
+        "versionLines": [
+          {
+            "classification": "observed",
+            "line": "1.0",
+            "newestPatch": "1.0.94",
+            "observedAt": "2026-10-14T09:08:28.228Z",
+            "source": "bounded-cli-probe:PATH"
+          }
+        ],
+        "printMode": {
+          "classification": "observed",
+          "control": "-p/--prompt",
+          "outputFormats": [
+            "text",
+            "json (JSONL)"
+          ],
+          "smoke": "copilot -p \"Reply with exactly the word OK.\" --output-format json --no-color: 19 JSONL events ending in result; the reply is OK; model claude-sonnet-5.5"
+        },
+        "modelSelector": {
+          "classification": "observed",
+          "control": "--model",
+          "persistedValue": "none recorded in user settings; the smoke ran claude-sonnet-5.5"
+        },
+        "sessionEffortSelector": {
+          "classification": "observed",
+          "control": "--reasoning-effort",
+          "values": [
+            "none",
+            "minimal",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ],
+          "source": "copilot --help"
+        },
+        "persistedEffortSelector": {
+          "classification": "observed",
+          "control": "user settings effortLevel",
+          "value": "xhigh",
+          "source": "~/.copilot/settings.json, effort key only"
+        },
+        "selectedSessionReadback": {
+          "classification": "observed",
+          "channel": "--output-format json event session.usage_checkpoint, field reasoning_effort",
+          "scope": "selected, not effective",
+          "value": "xhigh",
+          "observedAt": "2026-10-14T09:05:53.085Z",
+          "harnessVersion": "1.0.94",
+          "setBy": "the Copilot CLI from the persisted effortLevel; the smoke passed no --reasoning-effort"
+        },
+        "settingsSources": {
+          "classification": "untested",
+          "reason": "the smoke ran outside the repository (WO-001-D003)"
+        },
+        "hooks": {
+          "classification": "untested",
+          "reason": "untested on 1.0.94 (WO-001-D003); the kit notes for 1.0.86 say it reuses the Claude registration (documented locally, CLAUDE.md)"
+        },
+        "instructionFiles": {
+          "classification": "not found",
+          "reason": "no .github/copilot-instructions.md or ~/.copilot/copilot-instructions.md; whether Copilot reads AGENTS.md or CLAUDE.md is untested (WO-001-D003)"
+        }
+      }
+    }
+  },
+  "startupContext": {
+    "claude-code": [
+      {
+        "file": "~/.claude/CLAUDE.md",
+        "bytes": 660,
+        "loaded": "observed"
+      },
+      {
+        "file": "CLAUDE.md",
+        "bytes": 6871,
+        "loaded": "observed"
+      },
+      {
+        "file": ".claude/skills/*/SKILL.md (6)",
+        "bytes": "10163-21239",
+        "loaded": "observed: names and descriptions at startup, body on invocation"
+      },
+      {
+        "file": ".claude/agents/dotln-worker.md",
+        "bytes": 816,
+        "loaded": "observed: type listed at startup, file on spawn"
+      }
+    ],
+    "codex-cli": [
+      {
+        "file": "AGENTS.md (symlink to CLAUDE.md)",
+        "bytes": 6871,
+        "loaded": "untested (WO-001-D003)"
+      },
+      {
+        "file": "~/.codex/AGENTS.md",
+        "bytes": 3252,
+        "loaded": "untested (WO-001-D003)"
+      },
+      {
+        "file": ".agents/skills/*/SKILL.md (6)",
+        "bytes": "10163-21239",
+        "loaded": "untested (WO-001-D003)"
+      }
+    ],
+    "copilot-cli": [
+      {
+        "file": ".github/copilot-instructions.md, ~/.copilot/copilot-instructions.md",
+        "bytes": null,
+        "loaded": "not found"
+      }
+    ],
+    "configurationOnly": [
+      {
+        "file": ".claude/settings.json",
+        "bytes": 3538,
+        "note": "7 hook events; autoMemoryEnabled false"
+      },
+      {
+        "file": ".codex/hooks.json",
+        "bytes": 1189
+      }
+    ],
+    "tokens": {
+      "classification": "observed",
+      "claudeSmokeFirstTurn": {
+        "input": 2,
+        "cacheWrite": 25835
+      },
+      "codexSmoke": {
+        "input": 17676,
+        "cached": 13184
+      },
+      "copilotTools": {
+        "count": 28,
+        "tokens": 12416
+      },
+      "thisSessionFirstReadback": {
+        "classification": "ambiguous",
+        "totalTokens": 88930,
+        "reason": "includes the executor skill body and the first tool calls"
+      }
+    },
+    "command": "wc -c <files>"
+  },
+  "harnessSmoke": {
+    "check": {
+      "classification": "observed",
+      "command": "node scripts/harness.mjs bounded -- node scripts/harness.mjs check",
+      "output": "harness check: 34 generated surfaces; local-terms list: present",
+      "exitCode": 0
+    },
+    "liveSmoke": {
+      "classification": "untested",
+      "command": "DOTLN_LIVE_HARNESS=1 node scripts/harness-live-smoke.mjs executor 001",
+      "reason": "the order leaves the live smoke to the instance's choice; this bounded inspection used the one permitted print-mode smoke per harness instead"
+    }
+  },
+  "localTerms": {
+    "classification": "observed",
+    "file": "docs/control/local/terms.txt",
+    "termCount": 9,
+    "ignoredByGit": true,
+    "command": "npm run terms -- check CLAUDE.md README.md docs/product/07-execution-guide.md",
+    "status": "local-terms list: present",
+    "exitCode": 0,
+    "match": false
+  },
+  "checklist": {
+    "1 toolchain and worktrees": {
+      "classification": "observed"
+    },
+    "2 versions, non-interactive modes, output formats": {
+      "classification": "observed"
+    },
+    "2 model and effort selection": {
+      "classification": "observed",
+      "note": "Codex effort values documented locally (scripts/probe-codex-effort.mjs); Codex effort readback not found"
+    },
+    "2 settings sources, hooks, instruction files": {
+      "classification": "observed",
+      "note": "Claude Code observed; Codex and Copilot untested in the repository (WO-001-D003)"
+    },
+    "2 startup-context accounting": {
+      "classification": "observed",
+      "note": "Claude Code observed; Codex untested (WO-001-D003); Copilot not found; this session first figure ambiguous"
+    },
+    "3 harness smoke": {
+      "classification": "observed",
+      "note": "live smoke untested (WO-001-D003)"
+    },
+    "4 local-terms registration": {
+      "classification": "observed"
+    },
+    "5 audit questions": {
+      "classification": "observed",
+      "note": "each part labeled under auditQuestions"
+    }
+  },
+  "auditQuestions": {
+    "gatewayAndProvider": {
+      "configuredIntermediary": {
+        "classification": "not found",
+        "reason": "no proxy, base-URL, endpoint or gateway environment variable in the shell the smokes inherited; no provider, base-URL, endpoint or proxy key in the Codex or Copilot user configuration"
+      },
+      "copilotServiceLayer": "observed",
+      "layerDecidesModelsOffered": {
+        "classification": "ambiguous",
+        "reason": "one run"
+      },
+      "models": "observed",
+      "requestLimits": {
+        "classification": "untested",
+        "reason": "probing excluded by the order; none encountered"
+      },
+      "localLogs": "observed",
+      "providerRetention": {
+        "classification": "not found",
+        "reason": "not observable from the client; no local document"
+      }
+    },
+    "meteringForegroundVsDelegated": {
+      "separateSubagentAccounting": "observed",
+      "claudeDelegatedRuns": {
+        "classification": "observed",
+        "value": "two self-review agents counted by node scripts/harness.mjs usage (count 2, remaining 18); host task notifications reported 75,574 and 81,801 tokens per agent"
+      },
+      "delegatedTokensInForegroundTotal": {
+        "classification": "untested",
+        "reason": "the readback shows no per-agent split"
+      },
+      "codexAndCopilotDelegated": {
+        "classification": "untested",
+        "reason": "no delegated run made in either"
+      }
+    },
+    "interruptionRecovery": {
+      "resumeAndContinue": "observed (installed help)",
+      "compaction": "documented locally",
+      "launchpadStateInFiles": "observed",
+      "lossesAndCrashRecovery": {
+        "classification": "untested",
+        "reason": "no interruption or crash induced in a bounded inspection"
+      }
+    },
+    "managedSettingsPrecedence": {
+      "localOverUserClaudeCode": {
+        "classification": "ambiguous",
+        "reason": "effective state matches local winning (user sandbox on, local off, probe not in force) but no refusal under the user layer alone was recorded here; that refusal is operator-attested"
+      },
+      "managedLayer": {
+        "classification": "not found",
+        "reason": "no managed settings file at the checked Claude Code and Codex system locations"
+      },
+      "managedOverride": {
+        "classification": "untested",
+        "reason": "creating a managed layer would mutate configuration"
+      },
+      "copilotManagedLocation": {
+        "classification": "untested",
+        "reason": "no managed location for Copilot is documented locally"
+      },
+      "copilotPersistedDefault": "observed",
+      "copilotUserVersusProject": {
+        "classification": "untested",
+        "reason": "only the persisted-effort default was observed"
+      }
+    }
+  },
+  "operatorNotes": [
+    {
+      "classification": "operator-attested",
+      "note": "The operator had to create .claude/settings.local.json for this instance: the user-level Claude Code settings enable the sandbox and the project-local file turns it off here. The operator reports that sandbox and lock-acquisition checks failed before the change.",
+      "observed": "file present and ignored by Git (.gitignore line 18); modification time 2026-10-14T09:00:08Z, before the 09:00:47Z dispatch; top-level keys permissions.allow (14 rules) and sandbox (enabled false, autoAllowBashIfSandboxed false); user settings sandbox.enabled true"
+    }
+  ]
+}
