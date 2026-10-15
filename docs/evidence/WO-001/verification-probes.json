@@ -1,0 +1,212 @@
+{
+  "workOrder": "WO-001",
+  "report": "docs/verifications/WO-001/VER-001.md",
+  "source": "independent bounded executions during resume: verify",
+  "probes": [
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-001/verification-probes.mjs records",
+      "exitCode": 0,
+      "startedAt": "2026-10-14T09:37:09.019Z",
+      "finishedAt": "2026-10-14T09:37:09.091Z",
+      "durationMs": 72,
+      "observations": [
+        {
+          "mode": "records",
+          "classifications": 66,
+          "checklistGroups": 8,
+          "auditQuestions": 4
+        },
+        {
+          "harness": "claude-code",
+          "version": "2.1.299",
+          "effort": "xhigh",
+          "variant": "normal",
+          "accepted": true,
+          "advisories": 0
+        },
+        {
+          "harness": "codex-cli",
+          "version": "0.162.1",
+          "effort": "max",
+          "variant": "normal",
+          "accepted": true,
+          "advisories": 0
+        },
+        {
+          "harness": "copilot-cli",
+          "version": "1.0.94",
+          "effort": "xhigh",
+          "variant": "normal",
+          "accepted": true,
+          "advisories": 0
+        },
+        {
+          "harness": "codex-cli",
+          "version": "9.9.9",
+          "effort": "max",
+          "variant": "normal",
+          "accepted": true,
+          "advisories": 1
+        },
+        {
+          "harness": "codex-cli",
+          "version": "0.162.1",
+          "effort": "unobserved-effort",
+          "variant": "normal",
+          "accepted": true,
+          "advisories": 1
+        },
+        {
+          "harness": "codex-cli",
+          "version": "0.162.1",
+          "effort": "max",
+          "variant": "duplicate",
+          "accepted": false,
+          "advisories": 0
+        },
+        {
+          "harness": "codex-cli",
+          "version": "0.162.1",
+          "effort": "max",
+          "variant": "missing",
+          "accepted": false,
+          "advisories": 0
+        }
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-001/verification-probes.mjs installed",
+      "exitCode": 0,
+      "startedAt": "2026-10-14T09:37:09.258Z",
+      "finishedAt": "2026-10-14T09:37:10.157Z",
+      "durationMs": 899,
+      "observations": [
+        {
+          "mode": "installed",
+          "toolchain": {
+            "node": "v26.9.0",
+            "npm": "11.19.1",
+            "git": "2.55.0"
+          }
+        },
+        {
+          "harness": "claude-code",
+          "version": "2.1.299",
+          "probe": {
+            "versionChannel": "PATH",
+            "versionExitCode": 0,
+            "helpExitCode": 0,
+            "effortSelectorPresent": true,
+            "configSelectorPresent": false,
+            "readbackChannel": "CLAUDE_EFFORT",
+            "readbackChannelPresent": false
+          }
+        },
+        {
+          "harness": "codex-cli",
+          "version": "0.162.1",
+          "probe": {
+            "versionChannel": "PATH",
+            "versionExitCode": 0,
+            "helpExitCode": 0,
+            "effortSelectorPresent": false,
+            "configSelectorPresent": true,
+            "readbackChannel": "unavailable",
+            "readbackChannelPresent": false
+          }
+        },
+        {
+          "harness": "copilot-cli",
+          "version": "1.0.94",
+          "probe": {
+            "versionChannel": "PATH",
+            "versionExitCode": 0,
+            "helpExitCode": 0,
+            "effortSelectorPresent": false,
+            "configSelectorPresent": false,
+            "readbackChannel": "unavailable",
+            "readbackChannelPresent": false
+          }
+        },
+        {
+          "installedHelpFormatsMatch": true,
+          "copilotEffortValuesMatch": true
+        }
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-001/verification-probes.mjs terms-controls",
+      "exitCode": 0,
+      "startedAt": "2026-10-14T09:37:10.319Z",
+      "finishedAt": "2026-10-14T09:37:10.385Z",
+      "durationMs": 66,
+      "observations": [
+        {
+          "mode": "terms-controls",
+          "missing": "unavailable",
+          "empty": "refused",
+          "clean": "present",
+          "match": "refused by file and line; term omitted"
+        }
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-001/verification-probes.mjs behavior",
+      "exitCode": 0,
+      "startedAt": "2026-10-14T09:37:10.547Z",
+      "finishedAt": "2026-10-14T09:37:10.951Z",
+      "durationMs": 404,
+      "observations": [
+        {
+          "mode": "behavior",
+          "linkedGitFile": true,
+          "duplicateMain": "refused",
+          "remainingWorktrees": 1,
+          "acquisitions": [
+            "acquired",
+            "acquired",
+            "acquired-after-callback-error"
+          ],
+          "nonPrivateRoot": "refused"
+        }
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-001/verification-probes.mjs followups",
+      "exitCode": 0,
+      "startedAt": "2026-10-14T09:37:11.110Z",
+      "finishedAt": "2026-10-14T09:37:11.213Z",
+      "durationMs": 103,
+      "observations": [
+        {
+          "mode": "followups",
+          "unshippedFixture": true,
+          "linkInventoryMatches": true,
+          "relativeTargets": 57,
+          "missing": 51,
+          "missingUnlisted": 46,
+          "seededOrderBranch": "main",
+          "branchRefusalPresent": true
+        }
+      ]
+    },
+    {
+      "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-001/verification-probes.mjs gate",
+      "exitCode": 0,
+      "startedAt": "2026-10-14T09:37:11.376Z",
+      "finishedAt": "2026-10-14T09:37:11.555Z",
+      "durationMs": 179,
+      "observations": [
+        {
+          "mode": "gate",
+          "codeIdentity": "5bc7b639ad62c57ceadc669074743f2fbc715c3eb7b3c22e7868f13db45345c2",
+          "coveringPass": true,
+          "recordedAt": "2026-10-14T09:23:52.633Z",
+          "durationMs": 42080,
+          "suiteCount": 15,
+          "identityUnchanged": true
+        }
+      ]
+    }
+  ]
+}
