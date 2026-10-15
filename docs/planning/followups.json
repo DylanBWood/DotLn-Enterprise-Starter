@@ -1,4 +1,230 @@
 {
   "schemaVersion": 1,
-  "entries": []
+  "entries": [
+    {
+      "id": "FUP-890bb31b940f69c3",
+      "key": "decision:docs/evidence/WO-001/decisions.md#wo-001-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4b7a2d083d94a83d2cf884f9aa0beaa8d49b6fa5bfcf4f90a86f5a87d331c547",
+          "ref": "docs/evidence/WO-001/decisions.md#wo-001-d004-shipped-host-guard-test-imports-an-unshipped-fixture",
+          "title": "WO-001-D004: Upstream kit export: ship corpus/harness/bounded-findings.mjs (and the corpus/harness/wo102- fixtures the runner-fixtures suite lists) with scripts/test-host-guard.test.mjs, or stop expor",
+          "summary": "{ \"id\": \"WO-001-D004\", \"date\": \"2026-10-14\", \"dispatch\": \"operator message during resume: next: 'retry the sandbox / lock acquisition tests as the sandbox should be off'\", \"decision\": \"Record the packaging defect and defer its fix to the upstream kit; exercise the shipped lock directly instead.\", \"evidence\": [ \"node --test --test-name-pattern=\\\"WO-185 kernel locks\\\" scripts/test-host-guard.test.mjs: ERR_MODULE_NOT_FOUND corpus/harness/bounded-findings.mjs, tests 1, fail 1\", \"scripts/test-runner.mjs line 999: runner-fixtures is kit core-only; line 291 lists corpus/harness/bounded-findings.mjs among its sources\", \"corpus/harness/ in this export holds only id-corpus-lib.mjs, wo101-id-corpus.tes",
+          "missing": false
+        },
+        {
+          "hash": "b1fb1c2650b8fb3b19f511e73c946d4524a7ef50f20b48fc53a6ed8b18c46f94",
+          "ref": "docs/evidence/WO-001/decisions.md#wo-001-d004-shipped-host-guard-test-imports-an-unshipped-fixture",
+          "title": "WO-001-D004: Upstream kit export: ship corpus/harness/bounded-findings.mjs (and the corpus/harness/wo102- fixtures the runner-fixtures suite lists) with scripts/test-host-guard.test.mjs, or stop expor",
+          "summary": "{ \"id\": \"WO-001-D004\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: next; the operator asked to retry the sandbox and lock acquisition checks now that the sandbox is off\", \"decision\": \"Record the packaging defect and defer its fix to the upstream kit; exercise the shipped lock directly instead.\", \"evidence\": [ \"node --test --test-name-pattern=\\\"WO-185 kernel locks\\\" scripts/test-host-guard.test.mjs: ERR_MODULE_NOT_FOUND corpus/harness/bounded-findings.mjs, tests 1, fail 1\", \"scripts/test-runner.mjs line 999: runner-fixtures is kit core-only; line 291 lists corpus/harness/bounded-findings.mjs among its sources\", \"corpus/harness/ in this export holds only id-corpus-lib.mjs, wo101-id-corpus.test.",
+          "missing": false
+        },
+        {
+          "hash": "bc1f93b3f997bf151ee53f51e330f217d2e144d4c1759b8971ba356946b0630f",
+          "ref": "docs/evidence/WO-001/decisions.md#wo-001-d004-shipped-host-guard-test-imports-an-unshipped-fixture",
+          "title": "WO-001-D004: Upstream kit export: ship every source scripts/test-runner.mjs lists for the runner-fixtures suite (corpus/harness/bounded-findings.mjs among them) with scripts/test-host-guard.test.mjs, ",
+          "summary": "{ \"id\": \"WO-001-D004\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: next; the operator asked to retry the sandbox and lock acquisition checks now that the sandbox is off\", \"decision\": \"Record the packaging defect and defer its fix to the upstream kit; exercise the shipped lock directly instead. The operator-directed retry ran this core-only test file once, which crosses the order non-goal of running core suites in this instance; it failed at import and no core suite ran again.\", \"evidence\": [ \"Kit v0.81.0 (UPSTREAM.md tag): node --test --test-name-pattern=\\\"WO-185 kernel locks\\\" scripts/test-host-guard.test.mjs: ERR_MODULE_NOT_FOUND corpus/harness/bounded-findings.mjs, tests 1, fail 1\", \"Kit v",
+          "missing": false
+        },
+        {
+          "hash": "8144439585267531e10d54505b7473aa30e22bd92cda5c5decadd040ca75faae",
+          "ref": "docs/evidence/WO-001/decisions.md#wo-001-d004-shipped-host-guard-test-imports-an-unshipped-fixture",
+          "title": "WO-001-D004: Upstream kit export: ship every source scripts/test-runner.mjs lists for the runner-fixtures suite (corpus/harness/bounded-findings.mjs among them) with scripts/test-host-guard.test.mjs, ",
+          "summary": "{ \"id\": \"WO-001-D004\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: next; the operator asked to retry the sandbox and lock acquisition checks now that the sandbox is off\", \"decision\": \"Record the packaging defect and defer its fix to the upstream kit; exercise the shipped lock directly instead. The operator-directed retry ran this core-only test file once, which crosses the order's non-goal of running core suites in this instance; it failed at import and no core suite ran again.\", \"evidence\": [ \"Kit v0.81.0 (UPSTREAM.md tag): node --test --test-name-pattern=\\\"WO-185 kernel locks\\\" scripts/test-host-guard.test.mjs: ERR_MODULE_NOT_FOUND corpus/harness/bounded-findings.mjs, tests 1, fail 1\", \"Kit",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 4,
+          "status": "settled",
+          "reason": "Settled by the v0.82.0 starter: the export no longer ships scripts/test-host-guard.test.mjs (ls: no such file), so no shipped test imports an absent fixture; corpus/harness/ still holds only the WO-101 fixtures. Observed by the WO-001 final review on 2026-10-15 (WO-001-D013).",
+          "reopenWhen": "A later kit export ships a core-only test file without the sources scripts/test-runner.mjs lists for its suite.",
+          "targets": [],
+          "at": "2026-10-15T14:27:38.331Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a922520a7e074954",
+      "key": "decision:docs/evidence/WO-001/decisions.md#wo-001-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "101d70ee49fe990bfe0fcc9bc52391323ce7db88629ddad968928e0f42776e4a",
+          "ref": "docs/evidence/WO-001/decisions.md#wo-001-d005-discover-misses-codex-and-copilot-effort-selectors",
+          "title": "WO-001-D005: Upstream kit: teach scripts/discover.mjs probeHarness to recognize Copilot's --reasoning-effort (with its value list from the help) and Codex's -c model_reasoning_effort selector, so a la",
+          "summary": "{ \"id\": \"WO-001-D005\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: next (WO-001 deliverable: effortReadbackProbe selectors)\", \"decision\": \"Record Copilot's selector as observed from copilot --help and Codex's as documented locally from scripts/probe-codex-effort.mjs, beside discover's version rows, and defer the probe fix to the upstream kit.\", \"evidence\": [ \"npm run discover -- harness copilot-cli: effortSelectorPresent false; copilot --help: --reasoning-effort [none, minimal, low, medium, high, xhigh, max]\", \"npm run discover -- harness codex-cli: effortSelectorPresent false, configSelectorPresent true\", \"scripts/discover.mjs: effortSelectorPresent is /--effort\\\\b/ on the help text\" ], \"rej",
+          "missing": false
+        },
+        {
+          "hash": "9406fc08e2a2826f6ee8ba1c345e410334e4d1703a22d24deb63592af6fb66f4",
+          "ref": "docs/evidence/WO-001/decisions.md#wo-001-d005-discover-misses-codex-and-copilot-effort-selectors",
+          "title": "WO-001-D005: Upstream kit: teach scripts/discover.mjs probeHarness to recognize Copilot --reasoning-effort (with its value list from the help) and Codex -c model_reasoning_effort selector, so a launch",
+          "summary": "{ \"id\": \"WO-001-D005\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: next (WO-001 deliverable: effortReadbackProbe selectors)\", \"decision\": \"Record Copilot's selector as observed from copilot --help and Codex's as documented locally from scripts/probe-codex-effort.mjs, beside discover's version rows, and defer the probe fix to the upstream kit.\", \"evidence\": [ \"Kit v0.81.0 (UPSTREAM.md tag): npm run discover -- harness copilot-cli: effortSelectorPresent false; copilot --help: --reasoning-effort [none, minimal, low, medium, high, xhigh, max]\", \"Kit v0.81.0 (UPSTREAM.md tag): npm run discover -- harness codex-cli: effortSelectorPresent false, configSelectorPresent true\", \"Kit v0.81.0 (UPSTREAM.md",
+          "missing": false
+        },
+        {
+          "hash": "6b953d7fee629dce45bbc07f94e1cf3ba08de1ba13b198cbe5a2eedcd5e3410a",
+          "ref": "docs/evidence/WO-001/decisions.md#wo-001-d005-discover-misses-codex-and-copilot-effort-selectors",
+          "title": "WO-001-D005: Upstream kit: teach scripts/discover.mjs probeHarness to recognize Copilot's --reasoning-effort (with its value list from the help) and Codex's -c model_reasoning_effort selector, so a la",
+          "summary": "{ \"id\": \"WO-001-D005\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: next (WO-001 deliverable: effortReadbackProbe selectors)\", \"decision\": \"Record Copilot's selector as observed from copilot --help and Codex's as documented locally from scripts/probe-codex-effort.mjs, beside discover's version rows, and defer the probe fix to the upstream kit.\", \"evidence\": [ \"Kit v0.81.0 (UPSTREAM.md tag): npm run discover -- harness copilot-cli: effortSelectorPresent false; copilot --help: --reasoning-effort [none, minimal, low, medium, high, xhigh, max]\", \"Kit v0.81.0 (UPSTREAM.md tag): npm run discover -- harness codex-cli: effortSelectorPresent false, configSelectorPresent true\", \"Kit v0.81.0 (UPSTREAM.md",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "Settled by the v0.82.0 starter: scripts/discover.mjs probes Copilot with --reasoning-effort (line 39) and records Codex's -c model_reasoning_effort=<value> control (line 47). The hand-recorded selector rows in docs/discovery/environment.json remain the dated v0.81.0 record (WO-001-D013).",
+          "reopenWhen": "A rerun of npm run discover -- harness <name> in a later order reports effortSelectorPresent false for Copilot or Codex, or disagrees with the hand-recorded rows.",
+          "targets": [],
+          "at": "2026-10-15T14:27:38.333Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0e05466fbfbe8548",
+      "key": "decision:docs/evidence/WO-001/decisions.md#wo-001-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "451ab147487aff86f644b2f68048f843e27d39451730407441df68ad69228782",
+          "ref": "docs/evidence/WO-001/decisions.md#wo-001-d006-exported-execution-guide-links-to-paths-the-launchpad-lacks",
+          "title": "WO-001-D006: Upstream kit export: rewrite relative links in exported product documents that resolve to core-only evidence, planning or work-order paths into pinned upstream pointers (or list them in U",
+          "summary": "{ \"id\": \"WO-001-D006\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: next (reading docs/product/07-execution-guide.md, Model-specific notes, for the Codex effort contract)\", \"decision\": \"Record the dangling links and defer their repair to the upstream kit export; this order cites the root AI-HARNESS-SECURITY.md template instead.\", \"evidence\": [ \"Relative link targets in docs/product/07-execution-guide.md resolved from docs/product: 57 distinct, 51 missing, 46 missing and absent from UPSTREAM.md pointers\", \"docs/AI-HARNESS-SECURITY.md absent; AI-HARNESS-SECURITY.md present at the repository root as a sanitized template\" ], \"rejected\": [ \"Rewrite the links here: docs/product/ is kit-owned and out",
+          "missing": false
+        },
+        {
+          "hash": "a5f1f681956962c4be94abfa51abfd0c32e61090c49961d07a613b169ae4be40",
+          "ref": "docs/evidence/WO-001/decisions.md#wo-001-d006-exported-execution-guide-links-to-paths-the-launchpad-lacks",
+          "title": "WO-001-D006: Upstream kit export: rewrite relative links in exported product documents that resolve to core-only evidence, planning or work-order paths into pinned upstream pointers (or list them in U",
+          "summary": "{ \"id\": \"WO-001-D006\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: next (reading docs/product/07-execution-guide.md, Model-specific notes, for the Codex effort contract)\", \"decision\": \"Record the dangling links with a reproducible inventory and defer their repair to the upstream kit export.\", \"evidence\": [ \"Kit v0.81.0 (UPSTREAM.md tag): docs/evidence/WO-001/execution-guide-links.txt (generated by docs/evidence/WO-001/execution-guide-links.mjs): 57 distinct relative targets, 51 missing, 46 missing and absent from UPSTREAM.md pointers\", \"Kit v0.81.0 (UPSTREAM.md tag): docs/AI-HARNESS-SECURITY.md absent; AI-HARNESS-SECURITY.md present at the repository root as a sanitized template\" ], \"rejected",
+          "missing": false
+        },
+        {
+          "hash": "fb3fea824de8cfd34c1b496340bc07fa79f04f13468d8f58d7332c2a8453c6a5",
+          "ref": "docs/evidence/WO-001/decisions.md#wo-001-d006-exported-execution-guide-links-to-paths-the-launchpad-lacks",
+          "title": "WO-001-D006: Upstream kit export: rewrite relative links in exported product documents that resolve to core-only evidence, planning or work-order paths into pinned upstream pointers (or list them in U",
+          "summary": "{ \"id\": \"WO-001-D006\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: next (reading docs/product/07-execution-guide.md, Model-specific notes, for the Codex effort contract)\", \"decision\": \"Record the dangling links with a reproducible inventory and defer their repair to the upstream kit export.\", \"evidence\": [ \"Kit v0.81.0 (UPSTREAM.md tag): docs/evidence/WO-001/execution-guide-links.txt (generated by docs/evidence/WO-001/execution-guide-links.mjs): 57 distinct relative targets, 51 missing, 46 missing and absent from UPSTREAM.md pointers\", \"Kit v0.81.0 (UPSTREAM.md tag): docs/AI-HARNESS-SECURITY.md absent; AI-HARNESS-SECURITY.md present at the repository root as a sanitized template\" ], \"rejected",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "Settled by the v0.82.0 starter: regenerating the inventory with node docs/evidence/WO-001/execution-guide-links.mjs prints Distinct targets 57; missing 50; missing and unlisted 0, and the harness-security link resolves to the root AI-HARNESS-SECURITY.md; UPSTREAM.md lists the core-only targets. The filed inventory stays the v0.81.0 record (WO-001-D013).",
+          "reopenWhen": "A kit update reintroduces a relative link in an exported product document that resolves to a core-only path absent from UPSTREAM.md.",
+          "targets": [],
+          "at": "2026-10-15T14:27:38.334Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2bbb348a91f7ea40",
+      "key": "decision:docs/evidence/WO-001/decisions.md#wo-001-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9236d547c7c3644b969b6deac4325e85a049f9b043877e245be1cbf5db474719",
+          "ref": "docs/evidence/WO-001/decisions.md#wo-001-d007-release-preparation-does-not-apply-to-the-seeded-order-on-main",
+          "title": "WO-001-D007: Upstream kit: state in the executor procedure whether release prepare --local applies to the seeded WO-001 that README.md activates on main, or let release prepare run on main for an orde",
+          "summary": "{ \"id\": \"WO-001-D007\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: next (executor procedure step 4)\", \"decision\": \"Record the refusal and continue to the document and product gates without a release preparation; the order's diff touches only docs/discovery/, docs/evidence/WO-001/ and generated indexes.\", \"evidence\": [ \"npm run release -- prepare --local: Error: release prepare requires the selected wo-NNN worktree; nothing was written\", \"scripts/lib/release-preparation.mjs line 113: the current branch must equal the order id in lower case\", \"README.md step 6 activates WO-001 on main; git branch --show-current: main\" ], \"rejected\": [ \"Start a wo-001 worktree to satisfy the step: the order was ",
+          "missing": false
+        },
+        {
+          "hash": "f6762237cfdac76736683a640348197a137ffb99a562d6078b5a3079ca2e4bf5",
+          "ref": "docs/evidence/WO-001/decisions.md#wo-001-d007-release-preparation-does-not-apply-to-the-seeded-order-on-main",
+          "title": "WO-001-D007: Upstream kit: give the seeded WO-001 that README.md activates on main a documented path through release prepare --local and final review (which publishes only a wo-NNN branch through work",
+          "summary": "{ \"id\": \"WO-001-D007\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: next (executor procedure step 4)\", \"decision\": \"Record the refusal and continue to the document and product gates without a release preparation; the order's diff touches only docs/discovery/, docs/evidence/WO-001/ and generated indexes.\", \"evidence\": [ \"npm run release -- prepare --local: Error: release prepare requires the selected wo-NNN worktree; nothing was written\", \"scripts/lib/release-preparation.mjs line 113: the current branch must equal the order id in lower case\", \"README.md step 6 activates WO-001 on main; git branch --show-current: main\", \"scripts/worktree.mjs publish looks up a worktree on branch wo-001 and other",
+          "missing": false
+        },
+        {
+          "hash": "61871e1d57afdb359b972d5b53295ac871d9f0b20afcc465dbbde504580245ac",
+          "ref": "docs/evidence/WO-001/decisions.md#wo-001-d007-release-preparation-does-not-apply-to-the-seeded-order-on-main",
+          "title": "WO-001-D007: Upstream kit: give the seeded WO-001 that README.md activates on main a documented path through release prepare --local and final review (which publishes only a wo-NNN branch through work",
+          "summary": "{ \"id\": \"WO-001-D007\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: next (executor procedure step 4)\", \"decision\": \"Record the refusal and continue to the document and product gates without a release preparation; the order diff touches only docs/discovery/, docs/evidence/WO-001/ and generated indexes (WO-001-D010).\", \"evidence\": [ \"npm run release -- prepare --local: Error: release prepare requires the selected wo-NNN worktree; nothing was written\", \"Kit v0.81.0 (UPSTREAM.md tag): scripts/lib/release-preparation.mjs line 113: the current branch must equal the order id in lower case\", \"Kit v0.81.0 (UPSTREAM.md tag): README.md step 6 activates WO-001 on main; git branch --show-current: main\", \"K",
+          "missing": false
+        },
+        {
+          "hash": "f9d8331989bba3b0fa583ba7264ae3bd5607de7e32cb0dbafa305cb6a1b953e1",
+          "ref": "docs/evidence/WO-001/decisions.md#wo-001-d007-release-preparation-does-not-apply-to-the-seeded-order-on-main",
+          "title": "WO-001-D007: Upstream kit: give the seeded WO-001 that README.md activates on main a documented path through release prepare --local and final review (which publishes only a wo-NNN branch through work",
+          "summary": "{ \"id\": \"WO-001-D007\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: next (executor procedure step 4)\", \"decision\": \"Record the refusal and continue to the document and product gates without a release preparation; the order's diff touches only docs/discovery/, docs/evidence/WO-001/ and generated indexes (WO-001-D010).\", \"evidence\": [ \"npm run release -- prepare --local: Error: release prepare requires the selected wo-NNN worktree; nothing was written\", \"Kit v0.81.0 (UPSTREAM.md tag): scripts/lib/release-preparation.mjs line 113: the current branch must equal the order id in lower case\", \"Kit v0.81.0 (UPSTREAM.md tag): README.md step 6 activates WO-001 on main; git branch --show-current: main\", ",
+          "missing": false
+        },
+        {
+          "hash": "584b20b30ccc43536358f4e76627b21962bb961e1d16f00312ccaa81f1aa4d35",
+          "ref": "docs/evidence/WO-001/decisions.md#wo-001-d007-release-preparation-does-not-apply-to-the-seeded-order-on-main",
+          "title": "WO-001-D007: Upstream kit: give the seeded WO-001 that README.md activates on main a documented path through release prepare --local and final review (which publishes only a wo-NNN branch through…",
+          "summary": "{ \"id\": \"WO-001-D007\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: next (executor procedure step 4)\", \"decision\": \"Record the refusal and continue to the document and product gates without a release preparation; the order's diff touches only docs/discovery/, docs/evidence/WO-001/ and generated indexes (WO-001-D010).\", \"evidence\": [ \"npm run release -- prepare --local: Error: release prepare requires the selected wo-NNN worktree; nothing was written\", \"Kit v0.81.0 (UPSTREAM.md tag): scripts/lib/release-preparation.mjs line 113: the current branch must equal the order id in lower case\", \"Kit v0.81.0 (UPSTREAM.md tag): README.md step 6 activates WO-001 on main; git branch --show-current: main\", ",
+          "missing": false
+        },
+        {
+          "hash": "36276a9c0d73fa91aab92ff0b4b93a59683fb091439afbc79613419499077214",
+          "ref": "docs/evidence/WO-001/decisions.md#wo-001-d007-release-preparation-does-not-apply-to-the-seeded-order-on-main",
+          "title": "WO-001-D007: Upstream kit: give the seeded WO-001 that README.md activates on main a documented path through release prepare --local and final review (which publishes only a wo-NNN branch through…",
+          "summary": "{ \"id\": \"WO-001-D007\", \"date\": \"2026-10-14\", \"dispatch\": \"resume: next (executor procedure step 4)\", \"decision\": \"Record the refusal and continue to the document and product gates without a release preparation; the order's diff touches only docs/discovery/, docs/evidence/WO-001/ and generated indexes (WO-001-D010).\", \"evidence\": [ \"npm run release -- prepare --local: Error: release prepare requires the selected wo-NNN worktree; nothing was written\", \"Kit v0.81.0 (UPSTREAM.md tag): scripts/lib/release-preparation.mjs line 113: the current branch must equal the order id in lower case\", \"Kit v0.81.0 (UPSTREAM.md tag): README.md step 6 activates WO-001 on main; git branch --show-current: main\", ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 5,
+          "status": "settled",
+          "reason": "Settled by the v0.82.0 starter: README.md step 6 now starts WO-001 in its own wo-001 worktree and the recovery section carries an activated main order into wo-001; on wo-001, npm run release -- prepare --local reported WO-001 target v0.1.0 remains current and this final review publishes the wo-001 branch (WO-001-D011, WO-001-D013).",
+          "reopenWhen": "A starter again activates its seeded first order on main without a documented route into a wo-NNN worktree for release preparation and final review.",
+          "targets": [],
+          "at": "2026-10-15T14:27:38.335Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4f19a91d71d95bc9",
+      "key": "decision:docs/evidence/WO-001/decisions.md#wo-001-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f27fb82cdeaee4aeb5a5898c6a47623cbaefadb30b1e5b84fbd41175f164d6e4",
+          "ref": "docs/evidence/WO-001/decisions.md#wo-001-d013-complete-the-integration-record-after-the-starter-update",
+          "title": "WO-001-D013: Upstream kit: make worktree integrate's regenerate step skip the runtime build where the export carries compiled runtime without package sources (no tsconfig.json) and skip publication…",
+          "summary": "{ \"id\": \"WO-001-D013\", \"date\": \"2026-10-15\", \"dispatch\": \"resume: final review; worktree integrate WO-001\", \"decision\": \"Integration record completed by the reviewer: main and wo-001 were the same commit, so the merge changed nothing and both bases, the checkpoint and the named stash are retained. Carried-forward claims judged against the integrated base: the v0.82.0 starter update satisfied the conditions of WO-001-D004, WO-001-D005, WO-001-D006 and WO-001-D007, so their follow-up rows are disposed as settled in docs/planning/followups.json; D001 to D003 and D008 to D010 stand unchanged. No component-version collision exists: no release tag exists yet and release preparation keeps v0.1.0. C",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a36dae4a6766b9ef",
+      "key": "decision:docs/evidence/WO-001/decisions.md#wo-001-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "db53dfe43f4f3872280f85088fae0effaf7e2f9e4e99ac43f100eb28900f51f4",
+          "ref": "docs/evidence/WO-001/decisions.md#wo-001-d014-record-the-dispatch-gap-met-when-the-phrase-arrived-with-the-operators-direction",
+          "title": "WO-001-D014: Upstream kit: let the prompt hook dispatch a resume phrase that leads a longer operator message (an operator's scope expansion naturally follows the phrase), and let a lifecycle dispatch…",
+          "summary": "{ \"id\": \"WO-001-D014\", \"date\": \"2026-10-15\", \"dispatch\": \"resume: final review (session startup; the operator's first message carried the phrase and its scope expansion as one pasted prompt)\", \"decision\": \"Record the dispatch gap met at startup and continue. The prompt hook matches a whole resume phrase, so the operator's pasted message beginning resume: final review recorded no dispatch and bound no role; the session recorded the dispatch itself with npm run resume -- final-review --work-order WO-001, which is legal but binds no session role, leaving usage counters, the scratch grant and output-read receipts unavailable until the operator typed the bare phrase, which bound the role and repl",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2a5dc809710f399e",
+      "key": "decision:docs/evidence/WO-001/decisions.md#wo-001-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c94a317b4ad5e95a0a2257c9c01afb29a1bf72fc518f2592138cbe7acf1ce8e6",
+          "ref": "docs/evidence/WO-001/decisions.md#wo-001-d015-write-the-publication-surfaces-under-the-default-balanced-profile",
+          "title": "WO-001-D015: Upstream kit: make npm run reader -- profile <surface> and the publish and release-prepare guidance print the balanced default, saying that no profile file is declared, instead of…",
+          "summary": "{ \"id\": \"WO-001-D015\", \"date\": \"2026-10-15\", \"dispatch\": \"resume: final review (reading the reader profile for each publication surface before writing PR.md and RELEASE-NOTES.md)\", \"decision\": \"Write the PR title, PR body, commit subjects and release notes under the balanced profile the publication contract names as the default, because this instance declares no docs/control/reader-profiles.json and the reader command cannot print guidance without it.\", \"evidence\": [ \"npm run reader -- profile prTitle (and prBody, commitSubject, releaseNotes, releasePage): ENOENT docs/control/reader-profiles.json; npm run release -- prepare --local ends with Reader profile (releaseNotes) unavailable: ENOENT.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    }
+  ]
 }
