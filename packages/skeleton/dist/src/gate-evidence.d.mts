@@ -2,6 +2,11 @@ import { lstatSync, readlinkSync, realpathSync } from "node:fs";
 /** Shared with the suite fingerprint: ignored installation bytes are inputs.
  * @param {string} root */
 export declare function gateInstalledInputRoots(root: string): string[];
+/** A consumer pass also binds the installed runtime that Git does not track.
+ * Core source evidence keeps its existing identity. Invalid aliases refuse
+ * instead of attesting bytes outside the selected installation.
+ * @param {string} root */
+export declare function gateInstanceInputDigest(root: string): string | undefined;
 /** Walk before normalizing parents: the kernel follows a directory symlink
  * before applying `..`, and follows a dangling final link when creating a file.
  * Native realpath retains on-disk case for every existing component.
@@ -112,6 +117,7 @@ export type GateCheck = GateDiagnostic & {
     checkId: string;
     treeHash: string;
     codeIdentity?: string;
+    instanceInputDigest?: string;
     subject: string;
     durationMs: number;
     evidenceRef: string;
@@ -171,6 +177,14 @@ export declare const partialGateCheck: (row: GateCheck & {
     partial?: unknown;
     excludedSuites?: unknown;
 }) => boolean;
+/** Why a recorded npm test row cannot stand for the current installed runtime:
+ * "missing" when the row records no digest (its gate ran where none was
+ * computed), "different" when it records another one; null when they agree or
+ * none is computed here.
+ * @param {{instanceInputDigest?: string}} row @param {string|undefined} current */
+export declare const instanceDigestMismatch: (row: {
+    instanceInputDigest?: string;
+}, current: string | undefined) => "different" | "missing" | null;
 /** A failed attempt does not erase a later or earlier successful run at identical bytes.
  * @param {string} root @param {string} checkId @param {string} treeHash
  */
