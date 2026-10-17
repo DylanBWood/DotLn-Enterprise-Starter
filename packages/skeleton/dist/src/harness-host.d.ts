@@ -66,6 +66,14 @@ export interface HarnessSession {
         workOrder: string;
         recordedAt: string;
     };
+    pendingCliDispatch?: {
+        toolUseId: string;
+        command: string;
+        action: string;
+        workOrder: string;
+        eventCount: number;
+        eventPrefixHash: string;
+    };
 }
 interface HarnessByteRead {
     readonly path: string;
@@ -106,6 +114,8 @@ interface ControlView {
     readonly phase: string;
     readonly latestVerdict: string | null;
     readonly legalNextActions?: readonly string[];
+    readonly latestVerification?: string | null;
+    readonly finalReview?: string | null;
 }
 /** The harness process that owns a session's reservation, as the hook observed it. */
 export interface HarnessProcess {
@@ -143,7 +153,7 @@ export type HarnessWriterView = {
 };
 export declare const harnessStateDirectory: (root: string) => string;
 export declare function harnessRoot(cwd: string): string;
-export declare function harnessControl(root: string): ControlView;
+export declare function harnessControl(root: string, workOrder?: string): ControlView;
 /**
  * The dispatch is judged by the writer unit the installed writer hook
  * carries. The host compiles that unit from the loadout inventory it ships

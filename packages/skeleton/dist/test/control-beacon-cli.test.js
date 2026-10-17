@@ -42,6 +42,7 @@ test("WO-021 agent constellation CLI persists permission/refusal and one metadat
     for (const name of [
         "gate-deadlines.mjs",
         "gate-evidence.mjs",
+        "runtime-inputs.mjs",
         "writer-teardown.mjs",
     ])
         cpSync(join(repository, "packages/skeleton/src", name), join(root, "packages/skeleton/src", name));

@@ -1,6 +1,33 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { compileFeedbackUnits, compileLoadout, lowerToHarness, mergeHarnessFragments, requireCompiled, seiriEnvironment, seiriLoadout, semanticHash, verifyHarnessBundle, assertOutsideWriteGrants, outsideWriteEffect, projectAuthorityInspection, } from "../src/index.js";
+import { compileFeedbackUnits, compileLoadout, lowerToHarness, mergeHarnessFragments, requireCompiled, seiriEnvironment, seiriLoadout, semanticHash, verifyHarnessBundle, assertOutsideWriteGrants, outsideWriteEffect, harnessPromptIntent, projectAuthorityInspection, } from "../src/index.js";
+test("leading resume dispatch keeps following direction without matching quoted or continued phrases", () => {
+    for (const phrase of [
+        "next",
+        "fix",
+        "verify",
+        "final review",
+        "release close",
+        "status",
+        "times",
+    ])
+        for (const suffix of [
+            "",
+            "\nKeep this direction.",
+            "\r\nKeep this direction.",
+            "; keep this direction.",
+        ])
+            assert.equal(harnessPromptIntent(`  resume: ${phrase}${suffix}  `), `resume: ${phrase}`);
+    for (const prompt of [
+        '"resume: final review"',
+        "Explain resume: next",
+        "resume: next generation",
+        "resume: verify-now",
+        "`resume: fix`",
+        "planning: refute full",
+    ])
+        assert.equal(harnessPromptIntent(prompt), prompt);
+});
 const unit = (trigger) => ({
     unitId: `fixture-${trigger}`,
     version: 1,
