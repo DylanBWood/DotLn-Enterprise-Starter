@@ -4,6 +4,9 @@ import type { AuthorityEnvelope, AuthorityGrant, CompiledProgram } from "./types
  * Observation failures show the message; they never alter a permission decision.
  */
 export declare function showHarnessAdvisory(sessionId: string | undefined, event: string, cause: string, claimMarker: (key: string) => boolean): boolean;
+/** A dispatch may lead a longer message, separated from its direction by a
+ * newline or semicolon. Quoted phrases and word continuations are prose. */
+export declare function harnessPromptIntent(prompt: string | undefined): string;
 export type HarnessEvent = "PreToolUse" | "PostToolUse" | "Stop" | "UserPromptSubmit";
 export interface HarnessObservation {
     readonly available: boolean;
