@@ -5,7 +5,7 @@
 ## Proposed order
 
 - [x] [WO-003] — Register DotLn-Angular in this launchpad · **final-reviewed**
-- [ ] [WO-004] — Scaffold the DotLn-Angular workspace · **queued**
+- [x] [WO-004] — Scaffold the DotLn-Angular workspace · **final-reviewed**
 - [ ] [WO-005] — Foundation libraries: core, utils, i18n, test kits · **queued**
 - [ ] [WO-006] — Component taxonomy, shell layout and the home feature · **queued**
 - [ ] [WO-007] — Events, signal stores, data access and MSW · **queued**
@@ -27,24 +27,6 @@ None.
 
 ## Open
 
-### WO-004
-
-[WO-004 — Scaffold the DotLn-Angular workspace: an Nx integrated monorepo on Angular 22 with the slim &#96;dotln&#96; shell app, zoneless and standalone, Vitest, Playwright, Sass, ESLint and Prettier, tagged module boundaries, CI with the gitmoji title workflow, and the two documentation roots with the generator log, gated by the repository's own declared gate](WO-004-scaffold-dotln-angular-workspace.md)
-
-- State: draft.
-- Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-003: hard (met) — the registration, grant and outward vocabulary this order activates and publishes under live on main.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh; reviewer xhigh.
-- Track: delivery
-- Cost: adds the whole workspace to an empty repository: about 60 files from the Nx generators plus the CI workflows, the two documentation roots and the house configuration; &#96;package-lock.json&#96; is the largest. Removes the generator's &#96;nx-welcome&#96; component and every placeholder the shell does not need. Wall-clock: about 3 to 5 hours of executor work (one &#96;npm ci&#96;, one Playwright browser install and the gate's first runs dominate) plus the fixed cycle; unknown until run. Context bytes: WS-001 (19 KB), the profile (4 KB), this order and the Nx generator help output. Commands added in the target: &#96;npm run lint&#124;test&#124;build&#124;e2e&#124;format:check&#96; mirroring the gate. Tokens: unknown until run. Steps: 14. Re-mints: none; the launchpad's evidence sources are not edited.
-- Authority: [docs/work-orders/WO-004-scaffold-dotln-angular-workspace.md](WO-004-scaffold-dotln-angular-workspace.md)
-
 ### WO-005
 
 [WO-005 — Foundation libraries for DotLn-Angular: &#96;core&#96; (the typed environment with its production file replacement and &#96;.env&#96; primer, injection tokens, paths and canonical routes, the base-path token, provider composition), &#96;utils&#96; (the &#96;R&#96; and &#96;RA&#96; namespaces with composition typing and ported specs), &#96;i18n&#96; (Transloco with the house &#96;t&#96; pipe), the test-kit convention through secondary entry points, and the proxy configuration](WO-005-foundation-libraries.md)
@@ -52,8 +34,8 @@ None.
 - State: draft.
 - Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-004.
-- References: WO-004: hard (unmet) — the scaffolded workspace this order adds libraries to; the base line is set to its merge commit before activation.
+- Dependencies: typed; dependency-ready.
+- References: WO-004: hard (met) — the scaffolded workspace this order adds libraries to; the base line is set to its merge commit before activation.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

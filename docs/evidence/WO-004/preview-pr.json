@@ -1,0 +1,104 @@
+{
+  "capturedAt": "2026-10-18T14:44:00.744Z",
+  "pullRequest": {
+    "baseRefName": "main",
+    "createdAt": "2026-10-18T14:18:51Z",
+    "headRefName": "wo-004",
+    "headRefOid": "65ca0271e4c87179b11c4e1ee001b9be89e1acc1",
+    "isDraft": true,
+    "number": 1,
+    "state": "OPEN",
+    "title": ":sparkles: feat: WIP scaffold the Nx and Angular workspace",
+    "updatedAt": "2026-10-18T14:22:57Z",
+    "url": "https://github.com/DylanBWood/DotLn-Angular/pull/1"
+  },
+  "workflowRuns": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-18T14:19:30Z",
+      "databaseId": 39135472686,
+      "event": "dynamic",
+      "headSha": "65ca0271e4c87179b11c4e1ee001b9be89e1acc1",
+      "name": "Running Copilot Code Review",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-18T14:18:56Z",
+      "databaseId": 39135428377,
+      "event": "pull_request",
+      "headSha": "65ca0271e4c87179b11c4e1ee001b9be89e1acc1",
+      "name": "Pull request title",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-18T14:18:56Z",
+      "databaseId": 39135428411,
+      "event": "pull_request",
+      "headSha": "65ca0271e4c87179b11c4e1ee001b9be89e1acc1",
+      "name": "CI",
+      "status": "completed"
+    }
+  ],
+  "reviews": [
+    {
+      "id": 5563367548,
+      "user": "copilot-pull-request-reviewer[bot]",
+      "userType": "Bot",
+      "state": "COMMENTED",
+      "submittedAt": "2026-10-18T14:22:57Z",
+      "commitId": "65ca0271e4c87179b11c4e1ee001b9be89e1acc1",
+      "htmlUrl": "https://github.com/DylanBWood/DotLn-Angular/pull/1#pullrequestreview-5563367548",
+      "body": "<!-- ccr-overview-v2 -->\n\n### 🟡 Changes recommended\n\nTitle automation retains mismatched emoji prefixes and cannot update fork pull requests under default token restrictions.\n\n<details open>\n<summary><strong>2 open issues</strong></summary>\n\n- <picture><source media=\"(prefers-color-scheme: dark)\" srcset=\"https://github.githubassets.com/static/images/icons/copilot-code-review/medium-v2-dark.svg\"><source media=\"(prefers-color-scheme: light)\" srcset=\"https://github.githubassets.com/static/images/icons/copilot-code-review/medium-v2-light.svg\"><img src=\"https://github.githubassets.com/static/images/icons/copilot-code-review/medium-v2-light.png\" alt=\"Medium severity\" width=\"62\" height=\"18\" align=\"texttop\"></picture> [Use pull_request_target for fork PR title edits](https://github.com/DylanBWood/DotLn-Angular/pull/1#discussion_r4307382142) · New\n- <picture><source media=\"(prefers-color-scheme: dark)\" srcset=\"https://github.githubassets.com/static/images/icons/copilot-code-review/medium-v2-dark.svg\"><source media=\"(prefers-color-scheme: light)\" srcset=\"https://github.githubassets.com/static/images/icons/copilot-code-review/medium-v2-light.svg\"><img src=\"https://github.githubassets.com/static/images/icons/copilot-code-review/medium-v2-light.png\" alt=\"Medium severity\" width=\"62\" height=\"18\" align=\"texttop\"></picture> [Replace stale gitmoji when changing PR title type](https://github.com/DylanBWood/DotLn-Angular/pull/1#discussion_r4307382175) · New\n</details>\n\n<details>\n<summary><strong>What changed in this PR</strong></summary>\n\nScaffolds the Nx workspace with a minimal Angular application and supporting development tooling.\n\n**Changes:**\n- Adds a standalone, zoneless application with unit and browser tests.\n- Configures dependency boundaries, formatting, CI, and title automation.\n- Documents workspace conventions and generator history.\n\n| File | Description |\r\n| ---- | ----------- |\r\n| tsconfig.base.json | Shared strict TypeScript configuration. |\r\n| tools/​pr-title.test.mjs | Title automation tests. |\r\n| tools/​pr-title.mjs | Conventional title validation and decoration. |\r\n| tools/​lint-fixtures/​boundary-violation.spec.ts | Forbidden dependency fixture. |\r\n| tools/​check-lint-fixtures.mjs | Isolated dependency-boundary verification. |\r\n| tools/​board-count.mjs | Reports deferred-defect markers. |\r\n| README.md | Workspace introduction and commands. |\r\n| package.json | Dependencies and development scripts. |\r\n| nx.json | Nx targets, caching, and generator defaults. |\r\n| eslint.config.mjs | Shared lint rules and dependency boundaries. |\r\n| docs/​dev-reference/​workspace/​generator-log.md | Scaffold generation history. |\r\n| docs/​dev-reference/​workspace/​conventions.md | Architecture and development conventions. |\r\n| docs/​dev-reference/​README.md | Developer setup and checks. |\r\n| docs/​ai-reference/​README.md | Coding-session guidance. |\r\n| apps/​dotln/​tsconfig.spec.json | Unit-test TypeScript configuration. |\r\n| apps/​dotln/​tsconfig.json | Angular compiler settings. |\r\n| apps/​dotln/​tsconfig.app.json | Application compilation scope. |\r\n| apps/​dotln/​src/​styles.scss | Minimal global styling. |\r\n| apps/​dotln/​src/​main.ts | Standalone application bootstrap. |\r\n| apps/​dotln/​src/​index.html | Application HTML entry point. |\r\n| apps/​dotln/​src/​app/​home.ts | Placeholder home component. |\r\n| apps/​dotln/​src/​app/​home.spec.ts | Home rendering test. |\r\n| apps/​dotln/​src/​app/​app.ts | Router-outlet shell. |\r\n| apps/​dotln/​src/​app/​app.spec.ts | Shell routing test. |\r\n| apps/​dotln/​src/​app/​app.routes.ts | Home route definition. |\r\n| apps/​dotln/​src/​app/​app.config.ts | Zoneless, router, and HTTP providers. |\r\n| apps/​dotln/​project.json | Application targets and tags. |\r\n| apps/​dotln/​eslint.config.mjs | Angular-specific lint configuration. |\r\n| apps/​dotln-e2e/​tsconfig.json | Browser-test type checking. |\r\n| apps/​dotln-e2e/​src/​example.spec.ts | Home-page browser smoke test. |\r\n| apps/​dotln-e2e/​project.json | Browser-test project metadata. |\r\n| apps/​dotln-e2e/​playwright.config.mts | Chromium and test-server configuration. |\r\n| apps/​dotln-e2e/​eslint.config.mjs | Playwright lint configuration. |\r\n| .vscode/​extensions.json | Recommended editor extensions. |\r\n| .prettierrc | Formatting preferences. |\r\n| .prettierignore | Formatting exclusions. |\r\n| .node-version | Node major-version selection. |\r\n| .gitignore | Generated-output and local-file exclusions. |\r\n| .github/​workflows/​pr-title.yml | Pull-request title automation. |\r\n| .github/​workflows/​ci.yml | Automated workspace checks. |\r\n| .github/​gitmoji-map.json | Conventional-type emoji mapping. |\r\n| .editorconfig | Shared editor formatting settings. |\n</details>\n\n<sub>Review effort: Balanced</sub>"
+    }
+  ],
+  "reviewComments": [
+    {
+      "id": 4307382142,
+      "reviewId": 5563367548,
+      "user": "Copilot",
+      "userType": "Bot",
+      "path": ".github/workflows/pr-title.yml",
+      "line": 4,
+      "side": "RIGHT",
+      "commitId": "65ca0271e4c87179b11c4e1ee001b9be89e1acc1",
+      "createdAt": "2026-10-18T14:22:56Z",
+      "htmlUrl": "https://github.com/DylanBWood/DotLn-Angular/pull/1#discussion_r4307382142",
+      "body": "For fork pull requests under GitHub's default token restrictions, `pull_request` workflows receive a read-only token despite `pull-requests: write`. Decorating a bare title therefore fails at `gh pr edit`. Use `pull_request_target` for this metadata-only workflow, retaining checkout's trusted base revision; never check out or execute PR-head code with the write token."
+    },
+    {
+      "id": 4307382175,
+      "reviewId": 5563367548,
+      "user": "Copilot",
+      "userType": "Bot",
+      "path": "tools/pr-title.mjs",
+      "line": 18,
+      "side": "RIGHT",
+      "commitId": "65ca0271e4c87179b11c4e1ee001b9be89e1acc1",
+      "createdAt": "2026-10-18T14:22:56Z",
+      "htmlUrl": "https://github.com/DylanBWood/DotLn-Angular/pull/1#discussion_r4307382175",
+      "body": "Changing an already decorated title from `feat` to `fix` while retaining `:sparkles:` leaves the wrong gitmoji: any recognized prefix is accepted, so `updateTitle` skips the edit. Replace prefixes that do not match the parsed type, while preserving matching shortcode or Unicode prefixes. Add a regression test for changing types."
+    }
+  ],
+  "issueComments": [],
+  "operatorItems": "none: the pull request carries no operator comment or review; the only review is the automated one above",
+  "routing": [
+    {
+      "item": "reviewComment:4307382142",
+      "path": ".github/workflows/pr-title.yml",
+      "subject": "fork pull requests receive a read-only token, so gh pr edit cannot decorate their titles",
+      "route": "follow-up",
+      "target": "FUP-223cde718a523e67 (WO-004-D010, VER-001 F3)",
+      "reason": "Already boarded by VER-001 with the same cause. The suggested pull_request_target trigger cannot serve this order: that event runs the workflow file from the base branch, and main holds no workflow until this change merges, so the published pull request would get no title run at all. D010 names the two routes; choosing one is the next repair, after the merge."
+    },
+    {
+      "item": "reviewComment:4307382175",
+      "path": "tools/pr-title.mjs",
+      "subject": "a decorated title whose type changes keeps the old gitmoji because any recognized prefix is accepted",
+      "route": "finding",
+      "target": "FINAL-001 F1, repaired in this review (WO-004-D015)",
+      "reason": "Reproduced: decorateTitle(\":sparkles: fix: x\") returned the title unchanged. decorateTitle now keeps a prefix only when it is the shortcode or emoji of the title's own type and otherwise replaces it; two regression tests cover the change of type through decorateTitle and through updateTitle."
+    }
+  ]
+}

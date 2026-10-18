@@ -2,9 +2,12 @@
 
 **Class:** `angular-nx-monorepo`
 **Base branch:** `main`
-**Checked:** `bc9133e932a00d33c15bc5289d683b8078f51ee4` (the repository's only
-commit; no files). WO-004 scaffolds the workspace and refreshes this line and
-the commands table against the scaffolded commit.
+**Checked:** `3e1c3d18cf4caaebf9a768c8137be227201e0ba9` (WO-004's reviewed
+commit of 2026-10-18 over the base `bc9133e932a00d33c15bc5289d683b8078f51ee4`).
+Node 26.9.0, npm 11.19.1, Nx 23.3.0, Angular 22.2.3, TypeScript 6.0.3 and
+Vitest 4.1.12 were observed. The commands below passed the declared review
+gate at that commit; the order's evidence records the preflight and gate
+results.
 
 The launchpad that registers a repository owns its profile; this file is
 repo-native convention authority for sessions acting in
@@ -16,10 +19,9 @@ registration's envelope in `dotln.config.json`.
 
 The workstream document [WS-001](../workstreams/WS-001-dotln-angular.md)
 carries the outcome, the twenty-one house rules and the component taxonomy.
-Until WO-004 merges there is no code to emulate; after it, the shell app
-`apps/dotln`, the first libraries under `libs/shared/` and the first feature
-under `libs/features/home` are the demonstrated standards, and this section
-names one path per pattern.
+WO-004 demonstrates the shell app in `apps/dotln`. Shared and feature
+libraries remain later orders; their paths become examples only after they
+exist.
 
 ## Commands
 
@@ -36,14 +38,21 @@ tracked file fails the gate):
 | build   | `npx nx run-many -t build`                 | review                                                       |
 | e2e     | `npx nx run-many -t e2e`                   | review; needs `npx playwright install --with-deps chromium`  |
 
+The target's package scripts `lint`, `test`, `format:check`, `build` and `e2e`
+mirror those Nx commands. The registration prefixes checks with
+`env NX_DAEMON=false`. CI also runs `npm run lint:fixtures` to prove that a
+forbidden dependency is rejected, `npm run test:tooling` for title validation
+and literal argument handling, `npm run typecheck:e2e` for the NodeNext
+Playwright files, and `npm run boards` to print visible boards.
+
 ## Local application startup
 
-`npx nx serve dotln` serves `apps/dotln` on the port Nx prints; MSW answers
-HTTP in development (`environment.mocks` true by default until an API exists).
-The app is up when the shell renders and the browser console shows the MSW
-worker's "Mocking enabled" line. A `.env` file (ignored; `.env.example` is
-committed) primes the local environment file through the primer script WO-005
-adds.
+Run `npm ci`, then `npx nx serve dotln` (or `npm start`). Open the address
+Nx prints; the home page shows the heading **DotLn**. The scaffold requires
+no environment file, API or account. Playwright starts its own server at
+`http://127.0.0.1:4200`, refuses to reuse an existing process, and checks the
+heading, document title and absence of page errors. MSW and the environment
+primer belong to WO-005 and are not installed by this scaffold.
 
 ## Branch and pull-request policy
 
@@ -60,20 +69,27 @@ the published pull request supersedes it and the operator closes the draft.
 
 ## Demonstrated architecture
 
-Filled by WO-004 and the members after it, one path per pattern: the zoneless
-bootstrap, a provide function, an injection token, a feature's routes export, a
-wrapper, a composite, a layout, a mapper, a container, a facade, a store with
-events, a test kit, an MSW handler, an interceptor, a guard.
+- Standalone bootstrap: `apps/dotln/src/main.ts`.
+- Zoneless, router and fetch HTTP providers: `apps/dotln/src/app/app.config.ts`.
+- Slim outlet shell and eager home placeholder: `apps/dotln/src/app/app.ts`
+  and `apps/dotln/src/app/app.routes.ts`.
+- Tagged dependencies: `eslint.config.mjs`; the isolated fixture runner is
+  `tools/check-lint-fixtures.mjs`.
+- Unit and browser checks: `apps/dotln/src/app/app.spec.ts`,
+  `apps/dotln/src/app/home.spec.ts`, `apps/dotln-e2e/src/example.spec.ts`.
+
+Provide functions, injection tokens, lazy feature routes, wrappers,
+composites, layouts, mappers, containers, facades, stores, test kits, MSW
+handlers, interceptors and guards remain later workstream members.
 
 ## Upstream references
 
-- `nrwl/nx@<installed tag> docs/shared/packages/angular` — the generators every
-  project is created with (the generator log records each invocation).
-- `angular/angular@<installed tag> adev/src/content/best-practices` — the
-  style guide and performance guidance house rule 1 defers to.
-- `ngrx/platform@<installed tag> projects/ngrx.io/content/guide/signals` — the
-  SignalStore and Events plugin APIs house rule 8 names.
-- `primefaces/primeng@<installed tag> LICENSE.md` — the MIT license the
-  wrapper rule depends on.
-
-WO-004 replaces each `<installed tag>` with the version it installed.
+- `nrwl/nx@23.3.0 astro-docs/src/content/docs/technologies/angular/` — the
+  generators every project is created with (the generator log records each
+  invocation).
+- `angular/angular@v22.2.3 adev/src/content/best-practices` — the style
+  guide and performance guidance house rule 1 defers to.
+- `ngrx/platform` — not installed in WO-004; record the selected version when
+  later members add SignalStore and the Events plugin.
+- `primefaces/primeng` — not installed in WO-004; the vendor choice and its
+  license are checked when the feature order introduces wrappers.
