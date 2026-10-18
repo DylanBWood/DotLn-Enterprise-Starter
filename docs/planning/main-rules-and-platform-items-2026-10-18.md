@@ -479,6 +479,67 @@ the repairs that need no new information and records what remains:
   (WO-006 to WO-008), its `Target release classification` line once the kit
   carries it (D9), and its Preflight line in the landed grammar (D12).
 
+### 8.2 Known issues from receipt 002, by order
+
+The refutation (§13) returned `aligned-with-findings` with 18 known issues
+and no hold. The orders are frozen at the judged subject, so each issue sits
+on its order's row here until a pass amends the order; an issue an executor
+can meet inside the frozen order's authority is marked as a carry-in for the
+executor's decisions and evidence.
+
+- **WO-009.** The cost finding (a full cycle and a release for about 50
+  bytes) is D13's recorded NoOp: the operator may fold WO-009 into WO-010 by
+  amendment before activation; the receipt's reopening observation (a
+  `machineryShare` above WO-004's 0.690, or more than two hours of wall-clock
+  for a diff under 1 KB) is the trigger for the next pass to merge the two.
+- **WO-010.** Carry-ins for the executor, each extra evidence inside the
+  order's authority: record `gh api repos/<owner>/<repo>/rulesets/<id>` for
+  each ruleset created (its `bypass_actors`, `enforcement` and
+  `current_user_can_bypass`), since the rules readback does not carry bypass
+  actors; run `compare-rules.mjs` once against a deliberately altered copy
+  of the fork file (`allowed_merge_methods` set to `squash`) and record
+  `differ`, so the script's `match` is not its only proof; before applying
+  DotLn-Angular's ruleset, record the check-run names on `main`
+  (`gh api repos/DylanBWood/DotLn-Angular/commits/main/check-runs --jq '.check_runs[].name'`)
+  and confirm `checks` is among them. The fork's waiver route stays the
+  honest escape of D2; its reopening (WO-010 closes with criterion 4 waived
+  and the fork's rules readback still empty at the next pass) is the trigger
+  for a step run from the owning account.
+- **WO-005** (amended by the pass that follows, with the upgrade order): a
+  second check, or a wider `check:kits`, that lists every `@Injectable`
+  class and `InjectionToken` under `libs/shared` without a
+  `provide*TestKit` export in its library's `testing` entry point, so the
+  objective's property is what is checked; the three check commands (and
+  WO-007's `lint:hygiene`) join the registration's declared gate or the
+  workspace's `lint` target, so later members' gates run them (D9's
+  registration edits gain this item); one guard for token names, the lint
+  rule, with the script kept as the rule's cross-check only or dropped. The
+  sequence finding is accepted as filed: `sequence.md` admits orders only,
+  and the starter gate lives in each target order's step 1 route guard and
+  in D4 and D6; the receipt's reopening observation (`resume next`
+  selecting WO-005 on v0.83.0) is exactly what that guard refuses.
+- **WO-006** (amended by the pass that sets its base): the R1 lint overrides
+  admit the platform tokens the taxonomy table grants Salesmen
+  (`inject(ElementRef)`, `inject(DOCUMENT)`) under `fragments/` and
+  `templates/`, so the rule and the table agree; the vendor fallback is the
+  wait this pass wrote into Known issues (the order does not activate until
+  the operator names the vendor). Provisional bases costing one pass per
+  member stay the previous pass's D5 and C7(b), carried to core in §10.
+- **WO-007** (amended likewise): the MSW pin reads "3.x as observed on the
+  registry on 2026-10-17, or the current major if 3.x is withdrawn,
+  recorded"; the hygiene exception count becomes a ratchet (CI fails when
+  the count exceeds the count recorded at the previous merge unless a
+  decision raises it); `lint:hygiene` joins the declared gate with WO-005's
+  checks.
+- **WO-008** (amended likewise): the storage assertion compares every Web
+  Storage value with the tokens the mock issued (exposed through the
+  test-only header), not only with the JWT shape; the Design's statement
+  that the signing key is generated at startup through `jose` is made a
+  criterion (`git ls-files | xargs grep -l "BEGIN PRIVATE KEY"` prints
+  nothing and no tracked JWK carries a private member), the fixed `kid`
+  being a string, not key material; the provider-swap claim stays a known
+  issue until the example-API member configures a real provider.
+
 ## 9. Candidates not filed, with their reopening conditions
 
 - **C1 The upgrade order.** One self order filed by the next pass when the
@@ -616,9 +677,29 @@ recorded here when they ran: `npm run work-orders -- index` and `--check`,
 `npm run publication:check`, `npm run meta`, `npm run plan -- check`,
 `npm run test:docs`.
 
+Results at the subject commit `903b395` (cost table) over `ba0e568`:
+`work-orders index --check` PASS, `lineage index --check` PASS (2
+sections), `docs-check` PASS (1 product document, 2 declared historical
+link occurrences, 0 failures), `publication:check` "no editions declared",
+`npm run meta` no budget breach, and `plan check` waiting on the receipt.
+
 Refutation: one fresh `dotln-worker` (`claude-opus-5-5` by its definition;
-the host's effort readback is recorded if it reports one) on the canonical
-prompt from `npm run plan -- refute`, default pass scope: the orders this
-pass created or changed (WO-005 to WO-010) and the sequence. The receipt's
-identifier, verdict, holds, known issues and dispatch-to-file wall-clock are
-recorded below once filed.
+the host reported no effort readback) on the canonical prompt from
+`npm run plan -- refute` at base `903b395`, default pass scope (WO-009,
+WO-010 and the amended WO-005 to WO-008, plus the sequence), dispatched at
+16:59Z. Receipt
+[`2026-10-18-planning-14fefa7dc1ee9d3b-002`](refutations/2026-10-18-planning-14fefa7dc1ee9d3b-002.md),
+verdict `aligned-with-findings`, 0 holds, 18 known issues (§8.2), 0 carried
+judgments, dispatch-to-file 801,687 ms (13.4 minutes; the worker's own
+wall-clock 10.5 minutes). The worker's statement names what it read: the
+whole prompt; the registration, the profile and WS-001; the kit scripts the
+orders' claims rest on (`config.mjs`, `release-preparation.mjs`,
+`release.mjs`, `target-gate`, `worktree.mjs`, `git.mjs`, the target close,
+the starter refresh, the GitHub repository helper, `siblings.mjs`,
+`work-orders.mjs`, `harness.mjs`); the README's release and update sections;
+one bounded probe that printed the default display name, accepted
+`Launchpad` and listed the six gate commands; and none of the planner
+narrative, receipts, ledger, intake, evidence or the DotLn-Angular
+repository. The judged, committed and workspace subjects agree
+(`sha256:96209e0b…`). `npm run test:docs` after the receipt is recorded in
+the pull request.
