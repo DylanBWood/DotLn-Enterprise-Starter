@@ -319,7 +319,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Settled at WO-004 final review (WO-004-D016): the local clone of dotln-angular is recorded and WO-004 activated from it on 2026-10-18 (WorkOrderActivated at 12:29:21Z with repositoryId dotln-angular); git worktree list in the target shows the clone main checkout at bc9133e and the wo-004 worktree beside it.",
+          "reopenWhen": "The clone map loses the dotln-angular record, or a later target order worktree start reports no local clone recorded.",
+          "targets": [],
+          "at": "2026-10-18T14:54:37.103Z"
+        }
+      ]
     },
     {
       "id": "FUP-46062529c4c46ac3",
@@ -396,6 +405,137 @@
           "at": "2026-10-18T04:03:07.070Z"
         }
       ]
+    },
+    {
+      "id": "FUP-ba85f92992bfc303",
+      "key": "decision:docs/evidence/WO-004/decisions.md#wo-004-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "01b6c429c04e71a0be9929ced149269a47ba465b65b1b97252f5ad78907ae4cf",
+          "ref": "docs/evidence/WO-004/decisions.md#wo-004-d008-board-the-profiles-upstream-references-that-name-no-existing-path",
+          "title": "WO-004-D008: In docs/repositories/dotln-angular.md § Upstream references, cite nrwl/nx@23.3.0 astro-docs/src/content/docs/technologies/angular/ and angular/angular@v22.2.3…",
+          "summary": "{ \"id\": \"WO-004-D008\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: verify (VER-001 implementation review)\", \"decision\": \"Record as a follow-up, not a blocking finding: two upstream references in docs/repositories/dotln-angular.md name a ref or path that does not exist upstream. No criterion covers the references, and the verifier does not edit the deliverable it judges.\", \"evidence\": [ \"git ls-remote --tags https://github.com/nrwl/nx.git refs/tags/23.3.0: 2b305ee85b8db033e4ab998f31282cbff66ac2a8; gh api repos/nrwl/nx/contents/docs?ref=23.3.0: HTTP 404\", \"gh api repos/nrwl/nx/git/trees/23.3.0?recursive=1: the Angular pages are astro-docs/src/content/docs/technologies/angular/*.mdoc; astro-docs",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled at WO-004 final review (WO-004-D015): docs/repositories/dotln-angular.md § Upstream references now cites nrwl/nx@23.3.0 astro-docs/src/content/docs/technologies/angular/ and angular/angular@v22.2.3 adev/src/content/best-practices; gh api listed both paths at those tags on 2026-10-18.",
+          "reopenWhen": "An upstream tag or path the profile names stops existing, or a later order edits the references without checking them.",
+          "targets": [],
+          "at": "2026-10-18T14:54:37.097Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4dfdda576bca5d80",
+      "key": "decision:docs/evidence/WO-004/decisions.md#wo-004-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c027ea047cc9c8f266f5bf3bc1a7dad4c1936409cf533e1b8f1f237d28dd266d",
+          "ref": "docs/evidence/WO-004/decisions.md#wo-004-d009-board-the-missing-formatting-exclusion-for-docsdotln",
+          "title": "WO-004-D009: Add docs/dotln/ to the target's .prettierignore so launchpad-owned, hash-bound records are neither checked nor rewritten by the target formatter; nx format:check and npm run format must…",
+          "summary": "{ \"id\": \"WO-004-D009\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: verify (planning receipt 2026-10-18-planning-afc1740dd0afc954-001, known issue criterion:5)\", \"decision\": \"Record the planning known issue's reopen condition as met by the subject, and route it as a follow-up. The target has no Prettier or CI exclusion for docs/dotln. Today's record sources are Prettier-clean under the target configuration, so no CI failure is expected yet.\", \"evidence\": [ \"<worktree>/.prettierignore lists dist, coverage, .nx, package-lock.json, .angular, test-output, playwright-report, test-results, CLAUDE.local.md and .claude/; it has no docs/dotln entry, and ci.yml runs npx nx format:check unfiltered\", \"Scr",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled at WO-004 final review (WO-004-D015): docs/dotln/ is in the target .prettierignore from commit be5ee66; with a badly formatted docs/dotln/probe.md present, nx format:check exits 0 and prettier --check with the ignore file exits 0, while prettier --check without it exits 1.",
+          "reopenWhen": "The CI format check on a DotLn-Angular pull request reports a file under docs/dotln/, or the .prettierignore entry is removed.",
+          "targets": [],
+          "at": "2026-10-18T14:54:37.100Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-223cde718a523e67",
+      "key": "decision:docs/evidence/WO-004/decisions.md#wo-004-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "867553f96d5a6df72b4fbbfef001d63e9fb3ebed379325c52c6231d2c2ced953",
+          "ref": "docs/evidence/WO-004/decisions.md#wo-004-d010-board-the-title-workflows-failure-on-pull-requests-from-forks",
+          "title": "WO-004-D010: Decorate fork pull-request titles without running pull-request code (pull_request_target with the default base checkout running the base's tools/pr-title.mjs), or state that fork titles…",
+          "summary": "{ \"id\": \"WO-004-D010\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: verify (VER-001 implementation review, authority lens)\", \"decision\": \"Record as a follow-up: pr-title.yml runs on pull_request, so a pull request from a fork gets a read-only GITHUB_TOKEN and gh pr edit cannot decorate its title. Same-repository pull requests, the operator's route and criterion 5, are unaffected.\", \"evidence\": [ \"<worktree>/.github/workflows/pr-title.yml triggers on pull_request types opened and edited, checks out the pull request and runs node tools/pr-title.mjs with GH_TOKEN set to github.token\", \"GitHub Docs, Events that trigger workflows, read 2026-10-18: the GITHUB_TOKEN has read-only permissions in pull ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0b20d1ab2ad5c7ad",
+      "key": "decision:docs/evidence/WO-004/decisions.md#wo-004-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "624e15ea144846c81eca7a912e95e4e70aa4ee916cd56e1cd6430b590676ebcc",
+          "ref": "docs/evidence/WO-004/decisions.md#wo-004-d011-name-the-actor-and-commit-the-interim-draft-route-needs",
+          "title": "WO-004-D011: Planning: assign the interim draft route to a named role with the authority to make one reviewable commit on wo-004 after the verification pass, push it and open the draft; until then…",
+          "summary": "{ \"id\": \"WO-004-D011\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: verify; operator selection to waive criterion 6 (capture sha256:d062d38ec0cdf1aa4f44c47afdc707193a3c9b499037862a1f06c7484641f9c8)\", \"decision\": \"Record as a planning follow-up: the order's interim draft route has no assigned actor and no commit to publish. Step 13 asks for commits on wo-004 before implementation-ready, but the executor skill forbids branch commits before final review, and the target source is untracked. Pushing wo-004 now would publish only the empty base commit.\", \"evidence\": [ \"git -C <worktree> log --oneline: bc9133e Initial commit only; git status --porcelain lists 16 untracked entries and no tracked chang",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled at WO-004 final review (WO-004-D016): the operator directed the interim route after VER-001 (WO-004-D012, capture sha256:34e742f6f806b03b0cc39376265521e6543d9e477255f5754131e0d5a8441408): a work-in-progress commit, push and draft under operator direction, undone and replaced by final review; the planning duty to record that rule is carried by D012 own row FUP-c374aed5d23c980b.",
+          "reopenWhen": "The kit lands the draft-at-verified route, or the operator changes the work-in-progress draft rule.",
+          "targets": [],
+          "at": "2026-10-18T14:54:37.102Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c374aed5d23c980b",
+      "key": "decision:docs/evidence/WO-004/decisions.md#wo-004-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7d300c30a056dee5906c6f524ee7633ae0f7f2abf327b1c28adc421aeb39bd66",
+          "ref": "docs/evidence/WO-004/decisions.md#wo-004-d012-the-interim-draft-is-a-work-in-progress-commit-title-and-body",
+          "title": "WO-004-D012: Planning: add the work-in-progress draft rule to docs/operator/README.md § Standing preferences and to target orders' interim route, naming final review as the step that undoes the…",
+          "summary": "{ \"id\": \"WO-004-D012\", \"date\": \"2026-10-18\", \"dispatch\": \"operator direction after resume: verify passed (capture sha256:34e742f6f806b03b0cc39376265521e6543d9e477255f5754131e0d5a8441408)\", \"decision\": \"Commit the verified scaffold on wo-004 as one work-in-progress commit, push wo-004 and open a draft pull request with a work-in-progress title and body. Use the conventional-shaped title feat: WIP scaffold the Nx and Angular workspace so the title workflow validates it instead of failing on shape. Final review undoes the commit before it binds the reviewed commit and publishes.\", \"evidence\": [ \"git -C <worktree> commit: 65ca027 feat: WIP scaffold the Nx and Angular workspace, 44 files, author ",
+          "missing": false
+        },
+        {
+          "hash": "e4ed00ce81a19e1b1cbd9fe16088462bba47c6532a05378b649aaca90223d894",
+          "ref": "docs/evidence/WO-004/decisions.md#wo-004-d012-the-interim-draft-is-a-work-in-progress-commit-title-and-body",
+          "title": "WO-004-D012: Planning: add the work-in-progress draft rule to docs/operator/README.md § Standing preferences and to target orders' interim route, naming final review as the step that undoes the…",
+          "summary": "{ \"id\": \"WO-004-D012\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: verify; operator direction after the pass on the interim draft (capture sha256:34e742f6f806b03b0cc39376265521e6543d9e477255f5754131e0d5a8441408)\", \"decision\": \"Commit the verified scaffold on wo-004 as one work-in-progress commit, push wo-004 and open a draft pull request with a work-in-progress title and body. Use the conventional-shaped title feat: WIP scaffold the Nx and Angular workspace so the title workflow validates it instead of failing on shape. Final review undoes the commit before it binds the reviewed commit and publishes.\", \"evidence\": [ \"git -C <worktree> commit: 65ca027 feat: WIP scaffold the Nx and Angular work",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2479f6d32b2396a8",
+      "key": "decision:docs/evidence/WO-004/decisions.md#wo-004-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ee5c9858566dff4efe85a84290214b04e38d2f7494073a51428b0237e96e4da6",
+          "ref": "docs/evidence/WO-004/decisions.md#wo-004-d013-the-interim-draft-needed-a-manual-command-from-the-operator",
+          "title": "WO-004-D013: Launchpad setup: when a repository is registered, install or print a ready Claude Code auto-mode trusted-repo entry for it and its order worktrees, including wo-NNN pushes with lease and…",
+          "summary": "{ \"id\": \"WO-004-D013\", \"date\": \"2026-10-18\", \"dispatch\": \"operator direction after resume: verify passed (capture sha256:6c996dda3af87b7e592697f744b604d3473f724513c86969d1a219fc8cb8ee4d)\", \"decision\": \"Record that the interim draft route required the operator to run a manual command in the session: one line that adds DylanBWood/DotLn-Angular and the launchpad as trusted repos in the Claude Code auto-mode environment, pushes wo-004 and opens the draft pull request. Codex needs no change: its config already runs commands without approval or sandbox.\", \"evidence\": [ \"Claude Code 2.1.302 auto mode refused git push -u origin wo-004 three times as Out-of-Place Publication, including after the host",
+          "missing": false
+        },
+        {
+          "hash": "eb607778b70fcda48c65c5ba90cb5330a33d22a443471f633749678388cec109",
+          "ref": "docs/evidence/WO-004/decisions.md#wo-004-d013-the-interim-draft-needed-a-manual-command-from-the-operator",
+          "title": "WO-004-D013: Launchpad setup: when a repository is registered, install or print a ready Claude Code auto-mode trusted-repo entry for it and its order worktrees, including wo-NNN pushes with lease and…",
+          "summary": "{ \"id\": \"WO-004-D013\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: verify; operator direction to note the manual command (capture sha256:6c996dda3af87b7e592697f744b604d3473f724513c86969d1a219fc8cb8ee4d)\", \"decision\": \"Record that the interim draft route required the operator to run a manual command in the session: one line that adds DylanBWood/DotLn-Angular and the launchpad as trusted repos in the Claude Code auto-mode environment, pushes wo-004 and opens the draft pull request. Codex needs no change: its config already runs commands without approval or sandbox.\", \"evidence\": [ \"Claude Code 2.1.302 auto mode refused git push -u origin wo-004 three times as Out-of-Place Publication, including",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
