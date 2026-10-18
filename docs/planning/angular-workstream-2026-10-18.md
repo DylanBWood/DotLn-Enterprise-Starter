@@ -249,9 +249,10 @@ that reopens it. Immaterial lenses are grouped at the end.
   the shared cache (a reset in one worktree would empty the others').
   Reopen when Nx scopes `reset` to one checkout.
 - **D12 The `t` pipe is a house alias over Transloco.** Transloco's pipe is
-  `transloco`; the operator's `'key' | t` form is one subclass. Typed keys and
-  the drift lint are a later member (C1), by direction. Reopen when Transloco
-  ships typed keys.
+  `transloco`; the operator's `'key' | t` form (capture SHA-256
+  `4f14c6c09512576abfd701335f4dd8a347694ff23785724422cb8d943b5d67aa`) is one
+  subclass. Typed keys and the drift lint are a later member (C1), by
+  direction. Reopen when Transloco ships typed keys.
 - **D13 `providedIn: 'root'` is limited to app-tier singletons until the
   operator rules.** The operator left the question open; WO-005 applies the
   provide-function default and records the ruling when it comes.
