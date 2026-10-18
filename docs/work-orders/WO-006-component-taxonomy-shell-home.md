@@ -27,6 +27,10 @@ component member order, selector prefixes to be settled after seeing
 implementations, WCAG to a reasonable extent, web speed and Angular best
 practices over analogy. Planner-synthesized. Opaque identifier, not a
 priority. Clean-room screen: the operator's own notes and public packages.
+Amended by the 2026-10-18 main-rules planning pass
+([planning document](../planning/main-rules-and-platform-items-2026-10-18.md)
+§6 D5, D7 and §8.1): the `--draft` route, the final-review obligation and
+the repairs of receipt 001's known issues.
 **Depends on:** WO-005 merged (hard: `core`, `i18n`, `utils` and the test-kit
 convention; the base above is provisional and is set to WO-005's merge commit
 by the planning pass that follows it).
@@ -143,8 +147,9 @@ the two documents; `docs/evidence/WO-006/`.
 
 **Execution plan:**
 
-1. Base guard and activation as WO-005 step 1, for WO-006. Check: status
-   shows the base.
+1. Base guard, route guard (`--draft` carried by `scripts/worktree.mjs`)
+   and activation as WO-005 step 1, for WO-006. Check: status shows the
+   base.
 2. Vendor confirmation: read the operator's decision from the planning
    document §6 or the activation message; install the vendor and record the
    version and license file path in the generator log and the decision. Check:
@@ -177,10 +182,17 @@ the two documents; `docs/evidence/WO-006/`.
     passing rows, no mutation.
 13. Launchpad write-back: `docs/repositories/dotln-angular.md` Demonstrated
     architecture gains one path per component kind. Check: `npm run test:docs`.
-14. Commit; `implementation-ready`; draft pull request after the verification
-    pass (`feat: add the component taxonomy, shell layout and home feature`);
-    handoff; at final review `target-records` and
-    `worktree publish WO-006 --target-worktree --branch feat/component-taxonomy --title "feat: add the component taxonomy, shell layout and home feature" --body-file <reviewed body>`.
+14. Commit; `implementation-ready`; handoff per §Discipline. After the
+    session that records `verification-result pass` has done so, that
+    session runs
+    `npm run worktree -- publish WO-006 --target-worktree --draft --branch feat/component-taxonomy --title "feat: add the component taxonomy, shell layout and home feature" --body-file <reviewed path>`,
+    which commits from the tree without moving `HEAD`, pushes the branch and
+    opens the draft pull request. At final review: read the draft's threads
+    and workflow runs into `docs/evidence/WO-006/preview-pr.json` and route
+    each item, `target-records`, then the same publish command without
+    `--draft`, which force-pushes with lease against the recorded draft head
+    and reuses the branch and the pull request. No work-in-progress commit,
+    no force-push by hand, no manual close.
 
 **Preflight:** in the target worktree `npx nx format:check`,
 `npx nx run-many -t lint test build`, `npm run lint:fixtures`,
@@ -190,8 +202,8 @@ review once each.
 
 **Acceptance criteria (all required)**
 
-1. `grep -rl "<vendor package>" libs apps --include=*.ts` (the vendor package
-   name recorded in `docs/evidence/WO-006/decisions.md`) lists only files
+1. `grep -rl "<vendor package>" libs apps --include='*.ts'` (the vendor
+   package name recorded in `docs/evidence/WO-006/decisions.md`) lists only files
    under `**/wrappers/**` and `libs/shared/ui/src/lib/provide-dotln-ui.ts`,
    and `npm run lint:fixtures` exits 0 by observing each taxonomy fixture fail
    its rule (inject in a fragment, a template, a composite and a layout; a
@@ -199,7 +211,7 @@ review once each.
 2. `grep -rlE "inject\(|constructor\(" libs/shared/ui/src/lib/{fragments,templates,composites} libs/features/home/src/lib/{composites,layouts}`
    prints nothing, and every component under `libs` and `apps` declares
    `changeDetection: ChangeDetectionStrategy.OnPush`
-   (`grep -rL "ChangeDetectionStrategy.OnPush" $(grep -rl "@Component" libs apps --include=*.ts | grep -v spec)`
+   (`grep -rL "ChangeDetectionStrategy.OnPush" $(grep -rl "@Component" libs apps --include='*.ts' | grep -v spec)`
    prints nothing).
 3. `npm run lint:components` exits 0 on the workspace and exits nonzero on
    `tools/lint-fixtures/component-order.ts`.
@@ -211,9 +223,10 @@ review once each.
    nothing); and `apps/dotln/src/app/app.routes.ts` lazy-loads it
    (`grep -c "loadChildren" apps/dotln/src/app/app.routes.ts` is at least 1).
 5. `npx nx e2e dotln-e2e` exits 0 and includes a test that runs
-   `AxeBuilder` with the `wcag2a`, `wcag2aa`, `wcag22aa` tags on the home
-   route and asserts no serious or critical violations, and a keyboard test
-   that reaches the main landmark from the skip link.
+   `AxeBuilder` with the `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa` and
+   `wcag22aa` tags on the home route and asserts no serious or critical
+   violations, and a keyboard test that reaches the main landmark from the
+   skip link.
 6. `docs/dev-reference/architecture/component-taxonomy.md` names the seven
    kinds with one repository path each, and `docs/ai-reference/component-rules.md`
    states R1 to R7 by identifier.
@@ -226,10 +239,18 @@ review once each.
 `docs/evidence/WO-006/README.md`.
 
 **Known issues and carry-ins:** the vendor decision is the operator's and
-blocks activation until made (planning document §6); `HomeFacade` reads static
-signals until WO-007 provides `HomeStore`; selector prefixes are provisional
-until the operator rules; the base line is provisional until the pass after
-WO-005 sets it.
+blocks activation until made (angular-workstream planning document §6 D6):
+if the operator has not named the vendor when this order is selected, the
+order waits and the pass that sets its base records the vendor in step 2;
+`HomeFacade` reads static signals until WO-007 provides `HomeStore`; selector
+prefixes are provisional until the operator rules; the base line is
+provisional until the pass after WO-005 sets it. This order activates only
+on a launchpad whose starter carries core WO-221's `--draft` form (step 1's
+route guard); the draft pull request and its workflow runs are a
+final-review obligation read from `docs/evidence/WO-006/preview-pr.json`,
+never a criterion (main-rules planning document §6 D5 and D7). The `Target
+release classification` line and the Preflight line in the landed grammar
+are added by the pass that sets the base.
 
 **Non-goals:** stores, events, HTTP, MSW (WO-007); authentication (WO-008);
 a design-system site or Storybook; dark mode beyond token readiness; a second
@@ -237,4 +258,5 @@ feature.
 
 **Operator-review assumptions:** the operator names the UI vendor before
 activation (Angular Material proposed; PrimeNG 22 only with the PrimeUI
-license accepted) and reads the draft pull request before final review.
+license accepted) and reads the one draft pull request before final review,
+which the final publish reuses.

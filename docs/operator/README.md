@@ -105,11 +105,36 @@ in one short question rather than guessing in either direction.
   conventional, with a gitmoji in front; where the kit's outward lint refuses
   the gitmoji, a repository workflow adds it after the pull request opens.
 - Merges: merge commits whose message is the pull-request title. The operator
-  sets repository settings themselves; sessions do not change them.
+  sets repository settings themselves; sessions do not change them, with one
+  dated exception: on 2026-10-18 the operator directed branch rules on `main`
+  of this fork and of DotLn-Angular, and the head-branch deletion setting on
+  DotLn-Angular, through an order (WO-010), whose executor applies them where
+  the signed-in account holds admin and asks the operator for the owning
+  account where it does not (planning pass of 2026-10-18, D1, D2 and D10).
 - Review: the operator wants to read the code of an order before it is called
   final-reviewed, and wants an automated reviewer's comments available to the
-  final review. Until the kit carries that route, orders name the interim
-  draft-pull-request step.
+  final review. The interim route of 2026-10-18 for WO-004 (a work-in-progress
+  commit, title and body on `wo-NNN`, undone at final review; capture SHA-256
+  `34e742f6f806b03b0cc39376265521e6543d9e477255f5754131e0d5a8441408`) is
+  superseded for every order from WO-005 on by the kit's `--draft` form of
+  `worktree publish`, run by the session that records the verification pass
+  and reused by the final publish, so one branch and one pull request carry
+  the order and nothing is closed by hand (planning pass of 2026-10-18, D5).
+  Until the starter carries that form, no target order activates (D6).
+- Manual steps: a session never hands the operator a command to run in its
+  place. A host trust entry a publication step needs is named in the order
+  before activation. The operator's `autoMode.environment` entries of
+  2026-10-18 are an interim measure outside the repository, removed once the
+  upgrade order shows the kit's admission carries the push (planning pass of
+  2026-10-18, D10; capture SHA-256
+  `6c996dda3af87b7e592697f744b604d3473f724513c86969d1a219fc8cb8ee4d`).
+- Releases: this launchpad's releases are named `Launchpad` from WO-009 on;
+  DotLn-Angular gets the option of a declared release per order once the kit
+  carries it (planning pass of 2026-10-18, D3 and D9).
+- Pace: on 2026-10-18 the operator said they would wait for the platform's
+  pending pull requests, take the starter update in the next planning pass,
+  and only then activate more orders (planning pass of 2026-10-18, D4 and
+  D6).
 - Harness: Claude Code at the operator's chosen effort; spawned workers at the
   kit's pinned model and effort.
 - Addressing: "you" and "sir" in dialogue; third person in records. The

@@ -297,7 +297,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "2026-10-18 main-rules planning pass: core v0.84.0 (WO-216) carries the main checkout's ignored local-terms list into a new order worktree at worktree start or prints the registration step; the starter update the next pass takes carries it (planning document §7).",
+          "reopenWhen": "The first worktree start after the update prints the registration step instead of carrying the list.",
+          "targets": [],
+          "at": "2026-10-18T16:52:05.177Z"
+        }
+      ]
     },
     {
       "id": "FUP-1eec5d4255b0162c",
@@ -350,7 +359,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "2026-10-18 main-rules planning pass: v0.84.0 states that an exported instance's Preflight line names only suites the instance runs; WO-009 and WO-010 name kit-verify and harness in the --only grammar (planning document D12); WO-003 is closed and its line is history.",
+          "reopenWhen": "An order's Preflight line names a suite that npm test -- --list does not show for this instance.",
+          "targets": [],
+          "at": "2026-10-18T16:52:05.174Z"
+        }
+      ]
     },
     {
       "id": "FUP-29f02563e4477b69",
@@ -372,7 +390,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "2026-10-18 main-rules planning pass: core v0.84.0 (WO-216 D028) requires an exported instance's committed grants to be operator- or registered-repository-granted instead of asserting an empty registry; the starter update the next pass takes carries it (planning document §7).",
+          "reopenWhen": "After the update, node scripts/harness.mjs bounded -- npm test -- --only authority-grants fails on this instance's committed registry.",
+          "targets": [],
+          "at": "2026-10-18T16:52:05.173Z"
+        }
+      ]
     },
     {
       "id": "FUP-ca963c9be2a290c8",
@@ -467,7 +494,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-18 main-rules planning pass: no pull request from a fork exists against DotLn-Angular and the operator is the sole contributor; the title workflow's fork case stays boarded as WO-004-D010 recorded it.",
+          "reopenWhen": "A pull request from a fork is opened against DotLn-Angular, or an order edits .github/workflows/pr-title.yml.",
+          "targets": [],
+          "at": "2026-10-18T16:52:05.168Z"
+        }
+      ]
     },
     {
       "id": "FUP-0b20d1ab2ad5c7ad",
@@ -513,7 +549,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "2026-10-18 main-rules planning pass: the work-in-progress draft rule is recorded in docs/operator/README.md as the interim route of WO-004 and superseded for WO-005 to WO-008 by the kit's --draft form of worktree publish, reused by the final publish (planning document D5).",
+          "reopenWhen": "Core WO-221 lands with a different command shape or actor than the orders name, or the operator changes the rule.",
+          "targets": [],
+          "at": "2026-10-18T16:52:05.176Z"
+        }
+      ]
     },
     {
       "id": "FUP-2479f6d32b2396a8",
@@ -535,7 +580,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "2026-10-18 main-rules planning pass: the kit side is core WO-221 (trust from the registration), not yet landed; the pass records the operator's interim autoMode.environment entries of 2026-10-18 as outside the repository and the no-manual-command preference in docs/operator/README.md (planning document D10).",
+          "reopenWhen": "The upgrade order's qualification shows the kit's admission carries the push (then the interim entries are removed), or a publication step again needs a manual command from the operator.",
+          "targets": [],
+          "at": "2026-10-18T16:52:05.171Z"
+        }
+      ]
     }
   ]
 }

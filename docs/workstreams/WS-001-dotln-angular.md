@@ -8,6 +8,11 @@ legitimate client-side security, every user-facing string through i18n, tests
 at every layer, and documentation written once for people and once for AI
 sessions. It carries the DotLn console app (`apps/dotln`) first; the WoW
 tooling app and an example API join later as members of this workstream.
+Its product purpose, in the operator's words of 2026-10-18 (capture SHA-256
+`222fbf09d6f57d518b931dd54c59a5bc5d83d55a7552e2ee194b1774a2ee184d`): a UI
+over DotLn's features, for playing with them and changing them more
+intuitively, so that the Angular app improves the platform, the platform the
+starter, the starter this fork, and the fork the Angular app in turn.
 **Acceptance contract:** each member order passes the repository's declared
 gate in its target worktree (`node scripts/target-gate.mjs WO-NNN --review`),
 its change reaches the operator as a pull request they read before it merges,
@@ -24,7 +29,7 @@ the last member's pull request.
 | ------ | ------------- | ------------------------------------------ | ------------------------------------------------------------------------------------ |
 | WO-003 | self          | this launchpad's `main` at activation      | registers `dotln-angular`, its class, authority profile, gate, grant and vocabulary |
 | WO-004 | dotln-angular | `bc9133e932a00d33c15bc5289d683b8078f51ee4` | scaffolds the Nx and Angular workspace, tooling, CI and the two documentation roots  |
-| WO-005 | dotln-angular | provisional; set when WO-004 merges        | foundation libraries: core, utils, i18n, the test-kit convention                     |
+| WO-005 | dotln-angular | `651d76ff68e9b3a38fe770226deb634bca28b54c` | foundation libraries: core, utils, i18n, the test-kit convention; base set 2026-10-18 |
 | WO-006 | dotln-angular | provisional; set when WO-005 merges        | the component taxonomy, PrimeNG behind wrappers, the shell layout, the home feature  |
 | WO-007 | dotln-angular | provisional; set when WO-006 merges        | events, signal stores, call state, data access, MSW, navigation and flags            |
 | WO-008 | dotln-angular | provisional; set when WO-007 merges        | authentication and permissions, legitimate from the Angular side                     |
@@ -33,8 +38,12 @@ Proposed later members, not yet filed (the planning document records each
 with its reopening condition): typed translation keys and their lint; the WoW
 app and its non-TypeScript libraries; the example API and a real identity
 provider behind the auth port; the DotLn console feature that renders the
-actor-board view model; a production environment with file replacements and a
-`.env` primer, if WO-005 leaves any of it out.
+actor-board view model and grows into the operator's agent-orchestration UI,
+status and check-ins on running sessions through the UI alone (operator
+direction of 2026-10-18, capture SHA-256
+`b9e38a5ded14d08a7d235886bf014bb5fc1919e4cf2bff0a7efe34dd573bf3ca`); a
+production environment with file replacements and a `.env` primer, if WO-005
+leaves any of it out.
 
 ## Dependency and compatibility plan
 
@@ -176,7 +185,12 @@ an order's recorded decision, never silently.
     imperative. Pull-request titles are conventional; a repository workflow
     prepends the gitmoji for the type after the pull request opens, because the
     kit's outward lint requires the bare conventional subject. Merge commits
-    carry the pull-request title (repository setting, operator-owned).
+    carry the pull-request title (repository setting, operator-owned). The
+    draft at verified is the kit's `--draft` form of `worktree publish`, run
+    by the session that records the verification pass and reused by the final
+    publish, so one branch and one pull request carry each member (planning
+    pass of 2026-10-18, D5); WO-010 makes a pull request, a merge commit and a
+    passing `checks` run the rules of `main`.
 21. **Broken windows.** A defect found during an order is fixed in that order
     or boarded in the same pull request: a skipped failing test plus a
     `// BOARDED: <follow-up>` comment, or a visible "not implemented" surface.

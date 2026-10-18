@@ -60,12 +60,23 @@ Branches: `wo-NNN` while an order runs (the launchpad creates it), `<type>/<slug
 for the published change (`worktree publish --target-worktree --branch`). Pull
 requests target `main`; the merge method is a merge commit whose message is
 the pull-request title (repository setting, operator-owned). A session never
-pushes to `main`, merges, tags or changes repository settings. The
+pushes to `main`, merges, tags or changes repository settings, except where
+an order the operator dispatched names the setting (WO-010). The
 registration permits `repo.push`, `pr.open` and `pr.thread.resolve` through the
-operator grant; everything else stays local. Interim review route: after a
-verification pass, the executor pushes `wo-NNN` and opens a draft pull request
-so the operator and an automated reviewer can comment before final review;
-the published pull request supersedes it and the operator closes the draft.
+operator grant; everything else stays local. Draft at verified (planning
+pass of 2026-10-18, D5): after the session that records
+`verification-result pass` has done so, it runs `worktree publish WO-NNN
+--target-worktree --draft --branch <type>/<slug> …`, which commits from the
+tree, pushes the branch and opens a draft pull request for the operator and
+an automated reviewer; the final review reads the threads into the order's
+`preview-pr.json`, routes each, and publishes with the same command without
+`--draft`, which reuses the branch and the pull request. The form needs the
+starter revision that carries core WO-221; until then no target order
+activates. Rules in force after WO-010 merges (this sentence is replaced by
+that order's write-back, citing its readback file): `main` accepts only merge
+commits from pull requests whose `checks` run passed, refuses force pushes
+and deletion, binds every account with no bypass, and deletes a pull
+request's head branch on merge.
 
 ## Demonstrated architecture
 

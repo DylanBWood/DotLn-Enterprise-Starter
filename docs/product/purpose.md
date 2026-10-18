@@ -13,7 +13,12 @@ updates. The first workstream is DotLn-Angular, an Nx and Angular monorepo that
 serves two outcomes at once: the operator's reference Angular workspace, which a
 colleague should recognize as the way the operator builds Angular, and the home
 of the DotLn console, the Angular shell that will render DotLn's actor-board
-view model. The critical path runs from registering that repository in this
+view model. Its product purpose is a UI over DotLn's features, for playing
+with them and changing them more intuitively, so that the Angular app improves
+the platform, the platform the starter, the starter this fork, and the fork
+the Angular app in turn. The operator means to live in that UI rather than in
+terminals: an agent-orchestration view that shows status and lets them check
+in on running sessions. The critical path runs from registering that repository in this
 launchpad, through one witnessed target order that scaffolds the workspace, to a
 foundation where a feature is added by convention: shared libraries, the
 component taxonomy, events and stores, and a legitimate client-side
