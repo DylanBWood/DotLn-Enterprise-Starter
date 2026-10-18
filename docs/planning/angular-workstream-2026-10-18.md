@@ -325,6 +325,62 @@ no criterion reads natural language (each names a command and its expected
 output). Live-run surfaces are named at the base in WO-004 (Actions, the pull
 requests, `gh`, the gate rows) and inherited by the later orders.
 
+### 8.1 Known issues from receipt 001, by order
+
+The refutation (§12) returned `aligned-with-findings` with 23 known issues
+and no hold. The orders are frozen at the judged subject, so each issue sits
+on its order's row here until a pass amends the order; WO-005 to WO-008 are
+amended anyway by the pass that sets each base (D5), which repairs the
+criteria named below and is refuted on the changed text. Issues an executor
+can meet inside the frozen order's authority are marked as carry-ins for the
+executor's decisions.
+
+- **WO-003.** Carry-in: the executor's decisions cite the dispatch capture
+  (SHA-256 `4f14c6c0…`) as the operator authority for the grant's three
+  effects, and criterion 2's evidence names that no ignored
+  `docs/control/local/authority-grants.json` was present. NoOp on process
+  cost: a self order cannot share a cycle with a target order of another
+  repository, and the registration must be on `main` before WO-004 activates;
+  the cost is accepted and the cost table will show it.
+- **WO-004.** Carry-ins: `.prettierignore` and the CI format check exclude
+  `docs/dotln/` (the kit commits hash-bound records there after the gate);
+  `lint:fixtures` asserts the `@nx/enforce-module-boundaries` rule id in the
+  output, not a bare nonzero exit, and the fixture lives inside a linted
+  project with an `eslint-disable`-free expectation; the title workflow's
+  type map reads one source, and the repositories merge with merge commits
+  (operator-set), so no squashed subject reaches `main`.
+- **WO-005** (repaired by the pass that sets its base): quote every
+  `--include` pattern in criteria 4 and 5 (zsh aborts an unmatched unquoted
+  glob and the pipe prints 0); make the literal-text check span lines; make
+  criterion 2's token check read declarations across lines and nested
+  generics (a small script, not a grep); make criterion 5 assert that each
+  spec's providers come from a kit, not that the string `TestKit` appears;
+  add a criterion for the proxy configuration wired to `serve`; require the
+  ported specs to carry the upstream copyright line and a committed
+  third-party notice (MIT and BSD-3-Clause both require the license text).
+- **WO-006** (repaired likewise): add `wcag21a` and `wcag21aa` to the axe
+  tags; quote the `--include` patterns in criteria 1 and 2; name the
+  fallback when the operator has not confirmed a vendor at selection (the
+  order waits; the pass that sets its base records the vendor).
+- **WO-007** (repaired likewise): pin `msw` 3.x and check the listen option
+  by type, not by name; add a criterion that the production bundle contains
+  no `setupWorker` and no mocked endpoint path; make the `?ff=` override
+  development-only through an environment switch and say so; quote the
+  `--include` patterns in criteria 1 and 3.
+- **WO-008** (repaired likewise): assert after the e2e sign-in that Web
+  Storage holds no token (the client library's stores, not only house code);
+  state how the e2e drives the authorize navigation (MSW does not intercept
+  top-level navigations: the mock authorize endpoint is an app route or a
+  Playwright route handler); replace the `mock-idp` string check with a
+  bundle check for the development signing key's identifiers and mocked
+  endpoint paths; require the documents to state that the server enforces
+  authorization and client checks shape presentation only; quote the
+  `--include` patterns in criterion 1.
+- **Horizon.** No order observes the critical path's endpoint, a feature
+  added by convention: every target order excludes a second feature. The
+  next pass files that order (§9 C10) when WO-008 merges, or earlier if the
+  operator wants the proof sooner.
+
 ## 9. Candidates not filed, with their reopening conditions
 
 - **C1 Typed translation keys and the drift lint.** A schema-driven type for
@@ -373,6 +429,12 @@ requests, `gh`, the gate rows) and inherited by the later orders.
   submit issues and feature requests to the primary DotLn repository from
   this fork, for core's own planning cycle. File when the operator authorizes
   the remote effect and names the issue template.
+- **C10 A second feature added by convention.** The proof the critical
+  path names: one feature library created by following `docs/dev-reference`
+  and `docs/ai-reference` alone (ideally by a session that reads nothing
+  else), with its own composites, container, facade, store and events, and
+  a record of every place the documents fell short. File when WO-008 merges,
+  or earlier on the operator's word.
 - **C9 Orders spanning several repositories.** A lockstep upgrade across
   repositories as one workstream with members in each. The workstream
   document already groups per-repository members; file when a second
@@ -424,9 +486,23 @@ here when they ran): `npm run work-orders -- index` and `--check`,
 `npm run publication:check`, `npm run meta`, `npm run plan -- check`,
 `npm run test:docs`.
 
-Refutation: one fresh `dotln-worker` on the canonical prompt from
-`npm run plan -- refute` (default pass scope: the six orders and the
-sequence), result and statement saved under the ignored control lane and
-filed with `npm run plan -- receipt`. Receipt, verdict, holds and their
-dispositions, and dispatch-to-file wall-clock are appended below by the pass
-when filed.
+Results at the subject commit `7ed97cf`: `work-orders index --check` PASS,
+`lineage index --check` PASS (1 section), `docs-check` PASS (1 product
+document, 0 failures, 0 advisories in this document), `publication:check`
+"no editions declared", `npm run meta` no budget breach, and
+`npm run test:docs` 15 of 17 tasks passing with the two plan checks waiting
+on the receipt.
+
+Refutation: one fresh `dotln-worker` (`claude-opus-5-5`, no effort readback
+reported by the host) on the canonical prompt from `npm run plan -- refute`
+at base `498e950`, default pass scope (the six orders and the sequence),
+dispatched at 00:46Z. Receipt
+[`2026-10-18-planning-afc1740dd0afc954-001`](refutations/2026-10-18-planning-afc1740dd0afc954-001.md),
+verdict `aligned-with-findings`, 0 holds, 23 known issues (§8.1), 0 carried
+judgments, dispatch-to-file 1,063,887 ms (17.7 minutes). The worker's
+statement names what it read: the prompt, the kit scripts the prompt's
+claims rest on, the grants file, two scratch probes (one reproducing the zsh
+unmatched-glob abort), and none of the planner narrative, receipts, ledger
+or local lane. The judged, committed and workspace subjects agree
+(`sha256:4013994d…`). `npm run test:docs` after the receipt is recorded in
+the pull request.
