@@ -178,6 +178,14 @@
           "reopenWhen": "A starter again activates its seeded first order on main without a documented route into a wo-NNN worktree for release preparation and final review.",
           "targets": [],
           "at": "2026-10-15T14:27:38.335Z"
+        },
+        {
+          "sourceRevision": 6,
+          "status": "settled",
+          "reason": "2026-10-18 angular-workstream planning pass: the source changed only by WO-001-D013's integration record; the v0.82.0 starter still starts the seeded order in its own wo-001 worktree, and this instance's first order is closed, so the condition cannot recur here.",
+          "reopenWhen": "A starter again activates its seeded first order on main without a documented route into a wo-NNN worktree for release preparation and final review.",
+          "targets": [],
+          "at": "2026-10-18T00:39:44.040Z"
         }
       ]
     },
@@ -194,7 +202,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-18 angular-workstream planning pass: an upstream kit change (worktree integrate's regenerate step in an export without package sources); this fork patches no kit file and routes it through the operator's upstream issue prompt (WO-001-D002). NoOp: integrations in this instance run the two regeneration steps by hand, as WO-001's final review did.",
+          "reopenWhen": "A kit update changes worktree integrate's regenerate step, or a second integration in this instance meets the same ENOENT and the operator asks for a local patch.",
+          "targets": [],
+          "at": "2026-10-18T00:39:44.043Z"
+        }
+      ]
     },
     {
       "id": "FUP-a36dae4a6766b9ef",
@@ -209,7 +226,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-18 angular-workstream planning pass: an upstream kit change (the prompt hook dispatching a resume phrase that leads a longer operator message); this fork patches no kit file and routes it through the operator's upstream issue prompt (WO-001-D002). NoOp: the operator types the bare phrase first and the direction second, as docs/operator/README.md records.",
+          "reopenWhen": "A kit update changes the prompt hook's phrase matching, or the operator asks the fork to carry a local patch.",
+          "targets": [],
+          "at": "2026-10-18T00:39:44.044Z"
+        }
+      ]
     },
     {
       "id": "FUP-2a5dc809710f399e",
@@ -224,7 +250,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-18 angular-workstream planning pass: an upstream kit change (reader profile guidance when no profile file is declared); this fork patches no kit file and routes it through the operator's upstream issue prompt (WO-001-D002). NoOp: publication keeps the balanced default, which the kit already applies.",
+          "reopenWhen": "A kit update changes the reader profile guidance, or this fork declares docs/control/reader-profiles.json, or the operator asks the fork to carry a local patch.",
+          "targets": [],
+          "at": "2026-10-18T00:39:44.043Z"
+        }
+      ]
     }
   ]
 }

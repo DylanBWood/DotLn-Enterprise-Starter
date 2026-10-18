@@ -4,7 +4,12 @@
 
 ## Proposed order
 
-- [x] [WO-001] — Environment truth for this launchpad · **final-reviewed**
+- [ ] [WO-003] — Register DotLn-Angular in this launchpad · **queued**
+- [ ] [WO-004] — Scaffold the DotLn-Angular workspace · **queued**
+- [ ] [WO-005] — Foundation libraries: core, utils, i18n, test kits · **queued**
+- [ ] [WO-006] — Component taxonomy, shell layout and the home feature · **queued**
+- [ ] [WO-007] — Events, signal stores, data access and MSW · **queued**
+- [ ] [WO-008] — Authentication and permissions · **queued**
 
 Order and short labels come from [the proposed sequence](../planning/sequence.md); rows sharing a `pair N` mark are a lane pair, two parallel worktrees, and unmarked rows run one at a time.
 Checks mean passing final review. Settled orders (closed, withdrawn, superseded and historical), this index's sources and limits and its release-tag record are on [the history page](HISTORY.md).
@@ -22,6 +27,116 @@ None.
 
 ## Open
 
-None.
+### WO-003
 
-[WO-001]: WO-001-environment-truth.md
+[WO-003 — Register DotLn-Angular in this launchpad: the configuration, class, authority profile and gate, the operator's publication grant, the outward vocabulary and the local clone record, so the first target order can activate (version assigned at activation)](WO-003-register-dotln-angular.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: WO-001: historical-evidence (non-blocking) — the environment truth this instance recorded; read, not a gate.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: machinery
+- Cost: adds one root &#96;dotln.config.json&#96; (about 2 KB), one operator grant in &#96;packages/skeleton/loadouts/grants.json&#96; (about 0.4 KB), one &#96;docs/control/outward-vocabulary.json&#96; (about 0.3 KB), one ignored clone record and this order's evidence. Removes nothing: the launchpad has no registration today. Wall-clock: about 1 to 2 hours of executor work plus the fixed cycle (activation, verification, final review, release close); unknown until run. Context bytes: the executor reads 07-execution-guide.md §Where the control plane finds its documents, the profile convention and this order, about 40 KB. Commands added: none. Tokens: unknown until run. Steps: 9. Re-mints: none; no registered evidence source or feedback source is edited; no machinery suite source is edited, so &#96;npm test&#96; without &#96;--review&#96; is the product gate.
+- Authority: [docs/work-orders/WO-003-register-dotln-angular.md](WO-003-register-dotln-angular.md)
+
+### WO-004
+
+[WO-004 — Scaffold the DotLn-Angular workspace: an Nx integrated monorepo on Angular 22 with the slim &#96;dotln&#96; shell app, zoneless and standalone, Vitest, Playwright, Sass, ESLint and Prettier, tagged module boundaries, CI with the gitmoji title workflow, and the two documentation roots with the generator log, gated by the repository's own declared gate](WO-004-scaffold-dotln-angular-workspace.md)
+
+- State: draft.
+- Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-003.
+- References: WO-003: hard (unmet) — the registration, grant and outward vocabulary this order activates and publishes under live on main.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds the whole workspace to an empty repository: about 60 files from the Nx generators plus the CI workflows, the two documentation roots and the house configuration; &#96;package-lock.json&#96; is the largest. Removes the generator's &#96;nx-welcome&#96; component and every placeholder the shell does not need. Wall-clock: about 3 to 5 hours of executor work (one &#96;npm ci&#96;, one Playwright browser install and the gate's first runs dominate) plus the fixed cycle; unknown until run. Context bytes: WS-001 (19 KB), the profile (4 KB), this order and the Nx generator help output. Commands added in the target: &#96;npm run lint&#124;test&#124;build&#124;e2e&#124;format:check&#96; mirroring the gate. Tokens: unknown until run. Steps: 14. Re-mints: none; the launchpad's evidence sources are not edited.
+- Authority: [docs/work-orders/WO-004-scaffold-dotln-angular-workspace.md](WO-004-scaffold-dotln-angular-workspace.md)
+
+### WO-005
+
+[WO-005 — Foundation libraries for DotLn-Angular: &#96;core&#96; (the typed environment with its production file replacement and &#96;.env&#96; primer, injection tokens, paths and canonical routes, the base-path token, provider composition), &#96;utils&#96; (the &#96;R&#96; and &#96;RA&#96; namespaces with composition typing and ported specs), &#96;i18n&#96; (Transloco with the house &#96;t&#96; pipe), the test-kit convention through secondary entry points, and the proxy configuration](WO-005-foundation-libraries.md)
+
+- State: draft.
+- Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-004.
+- References: WO-004: hard (unmet) — the scaffolded workspace this order adds libraries to; the base line is set to its merge commit before activation.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds three libraries under &#96;libs/shared/&#96; with their &#96;testing&#96; entry points, the environment files and primer, the proxy configuration, the lint rules for tokens and &#96;#private&#96;, about 40 source files; adds &#96;ramda&#96;, &#96;ramda-adjunct&#96;, &#96;@types/ramda&#96;, &#96;@jsverse/transloco&#96; and &#96;dotenv&#96; to the workspace. Removes the placeholder page's inline strings (moved to &#96;en.json&#96;). Wall-clock: about 4 to 6 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001, the generator log, this order, the Transloco and Ramda type declarations, about 80 KB. Commands added in the target: &#96;npm run env:prime&#96;, &#96;npm run i18n:check&#96;. Tokens: unknown until run. Steps: 13. Re-mints: none.
+- Authority: [docs/work-orders/WO-005-foundation-libraries.md](WO-005-foundation-libraries.md)
+
+### WO-006
+
+[WO-006 — The component taxonomy made real in DotLn-Angular: &#96;ui&#96; with fragments, templates, wrappers over the operator-confirmed vendor and shared composites, the lint rules that enforce the roles by location, the &#96;dotln&#96; shell layout, and the &#96;home&#96; feature with its composites, layout, mapper, container and facade behind a lazy route, with accessibility checks in e2e](WO-006-component-taxonomy-shell-home.md)
+
+- State: draft.
+- Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-005.
+- References: WO-005: hard (unmet) — the foundation libraries every component here imports; the base line is set to its merge commit before activation.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds &#96;libs/shared/ui&#96;, &#96;libs/dotln/shell&#96;, &#96;libs/features/home&#96;, the role-by-location lint overrides, the vendor dependency, &#96;@axe-core/playwright&#96;, about 60 source files and the taxonomy documents. Removes the WO-004 placeholder page. Wall-clock: about 6 to 8 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 §Design, the foundation documents, the vendor's component API for the four wrapped components, this order, about 120 KB. Commands added in the target: none (&#96;lint:fixtures&#96; gains cases). Tokens: unknown until run. Steps: 14. Re-mints: none.
+- Authority: [docs/work-orders/WO-006-component-taxonomy-shell-home.md](WO-006-component-taxonomy-shell-home.md)
+
+### WO-007
+
+[WO-007 — Events, stores and data access for DotLn-Angular: the tiered event groups in &#96;events&#96;, NgRx SignalStore with the Events plugin, call state and the trinity through &#96;data-access&#96;, &#96;HomeStore&#96; behind &#96;HomeFacade&#96;, the app-tier stores for feature flags, navigation with canonical routes and errors in &#96;state&#96;, HTTP interceptors for base URL, timeouts and errors, MSW in development and in tests, and the action-hygiene check](WO-007-events-stores-data-access.md)
+
+- State: draft.
+- Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-006.
+- References: WO-006: hard (unmet) — the facade and container this order connects to stores; the base line is set to its merge commit before activation.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds &#96;libs/shared/events&#96;, &#96;libs/shared/data-access&#96;, &#96;libs/shared/state&#96;, &#96;libs/features/home-data-access&#96;, the MSW worker and handlers, the interceptors, the hygiene check script, about 70 source files; adds &#96;@ngrx/signals&#96;, &#96;@angular-architects/ngrx-toolkit&#96; (or a house &#96;withCallState&#96;), &#96;msw&#96; to the workspace. Removes &#96;HomeFacade&#96;'s static data. Wall-clock: about 6 to 8 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 house rules 8, 11, 16, the NgRx Events plugin and toolkit declarations, the MSW browser and Node guides, this order, about 150 KB. Commands added in the target: &#96;npm run lint:hygiene&#96;, &#96;npm run msw:init&#96;. Tokens: unknown until run. Steps: 15. Re-mints: none.
+- Authority: [docs/work-orders/WO-007-events-stores-data-access.md](WO-007-events-stores-data-access.md)
+
+### WO-008
+
+[WO-008 — Authentication and permissions for DotLn-Angular, legitimate from the Angular side: &#96;auth&#96; with an OpenID Connect authorization-code-with-PKCE client behind a port, in-memory token handling with single-flight refresh, expiry and invalid-token paths, the auth and permission stores, route and feature permission checks from a declared adjacency list, the mocked identity provider through MSW, and the failure-case matrix in unit and e2e tests](WO-008-authentication-and-permissions.md)
+
+- State: draft.
+- Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-007.
+- References: WO-007: hard (unmet) — the events, interceptors, stores and MSW wiring this order extends; the base line is set to its merge commit before activation.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds &#96;libs/shared/auth&#96; with its kit, the mocked identity provider handlers and signing key for development, the &#96;authHttpEvents&#96; and &#96;sessionEvents&#96; groups, guards, the permission directive, the &#96;/login&#96; and &#96;/denied&#96; routes, about 60 source files; adds one OpenID Connect client library and &#96;jose&#96; (development signing in the mock) to the workspace. Removes nothing. Wall-clock: about 8 to 12 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 house rule 17, the events and state documents, the client library's documentation, this order, about 160 KB. Commands added in the target: none. Tokens: unknown until run. Steps: 15. Re-mints: none.
+- Authority: [docs/work-orders/WO-008-authentication-and-permissions.md](WO-008-authentication-and-permissions.md)
+
+[WO-003]: WO-003-register-dotln-angular.md
+[WO-004]: WO-004-scaffold-dotln-angular-workspace.md
+[WO-005]: WO-005-foundation-libraries.md
+[WO-006]: WO-006-component-taxonomy-shell-home.md
+[WO-007]: WO-007-events-stores-data-access.md
+[WO-008]: WO-008-authentication-and-permissions.md
