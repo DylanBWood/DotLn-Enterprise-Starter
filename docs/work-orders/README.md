@@ -4,8 +4,8 @@
 
 ## Proposed order
 
-- [x] [WO-003] — Register DotLn-Angular in this launchpad · **final-reviewed**
-- [x] [WO-004] — Scaffold the DotLn-Angular workspace · **final-reviewed**
+- [ ] [WO-009] — Name this launchpad's releases Launchpad · **queued**
+- [ ] [WO-010] — Protect main in both repositories · **queued**
 - [ ] [WO-005] — Foundation libraries: core, utils, i18n, test kits · **queued**
 - [ ] [WO-006] — Component taxonomy, shell layout and the home feature · **queued**
 - [ ] [WO-007] — Events, signal stores, data access and MSW · **queued**
@@ -27,22 +27,56 @@ None.
 
 ## Open
 
+### WO-009
+
+[WO-009 — Name this launchpad's releases &#96;Launchpad&#96;: declare &#96;release.displayName&#96; in &#96;dotln.config.json&#96; and refresh the README release claim, so the next tag and GitHub Release carry the instance's own name (version assigned at activation)](WO-009-release-display-name.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: none declared.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: machinery
+- Cost: adds one &#96;release&#96; section to &#96;dotln.config.json&#96; (about 50 bytes) and this order's evidence; changes one word and the assigned version in the README release claim. Removes nothing. Wall-clock: about 15 to 30 minutes of executor work plus the fixed cycle (activation, verification, final review, release close); unknown until run. Context bytes: the README §Releases in this instance, &#96;scripts/lib/config.mjs&#96; §release, this order, about 20 KB. Commands added: none. Tokens: unknown until run. Steps: 7. Re-mints: none; no registered evidence source, feedback source or machinery suite source is edited, so &#96;npm test&#96; without &#96;--review&#96; is the product gate.
+- Authority: [docs/work-orders/WO-009-release-display-name.md](WO-009-release-display-name.md)
+
+### WO-010
+
+[WO-010 — Protect &#96;main&#96; in both repositories: one active ruleset on the default branch of &#96;dylanwoodconsulting/DotLn-Enterprise-Starter&#96; and of &#96;DylanBWood/DotLn-Angular&#96; (a pull request required, merge commits only, the CI check where one exists, no force pushes, no deletions), head branches deleted on merge in DotLn-Angular, each setting read back through GitHub's own endpoint (version assigned at activation)](WO-010-protect-main-both-repositories.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; dependency-ready.
+- References: none declared.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: machinery
+- Cost: adds two ruleset files, two readback files and one comparison script under &#96;docs/evidence/WO-010/&#96; (about 5 KB), a paragraph in &#96;docs/repositories/dotln-angular.md&#96;, and this order's evidence. Removes nothing. Wall-clock: about 30 to 60 minutes of executor work plus the fixed cycle; unknown until run. Context bytes: planning document §4 and §6, the repository profile, the operator record, this order, about 30 KB. Commands added: none. Tokens: unknown until run. Steps: 9. Re-mints: none; no registered evidence source, feedback source or machinery suite source is edited, so &#96;npm test&#96; without &#96;--review&#96; is the product gate.
+- Authority: [docs/work-orders/WO-010-protect-main-both-repositories.md](WO-010-protect-main-both-repositories.md)
+
 ### WO-005
 
 [WO-005 — Foundation libraries for DotLn-Angular: &#96;core&#96; (the typed environment with its production file replacement and &#96;.env&#96; primer, injection tokens, paths and canonical routes, the base-path token, provider composition), &#96;utils&#96; (the &#96;R&#96; and &#96;RA&#96; namespaces with composition typing and ported specs), &#96;i18n&#96; (Transloco with the house &#96;t&#96; pipe), the test-kit convention through secondary entry points, and the proxy configuration](WO-005-foundation-libraries.md)
 
 - State: draft.
-- Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
+- Repository: dotln-angular @ 651d76ff68e9b3a38fe770226deb634bca28b54c.
 - Application target: unassigned.
 - Dependencies: typed; dependency-ready.
-- References: WO-004: hard (met) — the scaffolded workspace this order adds libraries to; the base line is set to its merge commit before activation.
+- References: WO-004: hard (met) — the scaffolded workspace this order adds libraries to; the base line names its merge commit.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
 - Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh; reviewer xhigh.
 - Track: delivery
-- Cost: adds three libraries under &#96;libs/shared/&#96; with their &#96;testing&#96; entry points, the environment files and primer, the proxy configuration, the lint rules for tokens and &#96;#private&#96;, about 40 source files; adds &#96;ramda&#96;, &#96;ramda-adjunct&#96;, &#96;@types/ramda&#96;, &#96;@jsverse/transloco&#96; and &#96;dotenv&#96; to the workspace. Removes the placeholder page's inline strings (moved to &#96;en.json&#96;). Wall-clock: about 4 to 6 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001, the generator log, this order, the Transloco and Ramda type declarations, about 80 KB. Commands added in the target: &#96;npm run env:prime&#96;, &#96;npm run i18n:check&#96;. Tokens: unknown until run. Steps: 13. Re-mints: none.
+- Cost: adds three libraries under &#96;libs/shared/&#96; with their &#96;testing&#96; entry points, the environment files and primer, the proxy configuration, the lint rules for tokens and &#96;#private&#96;, three check scripts under &#96;tools/scripts/&#96;, &#96;THIRD-PARTY-NOTICES.md&#96;, about 45 source files; adds &#96;ramda&#96;, &#96;ramda-adjunct&#96;, &#96;@types/ramda&#96;, &#96;@jsverse/transloco&#96; and &#96;dotenv&#96; to the workspace. Removes the placeholder page's inline strings (moved to &#96;en.json&#96;). Wall-clock: about 4 to 6 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001, the generator log, this order, the Transloco and Ramda type declarations, about 80 KB. Commands added in the target: &#96;npm run env:prime&#96;, &#96;npm run i18n:check&#96;, &#96;npm run check:templates&#96;, &#96;npm run check:tokens&#96;, &#96;npm run check:kits&#96;. Tokens: unknown until run. Steps: 15. Re-mints: none.
 - Authority: [docs/work-orders/WO-005-foundation-libraries.md](WO-005-foundation-libraries.md)
 
 ### WO-006
@@ -78,7 +112,7 @@ None.
 - Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh; reviewer xhigh.
 - Track: delivery
-- Cost: adds &#96;libs/shared/events&#96;, &#96;libs/shared/data-access&#96;, &#96;libs/shared/state&#96;, &#96;libs/features/home-data-access&#96;, the MSW worker and handlers, the interceptors, the hygiene check script, about 70 source files; adds &#96;@ngrx/signals&#96;, &#96;@angular-architects/ngrx-toolkit&#96; (or a house &#96;withCallState&#96;), &#96;msw&#96; to the workspace. Removes &#96;HomeFacade&#96;'s static data. Wall-clock: about 6 to 8 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 house rules 8, 11, 16, the NgRx Events plugin and toolkit declarations, the MSW browser and Node guides, this order, about 150 KB. Commands added in the target: &#96;npm run lint:hygiene&#96;, &#96;npm run msw:init&#96;. Tokens: unknown until run. Steps: 15. Re-mints: none.
+- Cost: adds &#96;libs/shared/events&#96;, &#96;libs/shared/data-access&#96;, &#96;libs/shared/state&#96;, &#96;libs/features/home-data-access&#96;, the MSW worker and handlers, the interceptors, the hygiene check script, about 70 source files; adds &#96;@ngrx/signals&#96;, &#96;@angular-architects/ngrx-toolkit&#96; (or a house &#96;withCallState&#96;), &#96;msw&#96; pinned to 3.x (&#96;~3.0.3&#96; or the current 3.x at activation, recorded) to the workspace. Removes &#96;HomeFacade&#96;'s static data. Wall-clock: about 6 to 8 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 house rules 8, 11, 16, the NgRx Events plugin and toolkit declarations, the MSW browser and Node guides, this order, about 150 KB. Commands added in the target: &#96;npm run lint:hygiene&#96;, &#96;npm run msw:init&#96;. Tokens: unknown until run. Steps: 15. Re-mints: none.
 - Authority: [docs/work-orders/WO-007-events-stores-data-access.md](WO-007-events-stores-data-access.md)
 
 ### WO-008
@@ -99,9 +133,9 @@ None.
 - Cost: adds &#96;libs/shared/auth&#96; with its kit, the mocked identity provider handlers and signing key for development, the &#96;authHttpEvents&#96; and &#96;sessionEvents&#96; groups, guards, the permission directive, the &#96;/login&#96; and &#96;/denied&#96; routes, about 60 source files; adds one OpenID Connect client library and &#96;jose&#96; (development signing in the mock) to the workspace. Removes nothing. Wall-clock: about 8 to 12 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 house rule 17, the events and state documents, the client library's documentation, this order, about 160 KB. Commands added in the target: none. Tokens: unknown until run. Steps: 15. Re-mints: none.
 - Authority: [docs/work-orders/WO-008-authentication-and-permissions.md](WO-008-authentication-and-permissions.md)
 
-[WO-003]: WO-003-register-dotln-angular.md
-[WO-004]: WO-004-scaffold-dotln-angular-workspace.md
 [WO-005]: WO-005-foundation-libraries.md
 [WO-006]: WO-006-component-taxonomy-shell-home.md
 [WO-007]: WO-007-events-stores-data-access.md
 [WO-008]: WO-008-authentication-and-permissions.md
+[WO-009]: WO-009-release-display-name.md
+[WO-010]: WO-010-protect-main-both-repositories.md

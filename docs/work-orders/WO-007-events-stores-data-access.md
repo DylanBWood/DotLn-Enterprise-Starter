@@ -10,7 +10,8 @@
 `libs/shared/state`, `libs/features/home-data-access`, the MSW worker and
 handlers, the interceptors, the hygiene check script, about 70 source files;
 adds `@ngrx/signals`, `@angular-architects/ngrx-toolkit` (or a house
-`withCallState`), `msw` to the workspace. Removes `HomeFacade`'s static data.
+`withCallState`), `msw` pinned to 3.x (`~3.0.3` or the current 3.x at
+activation, recorded) to the workspace. Removes `HomeFacade`'s static data.
 Wall-clock: about 6 to 8 hours of executor work plus the fixed cycle; unknown
 until run. Context bytes: WS-001 house rules 8, 11, 16, the NgRx Events plugin
 and toolkit declarations, the MSW browser and Node guides, this order, about
@@ -31,7 +32,11 @@ pass's research read (planning document §4): `@ngrx/signals` 22.0.1 with the
 Events plugin stable and `withEffects` renamed `withEventHandlers`;
 `@angular-architects/ngrx-toolkit` 22.0.0 with `withCallState`; MSW 3.0.3.
 Planner-synthesized. Opaque identifier, not a priority. Clean-room screen:
-public packages and the operator's own patterns.
+public packages and the operator's own patterns. Amended by the 2026-10-18
+main-rules planning pass
+([planning document](../planning/main-rules-and-platform-items-2026-10-18.md)
+§6 D5, D7 and §8.1): the `--draft` route, the final-review obligation and
+the repairs of receipt 001's known issues.
 **Depends on:** WO-006 merged (hard: `HomeFacade`, the container and the
 shell this order wires to stores; the base above is provisional and is set to
 WO-006's merge commit by the planning pass that follows it).
@@ -107,8 +112,10 @@ moved `http` and `HttpResponse` to `msw/http`; `resource()` and
   its intents dispatch `homePageEvents`.
 - `libs/shared/state` (`@dotln-angular/state`, `type:state`):
   `FeatureFlagStore` (initial flags from `EnvironmentConfig.featureFlags`,
-  overrides from the URL query `ff=<flag>:<on|off>` read once at boot,
-  `featureFlagEvents.overridden` dispatched for each), `NavigationStore`
+  overrides from the URL query `ff=<flag>:<on|off>` read once at boot only
+  when `EnvironmentConfig.featureFlagOverrides` is true, which the
+  development environment sets and the production file replacement sets
+  false, `featureFlagEvents.overridden` dispatched for each), `NavigationStore`
   (handles `navigationEvents` through `Router` using `buildRoute` from
   `core`, including `queryParamsHandling`), `ErrorStore` (collects
   `errorEvents`, exposes `latest` and `count`, dismiss intent). Provided by
@@ -126,8 +133,15 @@ moved `http` and `HttpResponse` to `msw/http`; `resource()` and
   `main.ts` only when `environment.mocks` is true, before `bootstrapApplication`;
   handlers live beside each data-access library's `testing/` and are
   aggregated in `apps/dotln/src/mocks/handlers.ts`; Vitest setup files start
-  `setupServer` from `msw/node` with `onUnhandledFrame: 'error'`; Playwright
-  runs against `nx serve dotln` with mocks on.
+  `setupServer` from `msw/node` with the listen option that fails an
+  unhandled request (`onUnhandledRequest: 'error'` in the MSW 3.x
+  declarations; the executor reads the installed declaration and records
+  the name), proved by behavior rather than by name: one spec issues a
+  request no handler matches and asserts the failure; Playwright runs
+  against `nx serve dotln` with mocks on. The production build excludes the
+  worker and the handlers: `main.ts` imports `mocks/browser` only inside the
+  `environment.mocks` branch through a dynamic import, and the mocked
+  endpoint paths live in the handler files only.
 - Shell: the error store's `latest` renders through a `dotln-toast` wrapper
   added to `ui` (vendor behind the wrapper) from the shell layout; the home
   container shows `loading` through `dotln-skeleton` and `error` through
@@ -181,10 +195,18 @@ two documents; `docs/evidence/WO-007/`.
 13. Launchpad write-back: `docs/repositories/dotln-angular.md` Demonstrated
     architecture gains a store, an event group, an interceptor and a handler
     path. Check: `npm run test:docs`.
-14. Commit; `implementation-ready`; draft pull request after the verification
-    pass (`feat: add events, signal stores, data access and MSW`).
-15. Handoff; at final review `target-records` and
-    `worktree publish WO-007 --target-worktree --branch feat/events-and-state --title "feat: add events, signal stores, data access and MSW" --body-file <reviewed body>`.
+14. Commit; `implementation-ready`; handoff per §Discipline. After the
+    session that records `verification-result pass` has done so, that
+    session runs
+    `npm run worktree -- publish WO-007 --target-worktree --draft --branch feat/events-and-state --title "feat: add events, signal stores, data access and MSW" --body-file <reviewed path>`,
+    which commits from the tree without moving `HEAD`, pushes the branch and
+    opens the draft pull request.
+15. At final review: read the draft's threads and workflow runs into
+    `docs/evidence/WO-007/preview-pr.json` and route each item,
+    `target-records`, then the same publish command without `--draft`, which
+    force-pushes with lease against the recorded draft head and reuses the
+    branch and the pull request. No work-in-progress commit, no force-push
+    by hand, no manual close.
 
 **Preflight:** in the target worktree `npx nx format:check`,
 `npx nx run-many -t lint test build`, `npm run lint:fixtures`,
@@ -195,33 +217,41 @@ then the target gate plain and review once each.
 **Acceptance criteria (all required)**
 
 1. Every `eventGroup(` call in the workspace is under `libs/shared/events/src/lib/{app,navigation,data-access,ui}/`
-   (`grep -rl "eventGroup(" libs apps --include=*.ts | grep -v "libs/shared/events/src/lib/" | grep -v spec`
+   (`grep -rl "eventGroup(" libs apps --include='*.ts' | grep -v "libs/shared/events/src/lib/" | grep -v spec`
    prints nothing) and `npx nx test events` exits 0 with the tier-prefix and
    uniqueness spec.
 2. `npm run lint:hygiene` exits 0 on the workspace, prints the exception
    count, and exits nonzero on each fixture under `tools/lint-fixtures/hygiene/`
    (an own-tier dispatch, a data-access to data-access mapping, a UI to UI
    mapping).
-3. `grep -rc "withEffects" libs apps --include=*.ts | grep -v ":0"` prints
+3. `grep -rc "withEffects" libs apps --include='*.ts' | grep -v ":0"` prints
    nothing; `HomeStore` uses `withCallState`, a reducer on `homePageEvents`
    and event handlers dispatching `homeHttpEvents.loadSuccess` or
    `loadFailure`, and `npx nx test home-data-access` exits 0 with specs for
    success, HTTP failure and timeout through MSW handlers.
 4. `grep -c "setupWorker" apps/dotln/src/mocks/browser.ts` is 1,
-   `apps/dotln/public/mockServiceWorker.js` exists, every Vitest setup file
-   under `libs` and `apps` that any spec's HTTP reaches starts `setupServer`
-   with `onUnhandledFrame: 'error'`, and the browser worker starts only when
+   `apps/dotln/public/mockServiceWorker.js` exists, `npm ls msw` reports a
+   3.x version, one spec under `libs/shared/data-access` issues a request no
+   handler matches and asserts that it fails (the unhandled-request option
+   proved by behavior), and the browser worker starts only when
    `environment.mocks` is true (`grep -c "environment.mocks" apps/dotln/src/main.ts`
    is at least 1).
-5. `npx nx e2e dotln-e2e` exits 0 and includes: tiles rendered from the
+5. `npx nx build dotln --configuration=production` exits 0 and
+   `grep -rlE "setupWorker|mockServiceWorker" dist/apps/dotln/browser` prints
+   nothing, and for every request path the handler files declare (listed by
+   `grep -rhoE "http\\.(get|post|put|patch|delete)\\('[^']+'" libs apps --include='*.ts' | sort -u`,
+   recorded in the evidence README) `grep -rl "<path>" dist/apps/dotln/browser`
+   prints nothing; and `grep -c "featureFlagOverrides" apps/dotln/src/environments/environment.prod.ts`
+   is at least 1 with the value `false`.
+6. `npx nx e2e dotln-e2e` exits 0 and includes: tiles rendered from the
    mocked endpoint; a forced failure showing the empty state and the toast;
    `?ff=<flag>:on` changing a flagged element; a navigation triggered by
    `navigationEvents.navigate` landing on the canonical route with its query
    parameters.
-6. `docs/dev-reference/architecture/events-and-state.md` and
+7. `docs/dev-reference/architecture/events-and-state.md` and
    `docs/ai-reference/state-rules.md` exist and the rules file carries the
    rule 16 flow table.
-7. `node scripts/target-gate.mjs WO-007 --review` records a passing row for
+8. `node scripts/target-gate.mjs WO-007 --review` records a passing row for
    every declared command with no tracked-byte mutation, and
    `npm run test:docs` passes in the launchpad order worktree; the Preflight
    line ran before the first full gate.
@@ -232,11 +262,17 @@ then the target gate plain and review once each.
 **Known issues and carry-ins:** the base line is provisional until the pass
 after WO-006 sets it; `withCallState` source (toolkit or house) is decided at
 step 5 from the installed peer ranges; `resource()` inside stores is admitted
-only with a decision naming the store.
+only with a decision naming the store. This order activates only on a
+launchpad whose starter carries core WO-221's `--draft` form (WO-005 step
+1's route guard); the draft pull request and its workflow runs are a
+final-review obligation read from `docs/evidence/WO-007/preview-pr.json`,
+never a criterion (main-rules planning document §6 D5 and D7). The `Target
+release classification` line and the Preflight line in the landed grammar
+are added by the pass that sets the base.
 
 **Non-goals:** authentication, tokens and permissions (WO-008); a real API;
 persistence (`withStorageSync`); devtools beyond `withDevtools` in
 development; a second feature.
 
-**Operator-review assumptions:** the operator reads the draft pull request
-before final review.
+**Operator-review assumptions:** the operator reads the one draft pull
+request before final review, which the final publish reuses.

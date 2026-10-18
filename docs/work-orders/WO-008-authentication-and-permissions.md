@@ -27,7 +27,10 @@ error handling, timeouts, token expiration, invalid tokens, token storage best
 practices and more; auth around week three of a ten-pull-request foundation.
 Planner-synthesized. Opaque identifier, not a priority. Clean-room screen:
 public standards (RFC 6749, RFC 7636, OpenID Connect Core) and public
-packages.
+packages. Amended by the 2026-10-18 main-rules planning pass
+([planning document](../planning/main-rules-and-platform-items-2026-10-18.md)
+§6 D5, D7 and §8.1): the `--draft` route, the final-review obligation and
+the repairs of receipt 001's known issues.
 **Depends on:** WO-007 merged (hard: the event tiers, interceptors, stores and
 MSW this order extends; the base above is provisional and is set to WO-007's
 merge commit by the planning pass that follows it).
@@ -102,14 +105,20 @@ later choice (a hosted provider) must drop in through configuration.
   the bearer token to requests whose URL is under `apiBaseUrl` only;
   `authRefreshInterceptor` implements the single-flight refresh and replay.
 - Mocked provider: MSW handlers under `libs/shared/auth/src/testing/idp/`
-  implement discovery (`/.well-known/openid-configuration`), `authorize`
-  (redirects to a mock login page served by the app route `/mock-idp/login`
-  in development only, which posts back a code), `token` (code exchange with
-  PKCE verification, refresh with rotation, configurable lifetimes and
-  failures), `jwks`, `userinfo`, `end_session`; tokens signed with a
-  development RSA key generated at startup through `jose`; the handlers
-  expose knobs (`expiresInSeconds`, `failNextRefresh`, `invalidSignature`,
-  `skewSeconds`) through a test-only header so e2e can drive the matrix.
+  implement discovery (`/.well-known/openid-configuration`), `token` (code
+  exchange with PKCE verification, refresh with rotation, configurable
+  lifetimes and failures), `jwks`, `userinfo` and `end_session`. The
+  `authorize` step is a top-level navigation, which MSW does not intercept,
+  so it is served by the app itself in development: the route
+  `/mock-idp/authorize` renders the mock login page, validates the PKCE
+  challenge it received and redirects back to `/auth/callback` with a code;
+  Playwright drives that page directly, and no `page.route` handler is
+  needed. Tokens are signed with a development RSA key generated at startup
+  through `jose` under a fixed key identifier (`kid`) the bundle check in
+  criterion 5 names; the handlers expose knobs (`expiresInSeconds`,
+  `failNextRefresh`, `invalidSignature`, `skewSeconds`) through a test-only
+  header so e2e can drive the matrix. The mocked endpoint paths live in one
+  constants file under `testing/idp/` so the bundle check can list them.
 - Routes: `/login` (anonymous shell page with the sign-in button),
   `/auth/callback`, `/denied`, `/mock-idp/login` (development only, excluded
   from production builds by environment); `BasePaths` gains them.
@@ -123,10 +132,12 @@ later choice (a hosted provider) must drop in through configuration.
   permission denied on route (redirect to `/denied`); permission revoked on
   refresh (element hidden on next render).
 - Documents: `docs/dev-reference/security/authentication.md` (flow diagrams
-  in text, storage rules and why, the matrix, how to swap the provider) and
-  `docs/ai-reference/auth-rules.md` (imperative rules: tokens in memory
-  only, attach bearer only to API URLs, never log tokens, permission checks
-  through the store, mock knobs only in development and tests).
+  in text, storage rules and why, the matrix, how to swap the provider, and
+  the statement that the server enforces authorization while client checks
+  shape presentation only) and `docs/ai-reference/auth-rules.md` (imperative
+  rules: tokens in memory only, attach bearer only to API URLs, never log
+  tokens, permission checks through the store, client checks never the
+  security boundary, mock knobs only in development and tests).
 
 Rejected: hand-rolled PKCE and token parsing (axis: an established client
 library is the legitimate choice; the port keeps it swappable); tokens in web
@@ -172,10 +183,18 @@ provider; the matrix tests; the two documents; `docs/evidence/WO-008/`.
 13. Launchpad write-back: `docs/repositories/dotln-angular.md` Demonstrated
     architecture gains the guard, interceptor and store paths; WS-001's
     delivery states updated by the final review. Check: `npm run test:docs`.
-14. Commit; `implementation-ready`; draft pull request after the verification
-    pass (`feat: add authentication and permissions`).
-15. Handoff; at final review `target-records` and
-    `worktree publish WO-008 --target-worktree --branch feat/authentication-and-permissions --title "feat: add authentication and permissions" --body-file <reviewed body>`.
+14. Commit; `implementation-ready`; handoff per §Discipline. After the
+    session that records `verification-result pass` has done so, that
+    session runs
+    `npm run worktree -- publish WO-008 --target-worktree --draft --branch feat/authentication-and-permissions --title "feat: add authentication and permissions" --body-file <reviewed path>`,
+    which commits from the tree without moving `HEAD`, pushes the branch and
+    opens the draft pull request.
+15. At final review: read the draft's threads and workflow runs into
+    `docs/evidence/WO-008/preview-pr.json` and route each item,
+    `target-records`, then the same publish command without `--draft`, which
+    force-pushes with lease against the recorded draft head and reuses the
+    branch and the pull request. No work-in-progress commit, no force-push
+    by hand, no manual close.
 
 **Preflight:** in the target worktree `npx nx format:check`,
 `npx nx run-many -t lint test build`, `npm run lint:fixtures`,
@@ -185,9 +204,12 @@ then the target gate plain and review once each.
 
 **Acceptance criteria (all required)**
 
-1. `grep -rlE "localStorage|sessionStorage" libs/shared/auth/src apps/dotln/src --include=*.ts | grep -v spec`
-   prints nothing, and `grep -rc "console.log" libs/shared/auth/src --include=*.ts | grep -v ":0"`
-   prints nothing.
+1. `grep -rlE "localStorage|sessionStorage" libs/shared/auth/src apps/dotln/src --include='*.ts' | grep -v spec`
+   prints nothing; `grep -rc "console.log" libs/shared/auth/src --include='*.ts' | grep -v ":0"`
+   prints nothing; and an e2e step after the sign-in reads every key of
+   `localStorage` and `sessionStorage` and asserts that no value matches the
+   JWT shape (three dot-separated base64url segments), which covers the
+   client library's own stores as well as house code.
 2. `libs/shared/auth/src/lib/session/transitions.ts` declares the transition
    table for the six states and `transitions.spec.ts` asserts every state and
    event pair (the spec iterates the table and the event list, so an
@@ -205,15 +227,19 @@ then the target gate plain and review once each.
    element hidden by `*dotlnHasPermission` for a user without the permission;
    token expiry during use followed by a transparent refresh; refresh failure
    returning to `/login`.
-5. The production build contains no mock provider code
-   (`npx nx build dotln --configuration=production` exits 0 and
-   `grep -rc "mock-idp" dist/apps/dotln/browser | grep -v ":0"` prints
-   nothing), and the bearer token is attached only to requests under
+5. The production build contains no mock provider code:
+   `npx nx build dotln --configuration=production` exits 0, and for the
+   development signing key's identifier (the `kid` constant) and for every
+   path the mocked provider's constants file declares (both listed in the
+   evidence README), `grep -rl "<value>" dist/apps/dotln/browser` prints
+   nothing; and the bearer token is attached only to requests under
    `apiBaseUrl` (a spec asserts a request to another origin carries no
    `Authorization` header).
 6. `docs/dev-reference/security/authentication.md` states the storage rule,
-   the refresh rule, the matrix and the provider swap, and
-   `docs/ai-reference/auth-rules.md` exists.
+   the refresh rule, the matrix, the provider swap and that the server
+   enforces authorization while client checks shape presentation only
+   (`grep -c "server enforces authorization" docs/dev-reference/security/authentication.md`
+   is at least 1), and `docs/ai-reference/auth-rules.md` exists.
 7. `node scripts/target-gate.mjs WO-008 --review` records a passing row for
    every declared command with no tracked-byte mutation, and
    `npm run test:docs` passes in the launchpad order worktree; the Preflight
@@ -225,11 +251,19 @@ then the target gate plain and review once each.
 **Known issues and carry-ins:** the base line is provisional until the pass
 after WO-007 sets it; the client library is chosen at step 2 with a recorded
 decision; signature verification is the API's duty and is stated, not
-implemented, on the client; a real provider is a later member.
+implemented, on the client; a real provider is a later member. This order
+activates only on a launchpad whose starter carries core WO-221's `--draft`
+form (WO-005 step 1's route guard); the draft pull request and its workflow
+runs are a final-review obligation read from
+`docs/evidence/WO-008/preview-pr.json`, never a criterion (main-rules
+planning document §6 D5 and D7). The `Target release classification` line
+and the Preflight line in the landed grammar are added by the pass that sets
+the base.
 
 **Non-goals:** a real identity provider or API; a backend-for-frontend;
 multi-factor flows; user management screens; social login.
 
 **Operator-review assumptions:** the operator accepts an established OpenID
 Connect client library behind the port rather than hand-rolled flows, and
-reads the draft pull request before final review.
+reads the one draft pull request before final review, which the final
+publish reuses.

@@ -2,5 +2,20 @@
   "schemaVersion": 1,
   "products": {},
   "dispatches": {},
-  "links": []
+  "links": [
+    {
+      "file": "docs/evidence/WO-004/README.md",
+      "href": "decisions.md",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-004's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-004/ by target-records (TargetRecordsCommitted, 2026-10-18); the launchpad record keeps its original link; declared by the 2026-10-18 main-rules planning pass (docs/planning/main-rules-and-platform-items-2026-10-18.md §2)."
+    },
+    {
+      "file": "docs/evidence/WO-004/handoff.md",
+      "href": "decisions.md",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-004's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-004/ by target-records (TargetRecordsCommitted, 2026-10-18); the launchpad record keeps its original link; declared by the 2026-10-18 main-rules planning pass (docs/planning/main-rules-and-platform-items-2026-10-18.md §2)."
+    }
+  ]
 }

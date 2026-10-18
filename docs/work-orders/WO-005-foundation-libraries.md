@@ -5,17 +5,19 @@
 **Effort:** executor xhigh+; verifier xhigh; reviewer xhigh.
 **Track:** delivery
 **Release classification:** none; a target order records no launchpad release.
-**Repository:** dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4
+**Repository:** dotln-angular @ 651d76ff68e9b3a38fe770226deb634bca28b54c
 **Cost:** adds three libraries under `libs/shared/` with their `testing`
 entry points, the environment files and primer, the proxy configuration, the
-lint rules for tokens and `#private`, about 40 source files; adds `ramda`,
-`ramda-adjunct`, `@types/ramda`, `@jsverse/transloco` and `dotenv` to the
-workspace. Removes the placeholder page's inline strings (moved to `en.json`).
-Wall-clock: about 4 to 6 hours of executor work plus the fixed cycle; unknown
-until run. Context bytes: WS-001, the generator log, this order, the Transloco
-and Ramda type declarations, about 80 KB. Commands added in the target:
-`npm run env:prime`, `npm run i18n:check`. Tokens: unknown until run. Steps:
-13. Re-mints: none.
+lint rules for tokens and `#private`, three check scripts under
+`tools/scripts/`, `THIRD-PARTY-NOTICES.md`, about 45 source files; adds
+`ramda`, `ramda-adjunct`, `@types/ramda`, `@jsverse/transloco` and `dotenv`
+to the workspace. Removes the placeholder page's inline strings (moved to
+`en.json`). Wall-clock: about 4 to 6 hours of executor work plus the fixed
+cycle; unknown until run. Context bytes: WS-001, the generator log, this
+order, the Transloco and Ramda type declarations, about 80 KB. Commands added
+in the target: `npm run env:prime`, `npm run i18n:check`,
+`npm run check:templates`, `npm run check:tokens`, `npm run check:kits`.
+Tokens: unknown until run. Steps: 15. Re-mints: none.
 **Nomination provenance:** the 2026-10-18 angular-workstream planning pass
 ([planning document](../planning/angular-workstream-2026-10-18.md) §5 and §8),
 on the operator's direction of 2026-10-17 (ignored intake capture, SHA-256
@@ -28,13 +30,19 @@ injection tokens with the `dotln-angular.<scope>.<lib>.<name>` description;
 `BasePaths` and `<Feature>Paths` enums with lazy loading; `AppBasePathToken`
 from `<base href>`; test kits for nearly every injectable; proxy configuration;
 `#private`, `readonly`, `no-unused-vars` warn with the underscore opt-out.
-Versions from the pass's research read (planning document §4).
-Planner-synthesized. Opaque identifier, not a priority. Clean-room screen:
-public packages, their public test suites (MIT and BSD-3-Clause) and the
-operator's own patterns.
-**Depends on:** WO-004 merged (hard: the workspace, its tags and its gate
-exist; this order's base is set to WO-004's merge commit by the planning pass
-that follows it; the base above is provisional).
+Versions from the pass's research read (planning document §4). Amended by
+the 2026-10-18 main-rules planning pass
+([planning document](../planning/main-rules-and-platform-items-2026-10-18.md)
+§6 D5 to D8 and §8.1): the base set to WO-004's merge commit, the cache step,
+the `--draft` route, the final-review obligation and the repairs of receipt
+001's known issues. Planner-synthesized. Opaque identifier, not a priority.
+Clean-room screen: public packages, their public test suites (MIT and
+BSD-3-Clause) and the operator's own patterns.
+**Depends on:** WO-004 merged (hard, met: the workspace, its tags and its
+gate exist at `651d76ff68e9b3a38fe770226deb634bca28b54c`, DotLn-Angular's
+`main` on 2026-10-18); and a launchpad whose starter carries core WO-221's
+`--draft` form of `worktree publish` (a precondition of step 1, not a typed
+edge).
 **Workstream:** WS-001
 
 <!-- dotln-dependencies:start -->
@@ -42,7 +50,7 @@ that follows it; the base above is provisional).
   {
     "workOrderId": "WO-004",
     "relation": "hard",
-    "reason": "the scaffolded workspace this order adds libraries to; the base line is set to its merge commit before activation"
+    "reason": "the scaffolded workspace this order adds libraries to; the base line names its merge commit"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -63,10 +71,12 @@ through Transloco's `t` pipe, and imports `R` and `RA` from
 `@dotln-angular/utils` with types that compose; every injectable introduced
 has a test kit in its library's `testing` entry point and a spec that uses it.
 
-**Observed gap (dated 2026-10-18, target `main` at `bc9133e9`; restated by
-the pass that sets the base):** the workspace has no libraries, no
-environment type, no i18n and no utilities; `tsconfig.base.json` has no
-`@dotln-angular/*` paths. Transloco 8.4.0's pipe is named `transloco`, so the
+**Observed gap (dated 2026-10-18, target `main` at `651d76ff`):** the
+workspace holds `apps/dotln` and `apps/dotln-e2e`, the tooling, CI and the
+two documentation roots WO-004 scaffolded (Node 26.9.0, npm 11.19.1, Nx
+23.3.0, Angular 22.2.3, TypeScript 6.0.3, Vitest 4.1.12 observed at its
+reviewed commit), and no `libs/` directory, no environment type, no i18n and
+no utilities; `tsconfig.base.json` declares empty `paths`. Transloco 8.4.0's pipe is named `transloco`, so the
 operator's `'key' | t` form needs a house pipe; Transloco has no typed keys
 (the typed-keys lint is a later member). Ramda 0.32.0 ships no types
 (`@types/ramda` 0.32.0 re-exports `types-ramda`); Ramda Adjunct 6.1.0 ships
@@ -133,8 +143,36 @@ its own types and is BSD-3-Clause.
   `no-restricted-syntax` rule refusing `new InjectionToken(` whose first
   argument does not start with `dotln-angular.` (selector on the literal).
 - Proxy: `apps/dotln/proxy.conf.json` mapping `/api` to the
-  `DOTLN_API_PROXY_TARGET` from the primed environment, wired to `serve`.
+  `DOTLN_API_PROXY_TARGET` from the primed environment, wired to `serve`
+  through the `proxyConfig` option of the app's `serve` target.
 - Page: the WO-004 placeholder page reads its heading through `'home.title' | t`.
+- Build cache per worktree (planning document §6 D8): `@angular/build`
+  resolves a relative cache path to the main checkout when the workspace is
+  a Git worktree (`src/utils/normalize-cache.js`, read by core's
+  release-close session on 2026-10-18). Step 5 reads that file in the
+  worktree's `node_modules`, determines which setting keeps the cache under
+  the worktree (an absolute `cli.cache.path` per worktree, an environment
+  variable, or none needed), applies it so a gate never touches another
+  checkout's cache, and records the finding in the repository profile and
+  the generator log; a setting that belongs to the registration's gate argv
+  rather than the target is boarded for the upgrade order.
+- Three check scripts (receipt 001's known issues, repaired by the
+  main-rules pass): `tools/scripts/check-template-literals.mjs` parses every
+  inline and file template under `apps/dotln/src` and `libs` with
+  `@angular/compiler`'s `parseTemplate` and lists text nodes that are not
+  inside an interpolation using the `t` pipe (`npm run check:templates`);
+  `tools/scripts/check-token-names.mjs` reads every `new InjectionToken`
+  construction across lines and nested generics with the TypeScript compiler
+  API and lists descriptions not starting with `dotln-angular.`
+  (`npm run check:tokens`); `tools/scripts/check-spec-kits.mjs` reads every
+  `*.spec.ts` under `libs/shared` that calls `TestBed.configureTestingModule`
+  and lists those whose `providers` array does not spread a
+  `provide*TestKit(` call (`npm run check:kits`). Each prints its findings
+  and exits nonzero when any exist; CI runs the three.
+- Third-party texts: each ported spec opens with the upstream file's
+  copyright line and license name, and `THIRD-PARTY-NOTICES.md` at the
+  workspace root holds the MIT text for Ramda and the BSD-3-Clause text for
+  Ramda Adjunct.
 
 Rejected: a `shared/testing` library holding every kit (axis: a kit lives
 beside the thing it provides, so a library's `testing` entry point is the
@@ -143,16 +181,21 @@ platform's own convention); exposing Transloco's `transloco` pipe directly
 one class); typed translation keys here (axis: not day one, by direction).
 
 **Deliverables:** the three libraries with `testing` entry points; the
-environment files, primer and proxy; the lint rules; `en.json`; the generator
-log lines; `docs/dev-reference/architecture/foundation.md` and
+environment files, primer and proxy; the lint rules; the three check
+scripts; `THIRD-PARTY-NOTICES.md`; `en.json`; the generator log lines; the
+cache finding in the profile and the log;
+`docs/dev-reference/architecture/foundation.md` and
 `docs/ai-reference/foundation-rules.md`; `docs/evidence/WO-005/`.
 
 **Execution plan:**
 
 1. Base guard: in the target clone, `git fetch origin && git rev-parse origin/main`
    must equal the base this order's `Repository:` line names; if not, stop
-   and report that a planning pass must set the base (the line is set by the
-   pass after WO-004 merges). Then `npm run worktree -- start WO-005 docs/work-orders/WO-005-foundation-libraries.md`.
+   and report that a planning pass must set the base. Route guard: in the
+   launchpad, `grep -c -- '--draft' scripts/worktree.mjs` must print at
+   least 1 (the starter carries core WO-221's draft form); if it prints 0,
+   stop and report that the upgrade order must land first (planning document
+   §6 D5 and D6). Then `npm run worktree -- start WO-005 docs/work-orders/WO-005-foundation-libraries.md`.
    Check: `npm run resume -- status --json` shows the base.
 2. `docs/dev-reference/workspace/generator-log.md`: append each generator
    command before running it. Check: three library lines and three
@@ -165,41 +208,70 @@ log lines; `docs/dev-reference/architecture/foundation.md` and
    `fileReplacements`, `local`), `package.json` `env:prime`. Check:
    `cp .env.example .env && npm run env:prime && npx nx build dotln --configuration=local`
    exits 0 and `environment.local.ts` is ignored (`git check-ignore -q apps/dotln/src/environments/environment.local.ts`).
-5. `libs/shared/utils`: generate; `ramda.ts`, `ramda-adjunct.ts`,
+5. Build cache per worktree: read
+   `node_modules/@angular/build/src/utils/normalize-cache.js` in the
+   worktree, record how a relative `cli.cache.path` resolves under a Git
+   worktree, apply the setting that keeps the cache under the worktree (or
+   record that none is needed), and append the finding to
+   `docs/dev-reference/workspace/generator-log.md` and to the launchpad's
+   `docs/repositories/dotln-angular.md` §Commands (step 14). Check: after
+   `npx nx build dotln`, `find . -path ./node_modules -prune -o -type d -name cache -print`
+   lists the cache under this worktree and
+   `ls <main checkout>/.angular 2>/dev/null` lists nothing new since the
+   step began (record both outputs).
+6. `libs/shared/utils`: generate; `ramda.ts`, `ramda-adjunct.ts`,
    `public_api.ts`; the ported specs under `src/lib/upstream-specs/` with
-   attribution comments. Check: `npx nx test utils` exits 0 and
+   the upstream copyright line and license name; `THIRD-PARTY-NOTICES.md`.
+   Check: `npx nx test utils` exits 0,
    `grep -rl "ported from" libs/shared/utils/src/lib/upstream-specs | wc -l`
-   equals the number of functions `public_api.ts` names as used.
-6. `libs/shared/i18n`: generate; provider, loader, `TPipe`, missing-key
+   equals the number of functions `public_api.ts` names as used, and
+   `grep -c "BSD-3-Clause" THIRD-PARTY-NOTICES.md` and `grep -c "MIT" THIRD-PARTY-NOTICES.md`
+   each print at least 1.
+7. `libs/shared/i18n`: generate; provider, loader, `TPipe`, missing-key
    handler; `apps/dotln/public/i18n/en.json`; `package.json` `i18n:check`.
    Check: `npx nx test i18n` and `npm run i18n:check` exit 0.
-7. Test kits: generate the `testing` entry point for each library; write the
+8. Test kits: generate the `testing` entry point for each library; write the
    kits; one spec per library uses its kit. Check: `npx nx run-many -t lint test`
    exits 0; on failure of the entry-point wiring, record the decision and use
    sibling `<lib>-testing` libraries.
-8. Lint rules in `eslint.config.mjs` as the Design states, with
+9. Lint rules in `eslint.config.mjs` as the Design states, with
    `tools/lint-fixtures/private-keyword.ts` and `tools/lint-fixtures/bad-token.ts`
    expected to fail under `npm run lint:fixtures`. Check: `npm run lint:fixtures`
    exits 0.
-9. `apps/dotln`: `app.config.ts` uses `provideDotlnCore({ environment })` and
-   `provideDotlnI18n()`; the page uses `| t`; `proxy.conf.json` wired. Check:
-   `npx nx build dotln` and `npx nx e2e dotln-e2e` exit 0.
-10. Documentation: `docs/dev-reference/architecture/foundation.md` (the
+10. `apps/dotln`: `app.config.ts` uses `provideDotlnCore({ environment })` and
+    `provideDotlnI18n()`; the page uses `| t`; `proxy.conf.json` wired to
+    `serve`. Check: `npx nx build dotln` and `npx nx e2e dotln-e2e` exit 0,
+    and `node -e "const p=require('./apps/dotln/project.json');console.log(JSON.stringify(p.targets.serve).includes('proxy.conf.json'))"`
+    prints `true`.
+11. The three check scripts under `tools/scripts/` and their `package.json`
+    commands (`check:templates`, `check:tokens`, `check:kits`), each with
+    one fixture under `tools/lint-fixtures/` it must flag, run by CI. Check:
+    each command exits 0 on the workspace and nonzero on its fixture.
+12. Documentation: `docs/dev-reference/architecture/foundation.md` (the
     environment, tokens, paths, utils, i18n, kits, with one path each),
     `docs/ai-reference/foundation-rules.md` (imperative rules: token naming,
     `provide*()` only, `| t` for strings, `R`/`RA` imports, kits for
     injectables), `docs/dev-reference/workspace/conventions.md` updated with
     house rules 7, 9, 10, 11. Check: each file exists and
     `npm run i18n:check` still exits 0.
-11. Gate: `node scripts/target-gate.mjs WO-005` and `--review`. Check:
+13. Gate: `node scripts/target-gate.mjs WO-005` and `--review`. Check:
     passing rows, no mutation.
-12. Launchpad write-back: `docs/repositories/dotln-angular.md` Demonstrated
+14. Launchpad write-back: `docs/repositories/dotln-angular.md` Demonstrated
     architecture gains the paths for a provide function, a token, the routes
-    enums and a test kit. Check: `npm run test:docs` exits 0.
-13. Commit; `implementation-ready`; after the verification pass, the draft
-    pull request (`feat: add the core, utils and i18n foundation libraries`);
-    handoff per §Discipline; at final review `target-records` and
-    `worktree publish WO-005 --target-worktree --branch feat/foundation-libraries --title "feat: add the core, utils and i18n foundation libraries" --body-file <reviewed body>`.
+    enums and a test kit, and §Commands gains the cache finding of step 5.
+    Check: `npm run test:docs` exits 0.
+15. Commit; `implementation-ready`; handoff per §Discipline. After the
+    session that records `verification-result pass` has done so, that
+    session runs
+    `npm run worktree -- publish WO-005 --target-worktree --draft --branch feat/foundation-libraries --title "feat: add the core, utils and i18n foundation libraries" --body-file <reviewed path>`,
+    which commits from the tree without moving `HEAD`, pushes the branch and
+    opens the draft pull request. At final review: read the draft's threads
+    and workflow runs into `docs/evidence/WO-005/preview-pr.json` and route
+    each item (a finding, a boarded follow-up or a discard), `target-records`,
+    then the same publish command without `--draft`, which force-pushes with
+    lease against the recorded draft head and reuses the branch and the pull
+    request. No work-in-progress commit, no force-push by hand, no manual
+    close.
 
 **Preflight:** in the target worktree `npx nx format:check`,
 `npx nx run-many -t lint test build`, `npm run lint:fixtures`, `npm run i18n:check`,
@@ -214,26 +286,36 @@ then `node scripts/target-gate.mjs WO-005` and `--review` once each.
    `@dotln-angular/utils`, `@dotln-angular/i18n` and the three
    `@dotln-angular/<lib>/testing` paths (or, under the recorded fallback, the
    three `@dotln-angular/<lib>-testing` paths).
-2. `grep -rhoE "new InjectionToken<[^>]*>\('[^']+'" libs apps | grep -vc "'dotln-angular\."`
-   prints 0, and `npm run lint:fixtures` exits 0 by observing the `#private`
-   and token-name rules fail on their fixtures.
+2. `npm run check:tokens` exits 0 on the workspace (every `new InjectionToken`
+   description starts with `dotln-angular.`, read across lines and nested
+   generics) and nonzero on `tools/lint-fixtures/bad-token.ts`, and
+   `npm run lint:fixtures` exits 0 by observing the `#private` and token-name
+   rules fail on their fixtures.
 3. `cp .env.example .env && npm run env:prime` writes
    `apps/dotln/src/environments/environment.local.ts`, which Git ignores;
    `npx nx build dotln --configuration=production` and
    `--configuration=local` both exit 0; `grep -c fileReplacements apps/dotln/project.json`
    is at least 1.
-4. `grep -rhoE "'[a-z0-9.-]+' \| t\b" apps/dotln/src libs | wc -l` is at
-   least 1 and `grep -rE ">[^<{]*[A-Za-z]{3,}[^<}]*<" apps/dotln/src/app --include=*.html --include=*.ts | grep -v "| t" | wc -l`
-   prints 0 (no literal user-facing text outside the pipe), and
-   `npm run i18n:check` exits 0.
-5. Every spec file under `libs/shared/*/src` that provides an injectable does
-   so through a `provide*TestKit` import from a `testing` entry point
-   (`grep -rL "TestKit" $(grep -rl "TestBed.configureTestingModule" libs/shared --include=*.spec.ts)`
-   prints nothing), and `npx nx run-many -t test` exits 0.
+4. `grep -rhoE "'[a-z0-9.-]+' \| t\b" apps/dotln/src libs --include='*.html' --include='*.ts' | wc -l`
+   is at least 1, `npm run check:templates` exits 0 on the workspace (no text
+   node outside a `t` pipe interpolation, templates parsed across lines) and
+   nonzero on `tools/lint-fixtures/literal-text.ts`, and `npm run i18n:check`
+   exits 0.
+5. `npm run check:kits` exits 0 on the workspace (every spec under
+   `libs/shared` that calls `TestBed.configureTestingModule` spreads a
+   `provide*TestKit(` call into its providers) and nonzero on
+   `tools/lint-fixtures/spec-without-kit.spec.ts`, and `npx nx run-many -t test`
+   exits 0.
 6. `libs/shared/utils/src/lib/upstream-specs/` holds one ported spec per
-   function `public_api.ts` documents as used, each with an attribution
-   comment naming the upstream file, and `npx nx test utils` exits 0.
-7. `node scripts/target-gate.mjs WO-005 --review` records a passing row for
+   function `public_api.ts` documents as used, each opening with the
+   upstream file's copyright line and license name; `THIRD-PARTY-NOTICES.md`
+   exists with both license texts (`grep -c "BSD-3-Clause" THIRD-PARTY-NOTICES.md`
+   and `grep -c "MIT" THIRD-PARTY-NOTICES.md` each at least 1); and
+   `npx nx test utils` exits 0.
+7. `apps/dotln/proxy.conf.json` exists, maps `/api`, and the app's `serve`
+   target names it (`node -e "const p=require('./apps/dotln/project.json');console.log(JSON.stringify(p.targets.serve).includes('proxy.conf.json'))"`
+   prints `true`).
+8. `node scripts/target-gate.mjs WO-005 --review` records a passing row for
    every declared command with no tracked-byte mutation, and
    `npm run test:docs` passes in the launchpad order worktree; the Preflight
    line ran before the first full gate.
@@ -241,15 +323,23 @@ then `node scripts/target-gate.mjs WO-005` and `--review` once each.
 **Evidence gate:** the gate rows, the recorded command outputs and
 `docs/evidence/WO-005/README.md`.
 
-**Known issues and carry-ins:** the base line is provisional until the pass
-after WO-004 sets it (planning document §6); the `providedIn: 'root'` default
-awaits the operator's ruling and is recorded as a decision; Nx secondary entry
-points for non-buildable libraries are a spike with a recorded fallback.
+**Known issues and carry-ins:** this order activates only on a launchpad
+whose starter carries core WO-221's `--draft` form (step 1's route guard);
+the operator chose to wait for it rather than run the hand route (planning
+document §6 D6). The draft pull request and its workflow runs are a
+final-review obligation read from `docs/evidence/WO-005/preview-pr.json`,
+never a criterion (D7). The operator's interim host-trust entries of
+2026-10-18 are outside the repository and are removed once the upgrade
+order shows the kit's admission carries the push (D10). The `providedIn: 'root'`
+default awaits the operator's ruling and is recorded as a decision; Nx
+secondary entry points for non-buildable libraries are a spike with a
+recorded fallback. The `Target release classification` line and the
+Preflight line in the landed grammar are added by the upgrade pass (D9, D12).
 
 **Non-goals:** UI components or a vendor library (WO-006); NgRx, events, MSW
 (WO-007); authentication (WO-008); typed translation keys (later member); a
 second language file beyond `en.json`.
 
 **Operator-review assumptions:** the operator accepts `providedIn: 'root'`
-limited to the base-path token until they rule; the operator reads the draft
-pull request before final review.
+limited to the base-path token until they rule; the operator reads the one
+draft pull request before final review, which the final publish reuses.
