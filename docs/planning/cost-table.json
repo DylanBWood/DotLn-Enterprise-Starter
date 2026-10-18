@@ -1,0 +1,591 @@
+{
+  "schemaVersion": 1,
+  "subjectSourceHash": "sha256:46c6917a3d07b0993344b19bc855bb8b8c4eb634c38411db081806b13e750870",
+  "acceptances": [],
+  "observedAt": "2026-10-18T00:44:32.563Z",
+  "subjectRevision": "289543e17e41b5b5d3387016403a041a8e03a96a",
+  "rows": [
+    {
+      "workOrder": "WO-003",
+      "observedAt": "2026-10-18T00:44:32.563Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-004",
+      "observedAt": "2026-10-18T00:44:32.563Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-005",
+      "observedAt": "2026-10-18T00:44:32.563Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-006",
+      "observedAt": "2026-10-18T00:44:32.563Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-007",
+      "observedAt": "2026-10-18T00:44:32.563Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-008",
+      "observedAt": "2026-10-18T00:44:32.563Z",
+      "metrics": null
+    }
+  ],
+  "traps": [
+    {
+      "id": "rule-beating",
+      "signal": "Read-obligation bytes against diff bytes; Stop refusals and re-announcements",
+      "metric": "readAmplification",
+      "series": [
+        {
+          "workOrder": "WO-001",
+          "value": null,
+          "delta": null
+        }
+      ],
+      "indicators": [
+        {
+          "metric": "readAmplification",
+          "series": [
+            {
+              "workOrder": "WO-001",
+              "value": null,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "stopRefusals",
+          "series": [
+            {
+              "workOrder": "WO-001",
+              "value": null,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "reAnnouncements",
+          "series": [
+            {
+              "workOrder": "WO-001",
+              "value": null,
+              "delta": null
+            }
+          ]
+        }
+      ],
+      "worsening": [],
+      "reopenCandidate": false
+    },
+    {
+      "id": "seeking-the-wrong-goal",
+      "signal": "Machinery share of elapsed time; phase durations against code-change size",
+      "metric": "machineryShare",
+      "series": [
+        {
+          "workOrder": "WO-001",
+          "value": 0.6489893727479058,
+          "delta": null
+        }
+      ],
+      "indicators": [
+        {
+          "metric": "machineryShare",
+          "series": [
+            {
+              "workOrder": "WO-001",
+              "value": 0.6489893727479058,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "elapsedPerCodeByte",
+          "series": [
+            {
+              "workOrder": "WO-001",
+              "value": null,
+              "delta": null
+            }
+          ]
+        }
+      ],
+      "worsening": [],
+      "reopenCandidate": false
+    },
+    {
+      "id": "shifting-the-burden-to-the-intervenor",
+      "signal": "Operator corrections and directions, manual closeout steps and emergency planning passes",
+      "corrections": [
+        {
+          "workOrder": "WO-001",
+          "total": null,
+          "byPhase": null,
+          "byUnit": null,
+          "byPhaseAndUnit": null,
+          "source": "unavailable"
+        }
+      ],
+      "directions": [
+        {
+          "workOrder": "WO-001",
+          "total": 4,
+          "byKind": {
+            "scopeExpand": 1,
+            "operatorOverride": 0,
+            "analysis": 0,
+            "conversationOnly": 0,
+            "operatorLabel": 0,
+            "resumeCorrection": 0,
+            "resumeDirection": 2,
+            "resumeScopeExpansion": 1,
+            "resumeOverride": 0,
+            "resumeTakeover": 0,
+            "resumeAnswer": 0,
+            "OperatorOverrideRecorded": 0,
+            "RecordCorrected": 0,
+            "CriterionWaived": 0
+          },
+          "source": "committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events"
+        }
+      ],
+      "metric": "operatorCorrections",
+      "series": [
+        {
+          "workOrder": "WO-001",
+          "value": null,
+          "delta": null
+        }
+      ],
+      "indicators": [
+        {
+          "metric": "operatorCorrections",
+          "series": [
+            {
+              "workOrder": "WO-001",
+              "value": null,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "operatorDirections",
+          "series": [
+            {
+              "workOrder": "WO-001",
+              "value": 4,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "manualCloseoutSteps",
+          "series": [
+            {
+              "workOrder": "WO-001",
+              "value": null,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "emergencyPasses",
+          "series": [
+            {
+              "workOrder": "WO-001",
+              "value": null,
+              "delta": null
+            }
+          ]
+        }
+      ],
+      "worsening": [],
+      "reopenCandidate": false,
+      "planningCaptures": [
+        {
+          "pass": "planning-afc1740dd0afc954",
+          "date": "2026-10-18",
+          "captures": 1
+        }
+      ]
+    },
+    {
+      "id": "drift-to-low-performance",
+      "signal": "Subject length, gate step count and cold-start byte series",
+      "metric": "coldStartBytes",
+      "series": [
+        {
+          "workOrder": "WO-001",
+          "value": null,
+          "delta": null
+        }
+      ],
+      "indicators": [
+        {
+          "metric": "coldStartBytes",
+          "series": [
+            {
+              "workOrder": "WO-001",
+              "value": null,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "subjectCharacters",
+          "series": [
+            {
+              "workOrder": "WO-001",
+              "value": null,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "gateStepCount",
+          "series": [
+            {
+              "workOrder": "WO-001",
+              "value": 16,
+              "delta": null
+            }
+          ]
+        }
+      ],
+      "worsening": [],
+      "reopenCandidate": false,
+      "coldStart": {
+        "comparisonEdition": "v0.1.0",
+        "profiles": [
+          {
+            "role": "executor",
+            "skillsRoot": ".claude/skills",
+            "path": ".claude/skills/dotln-executor/SKILL.md",
+            "skillBytes": 21239,
+            "bytes": 28262,
+            "previousBytes": 28110,
+            "previousCause": null,
+            "delta": 152,
+            "ceiling": null,
+            "lastAcceptance": {
+              "date": null,
+              "ceiling": null,
+              "revision": null,
+              "source": null,
+              "bytes": null,
+              "delta": null,
+              "cause": "no-acceptance"
+            },
+            "metric": "coldStartBytes.executor",
+            "verdict": "unset"
+          },
+          {
+            "role": "verifier",
+            "skillsRoot": ".claude/skills",
+            "path": ".claude/skills/dotln-verifier/SKILL.md",
+            "skillBytes": 18507,
+            "bytes": 25530,
+            "previousBytes": 25378,
+            "previousCause": null,
+            "delta": 152,
+            "ceiling": null,
+            "lastAcceptance": {
+              "date": null,
+              "ceiling": null,
+              "revision": null,
+              "source": null,
+              "bytes": null,
+              "delta": null,
+              "cause": "no-acceptance"
+            },
+            "metric": "coldStartBytes.verifier",
+            "verdict": "unset"
+          },
+          {
+            "role": "reviewer",
+            "skillsRoot": ".claude/skills",
+            "path": ".claude/skills/dotln-reviewer/SKILL.md",
+            "skillBytes": 20164,
+            "bytes": 27187,
+            "previousBytes": 27035,
+            "previousCause": null,
+            "delta": 152,
+            "ceiling": null,
+            "lastAcceptance": {
+              "date": null,
+              "ceiling": null,
+              "revision": null,
+              "source": null,
+              "bytes": null,
+              "delta": null,
+              "cause": "no-acceptance"
+            },
+            "metric": "coldStartBytes.reviewer",
+            "verdict": "unset"
+          },
+          {
+            "role": "release-close",
+            "skillsRoot": ".claude/skills",
+            "path": ".claude/skills/dotln-release-close/SKILL.md",
+            "skillBytes": 10163,
+            "bytes": 17186,
+            "previousBytes": 17034,
+            "previousCause": null,
+            "delta": 152,
+            "ceiling": null,
+            "lastAcceptance": {
+              "date": null,
+              "ceiling": null,
+              "revision": null,
+              "source": null,
+              "bytes": null,
+              "delta": null,
+              "cause": "no-acceptance"
+            },
+            "metric": "coldStartBytes.release-close",
+            "verdict": "unset"
+          },
+          {
+            "role": "planner",
+            "skillsRoot": ".claude/skills",
+            "path": ".claude/skills/dotln-planner/SKILL.md",
+            "skillBytes": 11616,
+            "bytes": 18639,
+            "previousBytes": 18487,
+            "previousCause": null,
+            "delta": 152,
+            "ceiling": null,
+            "lastAcceptance": {
+              "date": null,
+              "ceiling": null,
+              "revision": null,
+              "source": null,
+              "bytes": null,
+              "delta": null,
+              "cause": "no-acceptance"
+            },
+            "metric": "coldStartBytes.planner",
+            "verdict": "unset"
+          },
+          {
+            "role": "refuter",
+            "skillsRoot": ".claude/skills",
+            "path": ".claude/skills/dotln-refuter/SKILL.md",
+            "skillBytes": 10590,
+            "bytes": 17613,
+            "previousBytes": 17461,
+            "previousCause": null,
+            "delta": 152,
+            "ceiling": null,
+            "lastAcceptance": {
+              "date": null,
+              "ceiling": null,
+              "revision": null,
+              "source": null,
+              "bytes": null,
+              "delta": null,
+              "cause": "no-acceptance"
+            },
+            "metric": "coldStartBytes.refuter",
+            "verdict": "unset"
+          },
+          {
+            "role": "executor",
+            "skillsRoot": ".agents/skills",
+            "path": ".agents/skills/dotln-executor/SKILL.md",
+            "skillBytes": 21239,
+            "bytes": 28262,
+            "previousBytes": 28110,
+            "previousCause": null,
+            "delta": 152,
+            "ceiling": null,
+            "lastAcceptance": {
+              "date": null,
+              "ceiling": null,
+              "revision": null,
+              "source": null,
+              "bytes": null,
+              "delta": null,
+              "cause": "no-acceptance"
+            },
+            "metric": "coldStartBytes.executor",
+            "verdict": "unset"
+          },
+          {
+            "role": "verifier",
+            "skillsRoot": ".agents/skills",
+            "path": ".agents/skills/dotln-verifier/SKILL.md",
+            "skillBytes": 18507,
+            "bytes": 25530,
+            "previousBytes": 25378,
+            "previousCause": null,
+            "delta": 152,
+            "ceiling": null,
+            "lastAcceptance": {
+              "date": null,
+              "ceiling": null,
+              "revision": null,
+              "source": null,
+              "bytes": null,
+              "delta": null,
+              "cause": "no-acceptance"
+            },
+            "metric": "coldStartBytes.verifier",
+            "verdict": "unset"
+          },
+          {
+            "role": "reviewer",
+            "skillsRoot": ".agents/skills",
+            "path": ".agents/skills/dotln-reviewer/SKILL.md",
+            "skillBytes": 20164,
+            "bytes": 27187,
+            "previousBytes": 27035,
+            "previousCause": null,
+            "delta": 152,
+            "ceiling": null,
+            "lastAcceptance": {
+              "date": null,
+              "ceiling": null,
+              "revision": null,
+              "source": null,
+              "bytes": null,
+              "delta": null,
+              "cause": "no-acceptance"
+            },
+            "metric": "coldStartBytes.reviewer",
+            "verdict": "unset"
+          },
+          {
+            "role": "release-close",
+            "skillsRoot": ".agents/skills",
+            "path": ".agents/skills/dotln-release-close/SKILL.md",
+            "skillBytes": 10163,
+            "bytes": 17186,
+            "previousBytes": 17034,
+            "previousCause": null,
+            "delta": 152,
+            "ceiling": null,
+            "lastAcceptance": {
+              "date": null,
+              "ceiling": null,
+              "revision": null,
+              "source": null,
+              "bytes": null,
+              "delta": null,
+              "cause": "no-acceptance"
+            },
+            "metric": "coldStartBytes.release-close",
+            "verdict": "unset"
+          },
+          {
+            "role": "planner",
+            "skillsRoot": ".agents/skills",
+            "path": ".agents/skills/dotln-planner/SKILL.md",
+            "skillBytes": 11616,
+            "bytes": 18639,
+            "previousBytes": 18487,
+            "previousCause": null,
+            "delta": 152,
+            "ceiling": null,
+            "lastAcceptance": {
+              "date": null,
+              "ceiling": null,
+              "revision": null,
+              "source": null,
+              "bytes": null,
+              "delta": null,
+              "cause": "no-acceptance"
+            },
+            "metric": "coldStartBytes.planner",
+            "verdict": "unset"
+          },
+          {
+            "role": "refuter",
+            "skillsRoot": ".agents/skills",
+            "path": ".agents/skills/dotln-refuter/SKILL.md",
+            "skillBytes": 10590,
+            "bytes": 17613,
+            "previousBytes": 17461,
+            "previousCause": null,
+            "delta": 152,
+            "ceiling": null,
+            "lastAcceptance": {
+              "date": null,
+              "ceiling": null,
+              "revision": null,
+              "source": null,
+              "bytes": null,
+              "delta": null,
+              "cause": "no-acceptance"
+            },
+            "metric": "coldStartBytes.refuter",
+            "verdict": "unset"
+          }
+        ]
+      }
+    },
+    {
+      "id": "policy-resistance",
+      "signal": "Guard refusals, bypass tools and ad hoc scripts",
+      "metric": "guardRefusals",
+      "series": [
+        {
+          "workOrder": "WO-001",
+          "value": null,
+          "delta": null
+        }
+      ],
+      "indicators": [
+        {
+          "metric": "guardRefusals",
+          "series": [
+            {
+              "workOrder": "WO-001",
+              "value": null,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "bypassTools",
+          "series": [
+            {
+              "workOrder": "WO-001",
+              "value": null,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "adHocScripts",
+          "series": [
+            {
+              "workOrder": "WO-001",
+              "value": null,
+              "delta": null
+            }
+          ]
+        }
+      ],
+      "worsening": [],
+      "reopenCandidate": false
+    }
+  ],
+  "firstVerifications": {
+    "counted": 1,
+    "failed": 0,
+    "orders": [
+      {
+        "workOrder": "WO-001",
+        "firstVerification": "pass"
+      }
+    ],
+    "source": "canonical control fold: the first completed verification of each of the last eight orders by close time"
+  }
+}
