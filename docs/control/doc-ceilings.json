@@ -1,4 +1,11 @@
 {
   "schemaVersion": 1,
-  "documents": {}
+  "documents": {
+    "purpose.md": {
+      "ceiling": 1502,
+      "nonExemptBytesAtLanding": 1365,
+      "date": "2026-10-18",
+      "decision": "2026-10-18 angular-workstream planning pass: measured 1365 non-exempt bytes plus one tenth (docs/planning/angular-workstream-2026-10-18.md §11)."
+    }
+  }
 }

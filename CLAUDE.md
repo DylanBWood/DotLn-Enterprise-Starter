@@ -39,6 +39,8 @@ Read[verifier]: `@skills/dotln-verifier/SKILL.md` — verify.
 Read[reviewer]: `@skills/dotln-reviewer/SKILL.md` — final review.
 Read[release-close]: `@skills/dotln-release-close/SKILL.md` — release close.
 Read[planner]: `@skills/dotln-planner/SKILL.md` — planning or ideation.
+Read[all roles]: `docs/operator/README.md` — who the operator is, how they
+direct, how to read their tone; one record binding every harness and role.
 
 Expand skill read/review selectors from order/report paths. Read cited sections;
 name new inputs. A session that cannot load skills runs the
