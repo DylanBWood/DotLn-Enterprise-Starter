@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-003] — Register DotLn-Angular in this launchpad · **queued**
+- [x] [WO-003] — Register DotLn-Angular in this launchpad · **final-reviewed**
 - [ ] [WO-004] — Scaffold the DotLn-Angular workspace · **queued**
 - [ ] [WO-005] — Foundation libraries: core, utils, i18n, test kits · **queued**
 - [ ] [WO-006] — Component taxonomy, shell layout and the home feature · **queued**
@@ -27,23 +27,6 @@ None.
 
 ## Open
 
-### WO-003
-
-[WO-003 — Register DotLn-Angular in this launchpad: the configuration, class, authority profile and gate, the operator's publication grant, the outward vocabulary and the local clone record, so the first target order can activate (version assigned at activation)](WO-003-register-dotln-angular.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-001: historical-evidence (non-blocking) — the environment truth this instance recorded; read, not a gate.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: machinery
-- Cost: adds one root &#96;dotln.config.json&#96; (about 2 KB), one operator grant in &#96;packages/skeleton/loadouts/grants.json&#96; (about 0.4 KB), one &#96;docs/control/outward-vocabulary.json&#96; (about 0.3 KB), one ignored clone record and this order's evidence. Removes nothing: the launchpad has no registration today. Wall-clock: about 1 to 2 hours of executor work plus the fixed cycle (activation, verification, final review, release close); unknown until run. Context bytes: the executor reads 07-execution-guide.md §Where the control plane finds its documents, the profile convention and this order, about 40 KB. Commands added: none. Tokens: unknown until run. Steps: 9. Re-mints: none; no registered evidence source or feedback source is edited; no machinery suite source is edited, so &#96;npm test&#96; without &#96;--review&#96; is the product gate.
-- Authority: [docs/work-orders/WO-003-register-dotln-angular.md](WO-003-register-dotln-angular.md)
-
 ### WO-004
 
 [WO-004 — Scaffold the DotLn-Angular workspace: an Nx integrated monorepo on Angular 22 with the slim &#96;dotln&#96; shell app, zoneless and standalone, Vitest, Playwright, Sass, ESLint and Prettier, tagged module boundaries, CI with the gitmoji title workflow, and the two documentation roots with the generator log, gated by the repository's own declared gate](WO-004-scaffold-dotln-angular-workspace.md)
@@ -51,8 +34,8 @@ None.
 - State: draft.
 - Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-003.
-- References: WO-003: hard (unmet) — the registration, grant and outward vocabulary this order activates and publishes under live on main.
+- Dependencies: typed; dependency-ready.
+- References: WO-003: hard (met) — the registration, grant and outward vocabulary this order activates and publishes under live on main.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

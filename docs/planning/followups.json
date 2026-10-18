@@ -210,6 +210,14 @@
           "reopenWhen": "A kit update changes worktree integrate's regenerate step, or a second integration in this instance meets the same ENOENT and the operator asks for a local patch.",
           "targets": [],
           "at": "2026-10-18T00:39:44.043Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the v0.83.0 starter, observed at the WO-003 final-review integration on 2026-10-18 (WO-003-D014): the worktree integrate regenerate step now runs node scripts/launchpad.mjs verify when KIT-MANIFEST.json is present without package sources instead of npm run build, and its publication-locks step runs only where an edition page is declared; the integration printed Regenerated: runtime and left no pending step. At v0.82.0 (git show 2ed8447:scripts/lib/worktree-integration.mjs line 377) the step ran npm run build --silent unconditionally.",
+          "reopenWhen": "A later kit update makes the regenerate step build, or demand publication locks, in an export without package sources or edition pages.",
+          "targets": [],
+          "at": "2026-10-18T04:35:47.343Z"
         }
       ]
     },
@@ -258,6 +266,134 @@
           "reopenWhen": "A kit update changes the reader profile guidance, or this fork declares docs/control/reader-profiles.json, or the operator asks the fork to carry a local patch.",
           "targets": [],
           "at": "2026-10-18T00:39:44.043Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the v0.83.0 starter, observed at the WO-003 final review on 2026-10-18 (WO-003-D014): npm run reader -- profile prints the balanced guidance for prTitle, prBody, commitSubject, releaseNotes and releasePage with the line Profile source: balanced default; no reader profile declared, and release prepare --local during the integration printed no reader-profile ENOENT; this instance still declares no docs/control/reader-profiles.json.",
+          "reopenWhen": "This fork declares docs/control/reader-profiles.json, or a kit update stops printing the balanced default when the file is absent.",
+          "targets": [],
+          "at": "2026-10-18T04:35:47.349Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ccb3367ad84787cc",
+      "key": "decision:docs/evidence/WO-003/decisions.md#wo-003-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "48bee35ce2319b69e2d9c5e0c8e960132e464093554197ff31ad7bcb16f3eedf",
+          "ref": "docs/evidence/WO-003/decisions.md#wo-003-d003-register-this-worktrees-ignored-local-terms-list-from-the-original-checkouts-list",
+          "title": "WO-003-D003: Upstream kit: worktree start should carry or register the ignored local-terms list into the new order worktree, so the outward lint, harness check and the adjacent queue observe it…",
+          "summary": "{ \"id\": \"WO-003-D003\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: next (WO-003 execution plan step 3 and acceptance criterion 3; README § How to start step 4; Adjacent Repair)\", \"decision\": \"Register docs/control/local/terms.txt in this worktree as a byte-for-byte copy of the original checkout's ignored list, mode 600, without displaying, hashing to output or committing any of it, so the outward lint, harness check, the adjacent queue and the follow-up register observe the list as present here.\", \"evidence\": [ \"node scripts/harness.mjs check at entry: harness check: 34 generated surfaces; local-terms list: unavailable; after registration: local-terms list: present\", \"cmp -s original worktree",
+          "missing": false
+        },
+        {
+          "hash": "e235cfba6c2a043e7ca10e618e2fb264ada74f4407baf742799ac2b83dd7edeb",
+          "ref": "docs/evidence/WO-003/decisions.md#wo-003-d003-register-this-worktrees-ignored-local-terms-list-from-the-original-checkouts-list",
+          "title": "WO-003-D003: Upstream kit: worktree start should carry or register the ignored local-terms list into the new order worktree, so the outward lint, harness check and the adjacent queue observe it…",
+          "summary": "{ \"id\": \"WO-003-D003\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: next (WO-003 execution plan step 3 and acceptance criterion 3; the repository README § First steps, steps 4 and 7; Adjacent Repair)\", \"decision\": \"Register docs/control/local/terms.txt in this worktree as a byte-for-byte copy of the original checkout's ignored list, mode 600, without displaying, hashing to output or committing any of it, so the outward lint, harness check, the adjacent queue and the follow-up register observe the list as present here.\", \"evidence\": [ \"node scripts/harness.mjs check at entry: harness check: 34 generated surfaces; local-terms list: unavailable; after registration: local-terms list: present\", \"cm",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1eec5d4255b0162c",
+      "key": "decision:docs/evidence/WO-003/decisions.md#wo-003-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9f475962e58dd4aea62dd583874c636ee562ff86e96e81378faf231cf8f85b27",
+          "ref": "docs/evidence/WO-003/decisions.md#wo-003-d004-the-clone-record-cannot-be-written-from-this-worktree-before-the-merge-criterion-4-is-unmet",
+          "title": "WO-003-D004: After WO-003 merges and before WO-004 activates, run from the main checkout: npm run worktree -- clone dotln-angular \"$HOME/Projects/DotLn-Angular\" (expected output: Recorded local clone…",
+          "summary": "{ \"id\": \"WO-003-D004\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: next (WO-003 execution plan step 4; acceptance criterion 4)\", \"decision\": \"Record criterion 4 unmet: the clone command records into the main-branch worktree and validates the repository id against main's configuration, which lacks the registration until this order merges; it refused with unknown repository id and wrote nothing. The remedy is the same command run from the main checkout after the merge and before WO-004's step 1, which otherwise refuses with no local clone recorded. The recorder's acceptance of this registration and clone path was proved against this worktree's configuration.\", \"evidence\": [ \"npm run worktree --",
+          "missing": false
+        },
+        {
+          "hash": "ec67f0af5fdb4492827edbe0b10e2d01d769f2824a24b47c772f4f4fa82117e9",
+          "ref": "docs/evidence/WO-003/decisions.md#wo-003-d004-the-clone-record-cannot-be-written-from-this-worktree-before-the-merge-criterion-4-is-unmet",
+          "title": "WO-003-D004: After WO-003 merges and the main checkout holds the merge (release close fast-forwards main; otherwise git merge --ff-only origin/main there), and before npm run worktree -- start…",
+          "summary": "{ \"id\": \"WO-003-D004\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: next (WO-003 execution plan step 4; acceptance criterion 4)\", \"decision\": \"Record criterion 4 unmet: the clone command records into the main-branch worktree and validates the repository id against main's configuration, which lacks the registration until this order merges; it refused with unknown repository id and wrote nothing. The remedy is the same command run from the main checkout once main holds this order's merge and before WO-004's worktree start, which otherwise refuses with no local clone recorded. The recorder's acceptance of this registration and clone path was proved against this worktree's configuration.\", \"eviden",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-46062529c4c46ac3",
+      "key": "decision:docs/evidence/WO-003/decisions.md#wo-003-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a3c1ad598b39ae6deeecd460f1eee5af5ff9d6d6b0f2848587bf1740cec84f13",
+          "ref": "docs/evidence/WO-003/decisions.md#wo-003-d005-the-preflights-outward-lint-suite-is-not-carried-in-this-kit",
+          "title": "WO-003-D005: Planning: this instance's orders name only suites the kit carries in their Preflight lines; replace npm test -- --only outward-lint in WO-003's Preflight with the three outward-lint CLI…",
+          "summary": "{ \"id\": \"WO-003-D005\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: next (WO-003 Preflight line)\", \"decision\": \"Record the runner's refusal of --only outward-lint as a core-only suite and stand criterion 3 on the three outward-lint CLI checks of step 3, which validate the vocabulary and exercise the pr-title and branch shapes with this instance's data; run the other three Preflight suites as named.\", \"evidence\": [ \"scripts/test-runner.mjs declares nodeTests(\\\"outward-lint\\\", ...) with kit: core-only: core outward-vocabulary control data, and a kit root throws Suite <name> is not carried in this kit for a core-only --only selection\", \"node scripts/harness.mjs bounded -- npm test -- --only outwa",
+          "missing": false
+        },
+        {
+          "hash": "d5ff6757910eb2ebd8ad4b89af56beb7e0138e1863b9e88f6fce3adb83b9b7bc",
+          "ref": "docs/evidence/WO-003/decisions.md#wo-003-d005-the-preflights-outward-lint-suite-is-not-carried-in-this-kit",
+          "title": "WO-003-D005: Planning: this instance's orders name only suites the kit carries in their Preflight lines; replace npm test -- --only outward-lint in WO-003's Preflight with the three outward-lint CLI…",
+          "summary": "{ \"id\": \"WO-003-D005\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: next (WO-003 Preflight line; acceptance criterion 6)\", \"decision\": \"Record the runner's refusal of --only outward-lint as a core-only suite; criterion 6's Preflight clause is therefore not satisfied by this suite. The three outward-lint CLI checks of step 3, which criterion 3 names, show the vocabulary validating and the pr-title and branch shapes working with this instance's data; run the other three Preflight suites as named.\", \"evidence\": [ \"scripts/test-runner.mjs declares nodeTests(\\\"outward-lint\\\", ...) with kit: core-only: core outward-vocabulary control data, and a kit root throws Suite <name> is not carried in this ki",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-29f02563e4477b69",
+      "key": "decision:docs/evidence/WO-003/decisions.md#wo-003-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a5757e5f078266ec98e3278c14b4330b7771887a13b21df85a2a8b4f8c1b9a7d",
+          "ref": "docs/evidence/WO-003/decisions.md#wo-003-d008-the-authority-grants-preflight-suite-asserts-this-checkouts-committed-registry-is-empty",
+          "title": "WO-003-D008: Upstream kit: scope the WO-042 AC5/6 empty-registry assertion in scripts/test-authority-grants.mjs to core, or mark the suite core-only for launchpads, because README § How to start step…",
+          "summary": "{ \"id\": \"WO-003-D008\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: next (WO-003 Preflight line; acceptance criterion 6)\", \"decision\": \"Board the kit assertion: record the suite's result (five subtests, four pass; the empty-registry assertion fails because this order commits the operator grant the kit's README directs), leave the kit file unedited, keep the grant, and judge criterion 6 on the observed facts: the npm test and npm run test:docs rows at the final identity, with two of the four Preflight suites unable to pass in this kit (outward-lint not carried, WO-003-D005; authority-grants' core-state assertion, here).\", \"evidence\": [ \"node scripts/harness.mjs bounded -- npm test -- --only aut",
+          "missing": false
+        },
+        {
+          "hash": "ef404fb618df723d6aaa56a24ac731beca70a3cf68c7d36eced6dba160ac8658",
+          "ref": "docs/evidence/WO-003/decisions.md#wo-003-d008-the-authority-grants-preflight-suite-asserts-this-checkouts-committed-registry-is-empty",
+          "title": "WO-003-D008: Upstream kit: scope the WO-042 AC5/6 empty-registry assertion in scripts/test-authority-grants.mjs to core, or mark the suite core-only for launchpads, because the repository README §…",
+          "summary": "{ \"id\": \"WO-003-D008\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: next (WO-003 Preflight line; acceptance criterion 6)\", \"decision\": \"Defer the kit assertion upstream: record the suite's result (five subtests, four pass; the fifth asserts the committed grant registry is empty, which this order's grant contradicts as the repository README directs), leave the kit file unedited, keep the grant, and record criterion 6 unmet because two of the four Preflight suites cannot pass in this kit (outward-lint not carried, WO-003-D005; authority-grants' empty-registry assertion, here).\", \"evidence\": [ \"node scripts/harness.mjs bounded -- npm test -- --only authority-grants: FAIL authority-grants 0.17 s; ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ca963c9be2a290c8",
+      "key": "decision:docs/evidence/WO-003/decisions.md#wo-003-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5f7d08ffbd8fba34860421227afff5172c318aa090c12cd46dbddc699cdd7bdb",
+          "ref": "docs/evidence/WO-003/decisions.md#wo-003-d012-board-the-post-handoff-decision-dispatch-failure-for-repair",
+          "title": "WO-003-D012: WO-003 repair (VER-001 F1): shorten only D011's dispatch to a resume-prefixed paraphrase accepted by validDispatch, retain the capture path and SHA-256 in its existing evidence,…",
+          "summary": "{ \"id\": \"WO-003-D012\", \"date\": \"2026-10-18\", \"dispatch\": \"resume: verify; record the post-handoff document-validation regression\", \"decision\": \"Record VER-001 finding F1 for D011's invalid dispatch field. Preserve the executor's subject and both recorded waivers; the repair changes only the dispatch metadata to the accepted prefix and length while retaining the capture, digest, decisions and evidence.\", \"evidence\": [ \"npm run test:docs: 11 passed; 6 failed; 6.82 s. docs-check names only docs/evidence/WO-003/decisions.md#WO-003-D011 as a failure; five dependent suites cannot run.\", \"scripts/docs-check.mjs validDispatch returns false for D011's 254-character dispatch, which starts with convers",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by the WO-003 repair (resume: fix) on 2026-10-18: WO-003-D011's dispatch now holds VER-001's proposed resume-prefixed value with its capture path and SHA-256 retained in the record's evidence; a sweep of all 27 decision records found 0 failing the dispatch rule (WO-003-D013).",
+          "reopenWhen": "A later decision in WO-003 fails the dispatch rule, or re-verification finds D011's record changed beyond its dispatch.",
+          "targets": [],
+          "at": "2026-10-18T04:01:07.472Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Correction to the 2026-10-18 settle reason, same day: it said D011 holds VER-001's proposed value; it holds that wording with the capture digest inline as SHA-256, because the exact value passed the dispatch rule but raised a new operator-word advisory on D011. Sweep: 28 decision records, 0 failing (WO-003-D013).",
+          "reopenWhen": "A later decision in WO-003 fails the dispatch rule, or re-verification finds D011's record changed beyond its dispatch.",
+          "targets": [],
+          "at": "2026-10-18T04:03:07.070Z"
         }
       ]
     }

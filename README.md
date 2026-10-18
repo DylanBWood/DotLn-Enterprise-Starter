@@ -310,7 +310,7 @@ still needs normal planning/refutation; do not create a fictitious pass to
 enable amendment.
 
 <!-- DOTLN-RELEASE-BEGIN -->
-This source prepares DotLn `v0.1.0`.
+This source prepares DotLn `v0.2.0`.
 <!-- DOTLN-RELEASE-END -->
 
 Release surfaces check this block, component versions and workspace pins,

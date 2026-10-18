@@ -1,4 +1,4 @@
-# WO-003 — Register DotLn-Angular in this launchpad: the configuration, class, authority profile and gate, the operator's publication grant, the outward vocabulary and the local clone record, so the first target order can activate (version assigned at activation)
+# WO-003 — Register DotLn-Angular in this launchpad: the configuration, class, authority profile and gate, the operator's publication grant, the outward vocabulary and the local clone record, so the first target order can activate (v0.2.0)
 
 **Model:** any capable model; state the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
