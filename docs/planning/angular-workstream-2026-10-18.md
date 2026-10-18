@@ -170,7 +170,8 @@ that reopens it. Immaterial lenses are grouped at the end.
   feature's output drilling exceeds two hops in more than one container and
   splitting containers does not resolve it.
 - **D3 One order per subsystem, six orders, serial.** The operator's shape
-  ("ten pull requests over two to four weeks, auth at week three") is read
+  ("ten pull requests over two to four weeks, auth at week three"; capture
+  SHA-256 `4f14c6c09512576abfd701335f4dd8a347694ff23785724422cb8d943b5d67aa`) is read
   as subsystems: registration, scaffold, foundation libraries, taxonomy and
   first feature, events and state, authentication. Product 07's sizing rule
   (one outcome per subsystem, no bundling of unrelated subsystems) gives six.
@@ -198,7 +199,8 @@ that reopens it. Immaterial lenses are grouped at the end.
   activation and `main` requires a pull request). Kit gap recorded in §9.
   Reopen when the kit admits a base that resolves at activation.
 - **D6 PrimeNG 22 is declined under the operator's own condition.** The
-  operator said "if PrimeNG is free, let's use that". PrimeNG 22.x ships under
+  operator said "if PrimeNG is free, let's use that" (capture SHA-256
+  `4f14c6c09512576abfd701335f4dd8a347694ff23785724422cb8d943b5d67aa`). PrimeNG 22.x ships under
   the PrimeUI License with a required key; the last MIT release peers Angular
   21. The pass does not choose a vendor for the operator: WO-006 names the
   decision as the operator's before activation and proposes Angular Material
@@ -346,7 +348,8 @@ requests, `gh`, the gate rows) and inherited by the later orders.
 - **C5 Production environment and preview deployment.** `environment.prod.ts`
   with file replacements lands in WO-005; a hosted preview is unplanned
   until the operator names a host.
-- **C6 One "go" that runs the queue.** The operator asked whether, after this
+- **C6 One "go" that runs the queue.** The operator asked (capture SHA-256
+  `4f14c6c09512576abfd701335f4dd8a347694ff23785724422cb8d943b5d67aa`) whether, after this
   branch merges, one word could run every order through every phase and
   merge. Not with this kit: each phase is a resume phrase the operator types,
   the merge is the operator's by rule, and the next order needs its own
