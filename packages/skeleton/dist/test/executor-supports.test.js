@@ -104,8 +104,9 @@ test("WO-179 and WO-195 emitted roles carry their assigned corrections across su
                     assert.doesNotMatch(role.contents, /A comment says what the code does/, subject);
                 }
                 else if (role.path.endsWith("dotln-verifier/SKILL.md")) {
-                    assert.match(role.contents, /Consume the executor's recorded passing `npm test` row when its code identity matches the subject/, subject);
-                    assert.doesNotMatch(role.contents, /Run the product gate with `npm test`/, subject);
+                    assert.match(role.contents, /Consume the executor's structural, Preflight suite and document rows when their code identity matches the subject/, subject);
+                    assert.doesNotMatch(role.contents, /Run the product gate with `npm test`|Consume the executor's recorded passing `npm test` row/, subject);
+                    assert.match(role.contents, /probe with `npm test -- --only <suite>`/, subject);
                 }
             }
         }
@@ -385,7 +386,18 @@ test("execution roles open with an ordered handoff and keep shared rules below i
         }
         assert.ok(steps[format + 1].includes("npm run test:docs"));
         assert.ok(steps[format + 2].includes("npm test"));
-        assert.ok(steps[format + 2].includes("while it runs, write nothing under the repository and start no agent"));
+        assert.ok(steps[format + 2].includes("write nothing under the repository and start no agent"));
+        if (name === "executor") {
+            assert.match(steps[format], /npm run sync/);
+            assert.match(steps[format + 2], /structural phase.*Preflight/);
+            assert.doesNotMatch(steps.join("\n"), /npm test`|--review/);
+        }
+        else if (name === "verifier")
+            assert.match(steps[format + 2], /npm test -- --only <suite>/);
+        else {
+            assert.match(steps[format + 2], /npm test -- --review --again.*background/);
+            assert.match(steps[format + 2], /harness\.mjs evidence --wait/);
+        }
         assert.match(steps[format + 3], /Complete.*(?:handoff\.md|VER report|FINAL report)/);
         assert.ok(steps[format + 4].includes("npm run resume --"));
         assert.ok(role.procedure

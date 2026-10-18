@@ -12,7 +12,7 @@ import { applyFeedbackCorrection, compileFeedbackUnits, COMPILER_PACKAGE_VERSION
 import { harnessAuthorization } from "./reactor.js";
 import { personalFeedback } from "./loadouts/feedback.js";
 import { HarnessCommandRefused, LIVE_GATE_READ_LIST, harnessToolEffects, invocationEffects, liveGateReads, patchWriteTargets, shellRedirectTargets, shellWritePaths, shellWriteTargets, commitMessageInputs, shellDiagnostics, shellGuidance, } from "./harness-command.js";
-import { activeGateRuns, beginGateRun, gateInputPath, gateRecordPath, prospectiveRealpath, gateTreeHash, findGateCheck, recordGateChecks, gateCodeIdentity, } from "./gate-evidence.mjs";
+import { activeGateRuns, beginGateRun, gateInputPath, gateRecordPath, prospectiveRealpath, gateTreeHash, findGateCheck, readGateChecks, recordGateChecks, gateCodeIdentity, } from "./gate-evidence.mjs";
 import { collectSessionUsage, currentCopilotSession, usageObservation, recordUsageObservation, usageReadbackLine, usageSessionKey, } from "./usage-observation.mjs";
 import { FeedbackRefused, feedbackContentHash, feedbackWriterFacts, } from "./feedback-boundary.js";
 import { HARNESS_HOST_VERSION } from "./version.js";
@@ -2321,10 +2321,17 @@ export function runHarnessEvidence(root, pendingVerdict) {
 function runHarnessEvidenceChecks(root, stopRequested = () => false, pendingVerdict) {
     const treeHash = gateTreeHash(root);
     // A stop request ends the gate at the next check boundary; an ended check
-    // is neither a pass nor a recorded failure.
+    // is neither a pass nor a recorded failure. The nested runner may have
+    // recorded its completed tasks as a stopped row, which supplies no pass;
+    // the message names that row when it exists.
     const honourStop = (checkId) => {
-        if (stopRequested())
-            throw new Error(`Gate stopped by request during ${checkId}; no check recorded`);
+        if (!stopRequested())
+            return;
+        const stopped = [...readGateChecks(root, treeHash)]
+            .reverse()
+            .find((row) => row.checkId === checkId &&
+            row.stopped === true);
+        throw new Error(`Gate stopped by request during ${checkId}; ${stopped ? `the runner recorded its completed tasks as a stopped row (${stopped.evidenceRef}), which supplies no pass` : "no check recorded"}`);
     };
     // Explicit evidence remains a useful product-gate command. Completion uses
     // its own inline diff check and never requests this gate.
@@ -2737,7 +2744,7 @@ export function permissionEffect(input, root, tools = harnessToolEffects, outsid
         return "repo.read";
     }
     // Ending a task this session started is the session's own process control:
-    // it writes no repository byte, and a gate ended this way records no check.
+    // it writes no repository byte, and a gate ended this way records completed tasks as stopped, supplying no pass.
     if (tool === "stop")
         return "shell.run";
     if (tool === "write" && !path) {
@@ -2812,7 +2819,7 @@ const GATE_STOP_COMMANDS = [
     "node scripts/harness.mjs evidence --stop",
     "npm run harness -- evidence --stop",
 ];
-export const GATE_STOP_TEXT = `Stop that gate from this session with ${GATE_STOP_COMMANDS[0]} (admitted now; it ends at its next boundary and records no check) or the harness's own task-stop tool, or wait for it to finish.`;
+export const GATE_STOP_TEXT = `Stop that gate from this session with ${GATE_STOP_COMMANDS[0]} (admitted now; it ends at its next boundary and records completed tasks as stopped, supplying no pass) or the harness's own task-stop tool, or wait for it to finish.`;
 const gateStopCommand = (command) => typeof command === "string" && GATE_STOP_COMMANDS.includes(command.trim());
 /** WO-135: plan start records document-only authority through planning/*.
  * Known tool destinations are checked; opaque effects retain host delegation.
