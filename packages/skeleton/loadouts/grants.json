@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "grantId": "operator.dotln-angular.publication",
+    "version": 1,
+    "grantedBy": "operator",
+    "effects": ["repo.push", "pr.open", "pr.thread.resolve"],
+    "operations": ["repo.push", "pr.open", "pr.thread.resolve"],
+    "repo": "dotln-angular",
+    "reason": "The operator's direction of 2026-10-17 (captured verbatim in ignored intake, SHA-256 4f14c6c09512576abfd701335f4dd8a347694ff23785724422cb8d943b5d67aa): target orders of this launchpad publish pull requests in DylanBWood/DotLn-Angular that the operator reads and merges. The grant admits pushing an order's branch (never main), opening its pull request and resolving its review threads; merging, tagging, repository settings and package publication stay with the operator."
+  }
+]

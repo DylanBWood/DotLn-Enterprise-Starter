@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "classes": {
+    "angular-nx-monorepo": { "checks": [], "supports": [] }
+  },
+  "repositories": {
+    "dotln-angular": {
+      "baseBranch": "main",
+      "worktreeParent": "..",
+      "repositoryClass": "angular-nx-monorepo",
+      "profile": "docs/repositories/dotln-angular.md",
+      "documentationRoot": "docs/dotln",
+      "authorityProfile": {
+        "authorityEnvelopeId": "target-orders",
+        "allowedEffects": [
+          "repo.read",
+          "repo.write",
+          "repo.delete",
+          "git.local",
+          "shell.run",
+          "repo.push",
+          "pr.open",
+          "pr.thread.resolve"
+        ],
+        "deniedEffects": ["package.publish", "release.close"],
+        "resourceLimits": { "writers": 1 },
+        "requiredEvidence": [],
+        "expiresAt": 4102444800000,
+        "revocationEventTypes": ["AuthorityRevoked"]
+      },
+      "gate": {
+        "commands": {
+          "install": {
+            "argv": ["env", "NX_DAEMON=false", "npm", "ci"],
+            "timeoutMs": 600000
+          },
+          "lint": {
+            "argv": ["env", "NX_DAEMON=false", "npx", "nx", "run-many", "-t", "lint"],
+            "timeoutMs": 600000
+          },
+          "test": {
+            "argv": ["env", "NX_DAEMON=false", "npx", "nx", "run-many", "-t", "test"],
+            "timeoutMs": 900000
+          },
+          "format": {
+            "argv": ["env", "NX_DAEMON=false", "npx", "nx", "format:check"],
+            "timeoutMs": 600000
+          },
+          "build": {
+            "argv": ["env", "NX_DAEMON=false", "npx", "nx", "run-many", "-t", "build"],
+            "timeoutMs": 900000
+          },
+          "e2e": {
+            "argv": ["env", "NX_DAEMON=false", "npx", "nx", "run-many", "-t", "e2e"],
+            "timeoutMs": 1200000
+          }
+        },
+        "plain": ["install", "lint", "test", "format"],
+        "review": ["install", "lint", "test", "format", "build", "e2e"]
+      }
+    }
+  }
+}
