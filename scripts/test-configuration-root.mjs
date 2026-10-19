@@ -1,3 +1,4 @@
+import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 import { spawnGit, runGit } from "./lib/git.mjs";
 import { write, json as prettyJson } from "./lib/helpers.mjs";
 import test from "node:test";
@@ -591,6 +592,84 @@ await test("configuration root", async (t) => {
         { version: 1, repositories: { target: {} } },
         /baseBranch must be a non-empty valid string/,
       );
+      // The WO-221 keys: disposable paths stay inside the checkout, a target
+      // release is declared or absent, and the host-rule fallback is literal.
+      refuses(
+        {
+          version: 1,
+          classes: {
+            "fixture-class": { checks: [], supports: [], disposable: ["/abs"] },
+          },
+        },
+        /classes\.fixture-class\.disposable entries must be contained relative normalized POSIX paths: \/abs/,
+      );
+      refuses(
+        {
+          version: 1,
+          repositories: {
+            target: registeredRepository({ disposable: ["../out"] }),
+          },
+        },
+        /repositories\.target\.disposable entries must be contained/,
+      );
+      refuses(
+        {
+          version: 1,
+          repositories: {
+            target: registeredRepository({ disposable: "dist" }),
+          },
+        },
+        /repositories\.target\.disposable must be an array/,
+      );
+      refuses(
+        {
+          version: 1,
+          repositories: {
+            target: registeredRepository({ release: { policy: "always" } }),
+          },
+        },
+        /repositories\.target\.release\.policy must be "declared"/,
+      );
+      refuses(
+        {
+          version: 1,
+          repositories: {
+            target: registeredRepository({ hostRules: "prose" }),
+          },
+        },
+        /repositories\.target\.hostRules must be "literal"/,
+      );
+      writeFileSync(
+        path,
+        `${JSON.stringify({
+          version: 1,
+          classes: {
+            "fixture-class": { checks: [], supports: [], disposable: ["dist"] },
+          },
+          repositories: {
+            target: registeredRepository({
+              disposable: ["node_modules/", "dist", ".angular"],
+              release: { policy: "declared" },
+              hostRules: "literal",
+            }),
+            plain: registeredRepository(),
+          },
+        })}\n`,
+      );
+      const declared = loadConfig(root);
+      assert.deepEqual(declared.classes["fixture-class"].disposable, ["dist"]);
+      assert.deepEqual(declared.repositories.target.disposable, [
+        ".angular",
+        "dist",
+        "node_modules",
+      ]);
+      assert.deepEqual(declared.repositories.target.release, {
+        policy: "declared",
+      });
+      assert.equal(declared.repositories.target.hostRules, "literal");
+      assert.deepEqual(declared.repositories.plain.disposable, ["dist"]);
+      assert.equal(declared.repositories.plain.release, undefined);
+      assert.equal(declared.repositories.plain.hostRules, undefined);
       refuses(
         {
           version: 1,
@@ -735,6 +814,9 @@ await test("configuration root", async (t) => {
     "no control-plane script keeps a literal document root or a second root derivation",
     () => {
       const owner = join("scripts", "lib", "config.mjs");
+      // The split launchpad tests share deliberately fixed fixture paths;
+      // this moved helper remains test code, not a control-plane consumer.
+      const fixtureHelper = "scripts/lib/launchpad-fixture.mjs";
       const sources = [];
       const collect = (directory) => {
         for (const entry of readdirSync(join(sourceRoot, directory), {
@@ -745,6 +827,7 @@ await test("configuration root", async (t) => {
           else if (
             entry.name.endsWith(".mjs") &&
             !/(^|\/)test-|\.test\.mjs$/.test(path) &&
+            path !== fixtureHelper &&
             path !== owner.split(sep).join("/")
           )
             sources.push(path);
@@ -894,23 +977,11 @@ await test("configuration root", async (t) => {
       const launchpad = join(root, "launchpad");
       try {
         mkdirSync(join(tool, "scripts/lib"), { recursive: true });
-        for (const name of [
-          "helpers.mjs",
-          "paths.mjs",
-          "git.mjs",
-          "validation.mjs",
-        ])
-          cpSync(
-            join(sourceRoot, "scripts/lib", name),
-            join(tool, "scripts/lib", name),
-          );
-        cpSync(
-          join(sourceRoot, "scripts/lib/config.mjs"),
-          join(tool, "scripts/lib/config.mjs"),
-        );
-        cpSync(
-          join(sourceRoot, "scripts/lib/writing-worker-probe.mjs"),
-          join(tool, "scripts/lib/writing-worker-probe.mjs"),
+        copyFixtureFiles(
+          sourceRoot,
+          tool,
+          "scripts/test-configuration-root.fixture-inputs.json",
+          "configured writing worker",
         );
         mkdirSync(join(launchpad, "records/discovery"), { recursive: true });
         declared({
@@ -1262,8 +1333,12 @@ await test("configuration root", async (t) => {
         runGit(main, ["switch", "-q", "-c", "main"], fixtureGitOptions);
 
         mkdirSync(join(main, "scripts"), { recursive: true });
-        for (const name of ["worktree.mjs", "resume.mjs", "release.mjs"])
-          cpSync(join(scriptRoot, name), join(main, "scripts", name));
+        copyFixtureFiles(
+          join(scriptRoot, ".."),
+          main,
+          "scripts/test-configuration-root.fixture-inputs.json",
+          "configured control plane",
+        );
         // The fixture has no dependency tree to install; worktree start still
         // prepares the checkout through this entry point.
         write(

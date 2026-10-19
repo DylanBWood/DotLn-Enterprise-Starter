@@ -268,17 +268,18 @@ function fixture() {
     "scripts/resume.mjs",
     'import {readFileSync} from "node:fs"; console.log(readFileSync("docs/control/fixture-status.json", "utf8"));\n',
   );
-  for (const path of [
-    "scripts/harness.mjs",
-    "scripts/lib/config.mjs",
-    "scripts/lib/validation.mjs",
-    "scripts/lib/harness.mjs",
-    "scripts/lib/terms.mjs",
-    "scripts/lib/paths.mjs",
-    "scripts/lib/helpers.mjs",
-    "scripts/lib/git.mjs",
-    "packages/skeleton/src/runtime-inputs.mjs",
-  ]) {
+  const copiedInputs = JSON.parse(
+    readFileSync(
+      new URL("./test-harness.fixture-inputs.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  // Optional CLI branches import helpers lazily; keep their containing
+  // library tree alongside the narrow command and runtime leaves.
+  cpSync(join(sourceRoot, "scripts/lib"), join(root, "scripts/lib"), {
+    recursive: true,
+  });
+  for (const path of copiedInputs.files) {
     mkdirSync(dirname(join(root, path)), { recursive: true });
     cpSync(join(sourceRoot, path), join(root, path));
   }
@@ -1238,6 +1239,29 @@ test("WO-166 evidence wait exits for pass, failure, timeout and absent row", asy
     const result = wait(root);
     assert.equal(result.status, 1, result.stderr);
     assert.equal(JSON.parse(result.stdout).checkId, "git diff --check");
+    // Every runner gate records a structural companion row after its own
+    // row at the same timestamp. The wait reports the run's own row and its
+    // verdict, never the companion's.
+    for (const [checkId, exitCode, status] of [
+      ["npm test", 1, 1],
+      ["npm test", 0, 0],
+      ["npm run test:docs", 1, 1],
+    ]) {
+      const at = new Date().toISOString();
+      const own = row(checkId, exitCode, at);
+      recordGateChecks(root, [
+        own,
+        {
+          ...own,
+          checkId: "structural",
+          exitCode: 0,
+          evidenceRef: `fixture:structural:${at}`,
+        },
+      ]);
+      const waited = wait(root);
+      assert.equal(waited.status, status, waited.stderr);
+      assert.equal(JSON.parse(waited.stdout).checkId, checkId);
+    }
     const missingRows = fixture();
     try {
       recordGateOutcome(missingRows, {
@@ -1248,6 +1272,18 @@ test("WO-166 evidence wait exits for pass, failure, timeout and absent row", asy
       const absent = wait(missingRows);
       assert.equal(absent.status, 2, absent.stderr);
       assert.deepEqual(JSON.parse(absent.stdout), { run: null });
+      // A tree whose only row is a companion has no run row.
+      const companionTree = gateTreeHash(missingRows);
+      recordGateChecks(missingRows, [
+        {
+          ...row("structural", 0, new Date().toISOString()),
+          treeHash: companionTree,
+          subject: companionTree,
+        },
+      ]);
+      const companionOnly = wait(missingRows);
+      assert.equal(companionOnly.status, 2, companionOnly.stderr);
+      assert.deepEqual(JSON.parse(companionOnly.stdout), { run: null });
     } finally {
       removeFixture(missingRows, { recursive: true });
     }
@@ -2000,6 +2036,339 @@ test("WO-178 exact close helper admission requires the recorded dispatch, main a
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
+});
+
+test("WO-221 registered-target admission admits the recorded worktree's publication commands at verified and closed and nothing outside the registration", () => {
+  const root = fixture();
+  const base = realpathSync(mkdtempSync(join(tmpdir(), "dotln-wo221-target-")));
+  const identity = [
+    "-c",
+    "user.name=Fixture",
+    "-c",
+    "user.email=fixture@example.invalid",
+    "-c",
+    "commit.gpgsign=false",
+  ];
+  const commitAll = (cwd, message) => {
+    runGit(cwd, ["add", "."], fixtureGitOptions);
+    runGit(cwd, [...identity, "commit", "-qm", message], fixtureGitOptions);
+  };
+  try {
+    // Main's committed registration, first without the operator grant; the
+    // session itself stays on wo-999 with main checked out beside it.
+    write(
+      root,
+      "dotln.config.json",
+      json({
+        version: 1,
+        classes: { fixture: { checks: [], supports: [] } },
+        repositories: {
+          target: {
+            baseBranch: "main",
+            worktreeParent: "../Targets",
+            repositoryClass: "fixture",
+            authorityProfile: {
+              authorityEnvelopeId: "fixture.target",
+              allowedEffects: [
+                "repo.read",
+                "repo.write",
+                "repo.push",
+                "pr.open",
+              ],
+              deniedEffects: [],
+              resourceLimits: {},
+              requiredEvidence: [],
+              expiresAt: Number.MAX_SAFE_INTEGER,
+              revocationEventTypes: [],
+            },
+          },
+        },
+      }),
+    );
+    write(root, "packages/skeleton/loadouts/grants.json", json([]));
+    commitAll(root, "Register the target without a grant");
+    runGit(root, ["branch", "main"], fixtureGitOptions);
+    const mainCheckout = join(base, "main-checkout");
+    runGit(root, ["worktree", "add", mainCheckout, "main"], fixtureGitOptions);
+    const origin = join(base, "target.git");
+    runGit(
+      base,
+      ["init", "--bare", "-q", "-b", "main", origin],
+      fixtureGitOptions,
+    );
+    const clone = join(base, "clone");
+    runGit(base, ["clone", "-q", origin, clone], fixtureGitOptions);
+    write(clone, "source.txt", "base\n");
+    commitAll(clone, "Target base");
+    runGit(clone, ["push", "-q", "origin", "main"], fixtureGitOptions);
+    const selector = "github.com/dotln-fixture/target";
+    runGit(
+      clone,
+      ["remote", "set-url", "origin", `https://${selector}.git`],
+      fixtureGitOptions,
+    );
+    const target = join(base, "Targets", "clone-wo999");
+    mkdirSync(join(base, "Targets"));
+    runGit(
+      clone,
+      ["worktree", "add", "-q", "-b", "wo-999", target, "main"],
+      fixtureGitOptions,
+    );
+    const baseCommit = runGit(clone, ["rev-parse", "HEAD"], fixtureGitOptions);
+    write(
+      root,
+      "docs/control/local/target-worktrees.json",
+      json({
+        [target]: {
+          target,
+          clone,
+          branch: "wo-999",
+          baseBranch: "main",
+          baseCommit,
+          repositoryId: "target",
+          workOrderId: "WO-999",
+          launchpad: root,
+          runtimeRoot: root,
+          origin: selector,
+        },
+      }),
+    );
+    const status = (phase, latestVerdict = null) =>
+      write(
+        root,
+        "docs/control/fixture-status.json",
+        json({ ...control, phase, latestVerdict }),
+      );
+    const permission = (command, extra = {}, environment = {}) =>
+      invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          tool_name: "Bash",
+          tool_input: { command },
+          ...extra,
+        }),
+        false,
+        environment,
+      ).hookSpecificOutput;
+    const allowed = (command, extra, environment) => {
+      const response = permission(command, extra, environment);
+      assert.equal(response?.permissionDecision, "allow", command);
+      assert.match(
+        response.permissionDecisionReason,
+        /registered-target admission: repository target \(github\.com\/dotln-fixture\/target\); recorded target worktree of WO-999 on wo-999.*Host deny and ask rules still apply/u,
+      );
+    };
+    const withheld = (command, extra) =>
+      assert.notEqual(
+        permission(command, extra)?.permissionDecision,
+        "allow",
+        command,
+      );
+    const push = `git -C ${target} push -u origin wo-999`;
+    const draftCreate = `gh pr create --draft --repo ${selector} --head wo-999 --base main --title "feat: draft" --body-file body.md`;
+    status("verified", "pass");
+    withheld(push);
+    write(
+      mainCheckout,
+      "packages/skeleton/loadouts/grants.json",
+      json([
+        {
+          grantId: "operator.target-publish",
+          version: 1,
+          grantedBy: "operator",
+          repo: "target",
+          effects: ["repo.push", "pr.open"],
+          operations: ["repo.push", "pr.open"],
+          reason: "Operator grant for the fixture target",
+        },
+      ]),
+    );
+    commitAll(mainCheckout, "Grant repo.push and pr.open for the target");
+    allowed(push);
+    allowed(`git -C ${target} push origin wo-999`);
+    allowed(draftCreate);
+    allowed(`gh pr view 7 --repo ${selector}`);
+    allowed(push, {}, { COPILOT_PROJECT_DIR: root });
+    for (const command of [
+      `git -C ${join(base, "elsewhere")} push -u origin wo-999`,
+      `git -C ${target} push -u origin feature`,
+      `git -C ${target} push --force origin wo-999`,
+      `git -C ${target} push -f origin wo-999`,
+      `git -C ${target} push -u origin wo-999; true`,
+      `git -C ${target} push -u origin wo-999 && echo done`,
+      `git -C "$(pwd)" push -u origin wo-999`,
+      `gh pr create --draft --repo github.com/dotln-fixture/other --head wo-999`,
+      `gh pr create --draft --repo ${selector} --head feature`,
+      `gh pr create --draft --repo ${selector} --base develop`,
+      `gh pr create --repo ${selector} --head wo-999 --title "feat: final"`,
+      `gh pr ready 7 --repo ${selector}`,
+      `gh pr edit 7 --repo ${selector} --title "feat: final"`,
+      `gh pr view 7 --repo ${selector} --web`,
+      `node ${join(root, "scripts/worktree.mjs")} publish WO-998 --target-worktree --draft --branch feat/x --title t --body-file b.md`,
+    ])
+      withheld(command);
+    allowed(
+      `node ${join(root, "scripts/worktree.mjs")} publish WO-999 --target-worktree --draft --branch feat/x --title "feat: x" --body-file b.md`,
+    );
+    withheld(
+      `node ${join(root, "scripts/worktree.mjs")} publish WO-999 --target-worktree --branch feat/x --title "feat: x" --body-file b.md`,
+    );
+    // The registration binds through the recorded clone: an origin that is
+    // not one GitHub push URL admits nothing, and a --repo that no longer
+    // names the clone's origin admits nothing either.
+    runGit(
+      clone,
+      ["remote", "set-url", "origin", join(base, "elsewhere.git")],
+      fixtureGitOptions,
+    );
+    withheld(push);
+    runGit(
+      clone,
+      [
+        "remote",
+        "set-url",
+        "origin",
+        "https://github.com/dotln-fixture/elsewhere.git",
+      ],
+      fixtureGitOptions,
+    );
+    withheld(draftCreate);
+    withheld(push);
+    runGit(
+      clone,
+      ["remote", "set-url", "origin", `https://${selector}.git`],
+      fixtureGitOptions,
+    );
+    status("active");
+    withheld(push);
+    withheld(draftCreate);
+    status("closed", "pass");
+    allowed(push);
+    // Without a draft record no pull request is the order's to ready or edit,
+    // and a body outside the launchpad and the target admits nothing.
+    withheld(`gh pr ready 7 --repo ${selector}`);
+    allowed(
+      `gh pr create --repo ${selector} --head wo-999 --base main --title "feat: final" --body-file b.md`,
+    );
+    withheld(
+      `gh pr create --repo ${selector} --head wo-999 --base main --title "feat: final" --body-file /etc/hosts`,
+    );
+    withheld(draftCreate);
+    status("closed", "fail");
+    withheld(push);
+    status("closed", "pass");
+    // The recorded draft admits its branch and a lease against its head only.
+    const draftHead = baseCommit;
+    write(
+      mainCheckout,
+      "docs/control/local/target-publications/WO-999/events.jsonl",
+      `${JSON.stringify({ type: "PullRequestOpened", payload: { repositoryId: selector, number: 7, headSha: draftHead, draft: true, branch: "feat/draft" } })}\n`,
+    );
+    allowed(
+      `git -C ${target} push --force-with-lease=feat/draft:${draftHead} origin feat/draft`,
+    );
+    allowed(`git -C ${target} push origin feat/draft`);
+    withheld(
+      `git -C ${target} push --force-with-lease=feat/draft:${"0".repeat(40)} origin feat/draft`,
+    );
+    withheld(
+      `git -C ${target} push --force-with-lease=wo-999:${draftHead} origin wo-999`,
+    );
+    withheld(`git -C ${target} push origin feat/other`);
+    // Ready and edit name the recorded pull request, keep the registered base
+    // and a body inside the checkouts; the base branch is never a push target;
+    // another executable spelled as the helper's node admits nothing.
+    allowed(`gh pr ready 7 --repo ${selector}`);
+    allowed(
+      `gh pr edit 7 --repo ${selector} --title "feat: final" --body-file b.md`,
+    );
+    withheld(`gh pr ready 1 --repo ${selector}`);
+    withheld(`gh pr edit 7 --repo ${selector} --base develop`);
+    withheld(`gh pr edit 7 --repo ${selector} --body-file /etc/hosts`);
+    withheld(`git -C ${target} push origin main`);
+    withheld(
+      `${join(base, "evil-node")} ${join(root, "scripts/worktree.mjs")} publish WO-999 --target-worktree --branch feat/x --title "feat: x" --body-file b.md`,
+    );
+    // A lease is the closed-phase publish's form; at verified it admits
+    // nothing while a plain push of the draft branch does.
+    status("verified", "pass");
+    withheld(
+      `git -C ${target} push --force-with-lease=feat/draft:${draftHead} origin feat/draft`,
+    );
+    allowed(`git -C ${target} push origin feat/draft`);
+    status("closed", "pass");
+    // A host deny rule in the emitted settings wins over the admission, in
+    // the raw spelling and in a quoted or double-spaced one.
+    const settingsPath = join(root, ".claude/settings.json");
+    const settings = JSON.parse(readFileSync(settingsPath, "utf8"));
+    settings.permissions.deny.push(`Bash(git -C ${target} push *)`);
+    writeFileSync(settingsPath, json(settings));
+    withheld(push);
+    withheld(`git -C "${target}" push -u origin wo-999`);
+    withheld(`git  -C ${target} push -u origin wo-999`);
+    const journal = join(
+      root,
+      "docs/control/local/harness",
+      createHash("sha256").update("synthetic-session").digest("hex") + ".jsonl",
+    );
+    const rows = readFileSync(journal, "utf8")
+      .trim()
+      .split("\n")
+      .map(JSON.parse);
+    assert.ok(
+      rows.some(
+        (row) =>
+          row.registeredTargetAdmission?.workOrder === "WO-999" &&
+          row.registeredTargetAdmission.kind === "push",
+      ),
+    );
+    assert.ok(
+      rows.some((row) =>
+        /Registered-target admission withheld/u.test(row.advisory ?? ""),
+      ),
+    );
+  } finally {
+    rmSync(base, { recursive: true, force: true });
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("the probe wrapper gives a complete test selection a six-hour outer bound and keeps the probe deadline for focused, document, machinery and listing ones", async () => {
+  const { completeTestSelection } = await import("./lib/bounded-command.mjs");
+  for (const command of [
+    ["npm", "test", "--", "--review"],
+    ["npm", "test"],
+    ["npm", "run", "test:full"],
+    ["node", "scripts/test-runner.mjs", "--review"],
+    [process.execPath, join(sourceRoot, "scripts/test-runner.mjs")],
+  ])
+    assert.equal(completeTestSelection(command), true, command.join(" "));
+  for (const command of [
+    ["npm", "test", "--", "--only", "format"],
+    ["npm", "test", "--", "--list"],
+    ["npm", "run", "test:docs"],
+    ["node", "scripts/test-runner.mjs", "--document"],
+    ["npm", "run", "test:machinery"],
+    ["node", "scripts/test-runner.mjs", "--machinery"],
+    ["npm", "test", "--", "--confined-partial"],
+    ["node", "-e", "0"],
+    ["npm", "run", "build"],
+  ])
+    assert.equal(completeTestSelection(command), false, command.join(" "));
+  // The wrapper says when it applies no deadline, before the run starts.
+  const listed = spawnSync(
+    process.execPath,
+    ["scripts/harness.mjs", "bounded", "--", "npm", "test", "--", "--list"],
+    {
+      cwd: sourceRoot,
+      encoding: "utf8",
+      timeout: deadlineLimit(5_000, 60_000),
+    },
+  );
+  assert.equal(listed.status, 0, listed.stderr);
+  assert.match(listed.stdout, /^format — protects:/mu);
+  assert.doesNotMatch(listed.stderr, /completeTestSelection/u);
 });
 
 test("WO-195 stale main prepares the runtime then records the normal release-close dispatch", () => {
@@ -3094,7 +3463,7 @@ for (const mode of ["runner", "evidence", "entry"])
       let child;
       let finished;
       const release = () => {
-        for (const stage of ["build", "checks"])
+        for (const stage of ["build", "checks", "product"])
           write(root, `${local}/${stage}.go`, "go");
         if (child && child.exitCode === null) child.kill("SIGTERM");
       };
@@ -3171,7 +3540,16 @@ while (!existsSync("${local}/" + stage + ".go")) {
         }
         const program =
           mode === "runner"
-            ? `const {runGate} = await import(${JSON.stringify(new URL("./test-runner.mjs", import.meta.url).href)}); process.exitCode = (await runGate(["--only", "format"], process.cwd())).exitCode;`
+            ? `const {runGate, STRUCTURAL_TASKS} = await import(${JSON.stringify(new URL("./test-runner.mjs", import.meta.url).href)});
+const command = (stage) => [process.execPath, "hold-gate.mjs", stage];
+const table = [
+  {name: "build", build: true, command: [process.execPath, "-e", ""]},
+  ...STRUCTURAL_TASKS.map(name => ({name, structural: true, command: name === "format" ? command("checks") : [process.execPath, "-e", ""]})),
+  {name: "fixture-product", product: true, command: command("product")},
+];
+const result = await runGate(["--only", "fixture-product"], process.cwd(), {table});
+process.exitCode = result.exitCode;
+`
             : 'const {runHarnessEvidence} = await import("./packages/skeleton/dist/src/harness-host.js"); const checks = runHarnessEvidence(process.cwd()); if (checks.some(row => row.exitCode !== 0)) process.exitCode = 1;';
         const before = gateTreeHash(root);
         const hooks = [
@@ -3207,7 +3585,9 @@ while (!existsSync("${local}/" + stage + ".go")) {
         });
         for (const stage of mode === "entry"
           ? ["build", "checks"]
-          : ["checks"]) {
+          : mode === "runner"
+            ? ["checks", "product"]
+            : ["checks"]) {
           while (!existsSync(join(root, local, `${stage}.ready`))) {
             t.signal.throwIfAborted();
             assert.equal(child.exitCode, null, output);
@@ -3215,6 +3595,39 @@ while (!existsSync("${local}/" + stage + ".go")) {
           }
           const runs = activeGateRuns(root);
           assert.ok(runs.length > 0);
+          // The full mutation matrix runs in the structural hold. These
+          // generated-hook calls check that its guard survives into a
+          // product task without repeating the same matrix.
+          if (stage === "product") {
+            for (const hook of hooks)
+              for (const attempt of [
+                {
+                  tool_name: "Write",
+                  tool_input: {
+                    file_path: "fixture.ts",
+                    content: "changed\n",
+                  },
+                },
+                {
+                  tool_name: "exec_command",
+                  tool_input: { command: "printf changed > fixture.ts" },
+                },
+              ]) {
+                const verdict = invoke(
+                  root,
+                  hook,
+                  input(root, "PreToolUse", attempt),
+                );
+                assert.equal(allowed(verdict), false, `${hook} product hold`);
+                assert.match(
+                  verdict.hookSpecificOutput.permissionDecisionReason,
+                  /active gate/,
+                );
+              }
+            assert.equal(gateTreeHash(root), before);
+            write(root, `${local}/${stage}.go`, "go");
+            continue;
+          }
           const pathAttempts = [
             `${local}/hardlink.ts`,
             `${local}/dangling.md`,
@@ -3522,6 +3935,27 @@ while (!existsSync("${local}/" + stage + ".go")) {
           write(root, `${local}/${stage}.go`, "go");
         }
         assert.equal(await finished, 0, output);
+        if (mode === "runner") {
+          const structural = readGateChecks(root, before).find(
+            (row) => row.checkId === "structural",
+          );
+          assert.ok(structural, "the held gate records its structural phase");
+          assert.deepEqual(
+            structural.cases.map((row) => [
+              row.name,
+              row.exitCode,
+              row.executed,
+            ]),
+            [
+              "format",
+              "configuration-root",
+              "registrations",
+              "declarations",
+              "generated",
+              "host",
+            ].map((name) => [name, 0, true]),
+          );
+        }
         assert.deepEqual(activeGateRuns(root), []);
         assert.equal(gateTreeHash(root), before);
         assert.equal(
