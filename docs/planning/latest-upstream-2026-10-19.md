@@ -216,12 +216,15 @@ that reopens it.
   Core has qualified no host (§4). Only a target order at `verified` can run
   the draft form, so WO-005's step 15 records the hook's decision from the
   session journal, whether the host prompted, and which of the operator's
-  interim trust entries of 2026-10-18 were present; whether those entries
-  are present is the operator's choice before that step (removed, the
-  episode shows whether the host honors the hook's admission; present, only
-  the hook's own decision is observed), and the pass after WO-005 decides
-  their removal (§9 C4) or the kit's literal host-rules fallback, `hostRules`
-  set to `literal` (§9 C2). Source: core's WO-221 D008 and D034; the
+  interim trust entries of 2026-10-18 were present. The default is set here
+  so no one has to choose: the entries stay for WO-005, whose draft publish
+  then shows the hook's own decision in the journal without risking a
+  blocked unattended session; once that decision reads admitted, the pass
+  after WO-005 asks for the entries' removal (an edit to the operator's own
+  Claude Code settings file, which no session may write) and WO-006's draft
+  publish is the test of the host honoring the hook (§9 C4); a prompt or a
+  denial there turns on the kit's literal host-rules fallback, `hostRules`
+  set to `literal`, through a self order (§9 C2). Source: core's WO-221 D008 and D034; the
   previous pass's D10.
   Rejected: a rehearsal inside WO-011 (no target order is at `verified`,
   and a hand-built hook payload is not an observation); an order that
@@ -435,10 +438,11 @@ recorded in the order's decisions, then `plan amend-order`).
   paths are matched; if nested roots must be declared, criterion 1's exact
   list changes through the amendment route at activation. (e) The Cost line
   omits a recurring cost: every target close deletes `node_modules`, `.nx`,
-  `.angular` and `tmp` in the DotLn-Angular base checkout too; the
-  operator's choice, recorded in the evidence and the profile: keep the base
-  clone uninstalled (the state the 2026-10-18 pass observed) and nothing is
-  deleted, or accept a reinstall per close. (f) Criterion 1 says the diff
+  `.angular` and `tmp` in the DotLn-Angular base checkout too, by the kit's
+  design (core WO-221), so that clone needs `npm ci` again before it is used
+  after a close; the executor records the fact in the evidence and the
+  profile, and §10 item 6 asks core for a judge-only option on the base
+  checkout. (f) Criterion 1 says the diff
   removes nothing, but the class is declared on one line, so adding the key
   rewrites that line and a line diff shows a removal; carry-in: the executor
   adds the key so that `git diff` shows the `checks` and `supports` entries
@@ -514,7 +518,9 @@ planning: requests from the DotLn-Enterprise-Starter fork (dylanwoodconsulting) 
 
 4. The live qualification of the registered-target admission. The fork's WO-005 will run the first `worktree publish --draft` under Claude Code auto mode and record the hook's decision from the session journal, whether the host prompted, and which operator trust entries were present. Say what else the fork should record for criterion 4's rows, and whether the hook's decision is written somewhere a session can read without a host prompt.
 
-5. Carried from the fork's 2026-10-18 passes, not re-verified against v0.85.0: `plan conditions` evaluates core-only condition sources in an exported instance (ten `unknown` rows); `npm run resume -- status --json` and `docs/control/current.md` name report paths `target-records` moved into the target; a `repo.settings` effect for registrations; `historicalDependencyIds` hard-codes core's WO-001 and WO-002; a target order's base fixed at planning time costs one pass per chain member; the outward lint refuses a leading gitmoji; `followups --apply` refuses the host scratchpad; `plan start` dates branches in UTC; the console view model and the WO-193 request channel for the operator's agent-orchestration UI.
+5. A judge-only option for the base checkout at release close. The v0.85.0 close deletes declared disposable output in the clone's base checkout as well as in the target worktree, so an operator who works in that clone loses `node_modules`, `.nx`, `.angular` and `tmp` at every target close and reinstalls each time. An option that only judges the base checkout (refusing undeclared ignored files, deleting nothing there) would keep the safety of the refusal without the recurring cost.
+
+6. Carried from the fork's 2026-10-18 passes, not re-verified against v0.85.0: `plan conditions` evaluates core-only condition sources in an exported instance (ten `unknown` rows); `npm run resume -- status --json` and `docs/control/current.md` name report paths `target-records` moved into the target; a `repo.settings` effect for registrations; `historicalDependencyIds` hard-codes core's WO-001 and WO-002; a target order's base fixed at planning time costs one pass per chain member; the outward lint refuses a leading gitmoji; `followups --apply` refuses the host scratchpad; `plan start` dates branches in UTC; the console view model and the WO-193 request channel for the operator's agent-orchestration UI.
 ```
 
 ## 11. Write-backs
