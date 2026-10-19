@@ -1,0 +1,43 @@
+WO-009 candidate scope, 2026-10-19
+
+$ git diff --name-only main
+README.md
+docs/control/current.md
+docs/lineage/decisions-index.md
+docs/work-orders/README.md
+docs/work-orders/WO-009-release-display-name.md
+dotln.config.json
+
+$ git ls-files --others --exclude-standard
+docs/control/orders/WO-009.jsonl
+docs/evidence/WO-009/README.md
+docs/evidence/WO-009/commands.txt
+docs/evidence/WO-009/decisions.md
+docs/evidence/WO-009/gate-summary.json
+docs/evidence/WO-009/handoff.md
+docs/evidence/WO-009/meta.json
+docs/evidence/WO-009/self-review.md
+docs/final-reviews/WO-009/PR.md
+
+$ git diff --numstat main -- dotln.config.json
+1	0	dotln.config.json
+
+$ git diff main -- dotln.config.json
+diff --git a/dotln.config.json b/dotln.config.json
+index df67dfd..2fe4fac 100644
+--- a/dotln.config.json
++++ b/dotln.config.json
+@@ -3,6 +3,7 @@
+   "classes": {
+     "angular-nx-monorepo": { "checks": [], "supports": [] }
+   },
++  "release": { "displayName": "Launchpad" },
+   "repositories": {
+     "dotln-angular": {
+       "baseBranch": "main",
+
+$ git diff --name-only main...HEAD
+
+All observed candidate paths are README.md, dotln.config.json or under docs/.
+The branch-only command produced no paths before the final-review commit.
+This scope record itself is added at docs/evidence/WO-009/scope.txt.

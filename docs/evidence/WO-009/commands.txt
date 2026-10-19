@@ -1,0 +1,217 @@
+WO-009 command evidence — 2026-10-19
+
+All commands exited 0. Probes used the harness bounded wrapper; wrapper telemetry is omitted below. Each body preserves the command's output. The empty branch diff is an observed empty output, not a committed candidate.
+
+$ node -e "import('./scripts/lib/config.mjs').then(m => console.log(m.loadConfig(process.cwd()).release.displayName))"
+Launchpad
+
+
+$ npm run resume -- status --json
+
+> resume
+> node scripts/resume.mjs status --json
+
+{
+  "workOrder": "WO-009",
+  "workOrderPath": "docs/work-orders/WO-009-release-display-name.md",
+  "phase": "active",
+  "latestVerification": null,
+  "verificationPath": null,
+  "latestVerdict": null,
+  "finalReview": null,
+  "finalReviewPath": null,
+  "latestAttestation": null,
+  "effortDrift": [],
+  "recordedAt": "2026-10-19T16:49:56.049Z",
+  "elapsed": {},
+  "latestCheckpoint": {
+    "sha": "ab8dae7b3a4b750a64692dd6e3476b8badcfcef4",
+    "ref": "refs/dotln/checkpoint/WO-009/1",
+    "restoreCommand": "git checkout refs/dotln/checkpoint/WO-009/1 -- ."
+  },
+  "legalNextActions": [
+    "next",
+    "implementation-ready"
+  ],
+  "legalOffRamps": [
+    "withdraw",
+    "correct",
+    "override-record"
+  ],
+  "waivedCriteria": [],
+  "unmetCriteria": [],
+  "withdrawal": null,
+  "corrections": [],
+  "overrideRecords": [],
+  "dependencies": {
+    "source": "typed",
+    "entries": [],
+    "blocking": []
+  },
+  "orders": [
+    {
+      "workOrder": "WO-001",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-15T15:01:30.925Z",
+      "elapsed": {
+        "implementation": 1920191,
+        "verification": 853719,
+        "finalReview": 2696554
+      }
+    },
+    {
+      "workOrder": "WO-003",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-18T05:06:42.669Z",
+      "elapsed": {
+        "implementation": 5730840,
+        "verification": 207401,
+        "repair": 508951,
+        "finalReview": 2586144
+      }
+    },
+    {
+      "workOrder": "WO-004",
+      "repositoryId": "dotln-angular",
+      "baseCommit": "bc9133e932a00d33c15bc5289d683b8078f51ee4",
+      "phase": "closed",
+      "latestVerdict": "pass",
+      "recordedAt": "2026-10-18T15:11:39.448Z",
+      "elapsed": {
+        "implementation": 1491344,
+        "verification": 811485,
+        "finalReview": 2510792
+      }
+    },
+    {
+      "workOrder": "WO-009",
+      "phase": "active",
+      "latestVerdict": null,
+      "recordedAt": "2026-10-19T16:49:56.049Z",
+      "elapsed": {}
+    }
+  ],
+  "currentSession": {
+    "available": true,
+    "harness": "codex-cli",
+    "harnessVersion": "0.163.0",
+    "model": "gpt-6-astra",
+    "effort": "max",
+    "source": "codex-session-readback",
+    "observedAt": "2026-10-19T16:50:08.664Z"
+  }
+}
+
+
+$ git tag --list
+v0.1.0
+v0.2.0
+
+
+$ npm run release -- prepare --local
+
+> release
+> node scripts/release.mjs prepare --local
+
+Assigned WO-009: v0.3.0, the next minor above the observed release baseline v0.2.0.
+Recorded WO-009-D001 in docs/evidence/WO-009/decisions.md.
+Files changed:
+  docs/work-orders/WO-009-release-display-name.md
+  README.md
+  docs/evidence/WO-009/decisions.md
+  docs/evidence/WO-009/meta.json
+  docs/final-reviews/WO-009/PR.md
+Meter snapshot: docs/evidence/WO-009/meta.json, 2878 bytes.
+Tag observation: local snapshot only.
+Reader profile (releaseNotes): contributor / account / where they help / summarized / plain.
+Profile source: balanced default; no reader profile declared.
+Give a contributor enough context to assess and work on the change.
+Explain the outcome, needed action and limits at the depth this surface can carry.
+Name identifiers only when they help the reader find or act on a claim.
+Summarize machine results and link their full evidence.
+Use direct, ordinary language.
+Preserve facts, limits, required sections and the attribution rule; this guidance neither refuses nor rewrites text.
+
+
+$ npm run release -- check-surfaces --local
+
+> release
+> node scripts/release.mjs check-surfaces --local
+
+Tag observation: local ancestors of HEAD only; publication checks origin.
+PASS release-block: observed v0.3.0; expected v0.3.0 (work-order target v0.3.0; latest local tag v0.2.0)
+PASS component-version @dotln/beacons: src unchanged; observed 0.1.1; previous v0.2.0 0.1.1; expected no bump required
+PASS component-version @dotln/compiler: src unchanged; observed 0.27.1; previous v0.2.0 0.27.1; expected no bump required
+PASS component-version @dotln/console: src unchanged; observed 0.4.2; previous v0.2.0 0.4.2; expected no bump required
+PASS component-version @dotln/kernel: src unchanged; observed 0.6.0; previous v0.2.0 0.6.0; expected no bump required
+PASS component-version @dotln/skeleton: src unchanged; observed 0.61.0; previous v0.2.0 0.59.1; expected no bump required
+PASS workspace-pin @dotln/console -> @dotln/compiler: observed 0.27.1; expected exact workspace version 0.27.1
+PASS workspace-pin @dotln/console -> @dotln/kernel: observed 0.6.0; expected exact workspace version 0.6.0
+PASS workspace-pin @dotln/console -> @dotln/skeleton: observed 0.61.0; expected exact workspace version 0.61.0
+PASS workspace-pin @dotln/skeleton -> @dotln/beacons: observed 0.1.1; expected exact workspace version 0.1.1
+PASS workspace-pin @dotln/skeleton -> @dotln/compiler: observed 0.27.1; expected exact workspace version 0.27.1
+PASS workspace-pin @dotln/skeleton -> @dotln/kernel: observed 0.6.0; expected exact workspace version 0.6.0
+PASS github-body-profile: observed docs/final-reviews/WO-009/PR.md; expected one physical line per prose paragraph or list-item paragraph
+PASS license-surfaces package.json workspaces: observed ["packages/*"]; expected ["packages/*"]
+PASS license-surfaces workspace count: observed 5; expected at least one
+PASS license-surfaces package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces package.json private: observed true; expected true
+PASS license-surfaces package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/beacons/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/beacons/package.json private: observed true; expected true
+PASS license-surfaces packages/beacons/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/beacons/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/compiler/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/compiler/package.json private: observed true; expected true
+PASS license-surfaces packages/compiler/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/compiler/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/console/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/console/package.json private: observed true; expected true
+PASS license-surfaces packages/console/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/console/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/kernel/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/kernel/package.json private: observed true; expected true
+PASS license-surfaces packages/kernel/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/kernel/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/skeleton/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/skeleton/package.json private: observed true; expected true
+PASS license-surfaces packages/skeleton/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/skeleton/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces LICENSE: observed sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30; expected sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+PASS license-surfaces LICENSE-docs: observed sha256:9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411; expected sha256:9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411
+PASS license-surfaces NOTICE: observed sha256:645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c; expected sha256:645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c
+unavailable license-surfaces docs/LEGAL.md pins: core's pins are judged only where this instance declares docs/LEGAL.md
+PASS license-surfaces package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/beacons/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/compiler/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/console/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/kernel/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/skeleton/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+
+
+$ gh release list --repo dylanwoodconsulting/DotLn-Enterprise-Starter --limit 10 --json tagName,name,isDraft,isPrerelease
+[{"isDraft":false,"isPrerelease":false,"name":"DotLn v0.2.0","tagName":"v0.2.0"},{"isDraft":false,"isPrerelease":false,"name":"DotLn v0.1.0","tagName":"v0.1.0"}]
+
+
+$ npm test -- --list
+
+> test
+> node scripts/test-runner.mjs --list
+
+format — protects: source and documentation retain the shared formatting rules
+configuration-root — protects: configuration and control-plane source declarations hold before suites start
+registrations — protects: every JSONL under docs/ is an EventEnvelope stream or a classified protocol, and every document-gate script has a runner-fixture stub
+declarations — protects: declared suite and copied fixture inputs cover direct imports
+generated — protects: generated records and installed harness bytes are current before suites start
+host — protects: host memory pressure admits suites only at a normal pressure level
+kit-verify — protects: carried compiled files match the kit manifest
+
+
+$ node --input-type=module -e 'import { inventoryMaterial } from "./scripts/lib/worktree-material.mjs"; const rows = inventoryMaterial(process.cwd()); console.log(JSON.stringify(rows)); if (rows.some(row => row.disposition === "disposable")) process.exitCode = 1;'
+[]
+
+
+$ git diff --name-only main...HEAD

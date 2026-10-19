@@ -1,0 +1,80 @@
+{
+  "checkId": "npm test",
+  "treeHash": "b1a3088717c6767913a04bc8d7dc1385cbe89b45",
+  "codeIdentity": "032cfe307c27581f969158174b805c6a2fd5691f3a9851b9c10939794bbb8e86",
+  "instanceInputDigest": "sha256:69a933e45b6164c8216505a2464f7b3272f37d7c34ca55615e2e4c45ce3e7332",
+  "durationMs": 254874,
+  "exitCode": 0,
+  "executed": true,
+  "evidenceRef": "host-gate:032cfe307c27581f969158174b805c6a2fd5691f3a9851b9c10939794bbb8e86:npm test",
+  "recordedAt": "2026-10-19T17:00:21.843Z",
+  "executionMode": "fresh",
+  "gateSelection": "review",
+  "identityUnchanged": true,
+  "buildOutputUnchanged": true,
+  "freshSuites": 7,
+  "reusedSuites": 0,
+  "requiredSuites": [
+    "kit-verify",
+    "format",
+    "configuration-root",
+    "registrations",
+    "declarations",
+    "generated",
+    "host"
+  ],
+  "unrunSuites": [],
+  "stale": [],
+  "failedFirst": null,
+  "cases": [
+    {
+      "name": "kit-verify",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 104,
+      "hostLaneWaitMs": 5
+    },
+    {
+      "name": "format",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 3157,
+      "hostLaneWaitMs": 243203
+    },
+    {
+      "name": "configuration-root",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 5413,
+      "hostLaneWaitMs": 6
+    },
+    {
+      "name": "registrations",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 72,
+      "hostLaneWaitMs": 5
+    },
+    {
+      "name": "declarations",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 229,
+      "hostLaneWaitMs": 7
+    },
+    {
+      "name": "generated",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 2314,
+      "hostLaneWaitMs": 5
+    },
+    {
+      "name": "host",
+      "exitCode": 0,
+      "executed": true,
+      "durationMs": 61,
+      "hostLaneWaitMs": 5
+    }
+  ]
+}
