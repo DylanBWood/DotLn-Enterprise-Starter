@@ -307,12 +307,22 @@ that reopens it.
   document check's attribution rule, and the short phrases of each capture)
   finds no other quotation. The requirement lists in WO-004's and WO-008's
   provenance, the taxonomy's three questions in WS-001 and the register's
-  historical summary of WO-001-D004 are requirements, not quotations, and
-  stay as they were; DotLn-Angular's copy of WO-004 is the same list, so
-  nothing in that repository is a quotation. The update pull request's body,
-  outward and not committed, is rewritten too. Rejected: pushing a
-  docs-only branch to DotLn-Angular from this session (nothing there to
-  change, and outside the planning dispatch's authorization). Reopen: a
+  historical summary of WO-001-D004 are requirements, not quotations:
+  WS-001's questions and the register stay as they were, and WO-004's and
+  WO-008's lists keep the reworded bytes receipt 003 judged before the
+  operator drew the boundary (both wordings are requirements; the kit admits
+  one judgment per pass). DotLn-Angular's copy of WO-004 is the same list,
+  so nothing in that repository is a quotation, and the clause of WO-005's
+  step 12 that would rewrite it is withdrawn: before that step, WO-005's
+  executor records the operator's correction (capture SHA-256
+  `77a80e21572fb02ba25804bd05db6293f64bf23fc1976b7a25ebddd01ee3676a`) as the
+  order's first structured decision and runs
+  `npm run plan -- amend-order WO-005 WO-005-D001 "operator correction of 2026-10-19: requirement lists are not quotations; drop the target-copy rewrite of step 12"`,
+  the route product 07 names for an operator-authorized change to a judged
+  order. The update pull request's body, outward and not committed, is
+  rewritten too. Rejected: a second judgment in this pass (the kit refuses
+  it without changed observed evidence); pushing a docs-only branch to
+  DotLn-Angular from this session (nothing there to change). Reopen: a
   later pass's sweep finds a quotation, or the operator marks a draft ready
   to file verbatim.
 
@@ -435,7 +445,11 @@ recorded in the order's decisions, then `plan amend-order`).
   unchanged and records that no key is removed, and if the line diff still
   reads as a removal the clause is reworded to "removes no key" through the
   amendment route.
-- **WO-005.** (a) Five commands join the target outside the registered gate
+- **WO-005.** (0) Step 12's clause that rewrites the target's copy of
+  WO-004's provenance is withdrawn by the operator's correction of
+  2026-10-19 (D15): the executor records the authorization as WO-005-D001
+  and runs `plan amend-order` before the step; the target's list is a
+  requirement, not a quotation. (a) Five commands join the target outside the registered gate
   and the worker could not see their CI wiring; §8.1's `tools` lint target
   joins the three checks to the declared `lint`, and criterion 2 reads that
   target back; carry-in: the evidence records `ci.yml` naming the three.
