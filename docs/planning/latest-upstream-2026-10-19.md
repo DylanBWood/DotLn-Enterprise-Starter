@@ -388,6 +388,72 @@ and the typed edge. WO-009's cost finding stays the previous pass's D13
 NoOp with its trigger; WO-010's executor carry-ins stand; WO-006 to WO-008's
 items wait for their base-setting passes (D13).
 
+### 8.2 Known issues from receipt 003, by order
+
+The refutation (§13) returned `aligned-with-findings` with ten known issues
+and no hold. The orders are frozen at the judged subject, so each issue sits
+on its order's row here until a pass amends the order; an issue an executor
+can meet inside the frozen order's authority is a carry-in for the executor's
+decisions and evidence, and one that needs the order's text changed names the
+execution-amendment route of product 07 (the operator's scope expansion
+recorded in the order's decisions, then `plan amend-order`).
+
+- **WO-009.** (a) A core-named tag that returns before WO-011's guard lands
+  (any `git fetch upstream` until then) would make `release prepare --local`
+  assign a version above it while every check still passed; carry-in: step
+  3's check names `v0.3.0`, so any other assignment is a stop, the tag is
+  deleted and the step rerun, recorded in the decisions. (b) A full cycle for
+  about 50 bytes, ahead of the critical path: the previous pass's D13 NoOp
+  stands with its trigger; the operator may fold the key into WO-010 by
+  amendment before activation.
+- **WO-011.** (a) WO-005's criterion 3 leaves `.env` and the ignored
+  `apps/dotln/src/environments/environment.local.ts` in the target worktree,
+  and neither is declared disposable, so the v0.85.0 close would refuse them
+  (the kit refuses an undeclared ignored file in the target worktree as in the
+  base checkout); carry-in for WO-005's executor, verifier and release-close
+  session: remove the two generated files from the target worktree after the
+  checks that create them and record the removal, the base checkout staying
+  the operator's (D5); the next pass that amends WO-005 writes the removal
+  into its step 4 and criterion 3. (b) The tag guard's gaps: the README's own
+  named-tag preview (`git fetch upstream tag vX.Y.Z`) still creates a tag,
+  which WO-011's design pairs with `git tag -d` after the preview; the
+  setting lives in one clone's Git configuration and reaches no pull request,
+  so its readback in the evidence and the profile's `## Release close`
+  section are its record; criterion 2 names only `v0.85.0`, and the `tagOpt`
+  readback is what keeps later tags out. Carry-in: the executor writes the
+  named-tag rule into the profile section. (c) Criterion 4's WS-001 check
+  (`grep -c 'WO-011'` at least 4) already passes at `ff1d524`; carry-in: the
+  executor records `grep -c 'docs/evidence/WO-011' docs/workstreams/WS-001-dotln-angular.md`
+  at least 1 beside it, which only the delivery-state row satisfies. (d) The
+  worker reads the disposable match as root-only, so a nested ignored
+  directory (`__screenshots__` beside a spec, `test-output` under a project)
+  would still refuse a close; carry-in: the executor reads
+  `scripts/lib/target-worktree-close.mjs` at v0.85.0 and records how nested
+  paths are matched; if nested roots must be declared, criterion 1's exact
+  list changes through the amendment route at activation. (e) The Cost line
+  omits a recurring cost: every target close deletes `node_modules`, `.nx`,
+  `.angular` and `tmp` in the DotLn-Angular base checkout too; the
+  operator's choice, recorded in the evidence and the profile: keep the base
+  clone uninstalled (the state the 2026-10-18 pass observed) and nothing is
+  deleted, or accept a reinstall per close. (f) Criterion 1 says the diff
+  removes nothing, but the class is declared on one line, so adding the key
+  rewrites that line and a line diff shows a removal; carry-in: the executor
+  adds the key so that `git diff` shows the `checks` and `supports` entries
+  unchanged and records that no key is removed, and if the line diff still
+  reads as a removal the clause is reworded to "removes no key" through the
+  amendment route.
+- **WO-005.** (a) Five commands join the target outside the registered gate
+  and the worker could not see their CI wiring; §8.1's `tools` lint target
+  joins the three checks to the declared `lint`, and criterion 2 reads that
+  target back; carry-in: the evidence records `ci.yml` naming the three.
+  (b) WO-009 and WO-010 run ahead of WO-005 without an edge to it and cost
+  the critical path two cycles: D9's reading of the evidence (the name must
+  precede the next Release and WO-010 precedes WO-005 by the previous pass's
+  D13), reopened when the operator says to run two at once.
+
+The sequence has no field of its own in the result schema; the worker folded
+its judgment into each order's critical-path text.
+
 ## Candidates not filed, with their reopening conditions (section 9)
 
 - **C1 `DotLn Angular` as the name of DotLn-Angular's releases.** Blocked on
@@ -491,8 +557,9 @@ progress (D13 leaves WO-006 to WO-008 alone until their bases exist).
 Cost: `npm run meta -- --plan-cost` records the table after the subject
 commit; this session spent no worker before the refuter; process cost at
 entry was 89,237 tokens (source `claude-transcript-message-usage`, scope
-`dispatch`, cutoff 2026-10-19T14:41:04Z) and the handoff reading is in the
-pull request. Document ceilings: no product document changed in this pass
+`dispatch`, cutoff 2026-10-19T14:41:04Z); at the receipt it read 17,470,377
+tokens (same source and scope, cutoff 2026-10-19T15:51:54Z), the quote
+sweep and its scans included; the handoff reading is in the pull request. Document ceilings: no product document changed in this pass
 (`docs/product/purpose.md` keeps its 1,939-byte ceiling); the kit's product
 documents are kit files and carry no instance ceiling.
 
@@ -504,4 +571,36 @@ recorded here when they ran: `npm run work-orders -- index` and `--check`,
 `npm run publication:check`, `npm run meta`, `npm run plan -- check`,
 `npm run test:docs`.
 
-(Results and the refutation receipt are recorded below once they exist.)
+Results at the subject commit `ff1d524` (cost table) over `6d21541` (the
+quote sweep) and `291456c`: `work-orders index --check` PASS,
+`lineage index` regenerated and current, `docs-check` PASS (1 product
+document, 2 declared historical link occurrences, 0 failures; three
+pre-existing advisories on filed records, WO-003-D003, WO-001 FINAL-001 and
+WO-003 VER-002, none a quote of the operator after D15),
+`publication:check` reporting no editions declared, `npm run meta` no budget breach, and `plan check`
+waiting on the receipt. The document gate at v0.83.0 before the subject
+commit: 15 passed, 2 failed (the two plan checks, which read committed order
+files). A detached worktree in session scratch at `origin/main` (`98b3934`,
+the merged #8) with this branch merged onto it and bootstrapped at v0.85.0:
+`npm run test:docs` 12 passed, 2 failed (`planning pass
+planning-e0dd1f8a7a5b84af needs a receipt`), 535 s, so the merged result is
+green under v0.85.0 once the receipt below is in.
+
+Refutation: one fresh `dotln-worker` (`claude-opus-5-5` by its definition and
+the host's system prompt; no effort readback) on the canonical prompt from
+`npm run plan -- refute` at base `ff1d524`, default pass scope (WO-009,
+WO-011 and WO-005, plus the sequence; WO-010 and WO-006 to WO-008 carried by
+hash), dispatched at 15:41:48Z. Receipt
+[`2026-10-19-planning-e0dd1f8a7a5b84af-003`](refutations/2026-10-19-planning-e0dd1f8a7a5b84af-003.md),
+verdict `aligned-with-findings`, 0 holds, 10 known issues (§8.2), 4 carried
+judgments, dispatch-to-file 964,002 ms (16.1 minutes; the worker's own
+wall-clock 826 s, 185,431 tokens, 43 tool uses). The worker's statement names
+what it read: the whole prompt; the kit at v0.85.0 through
+`git show origin/main:…` (the configuration, release, worktree,
+handoff-ledger and target-close scripts and the contributor loadout's role
+text), `dotln.config.json`, the grants, the profile, WS-001, README and
+UPSTREAM; no bounded probe, no network, no descendant, no repository or Git
+write; not the planner narrative, receipts, ledger, intake, evidence or
+control lane. The judged, committed and workspace subjects agree
+(`sha256:f47be676…`). `npm run test:docs` after the receipt is recorded in
+the pull request.
