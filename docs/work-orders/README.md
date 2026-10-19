@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-009] — Name this launchpad's releases Launchpad · **queued**
+- [x] [WO-009] — Name this launchpad's releases Launchpad · **final-reviewed**
 - [ ] [WO-010] — Protect main in both repositories · **queued**
 - [ ] [WO-011] — Take starter v0.85.0 into the registration · **queued**
 - [ ] [WO-005] — Foundation libraries: core, utils, i18n, test kits · **queued**
@@ -27,23 +27,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-009
-
-[WO-009 — Name this launchpad's releases &#96;Launchpad&#96;: declare &#96;release.displayName&#96; in &#96;dotln.config.json&#96; and refresh the README release claim, so the next tag and GitHub Release carry the instance's own name (version assigned at activation)](WO-009-release-display-name.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: none declared.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: machinery
-- Cost: adds one &#96;release&#96; section to &#96;dotln.config.json&#96; (about 50 bytes) and this order's evidence; changes one word and the assigned version in the README release claim. Removes nothing. Wall-clock: about 15 to 30 minutes of executor work plus the fixed cycle (activation, verification, final review, release close); unknown until run. Context bytes: the README §Releases in this instance, &#96;scripts/lib/config.mjs&#96; §release, this order, about 20 KB. Commands added: none. Tokens: unknown until run. Steps: 7. Re-mints: none; no registered evidence source, feedback source or machinery suite source is edited, so &#96;npm test&#96; without &#96;--review&#96; is the product gate.
-- Authority: [docs/work-orders/WO-009-release-display-name.md](WO-009-release-display-name.md)
 
 ### WO-010
 

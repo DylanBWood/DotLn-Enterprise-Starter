@@ -3,6 +3,7 @@
   "classes": {
     "angular-nx-monorepo": { "checks": [], "supports": [] }
   },
+  "release": { "displayName": "Launchpad" },
   "repositories": {
     "dotln-angular": {
       "baseBranch": "main",
