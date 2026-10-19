@@ -19,13 +19,13 @@ Steps: 15. Re-mints: none.
 **Nomination provenance:** the 2026-10-18 angular-workstream planning pass
 ([planning document](../planning/angular-workstream-2026-10-18.md) §5 and §8),
 on the operator's direction of 2026-10-17 (ignored intake capture, SHA-256
-`4f14c6c09512576abfd701335f4dd8a347694ff23785724422cb8d943b5d67aa`),
-paraphrased: permissions enforced by deterministic conventions (a state
-machine or adjacency lists) over routes and features, security first; a
-mocked token and identity provider with a legitimate Angular side; every
-failure case covered (errors, timeouts, expired and invalid tokens, how tokens
-are stored); and authentication around the third week of a ten-pull-request
-foundation. Planner-synthesized. Opaque identifier, not a priority. Clean-room screen:
+`4f14c6c09512576abfd701335f4dd8a347694ff23785724422cb8d943b5d67aa`):
+permissions baked in with deterministic conventions (state machine or
+adjacency lists) on routes and features; security first; mock the auth token
+and the identity provider but keep the Angular side legitimate; all cases:
+error handling, timeouts, token expiration, invalid tokens, token storage best
+practices and more; auth around week three of a ten-pull-request foundation.
+Planner-synthesized. Opaque identifier, not a priority. Clean-room screen:
 public standards (RFC 6749, RFC 7636, OpenID Connect Core) and public
 packages. Amended by the 2026-10-18 main-rules planning pass
 ([planning document](../planning/main-rules-and-platform-items-2026-10-18.md)

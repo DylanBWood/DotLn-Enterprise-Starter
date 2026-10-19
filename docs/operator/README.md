@@ -147,12 +147,13 @@ in one short question rather than guessing in either direction.
   D2).
 - Harness: Claude Code at the operator's chosen effort; spawned workers at the
   kit's pinned model and effort.
-- No direct quotes: the operator's words are never copied into a committed
+- No direct quotes: the operator's messages are never quoted in a committed
   file of this fork or of DotLn-Angular; passes and roles paraphrase and
   cite the ignored capture's digest, and a verbatim text is filed only from
-  a draft the operator marks ready to file (correction of 2026-10-19,
+  a draft the operator marks ready to file. A requirement list restated from
+  their directions is not a quote and stays (corrections of 2026-10-19,
   capture SHA-256
-  `0fd81261c26234c213cd436d36ac2f19c6f0633287090a5c6426b988d44ded2a`; the clean-room
+  `77a80e21572fb02ba25804bd05db6293f64bf23fc1976b7a25ebddd01ee3676a`; the clean-room
   floor of `CLAUDE.md` already said so for intake).
 - Requests to core: at the end of a planning pass the operator wants a
   paste-ready prompt for the primary DotLn planning session carrying this

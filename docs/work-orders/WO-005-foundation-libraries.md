@@ -277,14 +277,7 @@ cache finding in the profile and the log;
     the `lint` target of a root `tools` project (`tools/project.json`, new).
     Check: each command exits 0 on the workspace and nonzero on its fixture,
     and `npx nx run-many -t lint` runs `tools:lint`.
-12. Documentation: `docs/dotln/work-orders/WO-004-scaffold-dotln-angular-workspace.md`
-    (existing in the target): its provenance paragraph is paraphrased to the
-    wording the launchpad's copy carries after the 2026-10-19 pass, so no
-    direct words of the operator remain in the target (operator direction of
-    2026-10-19, capture SHA-256
-    `01b3d03564fe733b600083183008b4fb46ee3350ae33469cd379121cc262a177`; check:
-    `grep -c paraphrased docs/dotln/work-orders/WO-004-scaffold-dotln-angular-workspace.md`
-    prints 1); `docs/dev-reference/architecture/foundation.md` (the
+12. Documentation: `docs/dev-reference/architecture/foundation.md` (the
     environment, tokens, paths, utils, i18n, kits, with one path each),
     `docs/ai-reference/foundation-rules.md` (imperative rules: token naming,
     `provide*()` only, `| t` for strings, `R`/`RA` imports, kits for
@@ -397,10 +390,7 @@ order's field names no `--only` suite, so the launchpad handoff rests on the
 structural and document rows and the target gate is the product gate (D7 of
 2026-10-19). A cache setting of step 5 that belongs to the registration's
 gate argv is boarded as a follow-up for a later self order, since WO-011
-precedes this order. Step 12 carries the operator's direction of 2026-10-19
-that no direct quote of theirs is committed in either repository: the
-target's copy of WO-004 still holds one, and this order's pull request is
-the first in-kit route that reaches the target.
+precedes this order.
 
 **Non-goals:** UI components or a vendor library (WO-006); NgRx, events, MSW
 (WO-007); authentication (WO-008); typed translation keys (later member); a

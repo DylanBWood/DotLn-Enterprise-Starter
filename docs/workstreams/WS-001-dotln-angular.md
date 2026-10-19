@@ -210,9 +210,9 @@ know?**
 
 | Role      | Asks                   | Knows                        | May inject                                | Lives in                                                        |
 | --------- | ---------------------- | ---------------------------- | ----------------------------------------- | --------------------------------------------------------------- |
-| Salesman  | Appearance    | its own inputs               | platform tokens only (`ElementRef`, `DOCUMENT`) | `libs/shared/ui`, `libs/<app>/ui`                               |
-| Connector | Fit  | other components             | nothing from the application              | `libs/shared/ui/composites`, `<feature>/composites`, `<feature>/layouts` |
-| Maven     | Meaning     | the view model and the state | facades, stores, router, tokens           | `<feature>/mappers`, `<feature>/containers`                     |
+| Salesman  | Does it look right?    | its own inputs               | platform tokens only (`ElementRef`, `DOCUMENT`) | `libs/shared/ui`, `libs/<app>/ui`                               |
+| Connector | Does it fit together?  | other components             | nothing from the application              | `libs/shared/ui/composites`, `<feature>/composites`, `<feature>/layouts` |
+| Maven     | What does it mean?     | the view model and the state | facades, stores, router, tokens           | `<feature>/mappers`, `<feature>/containers`                     |
 
 **Knowledge flows down as inputs; intent flows up as outputs; only Mavens talk
 to the outside world through injection.** Seven kinds, ordered by distance from
@@ -259,7 +259,7 @@ dispatch events; it is the Container's only dependency. **Stores** live in
 Rules that make the taxonomy legitimate, each enforced by a lint or a test,
 not by memory:
 
-- **R1 Knowledge flows down, intent flows up.** Salesmen and Connectors have inputs and
+- **R1 Knowledge down, intent up.** Salesmen and Connectors have inputs and
   outputs only. Lint refuses `inject(` under `fragments/`, `templates/`,
   `composites/` and `layouts/`; `wrappers/` may inject platform tokens.
 - **R2 Two hops.** An output is forwarded at most twice before a Container
