@@ -35,14 +35,22 @@ the 2026-10-18 main-rules planning pass
 ([planning document](../planning/main-rules-and-platform-items-2026-10-18.md)
 §6 D5 to D8 and §8.1): the base set to WO-004's merge commit, the cache step,
 the `--draft` route, the final-review obligation and the repairs of receipt
-001's known issues. Planner-synthesized. Opaque identifier, not a priority.
-Clean-room screen: public packages, their public test suites (MIT and
-BSD-3-Clause) and the operator's own patterns.
+001's known issues. Amended by the 2026-10-19 latest-upstream planning pass
+([planning document](../planning/latest-upstream-2026-10-19.md) §6 D2, D4,
+D6 and D7): the typed edge on WO-011, the route guard at starter v0.85.0,
+the first draft publish recorded as the live observation of the kit's
+admission, no `Target release classification` header, and the Preflight
+line confirmed under the landed grammar. Planner-synthesized. Opaque
+identifier, not a priority. Clean-room screen: public packages, their public
+test suites (MIT and BSD-3-Clause) and the operator's own patterns.
 **Depends on:** WO-004 merged (hard, met: the workspace, its tags and its
 gate exist at `651d76ff68e9b3a38fe770226deb634bca28b54c`, DotLn-Angular's
-`main` on 2026-10-18); and a launchpad whose starter carries core WO-221's
-`--draft` form of `worktree publish` (a precondition of step 1, not a typed
-edge).
+`main` on 2026-10-18); WO-011 merged (hard: the class's `disposable`
+declaration this order's release close needs, since starter v0.85.0's close
+refuses an undeclared ignored base file, and the core-named-tag guard); and a
+launchpad whose starter carries core WO-221's `--draft` form of
+`worktree publish` (met by the update pull request #8 of 2026-10-19 once it
+merges; step 1's route guard).
 **Workstream:** WS-001
 
 <!-- dotln-dependencies:start -->
@@ -51,6 +59,11 @@ edge).
     "workOrderId": "WO-004",
     "relation": "hard",
     "reason": "the scaffolded workspace this order adds libraries to; the base line names its merge commit"
+  },
+  {
+    "workOrderId": "WO-011",
+    "relation": "hard",
+    "reason": "the class's disposable declaration this order's release close needs under starter v0.85.0, and the core-named-tag guard"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -142,6 +155,10 @@ its own types and is BSD-3-Clause.
   members; `@angular-eslint/prefer-signals`; a custom
   `no-restricted-syntax` rule refusing `new InjectionToken(` whose first
   argument does not start with `dotln-angular.` (selector on the literal).
+  The lint rule is the one guard for token names; `check:tokens` is its
+  cross-check for constructions the selector cannot read across lines, and
+  a disagreement between them is a finding, never two rules (receipt 002's
+  finding, applied by the 2026-10-19 pass).
 - Proxy: `apps/dotln/proxy.conf.json` mapping `/api` to the
   `DOTLN_API_PROXY_TARGET` from the primed environment, wired to `serve`
   through the `proxyConfig` option of the app's `serve` target.
@@ -167,8 +184,16 @@ its own types and is BSD-3-Clause.
   (`npm run check:tokens`); `tools/scripts/check-spec-kits.mjs` reads every
   `*.spec.ts` under `libs/shared` that calls `TestBed.configureTestingModule`
   and lists those whose `providers` array does not spread a
-  `provide*TestKit(` call (`npm run check:kits`). Each prints its findings
-  and exits nonzero when any exist; CI runs the three.
+  `provide*TestKit(` call, and also reads every `@Injectable` class and
+  `InjectionToken` declaration under `libs/shared` and lists each whose
+  library's `testing` entry point exports no `provide<Name>TestKit`
+  function, so the objective's property (a kit for every injectable) is what
+  is checked (`npm run check:kits`; receipt 002's finding, applied by the
+  2026-10-19 pass). Each prints its findings and exits nonzero when any
+  exist; CI runs the three, and a root `tools` project (`tools/project.json`)
+  carries a `lint` target that runs them, so the registration's declared
+  `npx nx run-many -t lint` executes them in every later member's gate
+  without a registration change (receipt 002's finding).
 - Third-party texts: each ported spec opens with the upstream file's
   copyright line and license name, and `THIRD-PARTY-NOTICES.md` at the
   workspace root holds the MIT text for Ramda and the BSD-3-Clause text for
@@ -193,9 +218,12 @@ cache finding in the profile and the log;
    must equal the base this order's `Repository:` line names; if not, stop
    and report that a planning pass must set the base. Route guard: in the
    launchpad, `grep -c -- '--draft' scripts/worktree.mjs` must print at
-   least 1 (the starter carries core WO-221's draft form); if it prints 0,
-   stop and report that the upgrade order must land first (planning document
-   §6 D5 and D6). Then `npm run worktree -- start WO-005 docs/work-orders/WO-005-foundation-libraries.md`.
+   least 1 (starter v0.85.0 carries core WO-221's draft form; update pull
+   request #8 of 2026-10-19) and `npm run resume -- status --json` must show
+   the typed edge on WO-011 as `met`; if either fails, stop and report that
+   the update or WO-011 must land first (2026-10-18 planning document §6 D5
+   and D6; 2026-10-19 planning document §6 D2). Then
+   `npm run worktree -- start WO-005 docs/work-orders/WO-005-foundation-libraries.md`.
    Check: `npm run resume -- status --json` shows the base.
 2. `docs/dev-reference/workspace/generator-log.md`: append each generator
    command before running it. Check: three library lines and three
@@ -245,9 +273,18 @@ cache finding in the profile and the log;
     prints `true`.
 11. The three check scripts under `tools/scripts/` and their `package.json`
     commands (`check:templates`, `check:tokens`, `check:kits`), each with
-    one fixture under `tools/lint-fixtures/` it must flag, run by CI. Check:
-    each command exits 0 on the workspace and nonzero on its fixture.
-12. Documentation: `docs/dev-reference/architecture/foundation.md` (the
+    one fixture under `tools/lint-fixtures/` it must flag, run by CI and by
+    the `lint` target of a root `tools` project (`tools/project.json`, new).
+    Check: each command exits 0 on the workspace and nonzero on its fixture,
+    and `npx nx run-many -t lint` runs `tools:lint`.
+12. Documentation: `docs/dotln/work-orders/WO-004-scaffold-dotln-angular-workspace.md`
+    (existing in the target): its provenance paragraph is paraphrased to the
+    wording the launchpad's copy carries after the 2026-10-19 pass, so no
+    direct words of the operator remain in the target (operator direction of
+    2026-10-19, capture SHA-256
+    `01b3d03564fe733b600083183008b4fb46ee3350ae33469cd379121cc262a177`; check:
+    `grep -c paraphrased docs/dotln/work-orders/WO-004-scaffold-dotln-angular-workspace.md`
+    prints 1); `docs/dev-reference/architecture/foundation.md` (the
     environment, tokens, paths, utils, i18n, kits, with one path each),
     `docs/ai-reference/foundation-rules.md` (imperative rules: token naming,
     `provide*()` only, `| t` for strings, `R`/`RA` imports, kits for
@@ -271,7 +308,13 @@ cache finding in the profile and the log;
     then the same publish command without `--draft`, which force-pushes with
     lease against the recorded draft head and reuses the branch and the pull
     request. No work-in-progress commit, no force-push by hand, no manual
-    close.
+    close. The draft publish is the first live observation of the kit's
+    admission of the target's publication commands under Claude Code auto
+    mode (core v0.85.0 has qualified no host): the session that runs it
+    records in `docs/evidence/WO-005/decisions.md` the hook's decision from
+    the session journal, whether the host prompted, and which of the
+    operator's interim trust entries were present (2026-10-19 planning
+    document §6 D6).
 
 **Preflight:** in the target worktree `npx nx format:check`,
 `npx nx run-many -t lint test build`, `npm run lint:fixtures`, `npm run i18n:check`,
@@ -288,9 +331,11 @@ then `node scripts/target-gate.mjs WO-005` and `--review` once each.
    three `@dotln-angular/<lib>-testing` paths).
 2. `npm run check:tokens` exits 0 on the workspace (every `new InjectionToken`
    description starts with `dotln-angular.`, read across lines and nested
-   generics) and nonzero on `tools/lint-fixtures/bad-token.ts`, and
+   generics) and nonzero on `tools/lint-fixtures/bad-token.ts`,
    `npm run lint:fixtures` exits 0 by observing the `#private` and token-name
-   rules fail on their fixtures.
+   rules fail on their fixtures, and
+   `node -e "const p=require('./tools/project.json');console.log(Object.keys(p.targets).includes('lint'))"`
+   prints `true`.
 3. `cp .env.example .env && npm run env:prime` writes
    `apps/dotln/src/environments/environment.local.ts`, which Git ignores;
    `npx nx build dotln --configuration=production` and
@@ -303,9 +348,12 @@ then `node scripts/target-gate.mjs WO-005` and `--review` once each.
    exits 0.
 5. `npm run check:kits` exits 0 on the workspace (every spec under
    `libs/shared` that calls `TestBed.configureTestingModule` spreads a
-   `provide*TestKit(` call into its providers) and nonzero on
-   `tools/lint-fixtures/spec-without-kit.spec.ts`, and `npx nx run-many -t test`
-   exits 0.
+   `provide*TestKit(` call into its providers, and every `@Injectable` class
+   and `InjectionToken` under `libs/shared` has a `provide<Name>TestKit`
+   export in its library's `testing` entry point) and nonzero on
+   `tools/lint-fixtures/spec-without-kit.spec.ts` and on
+   `tools/lint-fixtures/injectable-without-kit.ts`, and
+   `npx nx run-many -t test` exits 0.
 6. `libs/shared/utils/src/lib/upstream-specs/` holds one ported spec per
    function `public_api.ts` documents as used, each opening with the
    upstream file's copyright line and license name; `THIRD-PARTY-NOTICES.md`
@@ -329,12 +377,30 @@ the operator chose to wait for it rather than run the hand route (planning
 document §6 D6). The draft pull request and its workflow runs are a
 final-review obligation read from `docs/evidence/WO-005/preview-pr.json`,
 never a criterion (D7). The operator's interim host-trust entries of
-2026-10-18 are outside the repository and are removed once the upgrade
-order shows the kit's admission carries the push (D10). The `providedIn: 'root'`
+2026-10-18 are outside the repository; whether they are present at step 15's
+draft publish is the operator's choice (removed, the episode shows whether
+the host honors the hook's admission; present, only the hook's own decision
+is observed), and the pass after this order decides their removal or the
+kit's `hostRules: "literal"` fallback (2026-10-19 planning document §6 D6).
+The `providedIn: 'root'`
 default awaits the operator's ruling and is recorded as a decision; Nx
 secondary entry points for non-buildable libraries are a spike with a
-recorded fallback. The `Target release classification` line and the
-Preflight line in the landed grammar are added by the upgrade pass (D9, D12).
+recorded fallback. This order carries no `Target release classification`
+header: DotLn-Angular declares no target release until the kit can title one
+`DotLn Angular` (2026-10-19 planning document §6 D4), so its close is a
+no-release close; that close deletes the declared disposable output
+(`node_modules`, `.nx`, `dist`, `.angular`, `coverage`, `test-output`,
+`playwright-report`, `test-results`, `tmp`, `out-tsc`, `__screenshots__`) in
+the target worktree and in the clone's base checkout, never to scratch
+(WO-011). The Preflight line stands under the landed grammar: a target
+order's field names no `--only` suite, so the launchpad handoff rests on the
+structural and document rows and the target gate is the product gate (D7 of
+2026-10-19). A cache setting of step 5 that belongs to the registration's
+gate argv is boarded as a follow-up for a later self order, since WO-011
+precedes this order. Step 12 carries the operator's direction of 2026-10-19
+that no direct quote of theirs is committed in either repository: the
+target's copy of WO-004 still holds one, and this order's pull request is
+the first in-kit route that reaches the target.
 
 **Non-goals:** UI components or a vendor library (WO-006); NgRx, events, MSW
 (WO-007); authentication (WO-008); typed translation keys (later member); a

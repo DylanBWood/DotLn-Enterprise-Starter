@@ -588,6 +588,141 @@
           "reopenWhen": "The upgrade order's qualification shows the kit's admission carries the push (then the interim entries are removed), or a publication step again needs a manual command from the operator.",
           "targets": [],
           "at": "2026-10-18T16:52:05.171Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "2026-10-19 latest-upstream planning pass, D6: the kit side (core WO-221, trust from the registration) landed with starter v0.85.0 through update pull request #8; the qualification the 2026-10-18 pass expected from the upgrade order cannot run there, because only a target order at verified exercises the admission, so it moves to WO-005's draft publish and the operator's interim entries stay their choice until then.",
+          "reopenWhen": "WO-005's draft publish is recorded (the hook's decision, whether the host prompted, which entries were present), or a publication step again needs a manual command from the operator.",
+          "targets": [],
+          "at": "2026-10-19T15:16:27.299Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-98c85b750cb36bd4",
+      "key": "candidate:docs/planning/latest-upstream-2026-10-19.md#candidates-not-filed-with-their-reopening-conditions-section-9::bc5477547d8012deb9cfa0ac8300a59cd1d32a70862536ce9b2fa6d818237382",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ff7b42ab04891a5aaa42be6c0631edecf1e2cd105b3586072bf042694c1f635e",
+          "ref": "docs/planning/latest-upstream-2026-10-19.md#candidates-not-filed-with-their-reopening-conditions-section-9",
+          "title": "C2 The hostRules: \"literal\" fallback for dotln-angular.",
+          "summary": "- **C2 The `hostRules: \"literal\"` fallback for `dotln-angular`.** Reopen when WO-005's draft publish records that the host did not honor the hook's admission (a prompt or a denial in its decisions); then a self order turns the fallback on and the later members run under it (D6).",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-19 latest-upstream planning pass, D6: core v0.85.0 has qualified no live host for the registered-target admission; the literal fallback stays off until an observation shows it is needed.",
+          "reopenWhen": "WO-005's draft publish records that the host did not honor the hook's admission (a prompt or a denial in its decisions); then a self order turns on hostRules literal for dotln-angular.",
+          "targets": [],
+          "at": "2026-10-19T15:16:27.290Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ad0cc3154f21f397",
+      "key": "candidate:docs/planning/latest-upstream-2026-10-19.md#candidates-not-filed-with-their-reopening-conditions-section-9::cb3f07195d4ed8c2dbb313995fc98a5f557f8aac0ba4ded8501616b9d78bc90a",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7e19bf7fd40e1a196ac6315ba5b1cdca6a32c2c4c3f4b88c61edf7df4615f8b2",
+          "ref": "docs/planning/latest-upstream-2026-10-19.md#candidates-not-filed-with-their-reopening-conditions-section-9",
+          "title": "C1 DotLn Angular as the name of DotLn-Angular's releases.",
+          "summary": "- **C1 `DotLn Angular` as the name of DotLn-Angular's releases.** Blocked on the kit: a declared target Release is titled by the registration id and the tag (§4). Reopen when the kit's registration admits a target display name, or the title reads from a configured name; then a self order declares `release: { \"policy\": \"declared\" }` and moves `release.close` to the allowed effects, and the base-setting pass adds `Target release classification` to the open target orders (D4).",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-19 latest-upstream planning pass, D4: the operator wants DotLn-Angular's releases named DotLn Angular; at starter v0.85.0 a declared target Release is titled by the registration id and the tag (scripts/release.mjs publishTargetRelease), so the release policy stays undeclared and the option is boarded as the operator's blocker (direction of 2026-10-19, capture SHA-256 01b3d03564fe733b600083183008b4fb46ee3350ae33469cd379121cc262a177).",
+          "reopenWhen": "The kit's registration admits a target display name, or the target Release title reads from a configured name; then a self order declares release.policy declared and moves release.close to the allowed effects, and the base-setting pass adds Target release classification headers to the open target orders.",
+          "targets": [],
+          "at": "2026-10-19T15:16:27.286Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c60b54b317ec79f7",
+      "key": "candidate:docs/planning/latest-upstream-2026-10-19.md#candidates-not-filed-with-their-reopening-conditions-section-9::d6f3f0b75236e0d45ef2975483e94f57790841f9ad5b005712a7eb575b3a2a44",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "5ab7326d1647e6976beb238305732fcc1a2452990f9f7297b0064e580a1bd24e",
+          "ref": "docs/planning/latest-upstream-2026-10-19.md#candidates-not-filed-with-their-reopening-conditions-section-9",
+          "title": "C4 Removing the operator's interim trust entries of 2026-10-18.",
+          "summary": "- **C4 Removing the operator's interim trust entries of 2026-10-18.** Reopen when WO-005's draft publish records the hook's admission honored with the entries absent, or the operator removes them; then the operator record says so and FUP-2479f6d32b2396a8 settles (D6).",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-19 latest-upstream planning pass, D6: the operator's interim trust entries of 2026-10-18 are host settings outside every write root; whether they are present at WO-005's draft publish is the operator's choice and decides what that episode observes.",
+          "reopenWhen": "WO-005's draft publish records the hook's admission honored with the entries absent, or the operator removes them; then the operator record says so and FUP-2479f6d32b2396a8 settles.",
+          "targets": [],
+          "at": "2026-10-19T15:16:27.294Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4b545ffb6f9dd6e9",
+      "key": "candidate:docs/planning/latest-upstream-2026-10-19.md#candidates-not-filed-with-their-reopening-conditions-section-9::ee7f766b06a771c65b1eb619f850500d89745b10018b201ca98685d4ed58a30d",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "095a7534b60265da4fa14a55626ce9f8926e726fcd0ec15f84be635e657cea76",
+          "ref": "docs/planning/latest-upstream-2026-10-19.md#candidates-not-filed-with-their-reopening-conditions-section-9",
+          "title": "C3 The Angular cache setting in the registration's gate argv.",
+          "summary": "- **C3 The Angular cache setting in the registration's gate argv.** Reopen when WO-005's step 5 records that the setting belongs to the gate argv rather than the target; then a self order edits the registration (the previous pass's D8; WO-011 precedes WO-005).",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-19 latest-upstream planning pass, D13, carrying the 2026-10-18 pass's D8: WO-005's step 5 determines where the Angular build cache setting belongs, and WO-011 precedes WO-005, so a registration-side setting cannot ride on it.",
+          "reopenWhen": "WO-005's step 5 records that the setting belongs to the registration's gate argv rather than the target; then a self order edits the registration.",
+          "targets": [],
+          "at": "2026-10-19T15:16:27.292Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4c3c0351adc4c2cc",
+      "key": "candidate:docs/planning/latest-upstream-2026-10-19.md#candidates-not-filed-with-their-reopening-conditions-section-9::ff13d05fb2fe23c032282172eb4324136bf12ce95f532fa5933e09595eb192be",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "853513f97ac0d587011758b34def97e4c00cf7ad4dcd53b68ec0fe9fcd2444d6",
+          "ref": "docs/planning/latest-upstream-2026-10-19.md#candidates-not-filed-with-their-reopening-conditions-section-9",
+          "title": "C5 A planning check for Preflight tokens absent from npm test -- --list.",
+          "summary": "- **C5 A planning check for Preflight tokens absent from `npm test -- --list`.** Reopen if a later kit revision drops or renames a suite an open order names, as v0.85.0 did with `harness`; a request to core until then (§10). | Candidate | Register row | Disposition | | --- | --- | --- | | C1 | (minted at sync) | deferred, blocker | | C2 | (minted at sync) | deferred | | C3 | (minted at sync) | deferred | | C4 | (minted at sync) | deferred | | C5 | (minted at sync) | deferred |",
+          "missing": false
+        },
+        {
+          "hash": "5ea0dfd5d8e5a371faa0e53cf763939a8aea28a43e10036bd07e471055730740",
+          "ref": "docs/planning/latest-upstream-2026-10-19.md#candidates-not-filed-with-their-reopening-conditions-section-9",
+          "title": "C5 A planning check for Preflight tokens absent from npm test -- --list.",
+          "summary": "- **C5 A planning check for Preflight tokens absent from `npm test -- --list`.** Reopen if a later kit revision drops or renames a suite an open order names, as v0.85.0 did with `harness`; a request to core until then (§10).",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "2026-10-19 latest-upstream planning pass, D7 and section 10 item 3: starter v0.85.0 lists no harness suite, so orders written under the v0.84.0 rule named a suite --list no longer shows; the pass repaired WO-009 and WO-010 and asks core for a check.",
+          "reopenWhen": "A later kit revision drops or renames a suite an open order's Preflight names, or core declines the check (then this fork's planning pass runs the comparison by hand each time).",
+          "targets": [],
+          "at": "2026-10-19T15:16:27.297Z"
         }
       ]
     }

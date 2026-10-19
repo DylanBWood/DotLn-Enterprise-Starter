@@ -128,7 +128,7 @@ Updated after the operator's direction of 2026-10-18 (WO-003-D011).
 
 1. **Read and merge this order's pull request** when final review publishes
    it, with a merge commit as you do.
-2. **Criteria 4 and 6: waived by the operator** ("yea i wave 4 and 6"). The
+2. **Criteria 4 and 6: waived by the operator** (their captured direction). The
    verify session records both from the capture, since the order's own
    executor may not:
    `npm run resume -- waive 4 --reason "operator waived criterion 4: the clone record is a post-merge step the release-close session performs" --capture docs/intake/notes/wo-003-operator-direction-2026-10-18.md --capture-hash sha256:d94d69aa509942510e13e8670b17734b37546007fe2fe28a08ec67d7d51eef03 <its actor flags> --work-order WO-003`
@@ -136,8 +136,7 @@ Updated after the operator's direction of 2026-10-18 (WO-003-D011).
    `npm run resume -- waive 6 --reason "operator waived criterion 6: outward-lint is not carried in this kit and authority-grants asserts an empty committed registry" --capture docs/intake/notes/wo-003-operator-direction-2026-10-18.md --capture-hash sha256:d94d69aa509942510e13e8670b17734b37546007fe2fe28a08ec67d7d51eef03 <its actor flags> --work-order WO-003`,
    with the actor flags of the session that runs them. The verify dispatch
    briefing prints this shape. Nothing for the operator.
-3. **WO-003-D007 stands.** The operator declined to rule ("below my pay
-   grade… ask another agent"); the criteria adversary judged the reading
+3. **WO-003-D007 stands.** The operator declined to rule, pointing to another agent's judgment; the criteria adversary judged the reading
    defensible and the verifier judges it with the rest. Nothing for the
    operator.
 4. **Clone record at release close** (operator direction): the release-close

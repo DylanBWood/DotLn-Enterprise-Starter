@@ -57,12 +57,12 @@ name it plainly and correct it, not to apologize at length.
 
 The operator uses sarcasm and facetiousness. The markers seen so far:
 
-- Praise that follows an error ("great deduction there") is not praise.
+- Praise that follows an error is not praise.
 - A statement that restates the obvious with an exaggerated frame, or that
   contradicts what the operator just said while sounding agreeable, is a test
   of whether the session noticed.
-- "I'll wait", "let me know", "fine, go" after a correction means the operator
-  expects the session to stop and listen, not to proceed.
+- A terse go-ahead, or a note that they will wait, sent after a correction
+  means the operator expects the session to stop and listen, not to proceed.
 
 A sarcastic statement is never acknowledged with `Yes sir.` The session
 answers the substance: it states the correct fact and, if it had the fact
@@ -83,9 +83,8 @@ in one short question rather than guessing in either direction.
   a pass can make them stickier, more legitimate and more useful, never
   replaced with a generic plan. The workstream document for DotLn-Angular
   (`docs/workstreams/WS-001-dotln-angular.md`) carries the current list.
-- Security and correctness that would hold in a real organization. "It would
-  not actually work in a real org" is not an acceptable shortcut, even for a
-  personal project.
+- Security and correctness that would hold in a real organization. A
+  shortcut excused by the project being personal is not acceptable.
 
 ## What the operator does not want
 
@@ -128,15 +127,40 @@ in one short question rather than guessing in either direction.
   upgrade order shows the kit's admission carries the push (planning pass of
   2026-10-18, D10; capture SHA-256
   `6c996dda3af87b7e592697f744b604d3473f724513c86969d1a219fc8cb8ee4d`).
-- Releases: this launchpad's releases are named `Launchpad` from WO-009 on;
-  DotLn-Angular gets the option of a declared release per order once the kit
-  carries it (planning pass of 2026-10-18, D3 and D9).
+- Releases: this launchpad's releases are named `Launchpad` from WO-009 on,
+  continuing the fork's numbering: the next is `Launchpad v0.3.0`, so WO-009
+  is classified minor (direction of 2026-10-19, capture SHA-256
+  `01b3d03564fe733b600083183008b4fb46ee3350ae33469cd379121cc262a177`;
+  planning pass of 2026-10-19, D3). DotLn-Angular's releases are to be named
+  `DotLn Angular`; the kit titles a declared target Release by the
+  registration id and the tag, so DotLn-Angular declares no release until
+  the kit carries a target display name, boarded as a blocker that reopens
+  when it lands (same direction; planning pass of 2026-10-19, D4; the option
+  of a declared release per order from the 2026-10-18 pass, D9, waits on
+  it).
 - Pace: on 2026-10-18 the operator said they would wait for the platform's
   pending pull requests, take the starter update in the next planning pass,
   and only then activate more orders (planning pass of 2026-10-18, D4 and
-  D6).
+  D6). The 2026-10-19 pass took starter v0.85.0 through update pull request
+  #8 and filed WO-011; the operator merges the update and the pass, then
+  dispatches `resume: next` on WO-009 (planning pass of 2026-10-19, D1 and
+  D2).
 - Harness: Claude Code at the operator's chosen effort; spawned workers at the
   kit's pinned model and effort.
+- No direct quotes: the operator's messages are never quoted in a committed
+  file of this fork or of DotLn-Angular; passes and roles paraphrase and
+  cite the ignored capture's digest, and a verbatim text is filed only from
+  a draft the operator marks ready to file. A requirement list restated from
+  their directions is not a quote and stays (corrections of 2026-10-19,
+  capture SHA-256
+  `77a80e21572fb02ba25804bd05db6293f64bf23fc1976b7a25ebddd01ee3676a`; the clean-room
+  floor of `CLAUDE.md` already said so for intake).
+- Requests to core: at the end of a planning pass the operator wants a
+  paste-ready prompt for the primary DotLn planning session carrying this
+  fork's requests (direction of 2026-10-19, capture SHA-256
+  `01b3d03564fe733b600083183008b4fb46ee3350ae33469cd379121cc262a177`); the
+  pass writes it in its requests-to-core section and the handoff repeats
+  it.
 - Addressing: "you" and "sir" in dialogue; third person in records. The
   operator's pronouns are not stated in the record; records use their name or
   "the operator".

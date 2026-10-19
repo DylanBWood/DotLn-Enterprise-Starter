@@ -70,9 +70,16 @@ pass of 2026-10-18, D5): after the session that records
 tree, pushes the branch and opens a draft pull request for the operator and
 an automated reviewer; the final review reads the threads into the order's
 `preview-pr.json`, routes each, and publishes with the same command without
-`--draft`, which reuses the branch and the pull request. The form needs the
-starter revision that carries core WO-221; until then no target order
-activates. Rules in force after WO-010 merges (this sentence is replaced by
+`--draft`, which reuses the branch and the pull request. Starter v0.85.0
+carries the form (update pull request #8 of 2026-10-19); WO-011 declares
+the disposable output the v0.85.0 close deletes and the core-named-tag
+guard, and no target order activates before it merges (a typed hard edge on
+WO-005; planning pass of 2026-10-19, D2). DotLn-Angular declares no target
+release: the kit titles a declared target Release by the registration id and
+the tag, and the operator wants `DotLn Angular`, so the option waits, boarded
+as a blocker, on a target display name in the kit (2026-10-19, D4); WO-011's
+write-back adds the `## Release close` section with the declared roots.
+Rules in force after WO-010 merges (this sentence is replaced by
 that order's write-back, citing its readback file): `main` accepts only merge
 commits from pull requests whose `checks` run passed, refuses force pushes
 and deletion, binds every account with no bypass, and deletes a pull

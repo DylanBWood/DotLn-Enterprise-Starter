@@ -29,6 +29,7 @@ the last member's pull request.
 | ------ | ------------- | ------------------------------------------ | ------------------------------------------------------------------------------------ |
 | WO-003 | self          | this launchpad's `main` at activation      | registers `dotln-angular`, its class, authority profile, gate, grant and vocabulary |
 | WO-004 | dotln-angular | `bc9133e932a00d33c15bc5289d683b8078f51ee4` | scaffolds the Nx and Angular workspace, tooling, CI and the two documentation roots  |
+| WO-011 | self          | this launchpad's `main` after update #8    | declares the class's disposable output and the tag guard the v0.85.0 close needs; no target release until the kit can name one |
 | WO-005 | dotln-angular | `651d76ff68e9b3a38fe770226deb634bca28b54c` | foundation libraries: core, utils, i18n, the test-kit convention; base set 2026-10-18 |
 | WO-006 | dotln-angular | provisional; set when WO-005 merges        | the component taxonomy, PrimeNG behind wrappers, the shell layout, the home feature  |
 | WO-007 | dotln-angular | provisional; set when WO-006 merges        | events, signal stores, call state, data access, MSW, navigation and flags            |
@@ -56,7 +57,11 @@ that follows the predecessor's merge sets the line to the merge commit and
 refutes the changed order (default pass scope). A kit route that resolves the
 base at activation is a recorded candidate for upstream. WO-003 must be
 merged into this launchpad before WO-004 activates, because activation and
-publication read the registration from `main`. No two members run side by
+publication read the registration from `main`. WO-011, a self order,
+precedes WO-005 by a typed hard edge: starter v0.85.0's release close
+deletes the class's declared disposable output and refuses an undeclared
+ignored base file, so the declaration lands first (planning pass of
+2026-10-19, D2). No two members run side by
 side: every member edits `nx.json`, `tsconfig.base.json`, the ESLint
 configuration and the generator log, so their surfaces overlap. A member that
 needs something a later member delivers (WO-006's facade needs WO-007's
@@ -233,7 +238,7 @@ Connectors, composition:
    not data sources.
 5. **Layout.** Composes Composites into a region or a page through content
    projection and slots; knows what sits beside what and still nothing about
-   state. (The germ called this a "feature wrapper"; "wrapper" is reserved for
+   state. (The germ gave this role a wrapper name; wrapper is reserved for
    vendor adapters.)
 
 Mavens, knowledge:
@@ -271,9 +276,10 @@ not by memory:
   Salesmen get DOM tests only where they have behavior.
 - **R7 Broken windows.** House rule 21.
 
-Two contradictions in the germ, resolved: "wrapper" meant three things and now
+Two contradictions in the germ, resolved: wrapper meant three things and now
 means the vendor adapter only, with Layout the composition role and Mapper the
-knowledge role; and "no outputs, a mediator service" is replaced by outputs plus
+knowledge role; and the germ's mediator service without outputs is replaced by
+outputs plus
 the event stream, because presentational components stay pure and testable
 without injection, the Container dispatches once, and the Events plugin's
 stream is the mediator: visible to everyone, owned by no component. Keeping
@@ -287,11 +293,12 @@ lint globs).
 | ------ | -------- | ------------------------------------- |
 | WO-003 | proposed | filed by the 2026-10-18 planning pass |
 | WO-004 | proposed | filed by the 2026-10-18 planning pass |
+| WO-011 | proposed | filed by the 2026-10-19 planning pass |
 | WO-005 | proposed | filed by the 2026-10-18 planning pass |
 | WO-006 | proposed | filed by the 2026-10-18 planning pass |
 | WO-007 | proposed | filed by the 2026-10-18 planning pass |
 | WO-008 | proposed | filed by the 2026-10-18 planning pass |
 
 <!-- dotln-workstream:start -->
-{ "id": "WS-001", "members": [{ "workOrderId": "WO-003", "repositoryId": "self" }, { "workOrderId": "WO-004", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-005", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-006", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-007", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-008", "repositoryId": "dotln-angular" }], "edges": [{ "from": "WO-003", "to": "WO-004", "relation": "hard" }, { "from": "WO-004", "to": "WO-005", "relation": "hard" }, { "from": "WO-005", "to": "WO-006", "relation": "hard" }, { "from": "WO-006", "to": "WO-007", "relation": "hard" }, { "from": "WO-007", "to": "WO-008", "relation": "hard" }] }
+{ "id": "WS-001", "members": [{ "workOrderId": "WO-003", "repositoryId": "self" }, { "workOrderId": "WO-004", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-011", "repositoryId": "self" }, { "workOrderId": "WO-005", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-006", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-007", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-008", "repositoryId": "dotln-angular" }], "edges": [{ "from": "WO-003", "to": "WO-004", "relation": "hard" }, { "from": "WO-004", "to": "WO-005", "relation": "hard" }, { "from": "WO-011", "to": "WO-005", "relation": "hard" }, { "from": "WO-005", "to": "WO-006", "relation": "hard" }, { "from": "WO-006", "to": "WO-007", "relation": "hard" }, { "from": "WO-007", "to": "WO-008", "relation": "hard" }] }
 <!-- dotln-workstream:end -->
