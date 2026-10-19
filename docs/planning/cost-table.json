@@ -1,38 +1,43 @@
 {
   "schemaVersion": 1,
-  "subjectSourceHash": "sha256:728ac3eff6c7782d3f62466f5b4fbbfc6e467b2a1ca685769bd10b922a7852af",
+  "subjectSourceHash": "sha256:76a3181b80d5d802571ee31236c5ce2eee2ede69f4fb43d98299a87b54941edf",
   "acceptances": [],
-  "observedAt": "2026-10-18T16:57:47.078Z",
-  "subjectRevision": "ba0e568392be2b9091f6c687faec20da15cc5a26",
+  "observedAt": "2026-10-19T15:22:21.983Z",
+  "subjectRevision": "291456c8f7dd40bb2186378cd54ce1b21e838b8c",
   "rows": [
     {
       "workOrder": "WO-009",
-      "observedAt": "2026-10-18T16:57:47.078Z",
+      "observedAt": "2026-10-19T15:22:21.983Z",
       "metrics": null
     },
     {
       "workOrder": "WO-010",
-      "observedAt": "2026-10-18T16:57:47.078Z",
+      "observedAt": "2026-10-19T15:22:21.983Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-011",
+      "observedAt": "2026-10-19T15:22:21.983Z",
       "metrics": null
     },
     {
       "workOrder": "WO-005",
-      "observedAt": "2026-10-18T16:57:47.078Z",
+      "observedAt": "2026-10-19T15:22:21.983Z",
       "metrics": null
     },
     {
       "workOrder": "WO-006",
-      "observedAt": "2026-10-18T16:57:47.078Z",
+      "observedAt": "2026-10-19T15:22:21.983Z",
       "metrics": null
     },
     {
       "workOrder": "WO-007",
-      "observedAt": "2026-10-18T16:57:47.078Z",
+      "observedAt": "2026-10-19T15:22:21.983Z",
       "metrics": null
     },
     {
       "workOrder": "WO-008",
-      "observedAt": "2026-10-18T16:57:47.078Z",
+      "observedAt": "2026-10-19T15:22:21.983Z",
       "metrics": null
     }
   ],
@@ -394,6 +399,11 @@
       "worsening": [],
       "reopenCandidate": false,
       "planningCaptures": [
+        {
+          "pass": "planning-e0dd1f8a7a5b84af",
+          "date": "2026-10-19",
+          "captures": 1
+        },
         {
           "pass": "planning-14fefa7dc1ee9d3b",
           "date": "2026-10-18",
