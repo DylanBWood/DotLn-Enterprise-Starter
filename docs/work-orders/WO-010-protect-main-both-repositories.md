@@ -26,7 +26,11 @@ branch protections in main for both this repo (enterprise starter fork) and
 sibling repo dotln angular", and the platform pass's routed item 6 (the
 head-branch setting), in the same capture. Planner-synthesized. Opaque
 identifier, not a priority. Clean-room screen: the operator's own public
-repositories and accounts; GitHub's public documentation.
+repositories and accounts; GitHub's public documentation. Amended by the
+2026-10-19 latest-upstream planning pass
+([planning document](../planning/latest-upstream-2026-10-19.md) §6 D7): the
+Preflight line names the suites starter v0.85.0 lists (`harness` is no
+longer one).
 **Depends on:** nothing typed. Sequenced after WO-009 (planning document §6
 D13); no edge.
 
@@ -172,9 +176,11 @@ README and decisions; the regenerated indexes.
    revision in force: run the Preflight line, `npm run test:docs`, then
    `npm run resume -- implementation-ready` with the attestation flags.
 
-**Preflight:** `npm test -- --only kit-verify` and `npm test -- --only harness`,
-each under `node scripts/harness.mjs bounded -- <command>`, then
-`npm run test:docs`.
+**Preflight:** `npm test` as one complete run started directly (starter
+v0.85.0's executor rule; its `kit-verify` row is the `--only kit-verify`
+suite the handoff may consume, the one suite `npm test -- --list` shows
+beside the six structural checks every selection runs; `harness` is no
+longer a suite), then `npm run test:docs`.
 
 **Acceptance criteria (all required)**
 
@@ -214,7 +220,7 @@ its CI run completes, which the final review waits for before merging; the
 `pr-title` workflow is not required (a title the workflow cannot decorate
 is a review item, not a merge blocker); this order edits no kit file and
 changes nothing in this launchpad's code, so its release is a patch with
-evidence only.
+evidence only, the next patch above WO-009's `v0.3.0`.
 
 **Non-goals:** required approving reviews; conversation resolution; signed
 commits; linear history; CI on the fork; the fork's head-branch setting; tag

@@ -4,8 +4,11 @@
 (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh; verifier xhigh; reviewer xhigh.
 **Track:** machinery
-**Release classification:** patch. One configuration value of this instance
-changes; no kit behavior changes.
+**Release classification:** minor. One configuration value of this instance
+changes and no kit behavior changes; minor rather than patch because the
+operator wants the next Release numbered `v0.3.0`, continuing the fork's
+numbering from `v0.2.0` with only the prefix changed (direction of
+2026-10-19).
 **Cost:** adds one `release` section to `dotln.config.json` (about 50 bytes)
 and this order's evidence; changes one word and the assigned version in the
 README release claim. Removes nothing. Wall-clock: about 15 to 30 minutes of
@@ -23,7 +26,14 @@ SHA-256 `222fbf09d6f57d518b931dd54c59a5bc5d83d55a7552e2ee194b1774a2ee184d`):
 "change the releases to be `Launchpad` instead of `DotLn`. version is fine."
 Planner-synthesized. Opaque identifier, not a priority. Clean-room screen:
 the kit's documented configuration contract and the operator's own
-repository.
+repository. Amended by the 2026-10-19 latest-upstream planning pass
+([planning document](../planning/latest-upstream-2026-10-19.md) §6 D3 and
+D7), on the operator's direction of 2026-10-19 captured verbatim in ignored
+intake (`docs/intake/notes/planning-latest-upstream-2026-10-19.md`, SHA-256
+`01b3d03564fe733b600083183008b4fb46ee3350ae33469cd379121cc262a177`): "I want
+future releases to be Launchpad v0.3.0 (continuing the same version numbers,
+just changing prefix)"; the classification becomes minor and the Preflight
+line names the suites starter v0.85.0 lists.
 **Depends on:** nothing typed. WO-009 precedes WO-010 in the sequence only so
 that the next Release carries the name (planning document §6 D13).
 
@@ -41,9 +51,9 @@ and releases and §Preflight before the full gate; `docs/operator/README.md`
 
 **Objective:** after this order merges and closes, `dotln.config.json`
 declares `release.displayName` `Launchpad`, the README release claim reads
-`This source prepares Launchpad \`v0.2.1\`.` (or the version release
-preparation assigns above the latest tag at activation), and the tag and
-GitHub Release this order's close publishes are titled `Launchpad v0.2.1`;
+`This source prepares Launchpad \`v0.3.0\`.` (the next minor above the
+latest tag at activation; `v0.3.0` above `v0.2.0`), and the tag and
+GitHub Release this order's close publishes are titled `Launchpad v0.3.0`;
 every later release carries the name until the operator changes it.
 
 **Observed gap (dated 2026-10-18, main at `773d867`):** `dotln.config.json`
@@ -60,7 +70,7 @@ the Release without any other change (planning document §4).
 
 **Design:** one declaration, `"release": { "displayName": "Launchpad" }`,
 added to the root `dotln.config.json` (schema `version` 1), followed by the
-kit's own release preparation, which assigns the next patch above the latest
+kit's own release preparation, which assigns the next minor above the latest
 local tag and rewrites the one generated line between the README's release
 markers. The name is 9 characters, single-line, without backticks or version
 tokens, so `validateRelease` accepts it. The two published Releases keep their
@@ -69,7 +79,9 @@ GitHub action of the operator's outside any order. Rejected:
 `DotLn-Enterprise-Starter`, the name fresh exports use (the operator asked
 for `Launchpad`); waiting for the starter update (the mechanism is in this
 kit at v0.83.0); editing the README claim by hand (release preparation
-writes it, and the surface check compares it with the assigned target).
+writes it, and the surface check compares it with the assigned target);
+patch, the 2026-10-18 pass's choice (the operator named `v0.3.0` on
+2026-10-19, and the kit assigns a version only through the classification).
 
 **Deliverables:** the `release` section in `dotln.config.json`; the
 refreshed README claim and this order's heading version;
@@ -88,8 +100,9 @@ command outputs; the regenerated index and decision index.
    prints `Launchpad`, and `npm run resume -- status --json` exits 0.
 3. `README.md` (existing, the release block) and this order's heading:
    run `npm run release -- prepare --local`. Check: the command prints
-   `Assigned WO-009: v0.2.1, the next patch above the observed release baseline v0.2.0.`
-   (or the next patch above a newer local tag), the block's one line reads
+   `Assigned WO-009: v0.3.0, the next minor above the observed release baseline v0.2.0.`
+   (or the next minor above a newer local tag; no core-named tag such as
+   `v0.85.0` may exist locally, see Known issues), the block's one line reads
    `This source prepares Launchpad \`<that version>\`.`, and the heading ends
    with `(<that version>)`.
 4. `npm run release -- check-surfaces --local`. Check: the output contains
@@ -107,9 +120,11 @@ command outputs; the regenerated index and decision index.
    `npm run resume -- implementation-ready` with the attestation flags, the
    evidence README naming each criterion's command and output.
 
-**Preflight:** `npm test -- --only kit-verify` and `npm test -- --only harness`,
-each under `node scripts/harness.mjs bounded -- <command>`, then
-`npm run test:docs`.
+**Preflight:** `npm test` as one complete run started directly (starter
+v0.85.0's executor rule; its `kit-verify` row is the `--only kit-verify`
+suite the handoff may consume, the one suite `npm test -- --list` shows
+beside the six structural checks every selection runs; `harness` is no
+longer a suite), then `npm run test:docs`.
 
 **Acceptance criteria (all required)**
 
@@ -136,7 +151,12 @@ the configuration, the claim and the notes' composition, not the published
 title. The two Releases published before this order keep `DotLn` in their
 titles (planning document §9 C4). If the kit revision in force at activation
 carries `npm run sync` (v0.84.0 and later), step 6 runs it instead of the two
-commands.
+commands. The main clone must hold no core-named tag when step 3 runs:
+`release prepare --local` reads every local tag, and the starter update of
+2026-10-19 fetched `v0.85.0` before it was deleted (2026-10-19 planning
+document §4 and §6 D8); if `git tag --list v0.85.0` prints the tag, delete
+it and record the deletion. WO-010 and WO-011 follow this order, so their
+Releases are the next patches above `v0.3.0`.
 
 **Non-goals:** retitling published Releases; changing the version numbering
 or classification scheme; the starter update; any other key of
