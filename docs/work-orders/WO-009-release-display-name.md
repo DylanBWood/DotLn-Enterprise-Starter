@@ -1,4 +1,4 @@
-# WO-009 — Name this launchpad's releases `Launchpad`: declare `release.displayName` in `dotln.config.json` and refresh the README release claim, so the next tag and GitHub Release carry the instance's own name (version assigned at activation)
+# WO-009 — Name this launchpad's releases `Launchpad`: declare `release.displayName` in `dotln.config.json` and refresh the README release claim, so the next tag and GitHub Release carry the instance's own name (v0.3.0)
 
 **Model:** any capable model; state the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
