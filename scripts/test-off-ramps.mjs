@@ -1,3 +1,4 @@
+import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 import { spawnGit } from "./lib/git.mjs";
 // Off-ramps: each route appends its typed event with the actor attestation,
 // refuses outside its legal phases with the legal list, and projects in
@@ -26,7 +27,11 @@ const scripts = dirname(fileURLToPath(import.meta.url));
 const root = join(parent, "off-ramps");
 mkdirSync(join(root, "scripts"), { recursive: true });
 mkdirSync(join(root, "docs/work-orders"), { recursive: true });
-cpSync(join(scripts, "resume.mjs"), join(root, "scripts/resume.mjs"));
+copyFixtureFiles(
+  join(scripts, ".."),
+  root,
+  "scripts/test-off-ramps.fixture-inputs.json",
+);
 cpSync(join(scripts, "lib"), join(root, "scripts/lib"), { recursive: true });
 installBeaconFixture(root);
 assert.equal(spawnGit(["init", "-q", root]).status, 0);
@@ -349,7 +354,7 @@ const defectBoundarySentence =
 const operatorMessageSentence =
   "A question, complaint or stale operator message is not an instruction to stop, narrow or widen work; only an explicit pause, stop or scope prefix changes it.";
 const gateClaimSentence =
-  "A met criterion naming npm test or npm run test:docs stands on that gate's passing row at the subject or an inline run.";
+  "A met criterion naming npm test or npm run test:docs stands on that gate's passing row at the subject; completion consumes rows and runs no gate.";
 const verifySentence = `A finding names its class and the rule a repair must hold. ${defectBoundarySentence} ${offRampSentence} ${operatorMessageSentence} ${gateClaimSentence}`;
 const finalReviewSentences = `${defectBoundarySentence} ${offRampSentence} ${operatorMessageSentence} ${gateClaimSentence}`;
 const repairSentence =
@@ -1408,7 +1413,7 @@ assert.equal(
   "no npm test row at the gate-claim identity",
 );
 const noRow = new RegExp(
-  `^error: criteria 2, 3 recorded met names npm test -- --review, and no passing complete npm test row exists at the current code identity ${identity}\\. Run npm test -- --review, or ${instead}`,
+  `^error: criteria 2, 3 recorded met names npm test -- --review, and no passing complete npm test row exists at the current code identity ${identity}\\. Handoff rows missing or failed: structural[^\n]*Run the named Preflight suites, or ${instead}`,
   "m",
 );
 const completeAgent = ["implementation-ready", ...agentFlags];
@@ -1440,7 +1445,7 @@ assert.notEqual(reviewIdentity, identity);
 refuseOn(
   "WO-102",
   new RegExp(
-    `^error: criteria 2, 3 recorded met names npm test -- --review, and no passing complete npm test row exists at the current code identity ${reviewIdentity}\\. Run npm test -- --review, or ${instead}`,
+    `^error: criteria 2, 3 recorded met names npm test -- --review, and no passing complete npm test row exists at the current code identity ${reviewIdentity}\\. Handoff rows missing or failed: structural[^\n]*Run the named Preflight suites, or ${instead}`,
     "m",
   ),
   completeAgent,
@@ -1449,7 +1454,7 @@ recordGateChecks(root, [claimRow("host-gate:plain:npm test")]);
 refuseOn(
   "WO-102",
   new RegExp(
-    `^error: criterion 3 recorded met names npm test -- --review, and no passing complete npm test row at the current code identity ${reviewIdentity} covers the current review selection: the latest row \\(recorded [^,]+, 0\\.00 s, 2 suites, host-gate:plain:npm test\\) lacks stub-machinery\\. Run npm test -- --review, or ${instead}`,
+    `^error: criteria 2, 3 recorded met names npm test -- --review,[^\n]*current review selection lacks stub-machinery[^\n]*${instead}`,
     "m",
   ),
   completeAgent,
@@ -1459,29 +1464,30 @@ recordGateChecks(root, [
     requiredSuites: ["build", "alpha", "stub-machinery"],
   }),
 ]);
-// The document gate runs last, inline; a failure refuses with the failing tasks.
-stubDocumentGate(1, [
-  "PASS format 0.10 s",
-  "FAIL docs-check 0.20 s",
-  "  [docs-check] product ceiling exceeded",
-  "npm run test:docs: 1 passed; 1 failed; 0.30 s; 2 fresh tasks",
-]);
-const failedGate = refuseOn(
+// Completion consumes the document row and runs no gate: without a passing
+// row at the current code identity the claim refuses, a failed row refuses,
+// and a passing row records.
+const documentRow = (evidenceRef, extra = {}) => ({
+  ...gateRow(evidenceRef, gateCodeIdentity(root)),
+  checkId: "npm run test:docs",
+  requiredSuites: ["docs-check"],
+  ...extra,
+});
+refuseOn(
   "WO-102",
-  /^error: criterion 1 recorded met names npm run test:docs, and the document gate failed after [\d.]+ s \(exit 1\):\n {2}FAIL docs-check 0\.20 s\n {2}npm run test:docs: 1 passed; 1 failed; 0\.30 s; 2 fresh tasks\nRepair and complete again, or record the criterion unmet with the reason instead/m,
+  /^error: Handoff document row missing or failed at the current code identity \S+; run npm run test:docs once after the last document edit, then complete again, or record the criterion unmet with the reason instead/m,
   completeAgent,
 );
-assert.doesNotMatch(failedGate, /PASS format/);
-stubDocumentGate(0, [
-  "PASS format 0.10 s",
-  "npm run test:docs: 2 passed; 0 failed; 0.30 s; 2 fresh tasks",
-]);
+recordGateChecks(root, [documentRow("host-gate:docs:failed", { exitCode: 1 })]);
+refuseOn(
+  "WO-102",
+  /^error: Handoff document row missing or failed at the current code identity \S+; run npm run test:docs once after the last document edit/m,
+  completeAgent,
+);
+recordGateChecks(root, [documentRow("host-gate:docs:passed")]);
 const recordedGates = call([...completeAgent, "--work-order", "WO-102"]);
 assert.equal(recordedGates.status, 0, recordedGates.stderr);
-assert.match(
-  recordedGates.stdout,
-  /^Running npm run test:docs, which criterion 1 recorded met names; the completion runs it once, after every other check\.\nnpm run test:docs: 2 passed; 0 failed; 0\.30 s; 2 fresh tasks\n/m,
-);
+assert.doesNotMatch(recordedGates.stdout, /Running npm run test:docs/);
 assert.match(
   recordedGates.stdout,
   /^WO-102 is ready for verification\. Handoff ledger: 4 met, 0 unmet\.$/m,
@@ -1494,9 +1500,9 @@ assert.equal(
   "host-gate:review:npm test",
 );
 assert.equal(
-  gateEvent.evidence.documentGate,
-  undefined,
-  "the stub records no document row",
+  gateEvent.evidence.documentGate.evidenceRef,
+  "host-gate:docs:passed",
+  "the consumed document row is recorded",
 );
 assert.deepEqual(status("WO-102").unmetCriteria, []);
 assert.doesNotMatch(on("WO-102")(["verify"]), /The executor recorded/);
@@ -1546,7 +1552,7 @@ recordGateChecks(root, [
     requiredSuites: ["build", "alpha", "stub-machinery"],
   }),
 ]);
-stubDocumentGate(0, ["npm run test:docs: 1 passed; 0 failed; 0.01 s"]);
+recordGateChecks(root, [documentRow("host-gate:docs-103")]);
 on("WO-103")(["verification-result", "pass", ...agentFlags]);
 const finalBriefing103 = on("WO-103")(["final-review"]);
 assert.ok(

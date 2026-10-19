@@ -104,8 +104,9 @@ test("WO-179 and WO-195 emitted roles carry their assigned corrections across su
                     assert.doesNotMatch(role.contents, /A comment says what the code does/, subject);
                 }
                 else if (role.path.endsWith("dotln-verifier/SKILL.md")) {
-                    assert.match(role.contents, /Consume the executor's recorded passing `npm test` row when its code identity matches the subject/, subject);
-                    assert.doesNotMatch(role.contents, /Run the product gate with `npm test`/, subject);
+                    assert.match(role.contents, /Consume the executor's structural, Preflight suite and document rows when their code identity matches the subject/, subject);
+                    assert.doesNotMatch(role.contents, /Run the product gate with `npm test`|Consume the executor's recorded passing `npm test` row/, subject);
+                    assert.match(role.contents, /probe with `npm test -- --only <suite>`/, subject);
                 }
             }
         }
@@ -383,11 +384,38 @@ test("execution roles open with an ordered handoff and keep shared rules below i
             assert.doesNotMatch(steps[format], /`npm run format`/);
             assert.match(steps[format], /target only its allocated path/);
         }
-        assert.ok(steps[format + 1].includes("npm run test:docs"));
-        assert.ok(steps[format + 2].includes("npm test"));
-        assert.ok(steps[format + 2].includes("while it runs, write nothing under the repository and start no agent"));
-        assert.match(steps[format + 3], /Complete.*(?:handoff\.md|VER report|FINAL report)/);
-        assert.ok(steps[format + 4].includes("npm run resume --"));
+        // The validation follows formatting; the report follows its evidence;
+        // the single document run follows the last document edit; the record
+        // comes last and consumes rows, running no gate of its own.
+        const run = format + 1;
+        assert.ok(steps[run].includes("npm test"), name);
+        assert.ok(steps[run].includes("write nothing under the repository and start no agent"), name);
+        assert.match(steps[run + 1], /(?:handoff\.md|VER report|FINAL report)/, name);
+        assert.match(steps[run + 2], /npm run test:docs.*once after the last document edit/, name);
+        assert.ok(steps[run + 3].includes("npm run resume --"), name);
+        assert.equal(steps.length, run + 4, name);
+        assert.match(steps.slice(run + 2).join("\n"), /runs no gate/, name);
+        if (name === "executor") {
+            assert.match(steps[format], /npm run sync/);
+            assert.match(steps[run], /`npm test -- --review`/);
+            assert.match(steps[run], /failed and changed suites first/);
+            assert.match(steps[run], /composes nothing from `--only` rows/);
+            assert.doesNotMatch(steps.join("\n"), /--only format/);
+            assert.match(steps[run + 1], /After the complete run passes/);
+        }
+        else if (name === "verifier") {
+            assert.match(steps[run], /npm test -- --only <suite>/);
+            assert.match(steps[run], /passing complete row/);
+        }
+        else {
+            // The reviewer reproduces blocking claims first, reuses a passing
+            // complete row at an unchanged identity and starts the complete run
+            // only when none exists, never wrapped.
+            assert.match(steps[run - 2], /Reject a known-bad candidate before the expensive validation/);
+            assert.match(steps[run], /reuse the passing complete review row at the integrated code identity when one exists; only when none exists start `npm test -- --review` in the background, never under the bounded probe wrapper/);
+            assert.match(steps[run], /harness\.mjs evidence --wait/);
+            assert.match(steps[run + 1], /After the complete run passes/);
+        }
         assert.ok(role.procedure
             .slice(rules + 1)
             .some((line) => line.startsWith("Completion flags:")));

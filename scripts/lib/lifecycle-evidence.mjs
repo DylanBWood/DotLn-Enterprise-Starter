@@ -17,7 +17,7 @@ export async function requireLifecycleEvidence(
   action,
   verdict,
   workOrder,
-  { targetGate } = {},
+  { targetGate, reviewGate } = {},
 ) {
   const started = Date.now();
   // Untracked files are read too: they join the diff as intent-to-add entries
@@ -123,21 +123,24 @@ export async function requireLifecycleEvidence(
       );
   }
   const gate =
-    action === "final-review-result" && verdict !== "fail" && !targetGate
+    action === "final-review-result" &&
+    verdict !== "fail" &&
+    !targetGate &&
+    !reviewGate
       ? findGateCheck(root, "npm test", treeHash)
       : null;
   if (
     action === "final-review-result" &&
     verdict !== "fail" &&
     !targetGate &&
+    !reviewGate &&
     !gate
   )
     advise(
       "No passing product gate at this code identity; the reviewer runs npm test before publication.",
     );
-  // The document gate is no longer looked up by tree hash here, which every
-  // report write changed; a criterion recorded met that names it makes the
-  // completion run it inline (scripts/lib/handoff-ledger.mjs; WO-173).
+  // The document row is consumed by the completion's claim check
+  // (scripts/lib/handoff-ledger.mjs requireDocumentRow), never run here.
   if (executor) {
     try {
       const { requirePlanningHandoffs } =
@@ -235,20 +238,21 @@ export async function requireLifecycleEvidence(
     advise(`Session observations unavailable: ${error.message}`);
   }
   const productGate =
-    gate &&
-    Object.fromEntries(
-      [
-        "checkId",
-        "treeHash",
-        "codeIdentity",
-        "instanceInputDigest",
-        "durationMs",
-        "evidenceRef",
-        "recordedAt",
-        "executed",
-        "exitCode",
-      ].map((key) => [key, gate[key]]),
-    );
+    reviewGate ??
+    (gate &&
+      Object.fromEntries(
+        [
+          "checkId",
+          "treeHash",
+          "codeIdentity",
+          "instanceInputDigest",
+          "durationMs",
+          "evidenceRef",
+          "recordedAt",
+          "executed",
+          "exitCode",
+        ].map((key) => [key, gate[key]]),
+      ));
   // `gateIndexError` is for the gate claims and never reaches the event.
   return {
     treeHash,

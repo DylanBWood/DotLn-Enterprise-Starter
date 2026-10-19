@@ -128,9 +128,37 @@ operator sandbox settings.
    the operator states. The operator merges that authority change first:
    session publication reads the grant registry and registered profile from
    main's committed bytes, never from the publishing order's branch.
+   Both files land on the registration order's branch before they reach
+   `main`. `npm run worktree -- clone <id> <absolute-path>` records the
+   repository's clone into the main checkout's ignored clone map and accepts
+   an id that the running checkout's own configuration or siblings
+   declaration declares, so the registration order records its clone before
+   the merge; `worktree start` for a later target order reads the merged
+   registration from `main`. That order's **Preflight:** line names only
+   suites this instance runs, such as `npm test -- --only authority-grants`;
+   the table under §What runs here lists the core-only rows (`outward-lint`
+   among them) that an instance order never names, and the publication
+   commands apply the instance vocabulary and the local-terms list to the
+   outward body themselves.
    The session form is `npm run worktree -- publish
    WO-NNN --target-worktree --branch <type>/<slug> --title <title> --body-file
-   <committed-reviewed-body-path>`.
+   <committed-reviewed-body-path>`; its opt-in `--draft` form at `verified`
+   pushes the target's working tree under a draft pull request that the final
+   publish reuses, and this instance's order names the actor and the phrase
+   for it (core declares neither). Trust for the target's publication commands
+   comes from the registration and the kit: the generated hook admits them for
+   the recorded target worktree under the merged registration and grant at the
+   phases the lifecycle makes them legal, `worktree start` prints the Codex
+   `--add-dir` and Copilot `--allow-tool` lines, and a registration's
+   `hostRules: "literal"` writes that order's exact rules to the main
+   checkout's untracked `.claude/settings.local.json` and `.codex/rules/`
+   until release close removes them (`node scripts/harness.mjs check` names a
+   stale one). Declare the class's or registration's `disposable` paths for the
+   regenerable build output the close deletes, never moves to scratch, and
+   `release: { "policy": "declared" }` with the order's `**Target release
+   classification:**` header for a tagged target release; turn on the forge's
+   delete-branch-on-merge setting for the target, since the kit deletes no
+   remote branch.
 5. Copy `dotln.config.example.json` to `dotln.config.json` only when this
    instance moves a document root; an absent file means the default layout
    under `docs/`. The example declares only the `docs` base, from which every
@@ -147,9 +175,10 @@ operator sandbox settings.
    there and prepares its runtime. The session started in `main` writes no
    other file in that worktree: the harness refuses its writes outside its
    own checkout, so the worktree's files belong to the session opened there.
-7. Open a session in that `wo-001` worktree. It registers its own ignored
-   local-terms list, a copy of the main checkout's list or the terms the
-   operator states, and runs `npm run resume -- status` (`--json` is the
+7. Open a session in that `wo-001` worktree. `worktree start` carried the
+   main checkout's ignored local-terms list into it when one was registered
+   there (step 4); otherwise the session registers its own from the terms
+   the operator states. It runs `npm run resume -- status` (`--json` is the
    canonical record). It runs `npm run meta` to generate the decision index
    from this instance's own records before its first gate, and again whenever
    its decisions change. The export seeds the lineage index; for an older
@@ -344,11 +373,15 @@ values in the order's decisions before release preparation.
 
 After the first steps above, `npm test`, `npm run test:docs` and
 `npm test -- --review` run inside this instance without package source. Each
-selection first runs `kit-verify` instead of `build`. It hashes every
+selection first runs the six structural checks: formatting, configuration,
+registrations, declarations, generated artifacts and host memory pressure.
+The generated check includes the runtime manifest, active pinned snapshot
+and harness bundle;
+`npm run sync` repairs stale derived artifacts. Then `kit-verify` runs instead
+of `build`. It hashes every
 manifest-listed compiled runtime and test file, and refuses a changed,
-missing or nonregular compiled file by path before any other task. Other
-kit-file changes produce one advisory line. The following `harness` check
-validates the active pinned snapshot and generated bundle. Run
+missing or nonregular compiled file by path before the selected suites. Other
+kit-file changes produce one advisory line. Run
 `node scripts/launchpad.mjs verify` directly for the manifest check.
 
 The instance coordinates work in registered sibling repositories. Its
@@ -361,9 +394,9 @@ declared evidence, including the first order's observed harness smoke.
 
 The observed selections in a fresh fixture instance are:
 
-- `npm test`: `kit-verify`, `harness`.
-- `npm run test:docs`: `kit-verify`, `format`, `release-surfaces`, `license-surfaces`, `publication`, `docs-check`, `index`, `siblings`, `lineage`, `harness`, `harness-context`, `plan-refutation-current`, `meta`, `registrations`, `plan`, `reader-profiles`, `entropy`.
-- `npm test -- --review`: `kit-verify`, `harness`.
+- `npm test`: `format`, `configuration-root`, `registrations`, `declarations`, `generated`, `host`, `kit-verify`.
+- `npm run test:docs`: `format`, `configuration-root`, `registrations`, `declarations`, `generated`, `host`, `kit-verify`, `license-surfaces`, `docs-check`, `harness-context`, `plan-refutation-current`, `plan`, `reader-profiles`, `entropy`.
+- `npm test -- --review`: `format`, `configuration-root`, `registrations`, `declarations`, `generated`, `host`, `kit-verify`.
 
 These checks run fresh: the active snapshot and coordination records can
 change without changing code identity. A missing upstream comparison ref
@@ -420,6 +453,7 @@ reason, including with `--list`, and records no gate result.
 | `runner-fixtures` | package sources, core build inventory and license pins |
 | `skeleton` | skeleton package source audits |
 | `skeleton-docs` | skeleton recorded product evidence and documentation |
+| `sync-fixtures` | the core generated-artifact and evidence-edition inventory |
 | `target-publish` | core outward-vocabulary control data |
 | `verification-evidence` | package sources and core verification evidence edition |
 | `vertical` | core outward-vocabulary control data |
@@ -499,7 +533,13 @@ export seeded once, the workstream and repository-profile conventions
 included; their upstream sources stay under `scripts/kit/` for a later
 revision to refresh. The generated `.claude/settings.json`, hooks, skills and
 Codex files are kit files a re-emit rewrites; operator-owned Claude Code
-settings belong in the ignored `.claude/settings.local.json`. The work-order
+settings belong in the ignored `.claude/settings.local.json`, where the
+literal host-rule fallback also writes and removes one target order's rules
+(`.codex/rules/dotln-WO-NNN.rules` is its Codex counterpart). An ignored
+per-order sidecar under the configured control root's `local/host-rules/`
+records Claude rule ownership so removal preserves your pre-existing rules.
+Rewriting rules requires the committed literal opt-in and matching target
+registration; removal remains available after opting out. The work-order
 README is generated rather than seeded: `docs/work-orders/` gets the index at
 the first lifecycle transition (`activate`). The export seeds the lineage
 index at `docs/lineage/README.md`; `node scripts/lineage.mjs index`
@@ -575,6 +615,16 @@ ships. This example names the starter remote `upstream`:
 git fetch upstream
 git worktree add --detach .runtime/upstream-preview upstream/main
 node .runtime/upstream-preview/scripts/launchpad.mjs preview --from upstream/main
+git worktree remove .runtime/upstream-preview
+```
+
+To preview a named starter release, fetch its tag and use it for both the
+detached worktree and the preview revision:
+
+```sh
+git fetch upstream tag v0.85.0
+git worktree add --detach .runtime/upstream-preview v0.85.0
+node .runtime/upstream-preview/scripts/launchpad.mjs preview --from v0.85.0
 git worktree remove .runtime/upstream-preview
 ```
 

@@ -22,6 +22,7 @@ import { availableParallelism, tmpdir } from "node:os";
 import { randomUUID } from "node:crypto";
 import {
   existsSync,
+  lstatSync,
   mkdirSync,
   mkdtempSync,
   readdirSync,
@@ -64,6 +65,11 @@ import {
 
 import { classifyDocumentFailures } from "./lib/document-failures.mjs";
 import { evidenceSources } from "./lib/evidence-sources.mjs";
+import {
+  STRUCTURAL_TASKS,
+  compileStaleRuntime,
+} from "./lib/generated-artifacts.mjs";
+export { STRUCTURAL_TASKS };
 import { findLaunchpad } from "./lib/config.mjs";
 import {
   productReadEnvironment,
@@ -113,6 +119,19 @@ const shell = (name, file) => ({
 
 // Machinery declarations select optional review checks by their own source paths.
 export const machinerySources = {
+  "sync-fixtures": [
+    "scripts/check-role-oracle.mjs",
+    "scripts/test-process-debt.mjs",
+    "scripts/test-runner.mjs",
+    "scripts/structural-checks.mjs",
+    "scripts/lib/host-resources.mjs",
+    "packages/skeleton/src/evidence-editions.mjs",
+    "scripts/lib/evidence-fixture.mjs",
+    "scripts/test-sync.mjs",
+    "scripts/sync.mjs",
+    "scripts/lib/generated-artifacts.mjs",
+    "scripts/lib/build-freshness.mjs",
+  ],
   "launchpad-planning": [
     "packages/kernel/src/types.ts",
     "packages/compiler/src/harness.ts",
@@ -187,6 +206,7 @@ export const machinerySources = {
   ],
   "harness-fixtures": [
     // Direct entry imports and literal first-party script inputs (WO-174).
+    "scripts/lib/bounded-command.mjs",
     "packages/kernel/src/index.ts",
     "packages/compiler/src/artifact-identity.ts",
     "packages/compiler/src/index.ts",
@@ -243,6 +263,8 @@ export const machinerySources = {
   ],
   harness: [
     "scripts/lib/bounded-command.mjs",
+    // The check action's stale host-rule report (WO-221), loaded on demand.
+    "scripts/lib/target-worktrees.mjs",
     // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/skeleton/src/usage-observation.mjs",
     "scripts/lib/evidence-preparation.mjs",
@@ -299,6 +321,11 @@ export const machinerySources = {
     "scripts/lib/entropy-review.mjs",
   ],
   "runner-fixtures": [
+    "scripts/check-role-oracle.mjs",
+    "scripts/lib/fixture-inputs.mjs",
+    "scripts/structural-checks.mjs",
+    "scripts/lib/generated-artifacts.mjs",
+    "scripts/lib/build-freshness.mjs",
     "scripts/lib/github-body.mjs",
     "scripts/lib/target-gate.mjs",
     "scripts/target-gate.mjs",
@@ -370,8 +397,14 @@ export const machinerySources = {
     "packages/skeleton/src/gate-evidence.mjs",
     "packages/skeleton/src/runtime-inputs.mjs",
     "packages/skeleton/src/gate-deadlines.mjs",
+    // The 29-case check reads the split launchpad files and their case list.
+    "scripts/test-launchpad-export.mjs",
+    "scripts/test-launchpad-update.mjs",
+    "scripts/test-launchpad-seeds.mjs",
+    "scripts/fixtures/launchpad-cases.json",
   ],
   "process-debt": [
+    "scripts/lib/fixture-inputs.mjs",
     // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/compiler/src/feedback.ts",
     "packages/compiler/src/index.ts",
@@ -445,6 +478,7 @@ export const machinerySources = {
   ],
   // The inventories and the import closure they must follow (WO-157 item 12).
   "evidence-sources": [
+    "scripts/lib/evidence-fixture.mjs",
     // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/compiler/src/artifact-identity.ts",
     "packages/kernel/src/index.ts",
@@ -530,6 +564,12 @@ const protection = {
     "feedback evidence matches its registered sources and live edition",
   mutation:
     "mutation enumeration and execution preserve baselines and result integrity",
+  declarations: "declared suite and copied fixture inputs cover direct imports",
+  generated:
+    "generated records and installed harness bytes are current before suites start",
+  host: "host memory pressure admits suites only at a normal pressure level",
+  "sync-fixtures":
+    "regeneration follows dependencies, preserves manual authority and changes no current artifact",
   "runner-fixtures":
     "suite selection, scheduling, deadlines and diagnostics preserve evidence",
   "process-debt":
@@ -582,8 +622,10 @@ const protection = {
     "artifact identity remains stable and collisions are refused",
 };
 function classifySuite(row) {
+  const structural = STRUCTURAL_TASKS.includes(row.name);
   const machinery = Object.hasOwn(machinerySources, row.name);
   const document = Boolean(
+    structural ||
     row.document ||
     [
       "release-surfaces",
@@ -600,6 +642,21 @@ function classifySuite(row) {
   return {
     ...row,
     machinery,
+    structural,
+    generated: [
+      "release-surfaces",
+      "authority-evidence",
+      "artifact-evidence",
+      "verification-evidence",
+      "feedback-evidence",
+      "harness",
+      "harness-evidence",
+      "meta",
+      "index",
+      "lineage",
+      "siblings",
+      "publication",
+    ].includes(row.name),
     document,
     product: !machinery && !document,
     protects:
@@ -674,6 +731,110 @@ export function changedMachinery(repo, table = suites, base = "origin/main") {
   );
 }
 
+/** A suite's inputs for change detection: its declared sources and the
+ * repository paths in its own command, a built package path standing for
+ * the package. Product suites declare no sources, so their scripts and
+ * packages are what the detection can see. */
+const detectionSources = (row) => [
+  ...(row.sources ?? []),
+  ...[...(row.command ?? []), ...(row.args ?? [])]
+    .filter(
+      (word) =>
+        typeof word === "string" &&
+        /^(?:scripts|packages|corpus)\//u.test(word),
+    )
+    .map((word) => word.replace(/dist\/.*$/u, "")),
+];
+
+/** Suites whose latest recorded execution of any task did not pass, at any
+ * identity: a failure not yet shown fixed leads the next run. Carried and
+ * unstarted results are not executions. */
+export function lastFailedSuites(rows) {
+  const latest = new Map();
+  const recordedAt = (row) =>
+    typeof row?.recordedAt === "string" ? row.recordedAt : "";
+  for (const row of [...rows].sort((a, b) =>
+    recordedAt(a).localeCompare(recordedAt(b)),
+  )) {
+    const observed = row?.taskTimeline ?? row?.cases;
+    if (!Array.isArray(observed)) continue;
+    for (const result of observed)
+      if (
+        typeof result?.name === "string" &&
+        result.executed === true &&
+        !result.reused
+      )
+        latest.set(
+          result.name,
+          result.exitCode === 0 && !result.stopped && !result.timedOut,
+        );
+  }
+  return [
+    ...new Set(
+      [...latest]
+        .filter(([, passed]) => !passed)
+        .map(([name]) => name.split(":")[0]),
+    ),
+  ].sort();
+}
+
+/** Suites whose inputs changed after the newest gate row was recorded,
+ * judged by file modification time: the row's tree hash is a content digest
+ * rather than a Git object, so the row's time is the only comparison point.
+ * A touch without a content change costs nothing but an earlier place in
+ * the queue; without a row every suite is unchanged. */
+export function changedSinceLastGate(
+  repo,
+  table = suites,
+  rows = readGateChecks(repo),
+) {
+  const since = rows
+    // Document runs exercise no product suite, so they do not move the mark.
+    .map((row) =>
+      typeof row?.recordedAt === "string" && row.checkId !== "npm run test:docs"
+        ? Date.parse(row.recordedAt)
+        : NaN,
+    )
+    .filter(Number.isFinite)
+    .reduce((latest, at) => Math.max(latest, at), -Infinity);
+  if (!Number.isFinite(since))
+    return { since: undefined, files: [], suites: [] };
+  const options = { cwd: repo, encoding: "utf8" };
+  const tracked = spawnGit(["ls-files", "-z"], options);
+  const untracked = spawnGit(
+    ["ls-files", "--others", "--exclude-standard", "-z"],
+    options,
+  );
+  const at = new Date(since).toISOString();
+  if (tracked.status !== 0 || untracked.status !== 0)
+    return { since: at, files: [], suites: [] };
+  const files = [
+    ...new Set([
+      ...tracked.stdout.split("\0"),
+      ...untracked.stdout.split("\0"),
+    ]),
+  ]
+    .filter(Boolean)
+    .filter((file) => {
+      try {
+        return lstatSync(join(repo, file)).mtimeMs > since;
+      } catch {
+        return false;
+      }
+    });
+  return {
+    since: at,
+    files,
+    suites: table
+      .filter((row) =>
+        detectionSources(row).some((source) =>
+          files.some((file) => file === source || file.startsWith(source)),
+        ),
+      )
+      .map((row) => row.name),
+  };
+}
+
 const buildSuite = (repo) =>
   isKitRoot(repo)
     ? node("kit-verify", "scripts/launchpad.mjs", {
@@ -698,9 +859,35 @@ export const suites = [
     document: true,
     preflight: true,
     instance: "document",
+    timeoutMs: 30_000,
   },
+  nodeTests("configuration-root", "scripts/test-configuration-root.mjs", {
+    needsBuild: false,
+    timeoutMs: 30_000,
+    protects:
+      "configuration and control-plane source declarations hold before suites start",
+  }),
+  node("registrations", "scripts/check-registrations.mjs", {
+    timeoutMs: 30_000,
+  }),
+  node("declarations", "scripts/structural-checks.mjs", {
+    args: ["declarations"],
+    timeoutMs: 30_000,
+  }),
+  node("generated", "scripts/structural-checks.mjs", {
+    args: ["generated"],
+    timeoutMs: 120_000,
+  }),
+  node("host", "scripts/structural-checks.mjs", {
+    args: ["host"],
+    timeoutMs: 10_000,
+  }),
   // The published runtime is ignored; its digest rides on the build's result.
-  buildSuite(root),
+  node("build", "scripts/build.mjs", {
+    fast: true,
+    build: true,
+    outputs: ["packages/*/dist"],
+  }),
   node("release-surfaces", "scripts/release.mjs", {
     instance: "document",
     args: ["check-surfaces", "--local"],
@@ -750,10 +937,21 @@ export const suites = [
     kit: "core-only: core legacy lifecycle and timing observations WO-030",
     document: true,
   },
-  nodeTests("launchpad", "scripts/test-launchpad.mjs", {
+  nodeTests("launchpad", "scripts/test-launchpad-export.mjs", {
+    args: [
+      "scripts/test-launchpad-update.mjs",
+      "scripts/test-launchpad-seeds.mjs",
+    ],
+    fileConcurrency: 2,
+    loadSlots: 2,
+    sources: [
+      "scripts/test-launchpad-",
+      "scripts/lib/launchpad-fixture.mjs",
+      "scripts/launchpad.mjs",
+      "scripts/kit/",
+    ],
     kit: "core-only: package TypeScript and build configuration needed to export",
-    // Its nested kit gates inherit this reservation rather than one lane.
-    exclusive: true,
+    // Each file owns two host slots, including its nested kit gates.
     // The fixture builds its committed copy's own packages with the running
     // install's toolchain and reads that copy's dist, never this checkout's.
     // The cold-start comparison reads this checkout's installed floor and
@@ -769,7 +967,7 @@ export const suites = [
     protects:
       "the planning command surface runs in an exported instance using its own records and synthetic judgments",
   }),
-  nodeTests("launchpad-docs", "scripts/test-launchpad.mjs", {
+  nodeTests("launchpad-docs", "scripts/test-launchpad-export.mjs", {
     kit: "core-only: package TypeScript and build configuration needed to export",
     document: true,
     namePattern: "\\[document\\]",
@@ -935,10 +1133,6 @@ export const suites = [
     protects:
       "a preauthorized portfolio derives bounded orders from WO-119 candidates, materializes them through WO-120 and advances the presence curve only after WO-052 changes and WO-054 verifies them",
   }),
-  nodeTests("configuration-root", "scripts/test-configuration-root.mjs", {
-    protects:
-      "an absent dotln.config.json reproduces today's layout, a declared launchpad moves every document root and root derivation, and a malformed configuration refuses by path",
-  }),
   nodeTests("codex-continuation", "scripts/test-codex-continuation.mjs"),
   nodeTests("harness-probe", "scripts/test-harness-probe.mjs", {
     kit: "core-only: core security, budget and discovery records plus package sources",
@@ -1043,6 +1237,10 @@ export const suites = [
   nodeTests("runner-fixtures", "scripts/test-runner.test.mjs", {
     kit: "core-only: package sources, core build inventory and license pins",
   }),
+  nodeTests("sync-fixtures", "scripts/test-sync.mjs", {
+    needsBuild: false,
+    kit: "core-only: the core generated-artifact and evidence-edition inventory",
+  }),
   nodeTests("process-debt", "scripts/test-process-debt.mjs", {
     kit: "core-only: historical Git trees, package sources, core budgets and work orders",
     group: "hook-heavy",
@@ -1053,11 +1251,6 @@ export const suites = [
     args: ["--check"],
     fast: true,
     preflight: true,
-  }),
-  node("registrations", "scripts/check-registrations.mjs", {
-    instance: "document",
-    document: true,
-    needsBuild: true,
   }),
   node("plan", "scripts/refute-plan.mjs", {
     instance: "document",
@@ -1741,7 +1934,9 @@ export async function scheduleSuites(
     diagnosticContext = {},
     stopRequested = () => false,
     hostLanes,
+    acquireLanes = acquireHostLanes,
     reused = new Map(),
+    keepGoing = false,
   } = {},
 ) {
   validateSuites(table);
@@ -1752,6 +1947,8 @@ export async function scheduleSuites(
   const build = table.find((row) => row.build);
   const results = [];
   const active = new Map();
+  let failedFirst;
+  const launchStop = new AbortController();
   const lanes = Array.from({ length: concurrency }, () => ({
     active: null,
     previous: null,
@@ -1785,43 +1982,9 @@ export async function scheduleSuites(
       reservedSlots: occupiedSlots,
       slotCapacity: concurrency,
     };
-    let lease;
-    try {
-      if (hostLanes && row.command.length)
-        lease = await acquireHostLanes({
-          ...hostLanes,
-          parentLease,
-          slots: occupiedSlots,
-          worktree: repo,
-          task: row.name,
-        });
-      if (stopRequested())
-        return {
-          name: row.name,
-          exitCode: 1,
-          executed: false,
-          durationMs: 0,
-          output: "Gate stopped while waiting for host lanes",
-        };
-      const result = await execute(
-        {
-          ...row,
-          gateContext,
-          hostLease: lease,
-          ...(lease
-            ? {
-                executionEnvironment: {
-                  ...(row.executionEnvironment ?? process.env),
-                  DOTLN_HOST_LANE_LEASE: JSON.stringify({
-                    file: lease.file,
-                    directory: hostLanes.directory,
-                  }),
-                },
-              }
-            : {}),
-        },
-        repo,
-      );
+    let lease,
+      executionStarted = false;
+    const observed = (result) => {
       const finishedAt = new Date().toISOString();
       return {
         ...result,
@@ -1845,8 +2008,60 @@ export async function scheduleSuites(
             }
           : {}),
       };
+    };
+    try {
+      if (hostLanes && row.command.length)
+        lease = await acquireLanes({
+          ...hostLanes,
+          signal: hostLanes.signal
+            ? AbortSignal.any([hostLanes.signal, launchStop.signal])
+            : launchStop.signal,
+          parentLease,
+          slots: occupiedSlots,
+          worktree: repo,
+          task: row.name,
+        });
+      if (stopRequested() || (!keepGoing && failedFirst))
+        return {
+          name: row.name,
+          exitCode: 1,
+          executed: false,
+          durationMs: 0,
+          output: failedFirst
+            ? `Not started after ${failedFirst} failed`
+            : "Gate stopped while waiting for host lanes",
+        };
+      executionStarted = true;
+      const result = await execute(
+        {
+          ...row,
+          gateContext,
+          hostLease: lease,
+          ...(lease
+            ? {
+                executionEnvironment: {
+                  ...(row.executionEnvironment ?? process.env),
+                  DOTLN_HOST_LANE_LEASE: JSON.stringify({
+                    file: lease.file,
+                    directory: hostLanes.directory,
+                  }),
+                },
+              }
+            : {}),
+        },
+        repo,
+      );
+      return observed(result);
     } catch (error) {
-      if (!stopRequested()) throw error;
+      if (executionStarted)
+        return observed({
+          name: row.name,
+          exitCode: 1,
+          executed: true,
+          durationMs: Date.now() - Date.parse(startedAt),
+          output: error.message,
+        });
+      if (!stopRequested() && !(!keepGoing && failedFirst)) throw error;
       return {
         name: row.name,
         exitCode: 1,
@@ -1860,10 +2075,44 @@ export async function scheduleSuites(
   };
   const finish = (result) => {
     results.push(result);
+    if (result.exitCode !== 0 && !failedFirst) {
+      failedFirst = result.name;
+      if (!keepGoing) launchStop.abort();
+    }
     onResult(result);
   };
-  // A kit verifies its carried code before any other task. Core still runs
-  // formatting before its build; no compiler runs in a kit.
+  // Structural checks run serially before the build or any selected suite.
+  // A failed structural prerequisite is never bypassed by --keep-going.
+  const structural = table
+    .filter((row) => row.structural || (row.name === "format" && row.preflight))
+    .sort(
+      (a, b) =>
+        STRUCTURAL_TASKS.indexOf(a.name) - STRUCTURAL_TASKS.indexOf(b.name),
+    );
+  for (const row of structural) {
+    onActiveChange([row.name]);
+    const result = await executeTask(
+      row,
+      lanes.map((_, index) => index),
+      results.map((entry) => entry.name),
+    );
+    finish(result);
+    onActiveChange([]);
+    if (result.exitCode !== 0) {
+      for (const pending of table.filter(
+        (entry) => !results.some((done) => done.name === entry.name),
+      ))
+        finish({
+          name: pending.name,
+          exitCode: 1,
+          executed: false,
+          durationMs: 0,
+          output: `Required ${row.name} structural preflight failed. ${row.name === "format" ? "Run npm run format, then rerun this command." : "Repair the named failure and rerun this command."}\n${result.output ?? ""}`,
+        });
+      return results;
+    }
+  }
+  // A kit verifies its carried code; no compiler runs in a kit.
   const verifiedKit = build.name === "kit-verify";
   if (verifiedKit) {
     onActiveChange([build.name]);
@@ -1875,37 +2124,12 @@ export async function scheduleSuites(
       ),
     );
     onActiveChange([]);
-    if (results[0].exitCode !== 0) return results;
+    if (results.at(-1).exitCode !== 0) return results;
   }
-  // A configured formatter can read bytes outside the code identity. Run its
-  // preflight before building or carrying product results.
-  const format = table.find((row) => row.name === "format" && row.preflight);
-  if (format) {
-    onActiveChange([format.name]);
-    const result = await executeTask(
-      format,
-      lanes.map((_, index) => index),
-      verifiedKit ? [build.name] : [],
-    );
-    finish(result);
-    onActiveChange([]);
-    if (result.exitCode !== 0) {
-      for (const row of table.filter(
-        (row) => row !== format && !(verifiedKit && row === build),
-      ))
-        finish({
-          name: row.name,
-          exitCode: 1,
-          durationMs: 0,
-          executed: false,
-          output: `Required format preflight failed for ${row.name}:\n${result.output}\nRun npm run format, then rerun this command.`,
-        });
-      return results;
-    }
-  }
+  const format = structural.find((row) => row.name === "format");
   for (const row of table)
     if (
-      row !== format &&
+      !structural.includes(row) &&
       !(verifiedKit && row === build) &&
       reused.has(row.name)
     )
@@ -1916,7 +2140,7 @@ export async function scheduleSuites(
       await executeTask(
         build,
         lanes.map((_, index) => index),
-        format ? [format.name] : [],
+        structural.map((row) => row.name),
       ),
     );
   }
@@ -1931,7 +2155,8 @@ export async function scheduleSuites(
   if (results.find((row) => row.name === build.name)?.exitCode !== 0)
     return results;
   const pending = table.filter(
-    (row) => row !== build && row !== format && !reused.has(row.name),
+    (row) =>
+      row !== build && !structural.includes(row) && !reused.has(row.name),
   );
   for (const row of pending)
     for (const dependency of row.after ?? [])
@@ -1944,7 +2169,7 @@ export async function scheduleSuites(
   while (pending.length || active.size) {
     // A stop request ends scheduling at this boundary; the suites already
     // running are ended by their execute adapter and settle below.
-    if (stopRequested())
+    if (stopRequested() || (!keepGoing && failedFirst))
       while (pending.length) {
         const row = pending.pop();
         finish({
@@ -1952,7 +2177,9 @@ export async function scheduleSuites(
           exitCode: 1,
           durationMs: 0,
           executed: false,
-          output: "Gate stopped by request before this suite started",
+          output: failedFirst
+            ? `Not started after ${failedFirst} failed`
+            : "Gate stopped by request before this suite started",
         });
       }
     for (let index = pending.length - 1; index >= 0; index--)
@@ -1977,6 +2204,22 @@ export async function scheduleSuites(
         .map((lane, index) => ({ lane, index }))
         .filter(({ lane }) => lane.active === null)
         .map(({ index }) => index);
+      // An exclusive row at the head of the queue waits for the lanes to
+      // drain rather than being passed by lower rows, so a led exclusive
+      // suite follows the led shared ones, not every shared suite.
+      const head = pending[0];
+      if (
+        head &&
+        explicitlyIsolated(head) &&
+        active.size > 0 &&
+        (!head.group || !groups.has(head.group)) &&
+        (head.after ?? []).every((name) =>
+          results.some(
+            (result) => result.name === name && result.exitCode === 0,
+          ),
+        )
+      )
+        break;
       const index = pending.findIndex(
         (row) =>
           reservedSlots(row, concurrency) <= freeLanes.length &&
@@ -2041,12 +2284,35 @@ export async function scheduleSuites(
   return results;
 }
 
-export function expandSuiteTasks(selected, repo, template) {
+export function expandSuiteTasks(
+  selected,
+  repo,
+  template,
+  { first = new Map() } = {},
+) {
+  // A suite named in `first` leads the queue by the lead it maps to; its
+  // expanded tasks (`release:prepare` before `release:case:*`) keep their
+  // order among themselves because the lead is added to their own priority.
+  const leadOf = (row) =>
+    first.get(row.name) ?? first.get(row.name.split(":")[0]) ?? 0;
+  const structural = selected
+    .filter((row) => row.structural)
+    .map((row) => row.name);
   const preflight = selected
     .filter((row) => row.preflight)
     .map((row) => row.name);
   return selected
     .flatMap((row) => {
+      if (row.name === "launchpad") {
+        const prefix = row.command.slice(0, -1);
+        return [row.command.at(-1), ...(row.args ?? [])].map((file) => ({
+          ...row,
+          name: `launchpad:file:${basename(file)}`,
+          command: [...prefix, file],
+          args: [],
+          timeoutMs: 900_000,
+        }));
+      }
       if (row.name === "vertical") {
         // Separate clocks keep queued files and large matrices from spending
         // another task's deadline. Two reserved slots cap parallel tasks at two.
@@ -2118,14 +2384,23 @@ export function expandSuiteTasks(selected, repo, template) {
     .map((row) => ({
       ...row,
       priority:
-        row.priority ??
-        (row.exclusive
-          ? 200
-          : ["skeleton", "worktree", "resume"].includes(row.name)
-            ? 80
-            : 0),
-      ...(!row.build && !row.preflight && preflight.length
-        ? { after: [...new Set([...(row.after ?? []), ...preflight])] }
+        (row.priority ??
+          (row.exclusive
+            ? 200
+            : ["skeleton", "worktree", "resume"].includes(row.name)
+              ? 80
+              : 0)) + leadOf(row),
+      ...(!row.structural &&
+      (structural.length || (!row.build && !row.preflight && preflight.length))
+        ? {
+            after: [
+              ...new Set([
+                ...(row.after ?? []),
+                ...structural,
+                ...(!row.build && !row.preflight ? preflight : []),
+              ]),
+            ],
+          }
         : {}),
     }));
 }
@@ -2165,14 +2440,26 @@ export function aggregateSuiteRows(selected, tasks, rows, codeIdentity) {
         .slice(0, 5),
       reused: observed.some((row) => row.reused),
       expectedCases: members.map((row) => row.name),
-      cases: observed.map(({ output, ...row }) => ({
-        ...row,
-        ...(output && (row.exitCode !== 0 || !row.executed) ? { output } : {}),
-      })),
+      cases: observed.map(failedOutputOnly),
       output: "",
     };
   });
 }
+
+/** A recorded row keeps no passing output at any depth. A case keeps only
+ * the output of a failed or unexecuted check, which the gate index stores as
+ * an addressed log; a timeline entry carries no output at all. */
+export const failedOutputOnly = ({ output, ...row }) => ({
+  ...row,
+  ...(Array.isArray(row.cases)
+    ? { cases: row.cases.map(failedOutputOnly) }
+    : {}),
+  ...(output && (row.exitCode !== 0 || !row.executed) ? { output } : {}),
+});
+export const withoutOutput = ({ output, ...row }) => ({
+  ...row,
+  ...(Array.isArray(row.cases) ? { cases: row.cases.map(withoutOutput) } : {}),
+});
 
 export function completeSharedRefs(snapshot) {
   const name = (value) => typeof value === "string" && value.length > 0;
@@ -2303,6 +2590,7 @@ async function runGateChecks(
     list = false,
     confinedPartial = false,
     again = false,
+    keepGoing = false,
     only,
     against;
   for (let index = 0; index < args.length; index++) {
@@ -2312,6 +2600,7 @@ async function runGateChecks(
     else if (arg === "--review" || arg === "--full") review = true;
     else if (arg === "--serial") serial = true;
     else if (arg === "--list") list = true;
+    else if (arg === "--keep-going") keepGoing = true;
     else if (arg === "--confined-partial") confinedPartial = true;
     // Both flags run the selection instead of reusing a covering row
     // (WO-173); --fresh keeps the meaning measure-gates.mjs relies on.
@@ -2326,7 +2615,7 @@ async function runGateChecks(
     else if (arg === "--only" && !only) only = args[++index];
     else
       throw new Error(
-        "usage: test-runner [--document|--machinery|--review] [--only <suite>] [--against <rev>] [--confined-partial] [--again] [--serial] [--list]",
+        "usage: test-runner [--document|--machinery|--review] [--only <suite>] [--against <rev>] [--confined-partial] [--again] [--keep-going] [--serial] [--list]",
       );
   }
   if (against && !document)
@@ -2338,23 +2627,26 @@ async function runGateChecks(
   // Shipping a fixture makes it available for an explicit diagnostic only.
   const instance = instanceSelection(args, repo);
   let selected = table.filter((row) =>
-    instance
-      ? row.instance === "runtime" || (document && row.instance === "document")
-      : only
-        ? row.name === only
-        : document
-          ? row.document
-          : machinery
-            ? row.machinery
-            : row.product,
+    row.generated && !only
+      ? false
+      : instance
+        ? row.instance === "runtime" ||
+          (document && row.instance === "document")
+        : only
+          ? row.name === only
+          : document
+            ? row.document
+            : machinery
+              ? row.machinery
+              : row.product,
   );
   if (review && !instance && !only && !document && !machinery)
-    selected = [...new Set([...selected, ...changedMachinery(repo, table)])];
-  if (!instance && !only && !document && !machinery) {
-    const format = table.find((row) => row.name === "format");
-    if (format)
-      selected = [format, ...selected.filter((row) => row !== format)];
-  }
+    selected = [
+      ...new Set([
+        ...selected,
+        ...changedMachinery(repo, table).filter((row) => !row.generated),
+      ]),
+    ];
   if (isKitRoot(repo)) {
     const unavailable = table.filter((row) =>
       row.kit?.startsWith("core-only: "),
@@ -2373,6 +2665,39 @@ async function runGateChecks(
     const verify = table.find((row) => row.build);
     selected = [verify, ...selected.filter((row) => row !== verify)];
   }
+  const structural = STRUCTURAL_TASKS.map((name) =>
+    table.find((row) => row.name === name && row.structural),
+  ).filter(Boolean);
+  selected = [
+    ...structural,
+    ...selected.filter((row) => !structural.includes(row)),
+  ];
+  // A focused product selection judges only the generated artifacts its
+  // build phase makes current; publication and bookkeeping artifacts are
+  // inputs of the complete and document selections, not of one suite. Its
+  // structural companion row is partial, so it never stands in for a
+  // complete or document selection's structural pass.
+  const focusedRow = only ? table.find((row) => row.name === only) : undefined;
+  // Only the real structural check reads the flag; a fixture that stands a
+  // stub in for the generated row keeps its own command and a whole row.
+  const buildPhaseOnly = Boolean(
+    focusedRow &&
+    !focusedRow.document &&
+    !focusedRow.machinery &&
+    !focusedRow.structural &&
+    selected.some(
+      (row) =>
+        row.name === "generated" &&
+        Array.isArray(row.args) &&
+        row.args.includes("generated"),
+    ),
+  );
+  if (buildPhaseOnly)
+    selected = selected.map((row) =>
+      row.name === "generated"
+        ? { ...row, args: [...(row.args ?? []), "--build-phase-only"] }
+        : row,
+    );
   if (list) {
     for (const row of confinedPartial
       ? selected.filter((row) => !row.needs)
@@ -2382,6 +2707,17 @@ async function runGateChecks(
       );
     return { exitCode: 0 };
   }
+  // Compile once when needed: a stale runtime is rebuilt before the reuse
+  // lookup and the subject capture, so an ordinary package edit reaches the
+  // suites instead of a refusal to run npm run sync first. The compiled
+  // output lies outside the code identity. A stale installed harness is
+  // reported, never installed here: live hooks change only through the
+  // explicit sync step.
+  if (!confinedPartial)
+    for (const { exitCode } of compileStaleRuntime(repo))
+      console.log(
+        `compiled the stale runtime before the subject was captured${exitCode ? ` (the build exited ${exitCode}; the structural check judges it)` : ""}`,
+      );
   const sharedRefsStart = readSharedRefs(repo);
   const instanceInputDigest = gateInstanceInputDigest(repo);
   const refsStartedAt = Date.now();
@@ -2410,6 +2746,7 @@ async function runGateChecks(
     try {
       covering = await coveringTaskResults(repo, "npm test", tasks);
       reused = covering.results;
+      for (const row of structural) reused.delete(row.name);
       reused.delete("format");
       reused.delete("kit-verify");
       reuseIdentity = covering.codeIdentity;
@@ -2530,10 +2867,50 @@ async function runGateChecks(
           Math.floor(availableParallelism() / 2),
         ),
       );
+  // A complete selection leads with the suites most likely to fail: those
+  // whose sources changed after the newest gate row, then those this branch
+  // changed. A stale assertion then fails within minutes, not at the end of
+  // the run, and a focused rerun of the same suites is never needed first.
+  // The order is an optimization: a failure to compute it never fails the
+  // selection, and its line never carries the summary's "npm test:" prefix.
+  const first = new Map();
+  if (!instance && !only && !document && !machinery && !confinedPartial)
+    try {
+      let rows = [];
+      try {
+        rows = readGateChecks(repo);
+      } catch {
+        rows = [];
+      }
+      for (const row of changedMachinery(repo, table))
+        first.set(row.name, 1000);
+      for (const name of changedSinceLastGate(repo, table, rows).suites)
+        first.set(name, 2000);
+      for (const name of lastFailedSuites(rows)) first.set(name, 3000);
+      const selectedNames = new Set(selected.map((row) => row.name));
+      for (const name of [...first.keys()])
+        if (!selectedNames.has(name)) first.delete(name);
+      const reason = {
+        3000: "last execution failed",
+        2000: "changed since the last gate row",
+        1000: "changed on this branch",
+      };
+      if (first.size)
+        console.log(
+          `scheduled first: ${[...first]
+            .sort(([a, x], [b, y]) => y - x || a.localeCompare(b))
+            .map(([name, lead]) => `${name} (${reason[lead]})`)
+            .join(", ")}`,
+        );
+    } catch (error) {
+      first.clear();
+      console.log(`scheduled in declared order: ${error.message}`);
+    }
   const tasks = expandSuiteTasks(
     selected,
     repo,
     fixture?.template ?? "<gate-template>",
+    { first },
   ).map((row) =>
     standaloneRelease && row.name.startsWith("release:case:")
       ? { ...row, args: ["--case", row.name.slice("release:case:".length)] }
@@ -2556,6 +2933,34 @@ async function runGateChecks(
   }
   const stop = new AbortController();
   const limits = memoryBudgets(repo);
+  const completedRows = [];
+  let stoppedCheck;
+  const recordStopped = (stoppedBy) => {
+    if (stoppedCheck || !completedRows.length) return stoppedCheck;
+    const recordedAt = new Date().toISOString();
+    stoppedCheck = {
+      checkId,
+      treeHash,
+      codeIdentity,
+      subject: treeHash,
+      ...(instanceInputDigest === undefined ? {} : { instanceInputDigest }),
+      durationMs: Date.now() - started,
+      exitCode: 1,
+      executed: true,
+      stopped: true,
+      stoppedBy,
+      evidenceRef: `host-gate:${codeIdentity}:stopped:${recordedAt}`,
+      recordedAt,
+      requiredSuites: selected.map((row) => row.name),
+      cases: completedRows.map(failedOutputOnly),
+      taskTimeline: completedRows.map(withoutOutput),
+      unrunSuites: tasks
+        .filter((task) => !completedRows.some((row) => row.name === task.name))
+        .map((row) => row.name),
+    };
+    recordGateChecks(repo, [stoppedCheck]);
+    return stoppedCheck;
+  };
   let resourceGateFailure;
   const monitor = createProcessMonitor({
     limits,
@@ -2575,7 +2980,10 @@ async function runGateChecks(
     ) {
       resourceGateFailure = incident;
       monitor.failTasks(incident.failureKind, incident);
-    } else interrupted = signal;
+    } else {
+      interrupted = signal;
+      recordStopped(signal);
+    }
     stop.abort();
     monitor.stopTasks();
   };
@@ -2599,7 +3007,10 @@ async function runGateChecks(
       monitor.failTasks(incident.failureKind, incident);
       stop.abort();
     }
-    if (stopRequested()) stop.abort();
+    if (stopRequested()) {
+      if (!resourceGateFailure) recordStopped("request");
+      stop.abort();
+    }
     return stop.signal.aborted;
   };
   const poll = setInterval(stopping, 500);
@@ -2616,6 +3027,7 @@ async function runGateChecks(
         parentLease: inheritedLease,
       },
       reused,
+      keepGoing,
       onActiveChange(names) {
         writeFileSync(`${peerFile}.tmp`, JSON.stringify({ tasks: names }));
         renameSync(`${peerFile}.tmp`, peerFile);
@@ -2639,13 +3051,35 @@ async function runGateChecks(
                   activeOrder,
                 },
                 cwd,
-                900_000,
+                row.timeoutMs ?? 900_000,
                 ({ name, message, elapsedMs }) =>
                   console.log(
                     `PROGRESS [${name}] ${(elapsedMs / 1000).toFixed(1)} s ${message}`,
                   ),
                 stop.signal,
               );
+        if (row.structural) {
+          const line = result.output
+            ?.split("\n")
+            .find((line) => line.startsWith("STRUCTURAL_RESULT "));
+          if (line) {
+            try {
+              const detail = JSON.parse(
+                line.slice("STRUCTURAL_RESULT ".length),
+              );
+              for (const key of ["stale", "cases", "sample"])
+                if (detail[key] !== undefined) result[key] = detail[key];
+              if (Array.isArray(result.cases))
+                result.cases = result.cases.map(failedOutputOnly);
+              result.output = result.output
+                .split("\n")
+                .filter((line) => !line.startsWith("STRUCTURAL_RESULT "))
+                .join("\n");
+            } catch {
+              /* A malformed diagnostic never changes the process verdict. */
+            }
+          }
+        }
         if (!row.build || result.exitCode !== 0) return result;
         // A passing build attests the output it published. An output that
         // cannot be attested leaves the pass without a digest, so it is
@@ -2665,6 +3099,8 @@ async function runGateChecks(
       },
       onResult(row) {
         if (row.name === "document-barrier") return;
+        if (row.executed && !row.stopped && !row.reused)
+          completedRows.push(row);
         if (row.reused) {
           console.log(
             `REUSE ${row.name} from ${row.sourceRow.location} row ${row.sourceRow.recordedAt}`,
@@ -2672,7 +3108,7 @@ async function runGateChecks(
           return;
         }
         console.log(
-          `${row.exitCode === 0 ? "PASS" : "FAIL"} ${row.name} ${(row.durationMs / 1000).toFixed(2)} s`,
+          `${!row.executed ? "SKIP" : row.exitCode === 0 ? "PASS" : "FAIL"} ${row.name} ${(row.durationMs / 1000).toFixed(2)} s`,
         );
         // Successful checks still deliver their explicit diagnostics.
         for (const line of (row.output ?? "").trimEnd().split("\n"))
@@ -2686,7 +3122,7 @@ async function runGateChecks(
     });
     if (stopping() && (interrupted || !resourceGateFailure))
       throw new Error(
-        `Gate stopped by ${interrupted ?? "request"} after ${((Date.now() - started) / 1000).toFixed(1)} s; no check recorded for tree ${treeHash}`,
+        `Gate stopped by ${interrupted ?? "request"} after ${((Date.now() - started) / 1000).toFixed(1)} s; ${stoppedCheck ? `stopped row recorded: ${stoppedCheck.evidenceRef}` : `no check recorded for tree ${treeHash}`}`,
       );
     const failureComparisons = document
       ? await classifyDocumentFailures(repo, tasks, taskRows, {
@@ -2733,7 +3169,9 @@ async function runGateChecks(
         `${observation.classification} ${observation.name} against ${observation.base ?? "unavailable"}${observation.reason ? `: ${observation.reason}` : ""}`,
       );
     if (stopping() && (interrupted || !resourceGateFailure))
-      throw new Error("Gate stopped during base comparison; no check recorded");
+      throw new Error(
+        `Gate stopped during base comparison; ${stoppedCheck ? `stopped row recorded: ${stoppedCheck.evidenceRef}` : "no task completed"}`,
+      );
     const rows = aggregateSuiteRows(selected, tasks, taskRows, codeIdentity);
     const unchanged =
       gateCodeIdentity(repo) === codeIdentity &&
@@ -2759,10 +3197,17 @@ async function runGateChecks(
       .map((name) => join(tmpdir(), name))
       .sort();
     const freshTasks = taskRows.filter((row) => row.executed && !row.reused);
-    const onlyFreshFormat =
-      freshTasks.length === 1 &&
-      freshTasks[0].name === "format" &&
-      tasks.some((row) => row.name === "format" && row.preflight);
+    // Structural tasks and a preflight format run fresh in every selection;
+    // a composition whose only fresh tasks are those reused everything else.
+    const onlyAlwaysFresh =
+      freshTasks.length > 0 &&
+      freshTasks.every((row) =>
+        tasks.some(
+          (task) =>
+            task.name === row.name &&
+            (task.structural || (task.name === "format" && task.preflight)),
+        ),
+      );
     const check = {
       checkId,
       treeHash,
@@ -2804,7 +3249,7 @@ async function runGateChecks(
         : instance
           ? "instance-inputs"
           : reused.size
-            ? onlyFreshFormat
+            ? onlyAlwaysFresh
               ? "always-fresh-preflight"
               : freshTasks.length
                 ? "missing-passing-tasks"
@@ -2813,13 +3258,23 @@ async function runGateChecks(
       freshSuites: freshTasks.length,
       reusedSuites: taskRows.filter((row) => row.reused).length,
       requiredSuites: selected.map((row) => row.name),
+      unrunSuites: tasks
+        .filter(
+          (task) =>
+            !taskRows.some((row) => row.name === task.name && row.executed),
+        )
+        .map((row) => row.name),
+      stale: taskRows.flatMap((row) => row.stale ?? []),
+      failedFirst:
+        taskRows.find((row) => row.exitCode !== 0 && row.executed)?.name ??
+        null,
       // A partial row names what it left out; no product-gate consumer reads it.
       ...(confinedPartial
         ? { partial: true, excludedSuites: excluded.map((row) => row.name) }
         : {}),
       ...(sandbox.marker ? { sandbox } : {}),
       ...(abandoned.length ? { abandonedRoots: abandoned } : {}),
-      cases: rows,
+      cases: rows.map(failedOutputOnly),
       ...(document ? { failureComparisons } : {}),
       loadClass: {
         sharedCap: concurrency,
@@ -2827,7 +3282,7 @@ async function runGateChecks(
         maxHostLoadPerCpu: 2,
         scheduler: "exclusive-machinery-v1",
       },
-      taskTimeline: taskRows.map(({ output, ...row }) => row),
+      taskTimeline: taskRows.map(withoutOutput),
       memory: {
         ...monitor.close(),
         budgets: limits,
@@ -2860,10 +3315,11 @@ async function runGateChecks(
       /* Standalone fixture. */
     }
     if (stopping() && (interrupted || !resourceGateFailure))
-      throw new Error("Gate stopped before recording; no check recorded");
-    // A single-suite or machinery run is not gate evidence: its row is kept
-    // under its own check, which answers no claim, so that the lookup knows
-    // how each task last ran at this identity.
+      throw new Error(
+        `Gate stopped before recording; ${stoppedCheck ? `stopped row recorded: ${stoppedCheck.evidenceRef}` : "no task completed"}`,
+      );
+    // Focused rows can supply the order's declared Preflight claims. The
+    // complete final-review claim still requires its own fresh review row.
     if (check.exitCode !== 0) {
       let previous;
       try {
@@ -2890,7 +3346,53 @@ async function runGateChecks(
       if (changes.length)
         console.log(`shared refs moved: ${changes.join("; ")}`);
     }
-    recordGateChecks(repo, [check]);
+    const structuralRows = taskRows.filter((row) =>
+      structural.some((task) => task.name === row.name),
+    );
+    const structuralCheck = structural.length
+      ? {
+          ...check,
+          checkId: "structural",
+          evidenceRef: `host-gate:${codeIdentity}:structural:${check.recordedAt}`,
+          gateSelection: "structural",
+          requiredSuites: structural.map((row) => row.name),
+          ...(buildPhaseOnly
+            ? {
+                partial: true,
+                partialReason:
+                  "generated judged the build-phase artifacts only; a complete or document selection supplies the structural pass",
+              }
+            : {}),
+          exitCode:
+            unchanged &&
+            completeCoverage(structural, structuralRows, codeIdentity)
+              ? 0
+              : 1,
+          durationMs: structuralRows.length
+            ? Math.max(
+                ...structuralRows.map(
+                  (row) => Date.parse(row.finishedAt) || started,
+                ),
+              ) - started
+            : 0,
+          cases: structuralRows.map(failedOutputOnly),
+          taskTimeline: structuralRows.map(withoutOutput),
+          freshSuites: structuralRows.filter((row) => row.executed).length,
+          reusedSuites: 0,
+          unrunSuites: structural
+            .filter(
+              (task) =>
+                !structuralRows.some(
+                  (row) => row.name === task.name && row.executed,
+                ),
+            )
+            .map((row) => row.name),
+        }
+      : null;
+    recordGateChecks(repo, [
+      check,
+      ...(structuralCheck ? [structuralCheck] : []),
+    ]);
     console.log(
       `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(check.durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh tasks${unchanged ? "" : "; code changed"}${outputUnchanged ? "" : "; build output changed during the gate"}${abandoned.length ? `; abandoned fixture roots: ${abandoned.join(", ")}` : ""}${confinedPartial ? `; partial, not product-gate evidence: excluded ${check.excludedSuites.join(", ") || "none"}` : ""}`,
     );
