@@ -379,16 +379,16 @@ The operator answered the handoff's to-do list in chat after the completion
 event. The message is captured verbatim in this worktree's ignored intake at
 `docs/intake/notes/wo-003-operator-direction-2026-10-18.md`, SHA-256
 `d94d69aa509942510e13e8670b17734b37546007fe2fe28a08ec67d7d51eef03`. It gives
-four directions. Criteria 4 and 6 are waived ("yea i wave 4 and 6"); the
+four directions. Criteria 4 and 6 are waived (the operator's first direction); the
 executor role text forbids the order's own executor recording a waiver, and the
 verify dispatch prints the `waive` command for the session that does, so the
 verify session records both from this capture. The reading in WO-003-D007 is
-not the operator's to rule ("this is below my pay grade to answer, literally
-just ask another agent"); the criteria adversary of self-review already judged
+not the operator's to rule (their second direction declines it and points
+to another agent's judgment); the criteria adversary of self-review already judged
 that reading defensible, and the verifier judges it with everything else, so
 the request for the operator's confirmation is withdrawn. The clone record is
 to be made by the release-close session from the main checkout once `main`
-holds the merge ("fine you do it in release close"); follow-up
+holds the merge (their third direction); follow-up
 `FUP-1eec5d4255b0162c` is aimed at that session, and the WO-004 start session
 is the fallback when `worktree start` reports no local clone recorded. The
 upstream prompt is handed to the operator now, in chat and in `handoff.md`; it

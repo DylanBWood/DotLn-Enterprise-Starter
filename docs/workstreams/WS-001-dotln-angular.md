@@ -210,9 +210,9 @@ know?**
 
 | Role      | Asks                   | Knows                        | May inject                                | Lives in                                                        |
 | --------- | ---------------------- | ---------------------------- | ----------------------------------------- | --------------------------------------------------------------- |
-| Salesman  | Does it look right?    | its own inputs               | platform tokens only (`ElementRef`, `DOCUMENT`) | `libs/shared/ui`, `libs/<app>/ui`                               |
-| Connector | Does it fit together?  | other components             | nothing from the application              | `libs/shared/ui/composites`, `<feature>/composites`, `<feature>/layouts` |
-| Maven     | What does it mean?     | the view model and the state | facades, stores, router, tokens           | `<feature>/mappers`, `<feature>/containers`                     |
+| Salesman  | Appearance    | its own inputs               | platform tokens only (`ElementRef`, `DOCUMENT`) | `libs/shared/ui`, `libs/<app>/ui`                               |
+| Connector | Fit  | other components             | nothing from the application              | `libs/shared/ui/composites`, `<feature>/composites`, `<feature>/layouts` |
+| Maven     | Meaning     | the view model and the state | facades, stores, router, tokens           | `<feature>/mappers`, `<feature>/containers`                     |
 
 **Knowledge flows down as inputs; intent flows up as outputs; only Mavens talk
 to the outside world through injection.** Seven kinds, ordered by distance from
@@ -238,7 +238,7 @@ Connectors, composition:
    not data sources.
 5. **Layout.** Composes Composites into a region or a page through content
    projection and slots; knows what sits beside what and still nothing about
-   state. (The germ called this a "feature wrapper"; "wrapper" is reserved for
+   state. (The germ gave this role a wrapper name; wrapper is reserved for
    vendor adapters.)
 
 Mavens, knowledge:
@@ -259,7 +259,7 @@ dispatch events; it is the Container's only dependency. **Stores** live in
 Rules that make the taxonomy legitimate, each enforced by a lint or a test,
 not by memory:
 
-- **R1 Knowledge down, intent up.** Salesmen and Connectors have inputs and
+- **R1 Knowledge flows down, intent flows up.** Salesmen and Connectors have inputs and
   outputs only. Lint refuses `inject(` under `fragments/`, `templates/`,
   `composites/` and `layouts/`; `wrappers/` may inject platform tokens.
 - **R2 Two hops.** An output is forwarded at most twice before a Container
@@ -276,9 +276,10 @@ not by memory:
   Salesmen get DOM tests only where they have behavior.
 - **R7 Broken windows.** House rule 21.
 
-Two contradictions in the germ, resolved: "wrapper" meant three things and now
+Two contradictions in the germ, resolved: wrapper meant three things and now
 means the vendor adapter only, with Layout the composition role and Mapper the
-knowledge role; and "no outputs, a mediator service" is replaced by outputs plus
+knowledge role; and the germ's mediator service without outputs is replaced by
+outputs plus
 the event stream, because presentational components stay pure and testable
 without injection, the Container dispatches once, and the Events plugin's
 stream is the mediator: visible to everyone, owned by no component. Keeping

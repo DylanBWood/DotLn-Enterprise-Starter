@@ -2,12 +2,13 @@
 
 ## 1. Subject, authority and provenance
 
-The operator opened `planning: get latest upstream` on 2026-10-19 and, while
+The operator opened a `planning:` dispatch for the latest upstream on
+2026-10-19 and, while
 the pass ran, gave three directions: future releases of this launchpad are
 `Launchpad v0.3.0` onward, continuing the numbering with only the prefix
 changed; DotLn-Angular keeps `DotLn Angular` as the name of its releases,
-and a capability the kit lacks is boarded as a blocker that reopens when it
-lands; and the pass ends with a prompt for the primary DotLn planning
+and a capability the kit lacks is boarded, to reopen once it lands; and the
+pass ends with a prompt for the primary DotLn planning
 session. Every message is captured verbatim in ignored intake
 (`docs/intake/notes/planning-latest-upstream-2026-10-19.md`, SHA-256
 `01b3d03564fe733b600083183008b4fb46ee3350ae33469cd379121cc262a177`), a
@@ -37,7 +38,7 @@ what the kit cannot do yet; write the prompt for core. Traps named before
 the material choices: taking the kit bytes on the planning branch (its hooks
 refuse writes outside `docs/`, and the dispatch phrase authorizes the
 planning pull request alone; the update went on its own branch by the
-README's route, D1); reading "get latest upstream" as authority to merge
+README's route, D1); reading a request for the latest upstream as authority to merge
 anything (the pass pushes and opens, the operator merges); letting the
 update widen into activation (nothing activates); declaring DotLn-Angular's
 release policy to use the new feature although the title would be wrong
@@ -100,7 +101,7 @@ keep their conditions.
 
 ## 5. The operator's direction, synthesized
 
-**Get latest upstream.** The starter moved twice since this fork's base,
+**The latest upstream.** The starter moved twice since this fork's base,
 and the second move is the one the previous pass was waiting for: v0.85.0
 carries core WO-221, so the condition it set for the upgrade order (C1)
 holds. The pass takes the update in the shape that pass recorded: the kit
@@ -116,8 +117,8 @@ classification, so WO-009 becomes a minor release (D3).
 **`DotLn Angular` for DotLn-Angular's releases, or a boarded blocker.** The
 kit titles a declared target Release by the registration id and the tag
 (§4), so the name is not available; by the operator's second direction the
-option is boarded as a blocker that reopens when the kit carries a target
-display name, and DotLn-Angular declares no release until then (D4).
+option is boarded, to reopen once the kit carries a target display name,
+and DotLn-Angular declares no release until then (D4).
 
 **A prompt for the primary DotLn planning session.** §10 is written as that
 prompt, and the handoff repeats it; the preference is recorded in the
@@ -160,10 +161,10 @@ that reopens it.
   and the registration are unrelated subsystems, the previous pass's D13).
   Reopen: v0.85.0's close contract changes before WO-011 activates.
 - **D3 The next Release is `Launchpad v0.3.0`; WO-009 is classified
-  minor.** The operator's words (capture SHA-256
-  `01b3d03564fe733b600083183008b4fb46ee3350ae33469cd379121cc262a177`): "I
-  want future releases to be Launchpad v0.3.0 (continuing the same version
-  numbers, just changing prefix)". The
+  minor.** The operator's direction of 2026-10-19 (capture SHA-256
+  `01b3d03564fe733b600083183008b4fb46ee3350ae33469cd379121cc262a177`), paraphrased: the
+  fork's releases keep their numbering and change only the prefix, so the
+  next one is `Launchpad v0.3.0`. The
   kit assigns `v0.3.0` as the next minor above `v0.2.0` at WO-009's
   activation; WO-009's objective, design, step 3 and provenance say so, and
   WO-010 and WO-011 follow as patches above it. Rejected: patch (the
@@ -175,11 +176,11 @@ that reopens it.
   minor above what it observes and the executor records it).
 - **D4 DotLn-Angular's releases stay undeclared until the kit can title a
   target Release `DotLn Angular`; the option is boarded as a blocker.** The
-  operator's words (capture SHA-256
-  `01b3d03564fe733b600083183008b4fb46ee3350ae33469cd379121cc262a177`):
-  "DotLn Angular can sta[y] DotLn Angular for its releases" and "if that
-  capability isnt available yet from upstream updates, we can board it up
-  as a blocker that reopens when the functionality is present". The kit
+  operator's direction of 2026-10-19 (capture SHA-256
+  `01b3d03564fe733b600083183008b4fb46ee3350ae33469cd379121cc262a177`), paraphrased:
+  DotLn-Angular keeps the name DotLn Angular for its releases, and a
+  capability the kit does not have yet is boarded as a blocker that reopens
+  once it exists. The kit
   titles a declared target Release
   `<registration id> <tag>` (§4), which would publish `dotln-angular
   v0.1.0`; so `release` stays absent from the registration, `release.close`
@@ -286,6 +287,30 @@ that reopens it.
   after both pull requests merge (then the session on `main` repairs it
   within authority and records the cause, or the operator opens a
   correction).
+- **D15 No direct quote of the operator stays in either repository's
+  committed tree.** The operator's correction of 2026-10-19 (captured
+  verbatim in ignored intake,
+  `docs/intake/notes/planning-latest-upstream-2026-10-19-corrections.md`,
+  SHA-256 `0fd81261c26234c213cd436d36ac2f19c6f0633287090a5c6426b988d44ded2a`), paraphrased: their
+  words are not to be committed, in this fork or in DotLn-Angular. The
+  clean-room floor already says intake wording is synthesized, never copied
+  unless a draft is marked ready to file; this pass had copied their words
+  into D3, D4, WO-009 and WO-011, and earlier passes into WO-004, WO-008,
+  WO-009, WO-010, WO-003's decision and handoff records, both earlier
+  planning documents, the ledger's dispatch headings, the operator record's
+  markers and standard, and the workstream's germ phrases. Every site is
+  paraphrased now, each keeping its capture digest; a sweep of this fork's
+  tracked documents (seven-word runs against the intake captures, the
+  document check's attribution rule, and the short phrases of each capture)
+  finds no other. In DotLn-Angular the only site is the target's copy of
+  WO-004's provenance, which WO-005's step 12 paraphrases, the first in-kit
+  route into the target. The update pull request's body, outward and not
+  committed, is rewritten too. Residual: one register history entry (§7).
+  Rejected: pushing a docs-only branch to DotLn-Angular from this session
+  (outside the planning dispatch's authorization and the kit's target-order
+  route); rewriting the register's committed history (the register refuses
+  it). Reopen: a later pass's sweep finds a quote, or the operator marks a
+  draft ready to file verbatim.
 
 Immaterial lenses for the document-only writes: no shared compute beyond
 the one refuter, no proxy goal, no process that provokes process; every
@@ -313,16 +338,27 @@ work.
 | FUP-223cde718a523e67 | WO-004-D010 (fork pull-request titles) | left `deferred`; its condition has not occurred |
 | FUP-a36dae4a6766b9ef | WO-001-D014 (a phrase leading a longer message) | left `deferred`; its condition (a kit change to the prompt hook) has not occurred at v0.85.0 as far as this pass read |
 
+One register entry keeps a quoted operator message this pass could not
+rewrite: the first source revision of FUP-890bb31b940f69c3 summarizes
+WO-001-D004's dispatch as it read before its 2026-10-18 repair, and the
+register refuses an edit to committed history (`committed source or
+disposition history was removed or rewritten`). It is the one residual site
+of D15, left for the operator's override or core's redaction route (§10
+item 6).
+
 ## 8. Orders cut, amended and the sequence
 
-One order filed, three amended, one serial sequence.
+One order filed, five amended (two of them only to paraphrase the
+operator's words, D15), one serial sequence.
 
 | Order | Repository | Outcome | Hard edge |
 | --- | --- | --- | --- |
 | [WO-011](../work-orders/WO-011-starter-v0.85.0-registration.md) | self | the class's disposable declaration; the `--no-tags` guard and its readbacks; the v0.85.0 gates on `main`'s records; the profile's `## Release close` section and WS-001's row; no release policy | none typed (update #8 merged is step 1's guard) |
-| [WO-009](../work-orders/WO-009-release-display-name.md) | self | as filed, classified minor so the next Release is `Launchpad v0.3.0`; the Preflight line under the landed grammar; the local-tag carry-in | none |
-| [WO-010](../work-orders/WO-010-protect-main-both-repositories.md) | self | as filed; the Preflight line under the landed grammar; its Release the next patch above `v0.3.0` | none |
-| [WO-005](../work-orders/WO-005-foundation-libraries.md) | dotln-angular @ `651d76ff` | as filed, with the typed edge on WO-011, the route guard at v0.85.0, the draft publish recorded as the first observation of the admission, no release header, the Preflight line confirmed, and receipt 002's three findings applied (§8.1) | WO-004 merged (met); WO-011 merged |
+| [WO-009](../work-orders/WO-009-release-display-name.md) | self | as filed, classified minor so the next Release is `Launchpad v0.3.0`; the Preflight line under the landed grammar; the local-tag carry-in; provenance paraphrased (D15) | none |
+| [WO-010](../work-orders/WO-010-protect-main-both-repositories.md) | self | as filed; the Preflight line under the landed grammar; its Release the next patch above `v0.3.0`; provenance paraphrased (D15) | none |
+| [WO-005](../work-orders/WO-005-foundation-libraries.md) | dotln-angular @ `651d76ff` | as filed, with the typed edge on WO-011, the route guard at v0.85.0, the draft publish recorded as the first observation of the admission, no release header, the Preflight line confirmed, receipt 002's three findings applied (§8.1), and the target's WO-004 copy paraphrased in step 12 (D15) | WO-004 merged (met); WO-011 merged |
+| [WO-008](../work-orders/WO-008-authentication-and-permissions.md) | dotln-angular (provisional base) | provenance paraphrased (D15); nothing else changes | WO-007 merged |
+| [WO-004](../work-orders/WO-004-scaffold-dotln-angular-workspace.md) | dotln-angular (closed) | provenance paraphrased (D15); nothing else changes; the target's copy follows through WO-005 | closed |
 
 WO-011 carries `Model:`, three-role `Effort:`, `Track:`, `Cost:` with
 additions and removals, provenance naming the capture, a dated observed
@@ -405,7 +441,9 @@ planning: requests from the DotLn-Enterprise-Starter fork (dylanwoodconsulting) 
 
 4. The live qualification of the registered-target admission. The fork's WO-005 will run the first `worktree publish --draft` under Claude Code auto mode and record the hook's decision from the session journal, whether the host prompted, and which operator trust entries were present. Say what else the fork should record for criterion 4's rows, and whether the hook's decision is written somewhere a session can read without a host prompt.
 
-5. Carried from the fork's 2026-10-18 passes, not re-verified against v0.85.0: `plan conditions` evaluates core-only condition sources in an exported instance (ten `unknown` rows); `npm run resume -- status --json` and `docs/control/current.md` name report paths `target-records` moved into the target; a `repo.settings` effect for registrations; `historicalDependencyIds` hard-codes core's WO-001 and WO-002; a target order's base fixed at planning time costs one pass per chain member; the outward lint refuses a leading gitmoji; `followups --apply` refuses the host scratchpad; `plan start` dates branches in UTC; the console view model and the WO-193 request channel for the operator's agent-orchestration UI.
+5. A redaction route for the follow-up register's history. The register keeps every source revision's summary and refuses an edit to committed history (`committed source or disposition history was removed or rewritten`), so a summary that copied an operator's message before its decision was repaired cannot be paraphrased by a later pass. Either a route that rewrites one historical summary under an operator's recorded direction, keeping the revision chain honest, or summaries that never copy a decision's dispatch text, would let an instance honor a no-quotes rule.
+
+6. Carried from the fork's 2026-10-18 passes, not re-verified against v0.85.0: `plan conditions` evaluates core-only condition sources in an exported instance (ten `unknown` rows); `npm run resume -- status --json` and `docs/control/current.md` name report paths `target-records` moved into the target; a `repo.settings` effect for registrations; `historicalDependencyIds` hard-codes core's WO-001 and WO-002; a target order's base fixed at planning time costs one pass per chain member; the outward lint refuses a leading gitmoji; `followups --apply` refuses the host scratchpad; `plan start` dates branches in UTC; the console view model and the WO-193 request channel for the operator's agent-orchestration UI.
 ```
 
 ## 11. Write-backs
@@ -423,6 +461,10 @@ planning: requests from the DotLn-Enterprise-Starter fork (dylanwoodconsulting) 
   index regenerated.
 - `docs/planning/followups.json`: the five new rows synced and deferred
   (§7, §9).
+- The quote sweep of D15: WO-004, WO-008, WO-003's decisions and handoff,
+  both earlier planning documents, the ledger's three dispatch headings, the
+  operator record's markers and standard, WS-001's germ phrases and
+  taxonomy questions; pull request #8's body (outward).
 - `docs/work-orders/README.md` and `HISTORY.md`, `docs/lineage/decisions-index.md`,
   `docs/planning/cost-table.json`: regenerated.
 - Outside the planning branch, by D1: `chore/starter-update-v0.85.0` and

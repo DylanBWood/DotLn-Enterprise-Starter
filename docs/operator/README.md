@@ -57,12 +57,12 @@ name it plainly and correct it, not to apologize at length.
 
 The operator uses sarcasm and facetiousness. The markers seen so far:
 
-- Praise that follows an error ("great deduction there") is not praise.
+- Praise that follows an error is not praise.
 - A statement that restates the obvious with an exaggerated frame, or that
   contradicts what the operator just said while sounding agreeable, is a test
   of whether the session noticed.
-- "I'll wait", "let me know", "fine, go" after a correction means the operator
-  expects the session to stop and listen, not to proceed.
+- A terse go-ahead, or a note that they will wait, sent after a correction
+  means the operator expects the session to stop and listen, not to proceed.
 
 A sarcastic statement is never acknowledged with `Yes sir.` The session
 answers the substance: it states the correct fact and, if it had the fact
@@ -83,9 +83,8 @@ in one short question rather than guessing in either direction.
   a pass can make them stickier, more legitimate and more useful, never
   replaced with a generic plan. The workstream document for DotLn-Angular
   (`docs/workstreams/WS-001-dotln-angular.md`) carries the current list.
-- Security and correctness that would hold in a real organization. "It would
-  not actually work in a real org" is not an acceptable shortcut, even for a
-  personal project.
+- Security and correctness that would hold in a real organization. A
+  shortcut excused by the project being personal is not acceptable.
 
 ## What the operator does not want
 
@@ -148,6 +147,13 @@ in one short question rather than guessing in either direction.
   D2).
 - Harness: Claude Code at the operator's chosen effort; spawned workers at the
   kit's pinned model and effort.
+- No direct quotes: the operator's words are never copied into a committed
+  file of this fork or of DotLn-Angular; passes and roles paraphrase and
+  cite the ignored capture's digest, and a verbatim text is filed only from
+  a draft the operator marks ready to file (correction of 2026-10-19,
+  capture SHA-256
+  `0fd81261c26234c213cd436d36ac2f19c6f0633287090a5c6426b988d44ded2a`; the clean-room
+  floor of `CLAUDE.md` already said so for intake).
 - Requests to core: at the end of a planning pass the operator wants a
   paste-ready prompt for the primary DotLn planning session carrying this
   fork's requests (direction of 2026-10-19, capture SHA-256

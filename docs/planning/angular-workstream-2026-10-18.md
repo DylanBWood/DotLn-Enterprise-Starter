@@ -2,11 +2,11 @@
 
 ## 1. Subject, authority and provenance
 
-The operator opened `planning: let's start this planning pass for this fork`
-on 2026-10-17 and then dictated the direction for DotLn-Angular over about
+The operator opened this fork's first `planning:` dispatch on 2026-10-17 and
+then dictated the direction for DotLn-Angular over about
 sixty messages in one Claude Code session, under a protocol they set at the
 start: the session acknowledges, asks only genuine questions, and starts work
-only when told. The operator said "go forth and plan" at the end. Every
+only when told. The operator closed the dictation with a go-ahead. Every
 operator message is captured verbatim in ignored intake
 (`docs/intake/notes/planning-angular-workstream-2026-10-18.md`, SHA-256
 `4f14c6c09512576abfd701335f4dd8a347694ff23785724422cb8d943b5d67aa`); the
@@ -134,8 +134,8 @@ The germ: the operator's Film Study notes map Gladwell's Salesmen, Connectors
 and Mavens onto presentational, compositional and knowing components, with
 levels inside each. The pass kept the analogy and made it checkable: seven
 kinds (Fragment, Template, Wrapper; Composite, Layout; Mapper, Container),
-one question per role ("does it look right", "does it fit together", "what
-does it mean"), the sentence "knowledge down, intent up, Mavens out", and seven
+one question per role (appearance, fit and meaning), the rule that
+knowledge flows down, intent flows up and Mavens face outward, and seven
 rules each enforced by a lint glob, a test or a review item. Two
 contradictions in the notes are resolved (D2). The operator's later ideas
 (the WoW tooling app with a configuration intermediate representation, a
@@ -161,8 +161,8 @@ that reopens it. Immaterial lenses are grouped at the end.
 - **D2 The taxonomy resolves two contradictions in the germ.** "Wrapper"
   appeared as a Salesman level, a Connector level and a Maven level; it now
   means the vendor adapter only, with Layout as the composition role and
-  Mapper as the knowledge role. "No outputs, a mediator service" is replaced
-  by outputs plus the Events plugin's stream, because a presentational
+  Mapper as the knowledge role. The germ's mediator service without outputs
+  is replaced by outputs plus the Events plugin's stream, because a presentational
   component that injects a service is no longer testable without injection
   and the platform's own grain is inputs and outputs; the event stream is the
   mediator, visible to everyone and owned by no component. Rejected: keeping
@@ -170,8 +170,9 @@ that reopens it. Immaterial lenses are grouped at the end.
   feature's output drilling exceeds two hops in more than one container and
   splitting containers does not resolve it.
 - **D3 One order per subsystem, six orders, serial.** The operator's shape
-  ("ten pull requests over two to four weeks, auth at week three"; capture
-  SHA-256 `4f14c6c09512576abfd701335f4dd8a347694ff23785724422cb8d943b5d67aa`) is read
+  (about ten pull requests over two to four weeks, with authentication
+  around the third week; capture SHA-256 `4f14c6c09512576abfd701335f4dd8a347694ff23785724422cb8d943b5d67aa`),
+  paraphrased, is read
   as subsystems: registration, scaffold, foundation libraries, taxonomy and
   first feature, events and state, authentication. Product 07's sizing rule
   (one outcome per subsystem, no bundling of unrelated subsystems) gives six.
@@ -199,8 +200,8 @@ that reopens it. Immaterial lenses are grouped at the end.
   activation and `main` requires a pull request). Kit gap recorded in §9.
   Reopen when the kit admits a base that resolves at activation.
 - **D6 PrimeNG 22 is declined under the operator's own condition.** The
-  operator said "if PrimeNG is free, let's use that" (capture SHA-256
-  `4f14c6c09512576abfd701335f4dd8a347694ff23785724422cb8d943b5d67aa`). PrimeNG 22.x ships under
+  operator's condition, paraphrased (capture SHA-256
+  `4f14c6c09512576abfd701335f4dd8a347694ff23785724422cb8d943b5d67aa`): use PrimeNG if it is free. PrimeNG 22.x ships under
   the PrimeUI License with a required key; the last MIT release peers Angular
   21. The pass does not choose a vendor for the operator: WO-006 names the
   decision as the operator's before activation and proposes Angular Material
@@ -405,7 +406,7 @@ executor's decisions.
 - **C5 Production environment and preview deployment.** `environment.prod.ts`
   with file replacements lands in WO-005; a hosted preview is unplanned
   until the operator names a host.
-- **C6 One "go" that runs the queue.** The operator asked (capture SHA-256
+- **C6 One word that runs the queue.** The operator asked (capture SHA-256
   `4f14c6c09512576abfd701335f4dd8a347694ff23785724422cb8d943b5d67aa`) whether, after this
   branch merges, one word could run every order through every phase and
   merge. Not with this kit: each phase is a resume phrase the operator types,

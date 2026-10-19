@@ -21,10 +21,10 @@ edited, so `npm test` without `--review` is the product gate.
 §4, §5 and §6 D1, D2 and D10), on the operator's dispatch of 2026-10-18
 captured verbatim in ignored intake
 (`docs/intake/notes/planning-main-rules-2026-10-18.md`, SHA-256
-`222fbf09d6f57d518b931dd54c59a5bc5d83d55a7552e2ee194b1774a2ee184d`): "set up
-branch protections in main for both this repo (enterprise starter fork) and
-sibling repo dotln angular", and the platform pass's routed item 6 (the
-head-branch setting), in the same capture. Planner-synthesized. Opaque
+`222fbf09d6f57d518b931dd54c59a5bc5d83d55a7552e2ee194b1774a2ee184d`),
+paraphrased: protect `main` in this fork and in DotLn-Angular; and the
+platform pass's routed item 6 (the head-branch setting), in the same
+capture. Planner-synthesized. Opaque
 identifier, not a priority. Clean-room screen: the operator's own public
 repositories and accounts; GitHub's public documentation. Amended by the
 2026-10-19 latest-upstream planning pass

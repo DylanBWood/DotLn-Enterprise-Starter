@@ -22,17 +22,18 @@ edited, so `npm test` without `--review` is the product gate.
 ([planning document](../planning/main-rules-and-platform-items-2026-10-18.md)
 §5 and §6 D3), on the operator's dispatch of 2026-10-18 captured verbatim in
 ignored intake (`docs/intake/notes/planning-main-rules-2026-10-18.md`,
-SHA-256 `222fbf09d6f57d518b931dd54c59a5bc5d83d55a7552e2ee194b1774a2ee184d`):
-"change the releases to be `Launchpad` instead of `DotLn`. version is fine."
-Planner-synthesized. Opaque identifier, not a priority. Clean-room screen:
+SHA-256 `222fbf09d6f57d518b931dd54c59a5bc5d83d55a7552e2ee194b1774a2ee184d`),
+paraphrased: name the releases Launchpad instead of DotLn and keep the
+version numbering. Planner-synthesized. Opaque identifier, not a priority.
+Clean-room screen:
 the kit's documented configuration contract and the operator's own
 repository. Amended by the 2026-10-19 latest-upstream planning pass
 ([planning document](../planning/latest-upstream-2026-10-19.md) §6 D3 and
 D7), on the operator's direction of 2026-10-19 captured verbatim in ignored
 intake (`docs/intake/notes/planning-latest-upstream-2026-10-19.md`, SHA-256
-`01b3d03564fe733b600083183008b4fb46ee3350ae33469cd379121cc262a177`): "I want
-future releases to be Launchpad v0.3.0 (continuing the same version numbers,
-just changing prefix)"; the classification becomes minor and the Preflight
+`01b3d03564fe733b600083183008b4fb46ee3350ae33469cd379121cc262a177`), paraphrased: the
+releases keep the fork's numbering and change only the prefix, so the next
+is `Launchpad v0.3.0`; the classification becomes minor and the Preflight
 line names the suites starter v0.85.0 lists.
 **Depends on:** nothing typed. WO-009 precedes WO-010 in the sequence only so
 that the next Release carries the name (planning document §6 D13).

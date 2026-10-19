@@ -33,8 +33,8 @@ Aim, as read: protect `main` in both repositories, name the releases, settle
 the platform's seven routed items as this instance's own decisions, set
 WO-005's base now that WO-004 has merged, and record where the upstream update
 sits, since the operator will take it in the next pass before any order
-activates. Traps named before the material choices: treating "set up branch
-protections" as something a planning pass does itself (it files an order and
+activates. Traps named before the material choices: treating the request for branch
+protections as something a planning pass does itself (it files an order and
 touches nothing on GitHub); reading the operator's standing preference that sessions do not change
 repository settings as overriding today's explicit direction, or the
 reverse (D1 and the operator record carry the dated exception); writing a
@@ -110,8 +110,8 @@ carries the second to core as a request.
 ## 5. The operator's direction, synthesized
 
 **The three items.** Branch protection on `main` of both repositories, with
-the standing preference "security and correctness that would hold in a real
-organization" as the standard (D1, D2; WO-010). Releases named `Launchpad`,
+the standing preference for security and correctness that would hold in a
+real organization as the standard (D1, D2; WO-010). Releases named `Launchpad`,
 version numbering unchanged (D3; WO-009); the update the operator remembered
 is the kit's `release.displayName`, which v0.83.0 already carries, so no
 update is needed for it. The latest upstream: the operator's note moves it to

@@ -24,10 +24,9 @@ edited, so `npm test` is the product gate.
 D4, D5, D6 and D8), on the operator's dispatch of 2026-10-19 captured
 verbatim in ignored intake
 (`docs/intake/notes/planning-latest-upstream-2026-10-19.md`, SHA-256
-`01b3d03564fe733b600083183008b4fb46ee3350ae33469cd379121cc262a177`):
-"planning: get latest upstream", and candidate C1 of the 2026-10-18
-main-rules pass (the upgrade order, filed when the starter carries core
-WO-221). Planner-synthesized. Opaque identifier, not a priority. Clean-room
+`01b3d03564fe733b600083183008b4fb46ee3350ae33469cd379121cc262a177`), paraphrased: take the
+latest upstream; and candidate C1 of the 2026-10-18 main-rules pass (the
+upgrade order, filed when the starter carries core WO-221). Planner-synthesized. Opaque identifier, not a priority. Clean-room
 screen: the kit's documented contracts, core's public release notes and the
 operator's own repositories.
 **Depends on:** nothing typed. The update pull request #8 (starter v0.85.0)
