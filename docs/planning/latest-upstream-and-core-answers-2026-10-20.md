@@ -396,6 +396,56 @@ amendment); its live-run surfaces exist and were run today (the
 configuration grammar through the scratch probe, the kit commands at v0.87.0
 on the update branch, the sign-off rule read at its source).
 
+### 9.1 Known issues from receipt 004, by order
+
+The refutation (§15) returned `aligned-with-findings` with five known
+issues on WO-012 and no hold. The order is frozen at the judged subject, so
+each issue sits here until a pass amends the order; WO-012 cannot activate
+before the starter release that repairs `docs-check` is taken (D1, D2), and
+the pass that readies update #14 amends WO-012 for the three issues that need
+its text changed and refutes it again. An issue the executor can meet inside
+the frozen order's authority is a carry-in for its decisions and evidence.
+
+- **(a) The operator grant for `release.close`.** At v0.87.0 a declared
+  target release also needs an operator grant naming `release.close` for
+  `dotln-angular` in `packages/skeleton/loadouts/grants.json`
+  (`prepareTargetRelease` calls `authorizeRegisteredEffects`); the committed
+  grant names `repo.push`, `pr.open` and `pr.thread.resolve` and records the
+  operator's direction of 2026-10-17 that tagging stays with them, and
+  criterion 5 keeps the file out of WO-012's diff. The amending pass scopes
+  the grant into WO-012 (the file is an instance seed, outside the kit) and
+  criterion 5, on the operator's word that the kit tags and releases
+  DotLn-Angular, which their direction of 2026-10-19 to name those releases
+  `DotLn Angular` implies but does not state; the handoff asks. The
+  alternative the refuter names, declaring only `contributions.operatorAuthor`
+  now and the release policy, the grant and the first header together in the
+  order that first releases, is weighed by that pass.
+- **(b) The header becomes mandatory.** Once the policy is declared, every
+  `dotln-angular` order needs exactly one `Target release classification`
+  header or its close refuses (`exactly one is needed`), and nothing checks
+  earlier than the close. The UI pass adds the header to WO-006, WO-007 and
+  WO-008 (§10 C1) and writes the precondition into WS-001's dependency plan:
+  no member activates without it.
+- **(c) Criterion 3 cannot pass as written.** The v0.87.0 index generator
+  always writes the word "historical" into the index page, so
+  `grep -c -i 'historical'` cannot print 0 while `index --check` passes. The
+  amending pass narrows the pattern to the historical status cell or a
+  Historical section heading; until then the executor records the count and
+  what matched.
+- **(d) Criterion 4 already passes at this pass's commit.** This pass's
+  edits to the profile and WS-001 meet its six counts before WO-012 runs, so
+  the criterion does not evidence the rewrite. Carry-in: the executor records
+  `grep -c 'continues to deny' docs/repositories/dotln-angular.md` and
+  `grep -c 'Until WO-012 merges' docs/repositories/dotln-angular.md`, both 0
+  after the rewrite; the amending pass writes them into criterion 4.
+- **(e) `judge-only` adds a refusal.** When retained output in the base
+  checkout collides with a path the fetched base tracks, the close refuses
+  (`judge-only output collides with fetched tracked paths`) where the default
+  policy would have deleted it first, and the benefit is prospective (the
+  base checkout held nothing at WO-005's close). Carry-in: the executor
+  records the collision rule in the profile's section; the operator decides
+  at the amendment whether the clone they work in needs the key.
+
 ## Candidates not filed, with their reopening conditions (section 10)
 
 - **C1 The UI planning pass before WO-006: its base, release header, typed
@@ -524,6 +574,45 @@ recorded here when they ran: `npm run meta`, `npm run plan -- followups
 `node scripts/lineage.mjs index`, `node scripts/docs-check.mjs`,
 `npm run publication:check`, `npm run plan -- check`, `npm run test:docs`.
 
-VALIDATION_RESULTS_PENDING
+Results at the subject commit `c0784de` (cost table) over `1d1a3a5` (the
+subject): `npm run meta` no budget breach; `followups --sync` minted one row
+and `--apply` took fourteen dispositions in one batch (register revision
+`68ad2755…`); `work-orders index --check` PASS (both pages current);
+`lineage index` regenerated and current; `docs-check` PASS (1 product
+document; three pre-existing advisories on filed records, WO-003-D003,
+WO-001 FINAL-001 and WO-003 VER-002; one advisory on this document repaired
+by citing the capture digest in D2); `publication:check` reporting no
+editions declared; `plan check` waiting on the receipt. One inherited
+failure repaired within authority: `docs-check` on `main` failed since #13
+merged on three links to WO-005's `decisions.md`, which its records commit
+moved into the target; the three links are declared historical in
+`docs/control/doc-baseline.json` as WO-004's were. The document gate at
+v0.85.0 before the receipt: 12 passed, 2 failed (the two plan checks, which
+need the receipt). After the receipt: TESTDOCS_AFTER.
 
-REFUTATION_PENDING
+Refutation: one fresh `dotln-worker` (`claude-opus-5-5` by its definition
+and the host's system prompt; the host context reported a reasoning-effort
+value of 40, which nothing else reports) on the canonical prompt from
+`npm run plan -- refute` at base `c0784de`, default pass scope (WO-012,
+plus the sequence; WO-006 to WO-008 carried by hash), dispatched at
+20:15:08Z. The harness refused the worker's two writes into the session
+scratch (an outside-project write without a grant for a session that holds
+no role, WO-144); the worker did not retry, returned its judgment and
+statement to the parent, and the parent saved them as ignored local files,
+the route the planner's role text names, before filing the receipt. Receipt
+[`2026-10-20-planning-56357ae66bd3a7f6-004`](refutations/2026-10-20-planning-56357ae66bd3a7f6-004.md),
+verdict `aligned-with-findings`, 0 holds, 5 known issues (§9.1),
+dispatch-to-file 854,934 ms (14.2 minutes; the worker's own run 689,716 ms,
+188,593 tokens, 62 tool uses). The worker's statement names what it read:
+the whole prompt; the configuration, the grants, the profile and WS-001 at
+the checkout; excerpts of the kit at `main`, `upstream/main` and the update
+branch through `git show` and `git grep` (the configuration, contributions,
+publish, release, target-publish, authority-grants, target-close,
+work-orders, launchpad, dependencies and evidence-sources scripts, the
+target-release fixture and the kit README); the generated index at three
+revisions; no npm or node kit command, no network, no model tool, no
+descendant, no repository or Git write; not the planning narratives,
+receipts, ledger, intake, control lane, evidence, product or order files
+beyond the compiled subject. The judged, committed and workspace subjects
+agree (`sha256:5b7d27af…`). A read-only hash pass by the worker over the
+update branch's tree found the 977 manifest files all present and matching.
