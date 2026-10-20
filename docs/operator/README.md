@@ -122,11 +122,16 @@ in one short question rather than guessing in either direction.
   Until the starter carries that form, no target order activates (D6).
 - Manual steps: a session never hands the operator a command to run in its
   place. A host trust entry a publication step needs is named in the order
-  before activation. The operator's `autoMode.environment` entries of
-  2026-10-18 are an interim measure outside the repository, removed once the
-  upgrade order shows the kit's admission carries the push (planning pass of
-  2026-10-18, D10; capture SHA-256
+  before activation. The operator's `autoMode.environment` entries of 2026-10-18 are an interim measure outside the repository
+  (planning pass of 2026-10-18, D10; capture SHA-256
   `6c996dda3af87b7e592697f744b604d3473f724513c86969d1a219fc8cb8ee4d`).
+  WO-005's draft publish of 2026-10-20 showed the kit's hook admitting the
+  helper form with those entries present, the sequence the 2026-10-19 pass's
+  D6 set; the 2026-10-20 pass therefore asks the operator to remove the two
+  entries, and the launchpad-local allow entry `Bash(node *)` with them,
+  before WO-006's verified-phase draft publish, which under starter v0.87.0
+  runs the node-spelled helper and is the test of the host honoring the
+  hook's admission alone (planning pass of 2026-10-20, D5).
 - Releases: this launchpad's releases are named `Launchpad` from WO-009 on,
   continuing the fork's numbering: the next is `Launchpad v0.3.0`, so WO-009
   is classified minor (direction of 2026-10-19, capture SHA-256
@@ -137,14 +142,24 @@ in one short question rather than guessing in either direction.
   the kit carries a target display name, boarded as a blocker that reopens
   when it lands (same direction; planning pass of 2026-10-19, D4; the option
   of a declared release per order from the 2026-10-18 pass, D9, waits on
-  it).
+  it). Starter v0.87.0, taken on 2026-10-20 as update pull request
+  #14, carries the target display name: WO-012 declares the
+  release policy and `DotLn Angular`, so DotLn-Angular's Releases and tags
+  read `DotLn Angular vX.Y.Z` from the first target order that closes after
+  it, and the blocker of 2026-10-19 is lifted (planning pass of 2026-10-20,
+  D2).
 - Pace: on 2026-10-18 the operator said they would wait for the platform's
   pending pull requests, take the starter update in the next planning pass,
   and only then activate more orders (planning pass of 2026-10-18, D4 and
   D6). The 2026-10-19 pass took starter v0.85.0 through update pull request
   #8 and filed WO-011; the operator merges the update and the pass, then
   dispatches `resume: next` on WO-009 (planning pass of 2026-10-19, D1 and
-  D2).
+  D2). On 2026-10-19 and 2026-10-20 the operator merged #9 to #13 and
+  closed WO-009, WO-010, WO-011 and WO-005. The 2026-10-20 pass took starter
+  v0.87.0 through update pull request #14 and filed WO-012;
+  the operator merges the update and the pass, dispatches `resume: next` on
+  WO-012, then opens the UI planning pass that sets WO-006's base and
+  settles the component vendor (planning pass of 2026-10-20, D1, D2 and D7).
 - Harness: Claude Code at the operator's chosen effort; spawned workers at the
   kit's pinned model and effort.
 - No direct quotes: the operator's messages are never quoted in a committed
@@ -160,7 +175,12 @@ in one short question rather than guessing in either direction.
   fork's requests (direction of 2026-10-19, capture SHA-256
   `01b3d03564fe733b600083183008b4fb46ee3350ae33469cd379121cc262a177`); the
   pass writes it in its requests-to-core section and the handoff repeats
-  it.
+  it. The operator restated the preference on 2026-10-20 while the pass that
+  carried core's answers ran (capture SHA-256
+  `08208fab730f8c1311ff8fc53c635d0e7092499f6fc61b647e72c1a1d00d09c3`):
+  each pass ends with a prompt for the next DotLn platform planning pass,
+  and a prompt core wrote a day earlier is read against the current records,
+  not taken as current.
 - Addressing: "you" and "sir" in dialogue; third person in records. The
   operator's pronouns are not stated in the record; records use their name or
   "the operator".

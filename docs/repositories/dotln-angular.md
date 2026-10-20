@@ -100,11 +100,19 @@ an automated reviewer; the final review reads the threads into the order's
 carries the form (update pull request #8 of 2026-10-19); WO-011 declares
 the disposable output the v0.85.0 close deletes and the core-named-tag
 guard, and no target order activates before it merges (a typed hard edge on
-WO-005; planning pass of 2026-10-19, D2). DotLn-Angular declares no target
-release: the kit titles a declared target Release by the registration id and
-the tag, and the operator wants `DotLn Angular`, so the option waits, boarded
-as a blocker, on a target display name in the kit (2026-10-19, D4); the
-release-close policy below records the declared roots.
+WO-005; planning pass of 2026-10-19, D2). DotLn-Angular declared no target
+release while the kit titled a declared target Release by the registration id
+and the tag (2026-10-19, D4); starter v0.87.0 (update pull request
+#14 of 2026-10-20) carries `release.displayName`, and WO-012
+declares the policy and `DotLn Angular` (planning pass of 2026-10-20, D2).
+The same starter admits only the node spelling of the helper for a
+registered target, `node scripts/worktree.mjs publish WO-NNN --target-worktree …`
+run from the launchpad root at the phases that make the draft and closed
+forms legal; raw `git`, `gh` and `npm` forms, the
+`npm run worktree -- publish` spelling included, receive no
+registered-target admission and are left to host permissions. WO-006's draft
+and final publishes use the node spelling. The release-close policy below
+records the declared roots.
 Rules in force, read back on 2026-10-20: the active `main` ruleset targets
 the default branch with no bypass actors. Its `pull_request` rule accepts
 merge commits only, `required_status_checks` requires the `checks` run from
@@ -116,6 +124,24 @@ and [ruleset and repository-setting readbacks](../evidence/WO-010/README.md)
 record the applied policy.
 
 ## Release close
+
+Starter v0.87.0 (update pull request #14, 2026-10-20) adds
+three things this section carries once WO-012 merges: a declared target
+release titled `DotLn Angular <tag>` (the first tag `v0.1.0`) with
+`release.close` in the allowed effects; `baseDisposablePolicy: "judge-only"`,
+under which the close keeps the base checkout's output after the same
+judgment and still refuses undeclared ignored material there; and
+`contributions.operatorAuthor`, the commit identity the kit's publish helper
+exempts from its sign-off rule. The first target close ran on 2026-10-20 for
+WO-005 under the default policy: it deleted `.nx` (119 files), `dist` (10)
+and `node_modules` (37,877) in the target worktree and found nothing to
+delete in the base checkout, which held no ignored file; nothing was
+reinstalled. The v0.87.0 README previews a named starter release through a
+non-tag ref (`git fetch --no-tags upstream refs/tags/vX.Y.Z:refs/upstream-releases/vX.Y.Z`),
+and the local release checks exclude an annotated starter tag by its
+message, so the named-tag deletion step below is no longer needed. Until
+WO-012 merges, the paragraphs below describe the registration as WO-011 left
+it.
 
 WO-011 declares the class's disposable output. `loadConfig` composes it into
 the registration as this sorted list:
@@ -145,9 +171,10 @@ them and record that removal (the 2026-10-19 planning pass §8.2). Local
 material in the base checkout remains the operator's responsibility.
 
 The registration has no `release` key and continues to deny `release.close`.
-Target publication therefore creates no target tag or Release. This is
+Target publication therefore creates no target tag or Release. This was
 boarded pending a kit option that titles the Release `DotLn Angular`;
-the present kit uses the registration id and tag. The planning pass's
+starter v0.85.0 used the registration id and tag, and starter v0.87.0 admits
+the display name WO-012 declares. The planning pass's
 [target-name blocker](../planning/latest-upstream-2026-10-19.md#6-decisions-and-noop-records)
 reopens when that option exists.
 

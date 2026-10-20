@@ -29,8 +29,9 @@ the last member's pull request.
 | ------ | ------------- | ------------------------------------------ | ------------------------------------------------------------------------------------ |
 | WO-003 | self          | this launchpad's `main` at activation      | registers `dotln-angular`, its class, authority profile, gate, grant and vocabulary |
 | WO-004 | dotln-angular | `bc9133e932a00d33c15bc5289d683b8078f51ee4` | scaffolds the Nx and Angular workspace, tooling, CI and the two documentation roots  |
-| WO-011 | self          | this launchpad's `main` after update #8    | declares the class's disposable output and the tag guard the v0.85.0 close needs; no target release until the kit can name one |
+| WO-011 | self          | this launchpad's `main` after update #8    | declares the class's disposable output and the tag guard the v0.85.0 close needs; the target release waited on the kit's display name |
 | WO-005 | dotln-angular | `651d76ff68e9b3a38fe770226deb634bca28b54c` | foundation libraries: core, utils, i18n, the test-kit convention; base set 2026-10-18 |
+| WO-012 | self          | this launchpad's `main` after update #14 | declares the target release policy and the name `DotLn Angular`, the judge-only base checkout and the operator's commit identity that starter v0.87.0 admits |
 | WO-006 | dotln-angular | provisional; set when WO-005 merges        | the component taxonomy, PrimeNG behind wrappers, the shell layout, the home feature  |
 | WO-007 | dotln-angular | provisional; set when WO-006 merges        | events, signal stores, call state, data access, MSW, navigation and flags            |
 | WO-008 | dotln-angular | provisional; set when WO-007 merges        | authentication and permissions, legitimate from the Angular side                     |
@@ -61,7 +62,12 @@ publication read the registration from `main`. WO-011, a self order,
 precedes WO-005 by a typed hard edge: starter v0.85.0's release close
 deletes the class's declared disposable output and refuses an undeclared
 ignored base file, so the declaration lands first (planning pass of
-2026-10-19, D2). No two members run side by
+2026-10-19, D2). WO-012, a self order, precedes WO-006 the same way: starter
+v0.87.0 reads the target's release policy, display name and base-checkout
+policy from this launchpad's `main` at the close, so WO-012 lands them
+before WO-006 activates, and the UI planning pass that sets WO-006's base
+adds the typed edge and the `Target release classification` header
+(planning pass of 2026-10-20, D2 and D7). No two members run side by
 side: every member edits `nx.json`, `tsconfig.base.json`, the ESLint
 configuration and the generator log, so their surfaces overlap. A member that
 needs something a later member delivers (WO-006's facade needs WO-007's
@@ -152,7 +158,14 @@ an order's recorded decision, never silently.
 13. **Lint and TypeScript.** ESLint flat config with angular-eslint, Prettier,
     `.editorconfig`. `no-unused-vars` warns, with an underscore prefix as the
     opt-out. TypeScript hacks and disabled lint or compiler settings are for
-    extreme cases only and each carries a comment naming the case.
+    extreme cases only and each carries a comment naming the case. Helper
+    type aliases (`Predicate<T>`, `Guard<T>` and the like) are declared
+    once per library, in a `types.ts` exported through `public_api.ts`
+    where public, and promoted to `utils` when a second library needs one;
+    a house check that lists a type alias or interface name declared in more
+    than one file under `libs/shared`, run by `tools:lint`, lands with the
+    first order that edits the lint rules (WO-005-D022; planning pass of
+    2026-10-20).
 14. **Vendors behind wrappers.** A third-party UI library is imported only
     inside `wrappers/` directories (and the theme setup in `ui`); lint refuses
     it elsewhere. A wrapper standardizes the vendor API to the house API and
@@ -162,7 +175,10 @@ an order's recorded decision, never silently.
     `events`, `models`, `core`, `util`. `state` on `events`, `models`, `core`,
     `util`. `ui` on `util`, `i18n`, `models`. `auth` on `data-access`,
     `events`, `models`, `core`, `util`. `events` on `models`, `util`. `core`
-    and `i18n` on `util` and `models`. `util` on `util`. `models` on nothing.
+    on `i18n`, `util` and `models`; `i18n` on `util` and `models`, never
+    on `core` (WO-005-D001: the application adapter `provideDotlnI18n()`
+    lives in `core` and reads core's tokens, while reusable translation
+    behavior stays in `i18n`). `util` on `util`. `models` on nothing.
     `scope:shared` is importable by every scope; `scope:<app>` only by that
     app and its own libraries.
 16. **Action hygiene.** Tiers: `ui` (one group per screen, unique events),
@@ -291,14 +307,15 @@ lint globs).
 
 | Member | State    | Evidence                              |
 | ------ | -------- | ------------------------------------- |
-| WO-003 | proposed | filed by the 2026-10-18 planning pass |
-| WO-004 | proposed | filed by the 2026-10-18 planning pass |
-| WO-011 | proposed | [configuration, tag guard and gate evidence](../evidence/WO-011/README.md) (`docs/evidence/WO-011/`) |
-| WO-005 | proposed | filed by the 2026-10-18 planning pass |
-| WO-006 | proposed | filed by the 2026-10-18 planning pass |
+| WO-003 | merged   | closed 2026-10-18; [evidence](../evidence/WO-003/README.md) |
+| WO-004 | merged   | closed 2026-10-18; [evidence](../evidence/WO-004/README.md) |
+| WO-011 | merged   | merged as #12 and released as Launchpad v0.3.2 on 2026-10-20; [configuration, tag guard and gate evidence](../evidence/WO-011/README.md) (`docs/evidence/WO-011/`) |
+| WO-005 | merged   | merged in DotLn-Angular as #3 and its records as #13 on 2026-10-20; the first draft-at-verified publish and the first target close; [evidence](../evidence/WO-005/README.md) |
+| WO-012 | proposed | filed by the 2026-10-20 planning pass; evidence will land under `docs/evidence/WO-012/` |
+| WO-006 | proposed | filed by the 2026-10-18 planning pass; its base, vendor and release header are set by the UI planning pass |
 | WO-007 | proposed | filed by the 2026-10-18 planning pass |
 | WO-008 | proposed | filed by the 2026-10-18 planning pass |
 
 <!-- dotln-workstream:start -->
-{ "id": "WS-001", "members": [{ "workOrderId": "WO-003", "repositoryId": "self" }, { "workOrderId": "WO-004", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-011", "repositoryId": "self" }, { "workOrderId": "WO-005", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-006", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-007", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-008", "repositoryId": "dotln-angular" }], "edges": [{ "from": "WO-003", "to": "WO-004", "relation": "hard" }, { "from": "WO-004", "to": "WO-005", "relation": "hard" }, { "from": "WO-011", "to": "WO-005", "relation": "hard" }, { "from": "WO-005", "to": "WO-006", "relation": "hard" }, { "from": "WO-006", "to": "WO-007", "relation": "hard" }, { "from": "WO-007", "to": "WO-008", "relation": "hard" }] }
+{ "id": "WS-001", "members": [{ "workOrderId": "WO-003", "repositoryId": "self" }, { "workOrderId": "WO-004", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-011", "repositoryId": "self" }, { "workOrderId": "WO-005", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-012", "repositoryId": "self" }, { "workOrderId": "WO-006", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-007", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-008", "repositoryId": "dotln-angular" }], "edges": [{ "from": "WO-003", "to": "WO-004", "relation": "hard" }, { "from": "WO-004", "to": "WO-005", "relation": "hard" }, { "from": "WO-011", "to": "WO-005", "relation": "hard" }, { "from": "WO-005", "to": "WO-006", "relation": "hard" }, { "from": "WO-006", "to": "WO-007", "relation": "hard" }, { "from": "WO-007", "to": "WO-008", "relation": "hard" }] }
 <!-- dotln-workstream:end -->
