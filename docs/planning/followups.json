@@ -725,6 +725,36 @@
           "at": "2026-10-19T15:16:27.297Z"
         }
       ]
+    },
+    {
+      "id": "FUP-53f596d1a9e029f1",
+      "key": "decision:docs/evidence/WO-011/decisions.md#wo-011-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a2c22dc0e335b7b4d7885bd28b7764e0ed2ff57e4622975f5a755e75a4e4f718",
+          "ref": "docs/evidence/WO-011/decisions.md#wo-011-d007",
+          "title": "WO-011-D007: The next planning pass that edits WS-001, at the latest the pass after WO-005 that planning decision D6 schedules: set WO-011's delivery state from its merge, and either add to WS-001…",
+          "summary": "{ \"id\": \"WO-011-D007\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: verify; dispose the planning receipt's known issues for WO-011\", \"decision\": \"Record criterion 4 as met and dispose the planning receipt's six known issues for WO-011. The criterion-4 issue's reopening condition occurs with that record: step 6 keeps WS-001's WO-011 delivery-state row at proposed, and WS-001 states what the close does (its dependency paragraph) and that no target release is declared until the kit can name one (its member row), but not that WO-005's draft publish is the first live observation of the kit's admission, which only the profile's Release close section states. The executor met the planning pass's carry",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-3875e6d408c74d3d",
+      "key": "decision:docs/evidence/WO-011/decisions.md#wo-011-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a293a84d5761a787e40be34796ff912516b17578f19595321b5f5ad5362d7a32",
+          "ref": "docs/evidence/WO-011/decisions.md#wo-011-d009",
+          "title": "WO-011-D009: The next planning pass that edits docs/operator/README.md or amends WO-005 (section 8.2 of the 2026-10-19 planning document already assigns WO-005 an amendment): restate the Manual steps…",
+          "summary": "{ \"id\": \"WO-011-D009\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: final review; board a finding outside the order's criteria and surfaces\", \"decision\": \"Board, without repairing it in this order, two planning-owned records that still assign work to the upgrade order, which the 2026-10-19 planning document's section 9 identifies as WO-011. The operator record's Manual steps preference says the operator's interim autoMode.environment entries are removed once that order shows the kit's admission carries the push, and WO-005's Design boards a registration-side Angular cache setting for that order. WO-011 runs no live episode and precedes WO-005, so it can do neither: planning decision D6 keeps t",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

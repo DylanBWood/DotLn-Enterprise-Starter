@@ -6,7 +6,7 @@
 
 - [x] [WO-009] — Name this launchpad's releases Launchpad · **final-reviewed**
 - [x] [WO-010] — Protect main in both repositories · **final-reviewed**
-- [ ] [WO-011] — Take starter v0.85.0 into the registration · **queued**
+- [x] [WO-011] — Take starter v0.85.0 into the registration · **final-reviewed**
 - [ ] [WO-005] — Foundation libraries: core, utils, i18n, test kits · **queued**
 - [ ] [WO-006] — Component taxonomy, shell layout and the home feature · **queued**
 - [ ] [WO-007] — Events, signal stores, data access and MSW · **queued**
@@ -28,23 +28,6 @@ None.
 
 ## Open
 
-### WO-011
-
-[WO-011 — Take starter v0.85.0 into this instance's configuration: declare DotLn-Angular's disposable build output for the kit's release close, keep core-named tags off this fork, run the v0.85.0 gates on the merged records, and record how the first draft publish observes the kit's admission (version assigned at activation)](WO-011-starter-v0.85.0-registration.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: none declared.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: machinery
-- Cost: adds one &#96;disposable&#96; list to &#96;dotln.config.json&#96; (about 200 bytes), one Git remote setting in the main clone (&#96;remote.upstream.tagOpt&#96;), a &#96;## Release close&#96; section in &#96;docs/repositories/dotln-angular.md&#96;, a delivery-state row in WS-001 and this order's evidence. Removes nothing tracked; the setting stops &#96;git fetch upstream&#96; from fetching the starter's core-named tags. Wall-clock: about 30 to 60 minutes of executor work plus the fixed cycle (activation, verification, final review, release close); unknown until run. Context bytes: the 2026-10-19 planning document §4 and §6, the README §Taking upstream updates, core's v0.85.0 release notes §Read before upgrading, &#96;scripts/lib/config.mjs&#96; §classes, this order, about 60 KB. Commands added: none. Tokens: unknown until run. Steps: 9. Re-mints: none; no registered evidence source, feedback source or machinery suite source is edited, so &#96;npm test&#96; is the product gate.
-- Authority: [docs/work-orders/WO-011-starter-v0.85.0-registration.md](WO-011-starter-v0.85.0-registration.md)
-
 ### WO-005
 
 [WO-005 — Foundation libraries for DotLn-Angular: &#96;core&#96; (the typed environment with its production file replacement and &#96;.env&#96; primer, injection tokens, paths and canonical routes, the base-path token, provider composition), &#96;utils&#96; (the &#96;R&#96; and &#96;RA&#96; namespaces with composition typing and ported specs), &#96;i18n&#96; (Transloco with the house &#96;t&#96; pipe), the test-kit convention through secondary entry points, and the proxy configuration](WO-005-foundation-libraries.md)
@@ -52,8 +35,8 @@ None.
 - State: draft.
 - Repository: dotln-angular @ 651d76ff68e9b3a38fe770226deb634bca28b54c.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-011.
-- References: WO-004: hard (met) — the scaffolded workspace this order adds libraries to; the base line names its merge commit; WO-011: hard (unmet) — the class's disposable declaration this order's release close needs under starter v0.85.0, and the core-named-tag guard.
+- Dependencies: typed; dependency-ready.
+- References: WO-004: hard (met) — the scaffolded workspace this order adds libraries to; the base line names its merge commit; WO-011: hard (met) — the class's disposable declaration this order's release close needs under starter v0.85.0, and the core-named-tag guard.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
