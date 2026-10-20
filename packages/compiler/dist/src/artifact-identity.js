@@ -1,7 +1,7 @@
 import { canonicalStringify, fnv1a64 } from "./normalize.js";
 // Source constant, checked against package.json in the executable evidence.
 // Reading a package manifest at runtime would introduce I/O into compilation.
-export const COMPILER_PACKAGE_VERSION = "0.27.1";
+export const COMPILER_PACKAGE_VERSION = "0.28.0";
 export const COMPONENT_DEFINITION_HASH_SCHEME = "dotln-component-definition-fnv1a64-v1";
 export const COMPONENT_DEFINITION_DOMAIN = "dotln:component-definition:v1";
 /** The definition must come from normalizeLoadoutGraph, not a source view. */

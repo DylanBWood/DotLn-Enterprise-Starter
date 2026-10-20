@@ -79,7 +79,7 @@ test("WO-179 and WO-195 emitted roles carry their assigned corrections across su
                     assert.equal(role.contents.split(rule).length - 1, 1, `${subject}: assigned rule ${rule}`);
                 if (role.path.endsWith("dotln-release-close/SKILL.md")) {
                     assert.match(role.contents, /Run the printed helper command exactly as printed, with no redirect, prefix, cd or pipe/, subject);
-                    assert.match(role.contents, /The close is done when the tag and Release exist, git worktree list shows no worktree for the order, its directory is gone and git branch --list wo-NNN is empty/, subject);
+                    assert.match(role.contents, /The close is done when the tag and Release exist, git worktree list shows no worktree for the order, its directory is gone, git branch --list wo-NNN is empty and no starter-refresh blocker remains/, subject);
                     assert.match(role.contents, /Diagnose and finish a cleanup blocker in this session; retry by re-running the same command, which re-checks an existing Release and never publishes twice/, subject);
                     assert.match(role.contents, /Retry a host denial of the exact command once through the host permission flow before handing the operator the printed command for !/, subject);
                     assert.match(role.contents, /The close removes any scratch repository still present and records its path, head commit and whether a remote held it; intake and declared submodules stay, and an operator word through --material preserves a scratch repository; never force teardown/, subject);
