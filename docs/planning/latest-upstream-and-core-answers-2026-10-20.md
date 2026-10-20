@@ -414,9 +414,16 @@ the frozen order's authority is a carry-in for its decisions and evidence.
   operator's direction of 2026-10-17 that tagging stays with them, and
   criterion 5 keeps the file out of WO-012's diff. The amending pass scopes
   the grant into WO-012 (the file is an instance seed, outside the kit) and
-  criterion 5, on the operator's word that the kit tags and releases
-  DotLn-Angular, which their direction of 2026-10-19 to name those releases
-  `DotLn Angular` implies but does not state; the handoff asks. The
+  criterion 5 under the operator's direction of 2026-10-19 (capture SHA-256
+  `01b3d03564fe733b600083183008b4fb46ee3350ae33469cd379121cc262a177`),
+  which already settles it: the releases are named `DotLn Angular`, and the
+  kit makes them once it can name them, so the grant follows from the
+  direction and no new word is asked; the 2026-10-17 note in the grant's
+  reason predates that direction and is superseded by it. The handoff of
+  this pass asked the operator a question the record had answered, which the
+  operator corrected on 2026-10-20 (captured verbatim in ignored intake,
+  `docs/intake/notes/planning-latest-upstream-and-core-answers-2026-10-20-corrections.md`,
+  SHA-256 `ed22827f76b72eeb7d52ba7802e1b8ad8ab8cbecf9bd01153517ab4f94384cb6`). The
   alternative the refuter names, declaring only `contributions.operatorAuthor`
   now and the release policy, the grant and the first header together in the
   order that first releases, is weighed by that pass.
