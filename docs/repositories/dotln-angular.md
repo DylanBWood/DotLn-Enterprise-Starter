@@ -77,8 +77,8 @@ guard, and no target order activates before it merges (a typed hard edge on
 WO-005; planning pass of 2026-10-19, D2). DotLn-Angular declares no target
 release: the kit titles a declared target Release by the registration id and
 the tag, and the operator wants `DotLn Angular`, so the option waits, boarded
-as a blocker, on a target display name in the kit (2026-10-19, D4); WO-011's
-write-back adds the `## Release close` section with the declared roots.
+as a blocker, on a target display name in the kit (2026-10-19, D4); the
+release-close policy below records the declared roots.
 Rules in force, read back on 2026-10-20: the active `main` ruleset targets
 the default branch with no bypass actors. Its `pull_request` rule accepts
 merge commits only, `required_status_checks` requires the `checks` run from
@@ -88,6 +88,62 @@ DotLn-Angular automatically deletes a pull request's head branch on merge.
 The [active branch rules](../evidence/WO-010/readback-dotln-angular.json)
 and [ruleset and repository-setting readbacks](../evidence/WO-010/README.md)
 record the applied policy.
+
+## Release close
+
+WO-011 declares the class's disposable output. `loadConfig` composes it into
+the registration as this sorted list:
+
+```json
+[".angular",".nx","__screenshots__","coverage","dist","node_modules","out-tsc","playwright-report","test-output","test-results","tmp"]
+```
+
+Starter v0.85.0 deletes ignored files beneath these paths in both the target
+worktree and the clone's base checkout at close, without moving them to
+scratch. The base checkout consequently needs `npm ci` again before use
+after its dependencies are deleted; its build caches must also regenerate.
+The match is relative to each checkout, not a directory-name glob:
+`test-output/result.json` is covered, while
+`apps/example/test-output/result.json` is not. The merged scaffold's build
+and Nx Playwright preset use paths under root `dist`; a later generator or
+configuration that introduces nested output must identify its exact path
+before extending the declaration. Never declare `apps/` or `libs/` as
+disposable.
+
+`.env`, `.env.*` and
+`apps/dotln/src/environments/environment.local.ts` remain undeclared.
+An undeclared ignored file refuses close; the base refusal may name only
+its top-level directory. WO-005's sessions remove the two generated local
+environment files from its target worktree after the checks that create
+them and record that removal (the 2026-10-19 planning pass §8.2). Local
+material in the base checkout remains the operator's responsibility.
+
+The registration has no `release` key and continues to deny `release.close`.
+Target publication therefore creates no target tag or Release. This is
+boarded pending a kit option that titles the Release `DotLn Angular`;
+the present kit uses the registration id and tag. The planning pass's
+[target-name blocker](../planning/latest-upstream-2026-10-19.md#6-decisions-and-noop-records)
+reopens when that option exists.
+
+The launchpad clone's shared Git configuration sets
+`remote.upstream.tagOpt` to `--no-tags`; this is local to that clone and is
+not transmitted by its pull request. Ordinary upstream fetches therefore
+do not follow the starter's tags. An explicit named-tag preview still
+creates its requested tag: for example, fetch with
+`git fetch --no-tags upstream tag v0.85.0`, run that release's preview, then
+delete that preview tag with `git tag -d v0.85.0`. Keep starter/core tags off this
+fork's `origin`. The readbacks are in
+[WO-011 evidence](../evidence/WO-011/README.md).
+
+WO-005's verified-phase draft publish is the first live observation of the
+kit's publication admission. Its session records the hook's decision from
+the session journal, whether the host prompted, and which interim trust
+entries were present. Under the 2026-10-19 planning decision D6 those entries
+stay for WO-005. An admitted hook decision is followed by a planning pass
+asking the operator to remove them; WO-006's draft then tests whether the
+host honors that admission without the entries. A prompt or denial there
+reopens the literal-host-rules fallback through a self order. WO-011 runs
+no live episode and makes no host-qualification claim.
 
 ## Demonstrated architecture
 

@@ -1,4 +1,4 @@
-# WO-011 — Take starter v0.85.0 into this instance's configuration: declare DotLn-Angular's disposable build output for the kit's release close, keep core-named tags off this fork, run the v0.85.0 gates on the merged records, and record how the first draft publish observes the kit's admission (version assigned at activation)
+# WO-011 — Register the merged starter update: declare DotLn-Angular disposable output, guard upstream tags, verify the instance and record the first draft-publish observation (v0.3.2)
 
 **Model:** any capable model; state the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -209,7 +209,7 @@ beside the six structural checks every selection runs), then
 1. The step 2 readback prints exactly
    `[".angular",".nx","__screenshots__","coverage","dist","node_modules","out-tsc","playwright-report","test-output","test-results","tmp"]`
    and then `no-release`, and `git diff main...HEAD -- dotln.config.json`
-   adds the one `disposable` key and removes nothing.
+   adds the one `disposable` key and removes no existing key or value.
 2. `git config --get remote.upstream.tagOpt` prints `--no-tags`,
    `git tag --list v0.85.0` prints nothing, and
    `git ls-remote --tags origin refs/tags/v0.85.0` prints nothing.
@@ -221,8 +221,9 @@ beside the six structural checks every selection runs), then
    1, `grep -c '__screenshots__' docs/repositories/dotln-angular.md` is at
    least 1, and `grep -c 'WO-011' docs/workstreams/WS-001-dotln-angular.md`
    is at least 4.
-5. `git diff --name-only main...HEAD` lists `dotln.config.json`, this order
-   and files under `docs/` only.
+5. `git diff --name-only main...HEAD` lists `dotln.config.json`, the generated
+   release-version claim in `README.md`, this order and files under `docs/`
+   only.
 6. `npm test` and `npm run test:docs` pass at the final identity, and the
    Preflight suites passed before the full run.
 

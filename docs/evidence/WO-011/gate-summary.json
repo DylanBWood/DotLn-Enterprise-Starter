@@ -1,0 +1,83 @@
+{
+  "checkId": "npm test",
+  "codeIdentity": "ea976e67e7a0c819bf24e9060e0a94acf2c17105a1cf807ea864a66cdba58f99",
+  "treeHash": "efeccb17775c96400b29cc443e96ca99c4a3b393",
+  "gateSelection": "review",
+  "durationMs": 11557,
+  "exitCode": 0,
+  "recordedAt": "2026-10-20T12:47:08.018Z",
+  "executed": true,
+  "identityUnchanged": true,
+  "freshSuites": 7,
+  "reusedSuites": 0,
+  "requiredSuites": [
+    "kit-verify",
+    "format",
+    "configuration-root",
+    "registrations",
+    "declarations",
+    "generated",
+    "host"
+  ],
+  "unrunSuites": [],
+  "evidenceRef": "host-gate:ea976e67e7a0c819bf24e9060e0a94acf2c17105a1cf807ea864a66cdba58f99:npm test",
+  "cases": [
+    {
+      "name": "kit-verify",
+      "exitCode": 0,
+      "durationMs": 104,
+      "executed": true
+    },
+    {
+      "name": "format",
+      "exitCode": 0,
+      "durationMs": 3140,
+      "executed": true
+    },
+    {
+      "name": "configuration-root",
+      "exitCode": 0,
+      "durationMs": 5293,
+      "executed": true
+    },
+    {
+      "name": "registrations",
+      "exitCode": 0,
+      "durationMs": 72,
+      "executed": true
+    },
+    {
+      "name": "declarations",
+      "exitCode": 0,
+      "durationMs": 230,
+      "executed": true
+    },
+    {
+      "name": "generated",
+      "exitCode": 0,
+      "durationMs": 2334,
+      "executed": true
+    },
+    {
+      "name": "host",
+      "exitCode": 0,
+      "durationMs": 60,
+      "executed": true
+    }
+  ],
+  "documentEvidenceRun": {
+    "checkId": "npm run test:docs",
+    "codeIdentity": "ea976e67e7a0c819bf24e9060e0a94acf2c17105a1cf807ea864a66cdba58f99",
+    "treeHash": "400406e63230df445a2681e4c533120729768bed",
+    "gateSelection": "document",
+    "durationMs": 787204,
+    "exitCode": 0,
+    "recordedAt": "2026-10-20T13:01:48.844Z",
+    "freshSuites": 14,
+    "unrunSuites": [],
+    "identityUnchanged": true,
+    "evidenceRef": "host-gate:ea976e67e7a0c819bf24e9060e0a94acf2c17105a1cf807ea864a66cdba58f99:npm run test:docs",
+    "initialHostLaneWaitMs": 773351,
+    "note": "Verbatim output is filed; the final document row after that attachment is consumed by implementation-ready."
+  }
+}
