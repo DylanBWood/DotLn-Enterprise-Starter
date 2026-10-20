@@ -588,7 +588,7 @@ merged on three links to WO-005's `decisions.md`, which its records commit
 moved into the target; the three links are declared historical in
 `docs/control/doc-baseline.json` as WO-004's were. The document gate at
 v0.85.0 before the receipt: 12 passed, 2 failed (the two plan checks, which
-need the receipt). After the receipt: TESTDOCS_AFTER.
+need the receipt). After the receipt and the known-issues record: 14 passed, 0 failed, 13.16 s; the handoff run is in the pull request.
 
 Refutation: one fresh `dotln-worker` (`claude-opus-5-5` by its definition
 and the host's system prompt; the host context reported a reasoning-effort
