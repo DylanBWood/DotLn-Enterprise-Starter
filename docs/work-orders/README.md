@@ -7,7 +7,7 @@
 - [x] [WO-009] — Name this launchpad's releases Launchpad · **final-reviewed**
 - [x] [WO-010] — Protect main in both repositories · **final-reviewed**
 - [x] [WO-011] — Take starter v0.85.0 into the registration · **final-reviewed**
-- [ ] [WO-005] — Foundation libraries: core, utils, i18n, test kits · **queued**
+- [x] [WO-005] — Foundation libraries: core, utils, i18n, test kits · **final-reviewed**
 - [ ] [WO-006] — Component taxonomy, shell layout and the home feature · **queued**
 - [ ] [WO-007] — Events, signal stores, data access and MSW · **queued**
 - [ ] [WO-008] — Authentication and permissions · **queued**
@@ -28,24 +28,6 @@ None.
 
 ## Open
 
-### WO-005
-
-[WO-005 — Foundation libraries for DotLn-Angular: &#96;core&#96; (the typed environment with its production file replacement and &#96;.env&#96; primer, injection tokens, paths and canonical routes, the base-path token, provider composition), &#96;utils&#96; (the &#96;R&#96; and &#96;RA&#96; namespaces with composition typing and ported specs), &#96;i18n&#96; (Transloco with the house &#96;t&#96; pipe), the test-kit convention through secondary entry points, and the proxy configuration](WO-005-foundation-libraries.md)
-
-- State: draft.
-- Repository: dotln-angular @ 651d76ff68e9b3a38fe770226deb634bca28b54c.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-004: hard (met) — the scaffolded workspace this order adds libraries to; the base line names its merge commit; WO-011: hard (met) — the class's disposable declaration this order's release close needs under starter v0.85.0, and the core-named-tag guard.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh; reviewer xhigh.
-- Track: delivery
-- Cost: adds three libraries under &#96;libs/shared/&#96; with their &#96;testing&#96; entry points, the environment files and primer, the proxy configuration, the lint rules for tokens and &#96;#private&#96;, three check scripts under &#96;tools/scripts/&#96;, &#96;THIRD-PARTY-NOTICES.md&#96;, about 45 source files; adds &#96;ramda&#96;, &#96;ramda-adjunct&#96;, &#96;@types/ramda&#96;, &#96;@jsverse/transloco&#96; and &#96;dotenv&#96; to the workspace. Removes the placeholder page's inline strings (moved to &#96;en.json&#96;). Wall-clock: about 4 to 6 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001, the generator log, this order, the Transloco and Ramda type declarations, about 80 KB. Commands added in the target: &#96;npm run env:prime&#96;, &#96;npm run i18n:check&#96;, &#96;npm run check:templates&#96;, &#96;npm run check:tokens&#96;, &#96;npm run check:kits&#96;. Tokens: unknown until run. Steps: 15. Re-mints: none.
-- Authority: [docs/work-orders/WO-005-foundation-libraries.md](WO-005-foundation-libraries.md)
-
 ### WO-006
 
 [WO-006 — The component taxonomy made real in DotLn-Angular: &#96;ui&#96; with fragments, templates, wrappers over the operator-confirmed vendor and shared composites, the lint rules that enforce the roles by location, the &#96;dotln&#96; shell layout, and the &#96;home&#96; feature with its composites, layout, mapper, container and facade behind a lazy route, with accessibility checks in e2e](WO-006-component-taxonomy-shell-home.md)
@@ -53,8 +35,8 @@ None.
 - State: draft.
 - Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-005.
-- References: WO-005: hard (unmet) — the foundation libraries every component here imports; the base line is set to its merge commit before activation.
+- Dependencies: typed; dependency-ready.
+- References: WO-005: hard (met) — the foundation libraries every component here imports; the base line is set to its merge commit before activation.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

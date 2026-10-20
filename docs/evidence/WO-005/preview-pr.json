@@ -1,0 +1,101 @@
+{
+  "capturedAt": "2026-10-20T16:34:45.076Z",
+  "pullRequest": {
+    "baseRefName": "main",
+    "createdAt": "2026-10-20T15:45:04Z",
+    "headRefName": "feat/foundation-libraries",
+    "headRefOid": "5085137a5a4c5787ee44939a7f66113db63b1e76",
+    "isDraft": true,
+    "mergeable": "MERGEABLE",
+    "number": 3,
+    "state": "OPEN",
+    "title": ":sparkles: feat: add the core, utils and i18n foundation libraries",
+    "updatedAt": "2026-10-20T15:45:21Z",
+    "url": "https://github.com/DylanBWood/DotLn-Angular/pull/3"
+  },
+  "draft": {
+    "headSha": "5085137a5a4c5787ee44939a7f66113db63b1e76",
+    "verifiedTree": "76cead3ad2a501eebc09b7bef926bce496fa655e",
+    "publishedBy": "the VER-001 session after verification-result pass (WO-005-D015)",
+    "readBy": "the final-review session, 2026-10-20, before and after the operator's read"
+  },
+  "workflowRuns": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-20T15:45:08Z",
+      "databaseId": 39451306581,
+      "event": "pull_request",
+      "headSha": "5085137a5a4c5787ee44939a7f66113db63b1e76",
+      "name": "Pull request title",
+      "status": "completed",
+      "updatedAt": "2026-10-20T15:45:25Z",
+      "url": "https://github.com/DylanBWood/DotLn-Angular/actions/runs/39451306581",
+      "workflowName": "Pull request title"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-20T15:45:08Z",
+      "databaseId": 39451306390,
+      "event": "pull_request",
+      "headSha": "5085137a5a4c5787ee44939a7f66113db63b1e76",
+      "name": "CI",
+      "status": "completed",
+      "updatedAt": "2026-10-20T15:47:03Z",
+      "url": "https://github.com/DylanBWood/DotLn-Angular/actions/runs/39451306390",
+      "workflowName": "CI"
+    }
+  ],
+  "reviewThreads": [],
+  "reviews": [],
+  "issueComments": [],
+  "automatedReview": "none ran on this pull request: the repository's run list shows a Running Copilot Code Review run only for draft #1 (wo-004, 2026-10-18); #2 and #3 had none. Whether an automated reviewer runs is a repository setting the operator owns; recorded as an observation, not a finding of this order.",
+  "operatorItems": {
+    "source": "the operator read draft #3 in the final-review session on 2026-10-20 and raised three non-blocking findings in the session, paraphrased in WO-005-D020 to D022",
+    "capture": "docs/intake/notes/wo005-final-review-steering-2026-10-20.md",
+    "captureSha256": "e2a8222b359c03d17c0f6536ddef1c009c2d07e6218c90168640d9a4a32e8884",
+    "count": 3
+  },
+  "routing": [
+    {
+      "item": "operator:1",
+      "subject": "inline component templates should open with a newline after the backtick and close with the backtick on its own line",
+      "route": "follow-up",
+      "class": "new-scope",
+      "target": "WO-005-D020",
+      "reason": "A formatting convention outside the order's Design; Prettier 3.9.10 already preserves that form once the newlines are present, so the follow-up is the rule that requires them."
+    },
+    {
+      "item": "operator:2",
+      "subject": "imports in three sections: Angular and third-party, @dotln-angular aliases, relative with the furthest parent first",
+      "route": "follow-up",
+      "class": "new-scope",
+      "target": "WO-005-D021",
+      "reason": "A lint convention outside the order's Design; no import-ordering rule is installed, so it is an autofixable rule plus a fixture for the next planning pass or repair."
+    },
+    {
+      "item": "operator:3",
+      "subject": "helper type aliases such as Predicate<T> declared once per library at most, with ideas welcome",
+      "route": "follow-up",
+      "class": "new-scope",
+      "target": "WO-005-D022",
+      "reason": "Today each helper alias is declared once; the convention and its check are new scope for the planning route, with the options recorded."
+    }
+  ],
+  "finalReviewRepairs": [
+    {
+      "finding": "VER-001 F3",
+      "decision": "WO-005-D017",
+      "summary": "host page title restored; template check inspects component templates only"
+    },
+    {
+      "finding": "VER-001 F5",
+      "decision": "WO-005-D018",
+      "summary": "developer index and generator log refreshed"
+    },
+    {
+      "finding": "VER-001 F6",
+      "decision": "WO-005-D019",
+      "summary": "prebundling loss named in the cache finding"
+    }
+  ]
+}
