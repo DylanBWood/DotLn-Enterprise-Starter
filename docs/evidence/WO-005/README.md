@@ -120,3 +120,31 @@ The UI direction is recorded as follow-up `FUP-6d2755b3ac7c8ab9`, assigned to
 the next UI planning pass before WO-006. It calls for reconciling current
 PrimeNG licensing and the operator's house-component preference, evaluating
 Angular Aria and amending the judged UI plan through the planning route.
+
+## Final publish
+
+The kit's final target publish (`worktree publish WO-005 --target-worktree`)
+refused the reviewed series at the outward lint before any push: the subject
+of the final review's documentation commit `2e983e8ad40252b90453b5b03ae65f7f49525df5`
+is 90 characters and the lint's limit is 72. The final-review pass event binds
+that commit, the records commit `0a49df59b795a35727e8c293f2da63f7221a184c`
+has it as its parent, and the `closed` phase admits no correction of the
+reviewed commit, so the kit route could not complete for this series.
+
+The operator chose to publish the recorded series as it is, by hand, on
+2026-10-20, by running the three commands the final review proposed. Their
+first push ran from the launchpad worktree, whose `origin` is the launchpad
+fork, and was rejected by the lease with nothing pushed there; the pull-request
+edit (final title and the reviewed body) and the ready step succeeded. The
+session then pushed from the target worktree under the lease on the draft head:
+a fast-forward `5085137a..0a49df59` to `feat/foundation-libraries`, so pull
+request #3 carries the three reviewed commits and the records commit. The
+instance records branch had already been published through the kit route as
+pull request #13 on the launchpad fork.
+
+Two consequences stay recorded here: the kit's target publication store still
+holds the draft record (head `5085137a`), and the published body lacks the
+change table and gate section the helper would have appended. The release close
+reads neither. Requests to core from this episode: run the outward lint on the
+reviewed series before `final-review-result` binds the commit, and name the
+72-character subject limit in the reviewer text.
