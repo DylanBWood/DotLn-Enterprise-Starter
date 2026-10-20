@@ -16,6 +16,27 @@
       "reason": "missing file",
       "count": 1,
       "note": "WO-004's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-004/ by target-records (TargetRecordsCommitted, 2026-10-18); the launchpad record keeps its original link; declared by the 2026-10-18 main-rules planning pass (docs/planning/main-rules-and-platform-items-2026-10-18.md §2)."
+    },
+    {
+      "file": "docs/evidence/WO-005/README.md",
+      "href": "decisions.md",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-005's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-005/ by target-records (TargetRecordsCommitted, 2026-10-20); the launchpad record keeps its original link; declared by the 2026-10-20 planning pass (docs/planning/latest-upstream-and-core-answers-2026-10-20.md §15), which found the failure inherited from the #13 merge."
+    },
+    {
+      "file": "docs/evidence/WO-005/handoff.md",
+      "href": "decisions.md",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-005's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-005/ by target-records (TargetRecordsCommitted, 2026-10-20); the launchpad record keeps its original link; declared by the 2026-10-20 planning pass (docs/planning/latest-upstream-and-core-answers-2026-10-20.md §15), which found the failure inherited from the #13 merge."
+    },
+    {
+      "file": "docs/final-reviews/WO-005/RECORDS-PR.md",
+      "href": "../../evidence/WO-005/decisions.md",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-005's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-005/ by target-records (TargetRecordsCommitted, 2026-10-20); the launchpad record keeps its original link; declared by the 2026-10-20 planning pass (docs/planning/latest-upstream-and-core-answers-2026-10-20.md §15), which found the failure inherited from the #13 merge."
     }
   ]
 }

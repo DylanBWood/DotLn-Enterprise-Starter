@@ -4,10 +4,7 @@
 
 ## Proposed order
 
-- [x] [WO-009] — Name this launchpad's releases Launchpad · **final-reviewed**
-- [x] [WO-010] — Protect main in both repositories · **final-reviewed**
-- [x] [WO-011] — Take starter v0.85.0 into the registration · **final-reviewed**
-- [x] [WO-005] — Foundation libraries: core, utils, i18n, test kits · **final-reviewed**
+- [ ] [WO-012] — Register starter v0.87.0: the target release name, the judge-only base checkout, the operator's commit identity · **queued**
 - [ ] [WO-006] — Component taxonomy, shell layout and the home feature · **queued**
 - [ ] [WO-007] — Events, signal stores, data access and MSW · **queued**
 - [ ] [WO-008] — Authentication and permissions · **queued**
@@ -27,6 +24,23 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
+
+### WO-012
+
+[WO-012 — Register starter v0.87.0: name DotLn-Angular's releases &#96;DotLn Angular&#96;, keep the base checkout's output at close, declare the operator's commit identity and verify the instance](WO-012-starter-v0.87.0-registration.md)
+
+- State: draft.
+- Application target: v0.87.0.
+- Dependencies: typed; dependency-ready.
+- References: none declared.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
+- Track: machinery
+- Cost: adds to &#96;dotln.config.json&#96; one &#96;release&#96; object and one &#96;baseDisposablePolicy&#96; key on the &#96;dotln-angular&#96; registration and one top-level &#96;contributions&#96; object (about 300 bytes), moves &#96;release.close&#96; from the registration's denied effects to its allowed effects, rewrites the profile's &#96;## Release close&#96; section, adds WS-001's member and delivery-state rows and this order's evidence. Removes nothing tracked beyond the moved effect. Wall-clock: about 30 to 60 minutes of executor work plus the fixed cycle (activation, verification, final review, release close); unknown until run. Context bytes: the 2026-10-20 planning document §4, §6 and §7, core's v0.87.0 release notes §Read before upgrading (WO-218), &#96;scripts/lib/config.mjs&#96; (&#96;validateRepositoryRelease&#96;, &#96;validateRepositories&#96;, &#96;validateContributions&#96;, &#96;validateHistoricalWorkOrders&#96;), &#96;scripts/lib/contributions.mjs&#96;, &#96;scripts/worktree.mjs&#96; §publish, &#96;scripts/lib/target-worktree-close.mjs&#96;, this order, about 80 KB. Commands added: none. Tokens: unknown until run. Steps: 9. Re-mints: none; no registered evidence source, feedback source or machinery suite source is edited, so &#96;npm test&#96; is the product gate.
+- Authority: [docs/work-orders/WO-012-starter-v0.87.0-registration.md](WO-012-starter-v0.87.0-registration.md)
 
 ### WO-006
 
@@ -82,10 +96,7 @@ None.
 - Cost: adds &#96;libs/shared/auth&#96; with its kit, the mocked identity provider handlers and signing key for development, the &#96;authHttpEvents&#96; and &#96;sessionEvents&#96; groups, guards, the permission directive, the &#96;/login&#96; and &#96;/denied&#96; routes, about 60 source files; adds one OpenID Connect client library and &#96;jose&#96; (development signing in the mock) to the workspace. Removes nothing. Wall-clock: about 8 to 12 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 house rule 17, the events and state documents, the client library's documentation, this order, about 160 KB. Commands added in the target: none. Tokens: unknown until run. Steps: 15. Re-mints: none.
 - Authority: [docs/work-orders/WO-008-authentication-and-permissions.md](WO-008-authentication-and-permissions.md)
 
-[WO-005]: WO-005-foundation-libraries.md
 [WO-006]: WO-006-component-taxonomy-shell-home.md
 [WO-007]: WO-007-events-stores-data-access.md
 [WO-008]: WO-008-authentication-and-permissions.md
-[WO-009]: WO-009-release-display-name.md
-[WO-010]: WO-010-protect-main-both-repositories.md
-[WO-011]: WO-011-starter-v0.85.0-registration.md
+[WO-012]: WO-012-starter-v0.87.0-registration.md

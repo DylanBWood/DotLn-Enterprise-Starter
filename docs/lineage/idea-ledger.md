@@ -4,6 +4,19 @@ Statuses: `adopted`, `preserved`, `raw`, `superseded`, `transformed`, `rejected`
 
 Insert this instance's dated sessions below, newest first.
 
+## 2026-10-20 — planning pass: the latest upstream (starter v0.87.0) and core's answers (operator dispatch of 2026-10-20)
+
+Dispatch: a `planning:` request naming three subjects (a standard pass, the
+latest upstream, core's answers of 2026-10-19 to this fork's requests),
+followed by two clarifications (the pasted answers were written a day earlier
+and may be out of date; the pass ends with a prompt for the next DotLn
+platform planning pass), captured verbatim in ignored intake
+(`docs/intake/notes/planning-latest-upstream-and-core-answers-2026-10-20.md`,
+SHA-256 `08208fab730f8c1311ff8fc53c635d0e7092499f6fc61b647e72c1a1d00d09c3`).
+The record is [the planning document](../planning/latest-upstream-and-core-answers-2026-10-20.md);
+this heading registers the pass for the plan tooling. No idea is ledgered:
+the pass was not an ideation dispatch.
+
 ## 2026-10-19 — planning pass: the latest upstream, starter v0.85.0 (operator dispatch of 2026-10-19)
 
 Dispatch: a `planning:` request for the latest upstream, followed by three

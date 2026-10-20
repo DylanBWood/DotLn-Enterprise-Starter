@@ -604,6 +604,14 @@
           "reopenWhen": "WO-006's draft publish runs with the interim entries absent, or the next planning pass rules on the entries.",
           "targets": [],
           "at": "2026-10-20T16:37:52.758Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "2026-10-20 latest-upstream-and-core-answers planning pass, D5: this pass rules on the entries and asks the operator to remove the two interim autoMode.environment entries of 2026-10-18 and the launchpad-local Bash(node *) allow entry before WO-006's draft publish; the kit side landed with v0.85.0 and v0.87.0 admits only the node spelling of the helper.",
+          "reopenWhen": "WO-006's draft publish runs under the node spelling with the interim entries and the launchpad-local Bash(node *) entry absent, or the operator keeps them (then the test moves to WO-007).",
+          "targets": [],
+          "at": "2026-10-20T20:12:11.730Z"
         }
       ]
     },
@@ -628,6 +636,14 @@
           "reopenWhen": "WO-005's draft publish records that the host did not honor the hook's admission (a prompt or a denial in its decisions); then a self order turns on hostRules literal for dotln-angular.",
           "targets": [],
           "at": "2026-10-19T15:16:27.290Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-20 latest-upstream-and-core-answers planning pass, D5: WO-005's draft publish recorded no prompt and no denial (WO-005-D015), so the literal fallback stays off; at v0.87.0 the fallback writes only the node prefix of the publish helper.",
+          "reopenWhen": "WO-006's draft publish records a host prompt or a HostPermissionDenied row with the interim entries absent; then a self order sets hostRules literal for dotln-angular.",
+          "targets": [],
+          "at": "2026-10-20T20:12:11.736Z"
         }
       ]
     },
@@ -652,6 +668,16 @@
           "reopenWhen": "The kit's registration admits a target display name, or the target Release title reads from a configured name; then a self order declares release.policy declared and moves release.close to the allowed effects, and the base-setting pass adds Target release classification headers to the open target orders.",
           "targets": [],
           "at": "2026-10-19T15:16:27.286Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "2026-10-20 latest-upstream-and-core-answers planning pass, D2: starter v0.87.0 admits repositories.<id>.release.displayName, the reopening condition of the 2026-10-19 pass's D4; WO-012 declares the release policy and DotLn Angular and moves release.close to the allowed effects.",
+          "reopenWhen": "WO-012 merges without the declaration, or the kit's title rule changes before it activates.",
+          "targets": [
+            "WO-012"
+          ],
+          "at": "2026-10-20T20:12:11.726Z"
         }
       ]
     },
@@ -676,6 +702,14 @@
           "reopenWhen": "WO-005's draft publish records the hook's admission honored with the entries absent, or the operator removes them; then the operator record says so and FUP-2479f6d32b2396a8 settles.",
           "targets": [],
           "at": "2026-10-19T15:16:27.294Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-20 latest-upstream-and-core-answers planning pass, D5: the pass asks for the removal of the two interim entries and the launchpad-local Bash(node *) entry before WO-006's verified-phase draft publish; the entries are the operator's host settings, outside every write root.",
+          "reopenWhen": "The operator removes the entries (then the operator record says so and this row and FUP-2479f6d32b2396a8 settle) or keeps them for WO-006.",
+          "targets": [],
+          "at": "2026-10-20T20:12:11.733Z"
         }
       ]
     },
@@ -700,6 +734,14 @@
           "reopenWhen": "WO-005's step 5 records that the setting belongs to the registration's gate argv rather than the target; then a self order edits the registration.",
           "targets": [],
           "at": "2026-10-19T15:16:27.292Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "2026-10-20 latest-upstream-and-core-answers planning pass, D6: WO-005's step 5 and WO-005-D013 place the Angular build cache setting in the target's nx.json (the Angular disk cache disabled, Nx caching kept) and record that no registration argv change is needed; the profile's cache finding carries its own reopening condition.",
+          "reopenWhen": "Angular gains a portable worktree-local cache setting that needs a gate argv, or dev-server rebuild time becomes a concern the registration can address.",
+          "targets": [],
+          "at": "2026-10-20T20:12:11.739Z"
         }
       ]
     },
@@ -731,6 +773,14 @@
           "reopenWhen": "A later kit revision drops or renames a suite an open order's Preflight names, or core declines the check (then this fork's planning pass runs the comparison by hand each time).",
           "targets": [],
           "at": "2026-10-19T15:16:27.297Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "2026-10-20 latest-upstream-and-core-answers planning pass, D3 and section 7 item 3: core allocated the check to its WO-219 (FUP-2304d46e6feb711b); at v0.87.0 --list and --list --review print the same seven suites in this instance and WO-012's tokens were read against them.",
+          "reopenWhen": "A starter release carries core's WO-219 (then this instance's work-orders index --check resolves the tokens itself and this row settles), or core declines the check.",
+          "targets": [],
+          "at": "2026-10-20T20:12:11.741Z"
         }
       ]
     },
@@ -747,7 +797,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-20 latest-upstream-and-core-answers planning pass, D11: WS-001's delivery states now read WO-011 merged as #12 and WO-005 merged with the first draft publish and the first close; the profile's Release close section stays the single home of the first-admission statement, and WS-001's dependency plan names WO-012 as the next self order.",
+          "reopenWhen": "WS-001's delivery-state column or the profile's Release close section is removed or restructured.",
+          "targets": [],
+          "at": "2026-10-20T20:12:11.743Z"
+        }
+      ]
     },
     {
       "id": "FUP-3875e6d408c74d3d",
@@ -762,7 +821,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-20 latest-upstream-and-core-answers planning pass, D8: the operator record's Manual steps preference now states the removal condition as the 2026-10-19 pass's D6 sequence (WO-005's draft observed, the entries removed before WO-006's draft); WO-005 closed on 2026-10-20, so its Design sentence naming the upgrade order is history, and the cache setting it boarded is declined (FUP-4b545ffb6f9dd6e9).",
+          "reopenWhen": "The operator record's Manual steps preference is rewritten without the sequence.",
+          "targets": [],
+          "at": "2026-10-20T20:12:11.747Z"
+        }
+      ]
     },
     {
       "id": "FUP-6d2755b3ac7c8ab9",
@@ -801,7 +869,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-20 latest-upstream-and-core-answers planning pass, section 8: a lint-rules change in DotLn-Angular (prefer-readonly with type information for every app and library file), outside this document-only pass.",
+          "reopenWhen": "The UI planning pass amends WO-006 or an order edits the lint rules.",
+          "targets": [],
+          "at": "2026-10-20T20:12:11.755Z"
+        }
+      ]
     },
     {
       "id": "FUP-83a2838dd2a2a199",
@@ -816,7 +893,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-20 latest-upstream-and-core-answers planning pass, section 8: a utils-library change (the production bundle carrying only the Ramda and Ramda Adjunct modules the used functions need), outside this document-only pass.",
+          "reopenWhen": "The UI planning pass weighs bundle size for WO-006, or a production build budget fails on the utils footprint.",
+          "targets": [],
+          "at": "2026-10-20T20:12:11.761Z"
+        }
+      ]
     },
     {
       "id": "FUP-b1a9d24ace157463",
@@ -862,7 +948,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-20 latest-upstream-and-core-answers planning pass, section 8: a change to the target's structural checks (judge or refuse every form in scope), outside this document-only pass.",
+          "reopenWhen": "An order edits the target's tools/ checks, or a review finds a form a check neither judged nor refused.",
+          "targets": [],
+          "at": "2026-10-20T20:12:11.757Z"
+        }
+      ]
     },
     {
       "id": "FUP-f1894f519161c905",
@@ -939,7 +1034,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-20 latest-upstream-and-core-answers planning pass, D11: WS-001 house rule 15 admits core on i18n, util and models and i18n on util and models, never on core, citing WO-005-D001.",
+          "reopenWhen": "A later order needs i18n to import core, or the dependency constraints are regenerated from another source.",
+          "targets": [],
+          "at": "2026-10-20T20:12:11.749Z"
+        }
+      ]
     },
     {
       "id": "FUP-c647835b8bbaa96f",
@@ -1034,6 +1138,38 @@
           "reopenWhen": "The next planning pass that edits WS-001, or the first order that declares a helper alias a second time.",
           "targets": [],
           "at": "2026-10-20T16:37:52.765Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-20 latest-upstream-and-core-answers planning pass, D11: WS-001 house rule 13 now carries the convention (helper type aliases once per library in a types.ts exported through public_api.ts, promoted to utils when shared); the house check with its fixture is an order's work.",
+          "reopenWhen": "The UI planning pass amends WO-006 or an order edits the lint rules; then the check that lists a type alias or interface name declared in more than one file under libs/shared lands with it.",
+          "targets": [],
+          "at": "2026-10-20T20:12:11.752Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-854bc432690eb6fd",
+      "key": "candidate:docs/planning/latest-upstream-and-core-answers-2026-10-20.md#candidates-not-filed-with-their-reopening-conditions-section-10::20a72d8dd06b5ac2ff68570e651af512945a7a23c30775c1cc6ed7723fff5ef9",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ef77aaa4bf0988df16d5387d9d0b5f9ab1eae397451c321293c0f5b79a011362",
+          "ref": "docs/planning/latest-upstream-and-core-answers-2026-10-20.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C1 The UI planning pass before WO-006: its base, release header, typed edge and vendor.",
+          "summary": "- **C1 The UI planning pass before WO-006: its base, release header, typed edge and vendor.** Reopen when the operator opens that pass (the next one, D7): it sets WO-006's `Repository:` line to `5102783f` (WO-005's merge commit), adds `**Target release classification:**` to WO-006 to WO-008 under WO-012's declared policy, adds WO-006's typed hard edge on WO-012, writes the node-spelled draft publish into WO-006's steps, reconciles the vendor (PrimeNG's license from version 22, the operator's preference for a house-owned component library, one representative Angular Aria component with keyboard, focus and accessibility checks), and refutes the changed order (default pass scope).",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-20 latest-upstream-and-core-answers planning pass, D7: WO-006's base, its Target release classification header, its typed edge on WO-012, the node-spelled draft publish and the vendor decision belong to the UI planning pass the operator asked for in WO-005-D006, which runs after this pass.",
+          "reopenWhen": "The operator opens the UI planning pass before WO-006, or directs WO-006 to proceed with its filed vendor.",
+          "targets": [],
+          "at": "2026-10-20T20:12:11.763Z"
         }
       ]
     }
