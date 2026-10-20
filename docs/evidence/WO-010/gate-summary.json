@@ -1,0 +1,28 @@
+{
+  "command": "npm test -- --review",
+  "observationCommand": "node scripts/harness.mjs evidence --wait --timeout 1200",
+  "recordedAt": "2026-10-20T04:09:10.219Z",
+  "checkId": "npm test",
+  "codeIdentity": "032cfe307c27581f969158174b805c6a2fd5691f3a9851b9c10939794bbb8e86",
+  "evidenceRef": "host-gate:032cfe307c27581f969158174b805c6a2fd5691f3a9851b9c10939794bbb8e86:npm test",
+  "gateSelection": "review",
+  "durationMs": 12139,
+  "exitCode": 0,
+  "executed": true,
+  "identityUnchanged": true,
+  "buildOutputUnchanged": true,
+  "freshSuites": 7,
+  "reusedSuites": 0,
+  "requiredSuites": [
+    "kit-verify",
+    "format",
+    "configuration-root",
+    "registrations",
+    "declarations",
+    "generated",
+    "host"
+  ],
+  "unrunSuites": [],
+  "stale": [],
+  "failedFirst": null
+}
