@@ -293,7 +293,7 @@ lint globs).
 | ------ | -------- | ------------------------------------- |
 | WO-003 | proposed | filed by the 2026-10-18 planning pass |
 | WO-004 | proposed | filed by the 2026-10-18 planning pass |
-| WO-011 | proposed | filed by the 2026-10-19 planning pass |
+| WO-011 | proposed | [configuration, tag guard and gate evidence](../evidence/WO-011/README.md) (`docs/evidence/WO-011/`) |
 | WO-005 | proposed | filed by the 2026-10-18 planning pass |
 | WO-006 | proposed | filed by the 2026-10-18 planning pass |
 | WO-007 | proposed | filed by the 2026-10-18 planning pass |

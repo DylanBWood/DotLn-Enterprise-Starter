@@ -1,7 +1,14 @@
 {
   "version": 1,
   "classes": {
-    "angular-nx-monorepo": { "checks": [], "supports": [] }
+    "angular-nx-monorepo": {
+      "checks": [], "supports": [],
+      "disposable": [
+        "node_modules", ".nx", "dist", ".angular", "coverage",
+        "test-output", "playwright-report", "test-results", "tmp",
+        "out-tsc", "__screenshots__"
+      ]
+    }
   },
   "release": { "displayName": "Launchpad" },
   "repositories": {
