@@ -1,22 +1,23 @@
 # Current control state
 
-## WO-011
+## WO-005
 
-- Work order: WO-011
-- Work-order path: docs/work-orders/WO-011-starter-v0.85.0-registration.md
+- Work order: WO-005
+- Work-order path: docs/work-orders/WO-005-foundation-libraries.md
+- Repository: dotln-angular @ 651d76ff68e9b3a38fe770226deb634bca28b54c
 - Phase: closed
 - Latest verification: VER-001
-- Verification path: docs/verifications/WO-011/VER-001.md
+- Verification path: docs/verifications/WO-005/VER-001.md
 - Latest verdict: pass
 - Final review: FINAL-001
-- Final-review path: docs/final-reviews/WO-011/FINAL-001.md
-- Latest attestation: harness claude-code; version 2.1.304; model claude-opus-5-5; effort max; source claude-session-readback; account not-applicable
-- Effort drift: none
-- Latest recordedAt: 2026-10-20T13:43:51.385Z
-- Elapsed implementation: 1829038 ms
-- Elapsed verification: 1015784 ms
-- Elapsed finalReview: 1094117 ms
-- Latest checkpoint: 6413717314e584f36f34be00bdd53c72f1de71b9 (restore: `git checkout refs/dotln/checkpoint/WO-011/7 -- .`)
+- Final-review path: docs/final-reviews/WO-005/FINAL-001.md
+- Latest attestation: harness claude-code; version 2.1.304; model claude-fable-5-1; effort xhigh; source claude-session-readback; account not-applicable
+- Effort drift: max -> xhigh
+- Latest recordedAt: 2026-10-20T16:44:57.659Z
+- Elapsed implementation: 4332397 ms
+- Elapsed verification: 1726006 ms
+- Elapsed finalReview: 2978940 ms
+- Latest checkpoint: d5e15001c54aca27040ad5df2be803722d1045f3 (restore: `git checkout refs/dotln/checkpoint/WO-005/8 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct
 

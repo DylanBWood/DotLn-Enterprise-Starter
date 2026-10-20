@@ -2,12 +2,13 @@
 
 **Class:** `angular-nx-monorepo`
 **Base branch:** `main`
-**Checked:** `3e1c3d18cf4caaebf9a768c8137be227201e0ba9` (WO-004's reviewed
-commit of 2026-10-18 over the base `bc9133e932a00d33c15bc5289d683b8078f51ee4`).
-Node 26.9.0, npm 11.19.1, Nx 23.3.0, Angular 22.2.3, TypeScript 6.0.3 and
-Vitest 4.1.12 were observed. The commands below passed the declared review
-gate at that commit; the order's evidence records the preflight and gate
-results.
+**Checked:** `2e983e8ad40252b90453b5b03ae65f7f49525df5` (WO-005's reviewed
+commit of 2026-10-20 over the base `651d76ff68e9b3a38fe770226deb634bca28b54c`,
+WO-004's merge commit). Node 26.9.0, npm 11.19.1, Nx 23.3.0, Angular 22.2.3,
+TypeScript 6.0.3 and Vitest 4.1.12 were observed, with Transloco 8.4.0, Ramda
+0.32.0, Ramda Adjunct 6.1.0 and AnalogJS 2.9.1 added by WO-005. The commands
+below passed the declared review gate at that commit; the order's evidence
+records the preflight and gate results.
 
 The launchpad that registers a repository owns its profile; this file is
 repo-native convention authority for sessions acting in
@@ -19,9 +20,9 @@ registration's envelope in `dotln.config.json`.
 
 The workstream document [WS-001](../workstreams/WS-001-dotln-angular.md)
 carries the outcome, the twenty-one house rules and the component taxonomy.
-WO-004 demonstrates the shell app in `apps/dotln`. Shared and feature
-libraries remain later orders; their paths become examples only after they
-exist.
+WO-004 demonstrates the shell app in `apps/dotln`. WO-005 adds shared core,
+utils and i18n in its target worktree; the examples below identify their source
+paths. Feature libraries remain later orders.
 
 ## Commands
 
@@ -45,14 +46,39 @@ forbidden dependency is rejected, `npm run test:tooling` for title validation
 and literal argument handling, `npm run typecheck:e2e` for the NodeNext
 Playwright files, and `npm run boards` to print visible boards.
 
+WO-005 adds `env:prime`, `i18n:check`, `check:templates`, `check:tokens`,
+`check:kits` and `typecheck:foundations`. The `tools` project's uncached `lint`
+target runs the three structural checks, translation extraction, foundation
+compiler checks, negative lint fixtures and tooling tests, so the declared
+gate exercises them through its existing lint command.
+
+Cache finding, 2026-10-20: installed Angular 22.2.3's
+`node_modules/@angular/build/src/utils/normalize-cache.js` resolves a relative
+CLI cache path through a linked worktree's common Git directory to the clone's
+base checkout. The target's `nx.json` disables that additional Angular disk
+cache and retains Nx caching in `.nx/cache`; Vite uses Angular's separate local
+path inside the worktree. Disabling that cache also disables the dev server's
+Vite dependency prebundling: `@angular/build`'s dev-server options enable
+prebundling only while the cache is enabled, so every `nx serve` and the e2e
+dev server print that prebundling will not be used because caching is
+disabled (VER-001 F6, WO-005-D013). An absolute Angular cache path also stays
+local and keeps both the disk cache and prebundling, but would require
+machine-specific configuration. WO-005 chooses portable isolation at that
+whole cost and records the comparison and build readback in its evidence and
+the target generator log. No registration argv change is needed. Reopen this
+choice when Angular supports a portable worktree-local cache setting or when
+dev-server rebuild time becomes a concern.
+
 ## Local application startup
 
 Run `npm ci`, then `npx nx serve dotln` (or `npm start`). Open the address
 Nx prints; the home page shows the heading **DotLn**. The scaffold requires
 no environment file, API or account. Playwright starts its own server at
 `http://127.0.0.1:4200`, refuses to reuse an existing process, and checks the
-heading, document title and absence of page errors. MSW and the environment
-primer belong to WO-005 and are not installed by this scaffold.
+heading, document title and absence of page errors. WO-005 adds `.env.example`,
+`npm run env:prime` and the `local` serve configuration for public local
+settings. Default development still requires no environment file or API.
+MSW belongs to a later workstream member.
 
 ## Branch and pull-request policy
 
@@ -149,15 +175,29 @@ no live episode and makes no host-qualification claim.
 
 - Standalone bootstrap: `apps/dotln/src/main.ts`.
 - Zoneless, router and fetch HTTP providers: `apps/dotln/src/app/app.config.ts`.
-- Slim outlet shell and eager home placeholder: `apps/dotln/src/app/app.ts`
+- Slim outlet shell and lazy home route: `apps/dotln/src/app/app.ts`
   and `apps/dotln/src/app/app.routes.ts`.
 - Tagged dependencies: `eslint.config.mjs`; the isolated fixture runner is
   `tools/check-lint-fixtures.mjs`.
 - Unit and browser checks: `apps/dotln/src/app/app.spec.ts`,
   `apps/dotln/src/app/home.spec.ts`, `apps/dotln-e2e/src/example.spec.ts`.
+- Provider composition:
+  `libs/shared/core/src/lib/providers/provide-dotln-core.ts`.
+- Typed environment and token:
+  `libs/shared/core/src/lib/environment/environment-config.ts`.
+- Route enums, builder and base-path token:
+  `libs/shared/core/src/lib/paths/routes.ts` and `app-base-path.ts`.
+- Reusable i18n: `libs/shared/i18n/src/lib/provide-i18n.ts`; application adapter:
+  `libs/shared/core/src/lib/i18n/provide-dotln-i18n.ts`. Core depends on i18n;
+  shared i18n remains independent of core.
+- House utility declarations: `libs/shared/utils/src/lib/ramda/filter.ts` and
+  `ramda-adjunct/is-non-empty-string.ts`, backed by upstream-derived runtime
+  examples and separate compiler assertions.
+- Test kits: `libs/shared/core/testing/src/lib/core-test-kits.ts` and
+  `libs/shared/i18n/testing/src/lib/i18n-test-kits.ts`, exported through each
+  library's `testing` secondary entry point.
 
-Provide functions, injection tokens, lazy feature routes, wrappers,
-composites, layouts, mappers, containers, facades, stores, test kits, MSW
+Wrappers, composites, layouts, mappers, containers, facades, stores, MSW
 handlers, interceptors and guards remain later workstream members.
 
 ## Upstream references

@@ -596,6 +596,14 @@
           "reopenWhen": "WO-005's draft publish is recorded (the hook's decision, whether the host prompted, which entries were present), or a publication step again needs a manual command from the operator.",
           "targets": [],
           "at": "2026-10-19T15:16:27.299Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Reopened by WO-005's draft publish and deferred again (WO-005-D024): WO-005-D015 records that the kit's hook admitted the helper form, no host prompt was observed, and both of the operator's interim trust entries were present, so the kit side of this row has landed (starter v0.85.0) and its qualification without the entries is still unobserved.",
+          "reopenWhen": "WO-006's draft publish runs with the interim entries absent, or the next planning pass rules on the entries.",
+          "targets": [],
+          "at": "2026-10-20T16:37:52.758Z"
         }
       ]
     },
@@ -755,6 +763,279 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-6d2755b3ac7c8ab9",
+      "key": "decision:docs/evidence/WO-005/decisions.md#wo-005-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f120a094ced74f9dcdcc54b95685497a774f47affd08e18d9f37f8442096e4bb",
+          "ref": "docs/evidence/WO-005/decisions.md#wo-005-d006",
+          "title": "WO-005-D006: Next UI planning pass before WO-006: reconcile its PrimeNG/MIT assumption with current licensing and the operator's preference for a house-owned component library; evaluate Angular Aria…",
+          "summary": "{ \"id\": \"WO-005-D006\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: next; operator's later UI direction and licensing clarification\", \"decision\": \"Carry the operator's direction to own the component API, markup, styling and tests into the next UI planning decision, evaluating Angular Aria for reusable accessibility behavior. Extra styling work is an accepted tradeoff to investigate. The initial compatibility readback did not address the real constraint: the operator clarified that PrimeNG licensing, not Angular peers, drove the concern. Current official PrimeUI terms confirm the change from MIT beginning with PrimeNG 22, with conditional and annually renewed free Community access. Earlier MIT ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The operator prefers owning the component library and wants Angular Aria evaluated; UI selection belongs to the next planning pass before WO-006, outside WO-005 foundation implementation.",
+          "reopenWhen": "The next UI planning pass or before activation of WO-006; amend the judged order with current licensing and a representative Aria evaluation.",
+          "targets": [],
+          "at": "2026-10-20T14:49:56.918Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0dab0b63b20fae7d",
+      "key": "decision:docs/evidence/WO-005/decisions.md#wo-005-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a3be18d40411f9c67bf45a303bf489208612fa4dd9698d0a512bb1eca6da1253",
+          "ref": "docs/evidence/WO-005/decisions.md#wo-005-d008",
+          "title": "WO-005-D008: Make @typescript-eslint/prefer-readonly effective, with type information, for every app and library TypeScript file as Nx lints it: npx eslint --print-config on a libs/shared or…",
+          "summary": "{ \"id\": \"WO-005-D008\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: verify; VER-001 implementation review of the lint configuration\", \"decision\": \"Record as a follow-up, not a blocking finding: the type-aware @typescript-eslint/prefer-readonly rule never applies to app or library files. The root eslint.config.mjs scopes it to apps/**/*.ts and libs/**/*.ts, and each project's eslint.config.mjs spreads that root array, so ESLint resolves those patterns from the project directory, where they match nothing. No criterion names the rule and main had no such rule; the order's Design and house rule 12 expect it.\", \"evidence\": [ \"npx eslint --print-config in <target> for libs/shared/i18n/src/lib/transl",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-83a2838dd2a2a199",
+      "key": "decision:docs/evidence/WO-005/decisions.md#wo-005-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e0285a05061eb312358dc04d27c94625142f77df699478ce1d11d32840e28772",
+          "ref": "docs/evidence/WO-005/decisions.md#wo-005-d009",
+          "title": "WO-005-D009: Keep import { R, RA } from '@dotln-angular/utils' while the production bundle carries only the Ramda and Ramda Adjunct modules the used functions need, measured from the build's stats…",
+          "summary": "{ \"id\": \"WO-005-D009\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: verify; VER-001 implementation review through the platform and browser-speed lens\", \"decision\": \"Record as a follow-up for the next repair or planning pass: the R and RA namespace re-exports put nearly all of Ramda and Ramda Adjunct into the production bundle, though the workspace uses four functions. House rule 1 ranks browser rendering speed above house preference. The order's Design prescribes the full namespace form, so a repair amends that Design through the planning route. No criterion covers bundle size, and the production budget passes.\", \"evidence\": [ \"npx nx build dotln --configuration=production --stats-json on a sc",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b1a9d24ace157463",
+      "key": "decision:docs/evidence/WO-005/decisions.md#wo-005-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "02b6d8ce3da7f4477bc179ac6ed4609adbab089e2b09ebc252ff3e63557dde8d",
+          "ref": "docs/evidence/WO-005/decisions.md#wo-005-d010",
+          "title": "WO-005-D010: The served index.html carries a non-empty <title> (for example the product name), and check:templates inspects component templates (inline template and templateUrl files) without…",
+          "summary": "{ \"id\": \"WO-005-D010\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: verify; VER-001 implementation review of the host page title\", \"decision\": \"Record as a follow-up: check:templates treats the host page apps/dotln/src/index.html as an Angular template, so main's <title>DotLn</title> is refused as literal text and the change ships an empty <title></title>. The HTML standard requires a non-empty title. The document has no title until Home renders and sets it through translateSignal, and a client that runs no script sees none. The after-load title that main's end-to-end test asserts still holds, and moving user-facing text to Transloco follows house rule 9, so no tested behavior regresses.\", \"ev",
+          "missing": false
+        },
+        {
+          "hash": "2d717f53f4e808c0762125531083390b3a978e879a852908c90718ce7ce97213",
+          "ref": "docs/evidence/WO-005/decisions.md#wo-005-d010",
+          "title": "WO-005-D010: The served index.html carries a non-empty <title> (for example the product name), and check:templates inspects component templates (inline template and templateUrl files) without…",
+          "summary": "{ \"id\": \"WO-005-D010\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: verify; VER-001 implementation review of the host page title\", \"decision\": \"Record as a follow-up: check:templates treats the host page apps/dotln/src/index.html as an Angular template, so main's <title>DotLn</title> is refused as literal text and the change ships an empty <title></title>. The HTML standard requires a non-empty title. The document has no title until Home renders and sets it through translateSignal, and a client that runs no script sees none. The after-load title that main's end-to-end test asserts still holds, and moving user-facing text to Transloco follows house rule 9, so no tested behavior regresses.\", \"ev",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Repaired at final review (WO-005-D017): apps/dotln/src/index.html carries <title>DotLn</title> again and tools/scripts/templates.mjs inspects component templates only (inline template or templateUrl), with a tooling test and the review gate passing at the reviewed target commit db33a14fedbeb8d2d62f6c8b0de0c757caae1014.",
+          "reopenWhen": "A component template is discovered by a route other than template or templateUrl, a host page with more static text appears, or the operator rules that the host page's product name must go through i18n.",
+          "targets": [],
+          "at": "2026-10-20T16:37:52.747Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1ce1fb75025a93f8",
+      "key": "decision:docs/evidence/WO-005/decisions.md#wo-005-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c0c4188c4b9d33c12de565380f08bbefd970037f5c7cb383b8e4ba848271a779",
+          "ref": "docs/evidence/WO-005/decisions.md#wo-005-d011",
+          "title": "WO-005-D011: Each structural check judges or refuses every form in its scope: resolve InjectionToken and Injectable through their @angular/core symbols (parenthesized, const-aliased and locally…",
+          "summary": "{ \"id\": \"WO-005-D011\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: verify; VER-001 attack on the three structural checks\", \"decision\": \"Record as a follow-up: each structural check admits a source form it does not judge, so its exit 0 would not establish its criterion's property if such a form appeared. The workspace contains none of these forms, so criteria 2, 4 and 5 hold. This meets D007's reopening condition: a supported source form bypasses the shared inspector or kit resolver.\", \"evidence\": [ \"check:tokens and dotln/token-names share inspectTokenNames. On a scratch file, new (InjectionToken)(...), a const alias of InjectionToken and a constructor re-exported through a local module draw ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f1894f519161c905",
+      "key": "decision:docs/evidence/WO-005/decisions.md#wo-005-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f1c79d60880dfea7569f27ac92f64464cc478eafdbda0fef249c8ed8ea678a2e",
+          "ref": "docs/evidence/WO-005/decisions.md#wo-005-d012",
+          "title": "WO-005-D012: docs/dev-reference/README.md describes the current app configuration and lazy home route and links the three foundation libraries and architecture/foundation.md; the generator log keeps…",
+          "summary": "{ \"id\": \"WO-005-D012\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: verify; VER-001 review of the target's developer documentation\", \"decision\": \"Record as a follow-up: two developer documents in the target are stale or disordered after this change. The developer index still describes the app before this change and links no foundation material, and the generator log split an existing section and records the six foundation commands in two formats. Step 2's check (three library lines and three secondary-entry-point lines) holds.\", \"evidence\": [ \"docs/dev-reference/README.md in <target>, untouched by the diff: its table lists app.config.ts as zoneless, router and HTTP providers and app.routes.ts ",
+          "missing": false
+        },
+        {
+          "hash": "35738c7ea56a31f6b0b6f567e933b68245499149c47fee03cf2abc9b81467b6d",
+          "ref": "docs/evidence/WO-005/decisions.md#wo-005-d012",
+          "title": "WO-005-D012: docs/dev-reference/README.md describes the current app configuration and lazy home route and links the three foundation libraries and architecture/foundation.md; the generator log keeps…",
+          "summary": "{ \"id\": \"WO-005-D012\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: verify; VER-001 review of the target's developer documentation\", \"decision\": \"Record as a follow-up: two developer documents in the target are stale or disordered after this change. The developer index still describes the app before this change and links no foundation material, and the generator log split an existing section and records the six foundation commands in two formats. Step 2's check (three library lines and three secondary-entry-point lines) holds.\", \"evidence\": [ \"docs/dev-reference/README.md in <target>, untouched by the diff: its table lists app.config.ts as zoneless, router and HTTP providers and app.routes.ts ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Repaired at final review (WO-005-D018): docs/dev-reference/README.md describes the current bootstrap, lazy home route, libraries and checks and links the foundation reference; the generator log keeps its installed-help section and records the six foundation commands in one table in order (reviewed target commit 2e983e8ad40252b90453b5b03ae65f7f49525df5).",
+          "reopenWhen": "A later order changes the app's bootstrap, routes or check list without updating the index, or adds a generator command outside the log's table.",
+          "targets": [],
+          "at": "2026-10-20T16:37:52.750Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-06298bb21fc18859",
+      "key": "decision:docs/evidence/WO-005/decisions.md#wo-005-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2064f046a4873a4d65dd11b21e9188573787cc9b6199a244c215bb375a9085e2",
+          "ref": "docs/evidence/WO-005/decisions.md#wo-005-d013",
+          "title": "WO-005-D013: The cache finding in docs/repositories/dotln-angular.md and the target generator log names the dev server's lost dependency prebundling and its warning beside the lost incremental disk…",
+          "summary": "{ \"id\": \"WO-005-D013\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: verify; VER-001 reproduction of the step 5 cache finding\", \"decision\": \"Record as a follow-up: the cache finding's recorded tradeoff is incomplete. Disabling the Angular CLI cache in nx.json also disables the dev server's Vite dependency prebundling, while D003, the repository profile and the generator log name only the lost incremental disk cache. The isolation itself is reproduced: after uncached tests, builds and dev-server runs, the base checkout gained no file and the worktree's only cache directory is .nx/cache.\", \"evidence\": [ \"Every dev-server start in uncached npx nx e2e dotln-e2e and in both live proxy probes printed",
+          "missing": false
+        },
+        {
+          "hash": "fe64a0aa140d0f414253afd9e28818beff39a82b418ea88b7ef800d82c3d23dc",
+          "ref": "docs/evidence/WO-005/decisions.md#wo-005-d013",
+          "title": "WO-005-D013: The cache finding in docs/repositories/dotln-angular.md and the target generator log names the dev server's lost dependency prebundling and its warning beside the lost incremental disk…",
+          "summary": "{ \"id\": \"WO-005-D013\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: verify; VER-001 reproduction of the step 5 cache finding\", \"decision\": \"Record as a follow-up: the cache finding's recorded tradeoff is incomplete. Disabling the Angular CLI cache in nx.json also disables the dev server's Vite dependency prebundling, while D003, the repository profile and the generator log name only the lost incremental disk cache. The isolation itself is reproduced: after uncached tests, builds and dev-server runs, the base checkout gained no file and the worktree's only cache directory is .nx/cache.\", \"evidence\": [ \"Every dev-server start in uncached npx nx e2e dotln-e2e and in both live proxy probes printed",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Repaired at final review (WO-005-D019): the cache finding in the target generator log and in docs/repositories/dotln-angular.md names the dev server's lost dependency prebundling and its warning beside the lost incremental disk cache.",
+          "reopenWhen": "Angular offers a portable worktree-local cache path, or dev-server rebuild time becomes a concern.",
+          "targets": [],
+          "at": "2026-10-20T16:37:52.753Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4404b58447422b81",
+      "key": "decision:docs/evidence/WO-005/decisions.md#wo-005-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "16e33631bbdf2fd760e9d55a0bceeb04ec9cb4af08d4ae03dc4cfa47847f0153",
+          "ref": "docs/evidence/WO-005/decisions.md#wo-005-d014",
+          "title": "WO-005-D014: Next planning pass that edits WS-001: restate house rule 15 so core may depend on i18n, citing WO-005-D001, with i18n -> core still forbidden.",
+          "summary": "{ \"id\": \"WO-005-D014\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: verify; VER-001 review of house rule 15 against WO-005-D001\", \"decision\": \"Record as a planning follow-up: WO-005-D001 admitted core -> i18n in the target's module boundary and conventions, but WS-001 house rule 15 still says core and i18n depend only on util and models. The rule changed through an order's recorded decision, as WS-001 allows, and its text now disagrees with the target. The order's Design already implied a core and i18n dependency that rule 15 did not admit.\", \"evidence\": [ \"docs/workstreams/WS-001-dotln-angular.md rule 15: core and i18n on util and models\", \"<target> eslint.config.mjs gives sourceTag type:core",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c647835b8bbaa96f",
+      "key": "decision:docs/evidence/WO-005/decisions.md#wo-005-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c4fa4d3b60269f4051d1fa6af6dd9cd6cb1ca426a721090f472fc4f581a0d350",
+          "ref": "docs/evidence/WO-005/decisions.md#wo-005-d015",
+          "title": "WO-005-D015: Record the first live draft publish. The session that recorded VER-001 pass ran npm run worktree -- publish WO-005 --target-worktree --draft --branch feat/foundation-libraries with the…",
+          "summary": "{ \"id\": \"WO-005-D015\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: verify; step 15 draft publish by the session that recorded the passing verification\", \"decision\": \"Record the first live draft publish. The session that recorded VER-001 pass ran npm run worktree -- publish WO-005 --target-worktree --draft --branch feat/foundation-libraries with the order's title and the body file docs/evidence/WO-005/draft-pr.md. It pushed commit 5085137a5a4c5787ee44939a7f66113db63b1e76, whose tree 76cead3ad2a501eebc09b7bef926bce496fa655e is the verified gate tree, and opened draft pull request #3; the target's HEAD and index did not move. The hook admitted the command, and no host prompt was observed. Both o",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "The condition D015 awaited occurred and is recorded (WO-005-D023): the final review read draft pull request #3's threads (none), reviews (none), comments (none) and workflow runs (CI and title, both success) into docs/evidence/WO-005/preview-pr.json and routed the operator's three findings as follow-ups.",
+          "reopenWhen": "The operator reports a host prompt during the draft publish, or an automated review appears on #3 before it merges.",
+          "targets": [],
+          "at": "2026-10-20T16:37:52.755Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-cb62c2b6f12d44ae",
+      "key": "decision:docs/evidence/WO-005/decisions.md#wo-005-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "bdd4de014a8d45797cfb3648826874d8e749ce4d4c67e106153db06092c08251",
+          "ref": "docs/evidence/WO-005/decisions.md#wo-005-d020",
+          "title": "WO-005-D020: Inline component templates open with a newline after the backtick and close with the backtick on its own line, enforced by a house check or ESLint rule on the template property of…",
+          "summary": "{ \"id\": \"WO-005-D020\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: final review; the operator's read of draft pull request #3, non-blocking finding 1 (ignored capture docs/intake/notes/wo005-final-review-steering-2026-10-20.md, SHA-256 e2a8222b359c03d17c0f6536ddef1c009c2d07e6218c90168640d9a4a32e8884)\", \"decision\": \"Record as a new-scope follow-up, not implemented in this order: the operator wants inline component templates laid out with a newline after the opening backtick and the closing backtick on its own line, so the markup reads as a block rather than hanging off the property. Probe in session scratch with the target's Prettier 3.9.10 and its .prettierrc: given that input, Prettier print",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Raised by the operator on reading draft #3 at final review and recorded as a non-blocking new-scope follow-up (WO-005-D020); it belongs to the planning route, outside WO-005's Design.",
+          "reopenWhen": "The next planning pass or repair that edits the lint rules or the Prettier configuration.",
+          "targets": [],
+          "at": "2026-10-20T16:37:52.760Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c3840fd4fef3f7bc",
+      "key": "decision:docs/evidence/WO-005/decisions.md#wo-005-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cbe6f1bf71de3eab23ffdd1b9d49bd0927959c7300d7685cf21fc6a138b86dd5",
+          "ref": "docs/evidence/WO-005/decisions.md#wo-005-d021",
+          "title": "WO-005-D021: Add an autofixable import-order rule with exactly three groups separated by one blank line: packages (Angular and third-party), @dotln-angular/ aliases, then relative imports sorted with…",
+          "summary": "{ \"id\": \"WO-005-D021\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: final review; the operator's read of draft pull request #3, non-blocking finding 2 (ignored capture docs/intake/notes/wo005-final-review-steering-2026-10-20.md, SHA-256 e2a8222b359c03d17c0f6536ddef1c009c2d07e6218c90168640d9a4a32e8884)\", \"decision\": \"Record as a new-scope follow-up: the operator wants imports in three sections separated by one blank line: Angular and third-party packages first, @dotln-angular aliases second, relative imports last with the furthest parent directory at the top. The target installs no import-ordering rule, so today the order is by hand and sections are not separated. This is an autofixable lint ru",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Raised by the operator on reading draft #3 at final review and recorded as a non-blocking new-scope follow-up (WO-005-D021); it belongs to the planning route, outside WO-005's Design.",
+          "reopenWhen": "The next planning pass or repair that edits the lint rules.",
+          "targets": [],
+          "at": "2026-10-20T16:37:52.763Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a4dd921172ce3900",
+      "key": "decision:docs/evidence/WO-005/decisions.md#wo-005-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "705eb8daede8abc0afda0cc5b20e7ec479c72f6155b7520ccaddf57fd0b78298",
+          "ref": "docs/evidence/WO-005/decisions.md#wo-005-d022",
+          "title": "WO-005-D022: Settle where helper type aliases live (per-library types.ts exported through public_api.ts, with promotion to utils when shared) and add a house check with a fixture that lists a type…",
+          "summary": "{ \"id\": \"WO-005-D022\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: final review; the operator's read of draft pull request #3, non-blocking finding 3 (ignored capture docs/intake/notes/wo005-final-review-steering-2026-10-20.md, SHA-256 e2a8222b359c03d17c0f6536ddef1c009c2d07e6218c90168640d9a4a32e8884)\", \"decision\": \"Record as a new-scope follow-up with the options the operator asked for: helper type aliases such as Predicate<T> must not be declared repeatedly; at minimum each library declares such an alias once, and a global type library is not required. Today no alias is duplicated: Predicate, Guard, FilteredRecord and Primitive are each declared once, in the two house adapters under libs/sha",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Raised by the operator on reading draft #3 at final review and recorded as a non-blocking new-scope follow-up (WO-005-D022); it belongs to the planning route, outside WO-005's Design.",
+          "reopenWhen": "The next planning pass that edits WS-001, or the first order that declares a helper alias a second time.",
+          "targets": [],
+          "at": "2026-10-20T16:37:52.765Z"
+        }
+      ]
     }
   ]
 }
