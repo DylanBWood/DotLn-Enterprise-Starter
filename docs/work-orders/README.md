@@ -5,7 +5,7 @@
 ## Proposed order
 
 - [x] [WO-009] — Name this launchpad's releases Launchpad · **final-reviewed**
-- [ ] [WO-010] — Protect main in both repositories · **queued**
+- [x] [WO-010] — Protect main in both repositories · **final-reviewed**
 - [ ] [WO-011] — Take starter v0.85.0 into the registration · **queued**
 - [ ] [WO-005] — Foundation libraries: core, utils, i18n, test kits · **queued**
 - [ ] [WO-006] — Component taxonomy, shell layout and the home feature · **queued**
@@ -27,23 +27,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-010
-
-[WO-010 — Protect &#96;main&#96; in both repositories: one active ruleset on the default branch of &#96;dylanwoodconsulting/DotLn-Enterprise-Starter&#96; and of &#96;DylanBWood/DotLn-Angular&#96; (a pull request required, merge commits only, the CI check where one exists, no force pushes, no deletions), head branches deleted on merge in DotLn-Angular, each setting read back through GitHub's own endpoint (version assigned at activation)](WO-010-protect-main-both-repositories.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: none declared.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: machinery
-- Cost: adds two ruleset files, two readback files and one comparison script under &#96;docs/evidence/WO-010/&#96; (about 5 KB), a paragraph in &#96;docs/repositories/dotln-angular.md&#96;, and this order's evidence. Removes nothing. Wall-clock: about 30 to 60 minutes of executor work plus the fixed cycle; unknown until run. Context bytes: planning document §4 and §6, the repository profile, the operator record, this order, about 30 KB. Commands added: none. Tokens: unknown until run. Steps: 9. Re-mints: none; no registered evidence source, feedback source or machinery suite source is edited, so &#96;npm test&#96; without &#96;--review&#96; is the product gate.
-- Authority: [docs/work-orders/WO-010-protect-main-both-repositories.md](WO-010-protect-main-both-repositories.md)
 
 ### WO-011
 

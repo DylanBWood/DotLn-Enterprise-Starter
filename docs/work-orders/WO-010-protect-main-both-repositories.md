@@ -1,4 +1,4 @@
-# WO-010 — Protect `main` in both repositories: one active ruleset on the default branch of `dylanwoodconsulting/DotLn-Enterprise-Starter` and of `DylanBWood/DotLn-Angular` (a pull request required, merge commits only, the CI check where one exists, no force pushes, no deletions), head branches deleted on merge in DotLn-Angular, each setting read back through GitHub's own endpoint (version assigned at activation)
+# WO-010 — Protect `main` in both repositories: one active ruleset on the default branch of `dylanwoodconsulting/DotLn-Enterprise-Starter` and of `DylanBWood/DotLn-Angular` (a pull request required, merge commits only, the CI check where one exists, no force pushes, no deletions), head branches deleted on merge in DotLn-Angular, each setting read back through GitHub's own endpoint (v0.3.1)
 
 **Model:** any capable model; state the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
