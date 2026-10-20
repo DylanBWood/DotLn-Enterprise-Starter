@@ -79,11 +79,15 @@ release: the kit titles a declared target Release by the registration id and
 the tag, and the operator wants `DotLn Angular`, so the option waits, boarded
 as a blocker, on a target display name in the kit (2026-10-19, D4); WO-011's
 write-back adds the `## Release close` section with the declared roots.
-Rules in force after WO-010 merges (this sentence is replaced by
-that order's write-back, citing its readback file): `main` accepts only merge
-commits from pull requests whose `checks` run passed, refuses force pushes
-and deletion, binds every account with no bypass, and deletes a pull
-request's head branch on merge.
+Rules in force, read back on 2026-10-20: the active `main` ruleset targets
+the default branch with no bypass actors. Its `pull_request` rule accepts
+merge commits only, `required_status_checks` requires the `checks` run from
+GitHub Actions (app 15368), `non_fast_forward` refuses force pushes, and
+`deletion` refuses branch deletion. No approving review is required.
+DotLn-Angular automatically deletes a pull request's head branch on merge.
+The [active branch rules](../evidence/WO-010/readback-dotln-angular.json)
+and [ruleset and repository-setting readbacks](../evidence/WO-010/README.md)
+record the applied policy.
 
 ## Demonstrated architecture
 
