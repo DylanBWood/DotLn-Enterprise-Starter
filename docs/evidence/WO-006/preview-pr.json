@@ -1,0 +1,151 @@
+{
+  "capturedAt": "2026-10-21T16:34:30Z",
+  "pullRequest": {
+    "baseRefName": "main",
+    "createdAt": "2026-10-21T15:14:40Z",
+    "headRefName": "feat/component-taxonomy",
+    "headRefOid": "a9e58af4aabc370eb82edcdd2b9b0f619cc809f0",
+    "isDraft": true,
+    "mergeable": "MERGEABLE",
+    "number": 4,
+    "state": "OPEN",
+    "title": ":sparkles: feat: add the component taxonomy, shell layout and actor board",
+    "updatedAt": "2026-10-21T15:14:57Z",
+    "url": "https://github.com/DylanBWood/DotLn-Angular/pull/4"
+  },
+  "draft": {
+    "headSha": "a9e58af4aabc370eb82edcdd2b9b0f619cc809f0",
+    "verifiedTree": "438724e24b22bc33642929f4dbaf3b1b004e36dc",
+    "publishedBy": "the operator, running the order's step 15 helper command verbatim with the ! prefix after two host denials and one outward-lint refusal (WO-006-D018, WO-006-D019)",
+    "readBy": "the final-review session, 2026-10-21, before and after the operator's read"
+  },
+  "workflowRuns": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-21T15:14:43Z",
+      "databaseId": 39623872847,
+      "event": "pull_request",
+      "headSha": "a9e58af4aabc370eb82edcdd2b9b0f619cc809f0",
+      "name": "Pull request title",
+      "status": "completed",
+      "url": "https://github.com/DylanBWood/DotLn-Angular/actions/runs/39623872847",
+      "workflowName": "Pull request title"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-21T15:14:43Z",
+      "databaseId": 39623872958,
+      "event": "pull_request",
+      "headSha": "a9e58af4aabc370eb82edcdd2b9b0f619cc809f0",
+      "name": "CI",
+      "status": "completed",
+      "jobs": ["checks (completed 15:18:40Z, success)", "visual (macos-15; completed 15:17:11Z, success)"],
+      "url": "https://github.com/DylanBWood/DotLn-Angular/actions/runs/39623872958",
+      "workflowName": "CI"
+    }
+  ],
+  "reviewThreads": [],
+  "reviews": [],
+  "issueComments": [],
+  "automatedReview": "none ran on this pull request: the repository's run list shows a Running Copilot Code Review run only for draft #1 (wo-004, 2026-10-18); #2, #3 and #4 had none. Whether an automated reviewer runs is a repository setting the operator owns; recorded as an observation, not a finding of this order (as WO-005-D023 recorded for #3).",
+  "operatorItems": {
+    "source": "the operator read draft #4 and sent ten numbered review notes in the final-review session on 2026-10-21, all marked non-blocking, with the tenth asking that the change go in; paraphrased and routed in WO-006-D021 to D023",
+    "capture": "docs/intake/notes/wo006-final-review-pr-notes-2026-10-21.md",
+    "captureSha256": "7149ef8857a4609e5575991e431a772c085245da12f6b5898ed9183cf223d1c3",
+    "count": 10
+  },
+  "routing": [
+    {
+      "item": "operator:1",
+      "subject": "the hugging layout of projected elements in inline templates (an opening bracket on the next line, a closing bracket after a line break), with one projected element per line preferred",
+      "route": "follow-up",
+      "class": "new-scope",
+      "target": "WO-006-D021",
+      "reason": "Prettier wrote that layout before WO-006-D004 turned embedded formatting off; the one instance the operator named, the shell spec's host template, is laid out one element per line in the repair commit; the convention for every other template is new scope for the planning route."
+    },
+    {
+      "item": "operator:2",
+      "subject": "a template or style section that has grown moves to its own file, decided per section and per component, with one file as the default",
+      "route": "follow-up",
+      "class": "new-scope",
+      "target": "WO-006-D021",
+      "reason": "Conventions §6 already says inline while small; the threshold and the first candidates (the board page's template and styles) are a convention for the planning route."
+    },
+    {
+      "item": "operator:3",
+      "subject": "the library layout still reads as if dotln were the only app; names such as @dotln-angular/shared-ui beside @dotln-angular/dotln-ui may come, dotln-angular stays the workspace name and dotln the first app, no refactor until a second app lands",
+      "route": "follow-up",
+      "class": "new-scope",
+      "target": "WO-006-D005 (FUP-ba9813e8b2705de8)",
+      "reason": "The same evaluation WO-006-D005 boarded; the operator restated it as guidance, not a direction to refactor now, so the row keeps its condition with the new evidence."
+    },
+    {
+      "item": "operator:4",
+      "subject": "components are less atomic than envisioned, with more Sass reuse wanted where it is a best practice; think building blocks",
+      "route": "follow-up",
+      "class": "new-scope",
+      "target": "WO-006-D021",
+      "reason": "A design pass over the house library's granularity and shared styles; the operator does not say it blocks this first pass."
+    },
+    {
+      "item": "operator:5",
+      "subject": "alias names such as @dotln-angular/models may become shared-models or dotln-models later; the current imports are clean",
+      "route": "follow-up",
+      "class": "new-scope",
+      "target": "WO-006-D005 (FUP-ba9813e8b2705de8)",
+      "reason": "Alias naming travels with the app/shared grouping evaluation; no change now."
+    },
+    {
+      "item": "operator:6",
+      "subject": "the board shows data without regard for how the operator interacts with or benefits from it; the console exists for operator flow and knowledge, not as a skin over JSON; the operator wants help designing that UX, can say what does not work, needs interactions to persist across worktrees and main, and needs the app's own use kept apart from the worktree and gate machinery",
+      "route": "follow-up",
+      "class": "new-scope",
+      "target": "WO-006-D022",
+      "reason": "The order's objective was the taxonomy demonstrated by the recorded board (WS-001 §The console, the first screen); the operator's reading is the console's next design question and goes to the next UI planning pass with WO-007's amendment, which already waits on this merge."
+    },
+    {
+      "item": "operator:7",
+      "subject": "no dedicated leanness passes; speed and efficiency are first-party in every decision but never the goal or vision; throughput first, in the sense of the Theory of Constraints",
+      "route": "operator",
+      "class": "new-scope",
+      "target": "WO-006-D023",
+      "reason": "A standing preference for the operator record; a role follows the live direction and names it in its handoff so the next planning pass updates docs/operator/README.md. It also reads on VER-001 F2 and F4: the bundle attribution stays evidence for core, not a leanness pass, and the serial Nx default is recorded with its cost rather than optimized now."
+    },
+    {
+      "item": "operator:8",
+      "subject": "a place that describes each script's purpose and intended use, because there are many",
+      "route": "follow-up",
+      "class": "new-scope",
+      "target": "WO-006-D021",
+      "reason": "Reproduced: the target's package.json declares 20 scripts and tools/scripts holds 12 files, described only in passing across conventions.md, foundation.md and the generator log; a scripts reference under docs/dev-reference/workspace is a document the next order can carry."
+    },
+    {
+      "item": "operator:9",
+      "subject": "about a fifth more blank lines in code where they help a human reader, without overdoing it",
+      "route": "follow-up",
+      "class": "new-scope",
+      "target": "WO-006-D021",
+      "reason": "A readability convention for the planning route, best settled with a lint rule that can autofix (padding-line-between-statements or an equivalent) rather than by hand per file."
+    },
+    {
+      "item": "operator:10",
+      "subject": "this is an early foundational pull request; get it in and keep improving and refactoring",
+      "route": "operator",
+      "class": "new-scope",
+      "target": "WO-006-D021",
+      "reason": "The direction this review follows: the criteria hold, the one repair inside the declared surfaces is made, and the nine notes are boarded rather than widened into the order."
+    }
+  ],
+  "finalReviewRepairs": [
+    {
+      "finding": "VER-001 F1 (the skip link part)",
+      "decision": "WO-006-D024",
+      "summary": "the shell's skip link focuses the main landmark in place; the keyboard browser test starts from the Work panel and asserts no reload and the preserved selection"
+    },
+    {
+      "finding": "VER-001 F4",
+      "decision": "WO-006-D025",
+      "summary": "the serial Nx default is recorded as a decision with its measured cost, as the finding's repair rule allows"
+    }
+  ]
+}

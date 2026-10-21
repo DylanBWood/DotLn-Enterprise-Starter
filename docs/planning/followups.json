@@ -620,6 +620,14 @@
           "reopenWhen": "WO-006's verified-phase draft publish records the host's behavior with the entries absent: a prompt, a denial or an admission carried by the hook alone (then this row settles or a self order turns on the literal fallback, FUP-98c85b750cb36bd4).",
           "targets": [],
           "at": "2026-10-21T02:23:19.886Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "reason": "The condition occurred: WO-006's verified-phase draft publish ran with the interim entries absent and recorded the host's behavior (WO-006-D018): the hook withheld the registered-target admission on the registration-bytes comparison, Claude Code's auto-mode classifier denied the helper twice without a prompt, and the operator ran it with the ! prefix. The next planning pass rules on the literal fallback and carries the admission question to core.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-21T16:41:40.598Z"
         }
       ]
     },
@@ -652,6 +660,14 @@
           "reopenWhen": "WO-006's draft publish records a host prompt or a HostPermissionDenied row with the interim entries absent; then a self order sets hostRules literal for dotln-angular.",
           "targets": [],
           "at": "2026-10-20T20:12:11.736Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "The condition occurred: two HostPermissionDenied rows during WO-006's draft publish with the interim entries absent (WO-006-D018). Whether a self order sets hostRules literal for dotln-angular is the next planning pass's call, weighed against core's answer on the admission's comparison.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-21T16:41:40.602Z"
         }
       ]
     },
@@ -980,6 +996,13 @@
           "title": "WO-005-D011: Each structural check judges or refuses every form in its scope: resolve InjectionToken and Injectable through their @angular/core symbols (parenthesized, const-aliased and locally…",
           "summary": "{ \"id\": \"WO-005-D011\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: verify; VER-001 attack on the three structural checks\", \"decision\": \"Record as a follow-up: each structural check admits a source form it does not judge, so its exit 0 would not establish its criterion's property if such a form appeared. The workspace contains none of these forms, so criteria 2, 4 and 5 hold. This meets D007's reopening condition: a supported source form bypasses the shared inspector or kit resolver.\", \"evidence\": [ \"check:tokens and dotln/token-names share inspectTokenNames. On a scratch file, new (InjectionToken)(...), a const alias of InjectionToken and a constructor re-exported through a local module draw ",
           "missing": false
+        },
+        {
+          "hash": "bacede87416c19e9fe43a727d6bf1e3a1df57db96b42a15ef9128aabd4c8db3f",
+          "ref": "docs/evidence/WO-005/decisions.md#wo-005-d011",
+          "title": "WO-005-D011: Each structural check judges or refuses every form in its scope: resolve InjectionToken and Injectable through their @angular/core symbols (parenthesized, const-aliased and locally…",
+          "summary": "{ \"id\": \"WO-005-D011\", \"date\": \"2026-10-20\", \"dispatch\": \"resume: verify; VER-001 attack on the three structural checks\", \"decision\": \"Record as a follow-up: each structural check admits a source form it does not judge, so its exit 0 would not establish its criterion's property if such a form appeared. The workspace contains none of these forms, so criteria 2, 4 and 5 hold. This meets D007's reopening condition: a supported source form bypasses the shared inspector or kit resolver.\", \"evidence\": [ \"check:tokens and dotln/token-names share inspectTokenNames. On a scratch file, new (InjectionToken)(...), a const alias of InjectionToken and a constructor re-exported through a local module draw ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -990,6 +1013,14 @@
           "reopenWhen": "An order edits the target's tools/ checks, or a review finds a form a check neither judged nor refused.",
           "targets": [],
           "at": "2026-10-20T20:12:11.757Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-006-D011 re-evaluates the triggered condition. The source-data traversal and feature-kit extension do not settle cross-module symbol resolution or the older full negative-fixture matrix; retain this distinct inspector-hardening change for allocation by the next planning pass.",
+          "reopenWhen": "The next planning pass allocates structural-inspector hardening, or a listed bypass form appears in production/spec source; repair the latter before relying on that check.",
+          "targets": [],
+          "at": "2026-10-21T13:47:34.009Z"
         }
       ]
     },
@@ -1434,6 +1465,14 @@
           "reopenWhen": "WO-006's evidence records the readings; then the next pass's requests-to-core prompt carries them.",
           "targets": [],
           "at": "2026-10-21T04:49:30.250Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "WO-006's evidence records the readings: WO-006-D002 (API ergonomics, maintenance, licenses, the house wrappers over Aria Tabs and Menu and the CDK focus trap and overlay) and WO-006-D014 (per-package bytes from the esbuild metafile: Aria 14,431 B and CDK 50,881 B in the initial shared chunk, none in the lazy board route, with the overlay's placement not isolated). The next pass's requests-to-core prompt carries them with D014's caveat.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-21T16:41:40.606Z"
         }
       ]
     },
@@ -1482,6 +1521,322 @@
           "reopenWhen": "Core serves the contract to a browser host and WO-008's session model exists.",
           "targets": [],
           "at": "2026-10-21T04:49:30.228Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ba9813e8b2705de8",
+      "key": "decision:docs/evidence/WO-006/decisions.md#wo-006-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9abf287fe2007f7b8e52017bcc2505893e31fded4e4fa4aaa1df4fd0dde3e8ca",
+          "ref": "docs/evidence/WO-006/decisions.md#wo-006-d005",
+          "title": "WO-006-D005: Evaluate app-scoped core, feature and UI grouping before a second app or a foundation migration; preserve independent shared i18n and migrate aliases and rules together.",
+          "summary": "{ \"id\": \"WO-006-D005\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: next\", \"decision\": \"Treat app grouping as an architectural improvement to evaluate before a second application: app composition belongs with the app, reusable primitives remain shared, and a feature is not cross-app simply because its current directory is global. Keep the selected order's explicit library paths while demonstrating those boundaries through tags and imports.\", \"evidence\": [ \"The operator suggested app-scoped core composed from independent shared i18n, with an optional independent shared core, and clarified that an app grouping should also house feature routing and app-only UI. This was a suggestion for judgment ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-006-D005: preserve the current order's explicit paths while evaluating the operator's app/shared grouping suggestion as a coordinated foundation migration. This order tags the board as DotLn-scoped and keeps i18n independent.",
+          "reopenWhen": "A second app, foundation change or explicit migration direction makes the app/shared distinction operational.",
+          "targets": [],
+          "at": "2026-10-21T13:12:21.106Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The operator restated the app/shared grouping and alias naming as guidance on 2026-10-21 (WO-006-D021; capture SHA-256 7149ef8857a4609e5575991e431a772c085245da12f6b5898ed9183cf223d1c3): names such as shared-ui beside dotln-ui, and models beside shared-models or dotln-models, may come; dotln-angular stays the workspace name and dotln the first app; no refactor until a second app lands.",
+          "reopenWhen": "A second app, foundation change or explicit migration direction makes the app/shared distinction operational.",
+          "targets": [],
+          "at": "2026-10-21T16:41:40.611Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b4f7404f2616243c",
+      "key": "decision:docs/evidence/WO-006/decisions.md#wo-006-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "a9ba2d506f339ac62e73e2d8e5fbe9b5b4ec343d0ff1d35029530a46aaa098de",
+          "ref": "docs/evidence/WO-006/decisions.md#wo-006-d002",
+          "title": "WO-006-D002: Keep house Tabs and Menu APIs over Angular Aria 22.2.3 and CDK 22.2.3. Use a native dialog plus the CDK focus trap. The tabs root, list and panel wrappers support layout projection…",
+          "summary": "{ \"id\": \"WO-006-D002\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: next\", \"decision\": \"Keep house Tabs and Menu APIs over Angular Aria 22.2.3 and CDK 22.2.3. Use a native dialog plus the CDK focus trap. The tabs root, list and panel wrappers support layout projection without leaking behavior imports into feature components.\", \"evidence\": [ \"Official Angular Aria Tabs and Menu guides and the installed declaration files define roving focus, selection-following-focus, lazy panel content and the menu popover integration.\", \"The ui DOM spec passed arrow, Home and End selection, roving focus and tab-to-panel ownership.\", \"npm view and installed manifests admit Angular 22 and use MIT licenses. npm i",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "WO-006-D002 is reopened by WO-006-D014, whose row FUP-7bbf34bdd0925297 carries the bundle-evidence work; D002's own text records no follow-up.",
+          "reopenWhen": "The console-framework evidence is sent to core, or a change to provideDotlnUi or the application providers alters the initial bundle.",
+          "targets": [
+            "FUP-7bbf34bdd0925297"
+          ],
+          "at": "2026-10-21T16:41:40.581Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-bad9c9ecbecaca67",
+      "key": "decision:docs/evidence/WO-006/decisions.md#wo-006-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4311e609cf6fca7674f4fc56d541682f80b8d0bcdab1d48ac14b0804c2475a4d",
+          "ref": "docs/evidence/WO-006/decisions.md#wo-006-d013",
+          "title": "WO-006-D013: Make the skip link move focus to main without a document navigation, for example by focusing a template reference to main on activation, which keeps the layout free of injection under…",
+          "summary": "{ \"id\": \"WO-006-D013\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: verify; VER-001 attack on the shell skip link and local anchors\", \"decision\": \"Record as a follow-up: the shell skip link and the board local anchors are bare fragment hrefs resolved against <base href=\\\"/\\\">, so activating the skip link leaves /board for /#main-content, reloads the application and resets the selected panel. Criterion 6 holds: its keyboard test starts from the initial panel, and the reloaded page still focuses main. The defect breaks no criterion and no behavior main had, because main had no skip link.\", \"evidence\": [ \"Verifier probe against the production build in dist/apps/dotln/browser, served with an SPA f",
+          "missing": false
+        },
+        {
+          "hash": "455fa33290459c8f08557c4878ff6d4944a17b1339311141b6c6237b88f2e4ac",
+          "ref": "docs/evidence/WO-006/decisions.md#wo-006-d013",
+          "title": "WO-006-D013: Make the skip link move focus to main without a document navigation, for example by focusing a template reference to main on activation, which keeps the layout free of injection under…",
+          "summary": "{ \"id\": \"WO-006-D013\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: verify; VER-001 attack on the shell skip link and local anchors\", \"decision\": \"Record as a follow-up: the shell skip link and the board local anchors are bare fragment hrefs resolved against <base href=\\\"/\\\">, so activating the skip link leaves /board for /#main-content, reloads the application and resets the selected panel. Criterion 6 holds: its keyboard test starts from the initial panel, and the reloaded page still focuses main. The defect breaks no criterion and no behavior main had, because main had no skip link.\", \"evidence\": [ \"Verifier probe against the production build in dist/apps/dotln/browser, served with an SPA f",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "The skip link is repaired in the target by commit eb7dfdf0f1898e597c865f08c04813000029bb9b (WO-006-D024): activation focuses the main landmark in place and the keyboard browser test asserts no reload and the preserved selection. The board's local anchors still resolve against <base href> for new-tab and copied links; FUP-e9c71a41e7c1eb8b (D024) carries that remainder.",
+          "reopenWhen": "A change touches the board link mapper, or a copied board anchor opens the root instead of the board.",
+          "targets": [],
+          "at": "2026-10-21T16:41:40.565Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-7bbf34bdd0925297",
+      "key": "decision:docs/evidence/WO-006/decisions.md#wo-006-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "47f1a583f68ac1950d4e63b15f308b392bd5c7ff840e8701b5b4c4ba5ee42c73",
+          "ref": "docs/evidence/WO-006/decisions.md#wo-006-d014",
+          "title": "WO-006-D014: Replace D002's bundle evidence with per-package attribution before it answers core's console-framework question. Keep behavior code the first screen does not need, such as the CDK…",
+          "summary": "{ \"id\": \"WO-006-D014\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: verify; VER-001 measurement of the Aria and CDK bundle cost\", \"decision\": \"Record as a follow-up that reopens WO-006-D002. Its bundle reading covers the whole lazy route, which is mostly the recorded fixture, and it misses that Angular Aria and the CDK ship in the initial bundle. The planning receipt's reopening clause for this reading is met: a lazy-chunk size that includes the fixture without separating what @angular/aria and @angular/cdk contribute. No criterion depends on the figure.\", \"evidence\": [ \"Verifier build at gate tree 438724e24b22bc33642929f4dbaf3b1b004e36dc: npx nx build dotln --configuration=production --statsJ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-006-D014's per-package attribution (Aria 14,431 B and CDK 50,881 B in the initial shared chunk, none in the lazy board route) is the reading the next planning pass sends to core with its caveat; a provider change is measured by the order that touches provideDotlnUi, not by a leanness pass (WO-006-D023).",
+          "reopenWhen": "The console-framework evidence is sent to core, or a change to provideDotlnUi or the application providers alters the initial bundle.",
+          "targets": [],
+          "at": "2026-10-21T16:41:40.577Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-78ae6c5fa43ff2b7",
+      "key": "decision:docs/evidence/WO-006/decisions.md#wo-006-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cb825391c03ddc0150205201fb39c93b894bf0511feb89cb6810d90a92ac02f6",
+          "ref": "docs/evidence/WO-006/decisions.md#wo-006-d015",
+          "title": "WO-006-D015: Refuse every binding of @angular/core's inject in role directories, including an aliased import specifier and a namespace member call, and refuse a dynamic import() of @angular/aria or…",
+          "summary": "{ \"id\": \"WO-006-D015\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: verify; VER-001 attack on the role-by-location lint\", \"decision\": \"Record as a follow-up: the R1 and R3 lint admits three forms. An aliased import of inject, a namespace call core.inject(...) in a presentational directory, and a dynamic import() of @angular/cdk outside wrappers all pass lint. The workspace contains none of them, so criteria 1 and 2 hold; the rules are weaker than R1 and R3 state.\", \"evidence\": [ \"npx eslint --stdin --stdin-filename libs/shared/ui/src/lib/fragments/badge/badge.ts with probe sources: inject(ElementRef) is refused by no-restricted-syntax, while `import { inject as use }` followed by use(ElementRe",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Refusing the aliased, namespaced and dynamic forms belongs with the structural-inspector hardening FUP-1ce1fb75025a93f8 that the next planning pass allocates; the workspace holds none of the forms (VER-001 F3, WO-006-D015).",
+          "reopenWhen": "An aliased or namespaced inject, or a dynamic behavior import, appears in a role directory, or a planning pass allocates the structural-inspector hardening.",
+          "targets": [],
+          "at": "2026-10-21T16:41:40.585Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2fd99c45dad9286d",
+      "key": "decision:docs/evidence/WO-006/decisions.md#wo-006-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4ba0b2c71d81cdad3104c16e0fd4b506c130078279aee38fbb46e2d125fe738b",
+          "ref": "docs/evidence/WO-006/decisions.md#wo-006-d016",
+          "title": "WO-006-D016: Restore the workspace's default Nx parallelism and put the bound where the constraint lives: the launchpad gate argv or the bounded probe environment. Alternatively, record the serial…",
+          "summary": "{ \"id\": \"WO-006-D016\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: verify; VER-001 review of the workspace task settings\", \"decision\": \"Record as a follow-up: nx.json now sets \\\"parallel\\\": 1 for every Nx run in the target, including developer runs and CI. The constraint it answers is the launchpad probe memory budget. No decision records the tradeoff.\", \"evidence\": [ \"git diff nx.json against 5102783f adds \\\"parallel\\\": 1. The WO-006 README mentions bounded unit parallelism, but no decision does.\", \"Verifier's uncached npx nx run-many -t lint test build --skip-nx-cache: 18 tasks passed in 49.8 s. Nx reported a 16.8 s critical path and 33.1 s (66%) recoverable with more parallelism. Peak foot",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-006-D025 records the serial Nx default with its measured cost, the alternative VER-001 F4's repair rule allows; the bound stays in nx.json while the launchpad probe budget is the constraint and CI's headroom is unmeasured.",
+          "reopenWhen": "CI wall-clock becomes a concern, a target order changes nx.json or the gate declaration, or a measured CI run shows headroom for parallel tasks.",
+          "targets": [],
+          "at": "2026-10-21T16:41:40.560Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e22968a92b1bb18c",
+      "key": "decision:docs/evidence/WO-006/decisions.md#wo-006-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e2e4a34327a2d92e36b9013ebb9a951b459e7b4a94004ddd64e26d6b0324b5b6",
+          "ref": "docs/evidence/WO-006/decisions.md#wo-006-d018",
+          "title": "WO-006-D018: Make the registered-target route explicit and observable. The hook writes an advisory when a worktree publish helper call is disqualified only by shell syntax such as a pipe or…",
+          "summary": "{ \"id\": \"WO-006-D018\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: verify; operator note during the VER-001 draft publish, paraphrased\", \"decision\": \"Record for final review and planning: the operator removed Claude Code's host allow entries for GitHub push so that DotLn's registered-target admission would carry target publication. In the verified-phase draft publish that admission never evaluated. The session ran the node-spelled helper with a `2>&1 | tail -20` suffix; the hook's plain-word parser declines any command containing a pipe or redirection and writes no row, so Claude Code's auto-mode classifier judged the call alone and denied it. Two things remain unobserved: whether the plain s",
+          "missing": false
+        },
+        {
+          "hash": "2cef2ae8b1407b9068df8034fd77a441ecd7e61fee5f3cdbd5e9366b39b3c16e",
+          "ref": "docs/evidence/WO-006/decisions.md#wo-006-d018",
+          "title": "WO-006-D018: Make DotLn carry registered-target publication for an order that edits its own registration. Judge publication authority from main's committed grant and the publication-relevant…",
+          "summary": "{ \"id\": \"WO-006-D018\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: verify; operator notes during the VER-001 draft publish, paraphrased\", \"decision\": \"Record for final review and planning: DotLn's registered-target admission did not carry the verified-phase draft publish, so Claude Code's auto-mode classifier decided it twice and denied it twice. The operator had removed the host allow entries for GitHub push on purpose, so that DotLn would carry target publication. The burden therefore shifted to the intervenor, which is the operator's own reading. The structural cause: the admission requires the order worktree's dotln.config.json to equal main's committed bytes, and an order that edits its ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "reason": "For the next planning pass's requests-to-core prompt: the registered-target admission compares the whole dotln.config.json with main's committed bytes, so an order that edits its registration (WO-006 adds the visual gate command) is never admitted before its records merge (WO-006-D018); the final publish of this review runs after the result and its outcome is appended to docs/evidence/WO-006/host-qualification.md.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-21T16:41:40.590Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-39e7a2f6db6b7f84",
+      "key": "decision:docs/evidence/WO-006/decisions.md#wo-006-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ee3dbe1fd8d378d72c6f7d28cf3253cf60c3e265dd69eb76d6db241bfa164285",
+          "ref": "docs/evidence/WO-006/decisions.md#wo-006-d019",
+          "title": "WO-006-D019: Before WO-006's publish, rename the recorded fixture to a name without the refused term, for example recorded-board-2026-10-21.json, updating its six target references, the launchpad…",
+          "summary": "{ \"id\": \"WO-006-D019\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: verify; operator ran the draft publish helper with the ! prefix after the host denials\", \"decision\": \"Record for final review and planning: target publication of WO-006 is refused by the kit's outward lint, whoever runs it. The helper appends a Change table listing every changed path, and the order's prescribed fixture name launchpad-board-2026-10-21.json puts the term the outward vocabulary refuses (vocabulary.launchpad) into the pull request body. The reviewed body passes on its own. No body edit can fix this; the fixture's name or the kit's rule must change before the draft or the final publish can succeed.\", \"evidence\": [ ",
+          "missing": false
+        },
+        {
+          "hash": "59cfb55d495cbd9a44036f41152a9c33610f819b15293589a33b754ad94a0497",
+          "ref": "docs/evidence/WO-006/decisions.md#wo-006-d019",
+          "title": "WO-006-D019: Before WO-006's publish, rename the recorded fixture to a name without the refused term, for example recorded-board-2026-10-21.json, updating its six target references, the launchpad…",
+          "summary": "{ \"id\": \"WO-006-D019\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: verify; operator ran the draft publish helper with the ! prefix after the host denials\", \"decision\": \"Record for final review and planning: target publication of WO-006 is refused by the kit's outward lint, whoever runs it. The helper appends a Change table listing every changed path, and the order's prescribed fixture name launchpad-board-2026-10-21.json puts the term the outward vocabulary refuses (vocabulary.launchpad) into the pull request body. The reviewed body passes on its own. No body edit can fix this; the fixture's name or the kit's rule must change before the draft or the final publish can succeed.\", \"evidence\": [ ",
+          "missing": false
+        },
+        {
+          "hash": "ca558bccd4c762e3bb7b339eff7e468eb6f14db65e6899cab6489f77091b8a09",
+          "ref": "docs/evidence/WO-006/decisions.md#wo-006-d019",
+          "title": "WO-006-D019: Before WO-006's publish, rename the recorded fixture to a name without the refused term, for example recorded-board-2026-10-21.json, updating its six target references, the launchpad…",
+          "summary": "{ \"id\": \"WO-006-D019\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: verify; operator ran the draft publish helper with the ! prefix after the host denials\", \"decision\": \"Record for final review and planning: target publication of WO-006 is refused by the kit's outward lint, whoever runs it. The helper appends a Change table listing every changed path, and the order's prescribed fixture name launchpad-board-2026-10-21.json puts the term the outward vocabulary refuses (vocabulary.launchpad) into the pull request body. The reviewed body passes on its own. No body edit can fix this; the fixture's name or the kit's rule must change before the draft or the final publish can succeed.\", \"evidence\": [ ",
+          "missing": false
+        },
+        {
+          "hash": "9cd9c98936393a4281cbfcfb2cfbb68eefd8931cc1d8cb2bbbbebfca26ae9297",
+          "ref": "docs/evidence/WO-006/decisions.md#wo-006-d019",
+          "title": "WO-006-D019: Before WO-006's publish, rename the recorded fixture to a name without the refused term, for example recorded-board-2026-10-21.json, updating its six target references, the launchpad…",
+          "summary": "{ \"id\": \"WO-006-D019\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: verify; operator ran the draft publish helper with the ! prefix after the host denials\", \"decision\": \"Record for final review and planning: target publication of WO-006 is refused by the kit's outward lint, whoever runs it. The helper appends a Change table listing every changed path, and the order's prescribed fixture name launchpad-board-2026-10-21.json puts the term the outward vocabulary refuses (vocabulary.launchpad) into the pull request body. The reviewed body passes on its own. No body edit can fix this; the fixture's name or the kit's rule must change before the draft or the final publish can succeed.\", \"evidence\": [ ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 4,
+          "status": "open",
+          "reason": "The operator chose the vocabulary route on 2026-10-21: main's checkout carries an uncommitted placeholder term and this order worktree the same bytes, which merge with these records (WO-006-D019, host-qualification.md). The next fork planning pass rules on the term's return and on checking order-prescribed file names against the outward vocabulary.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-21T16:41:40.594Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b0b01939c2ecf037",
+      "key": "decision:docs/evidence/WO-006/decisions.md#wo-006-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0e893a8c1868eadbd22f36f4555c7a478f3f3d2cd481f759ba30995ec9cd46c8",
+          "ref": "docs/evidence/WO-006/decisions.md#wo-006-d021",
+          "title": "WO-006-D021: Settle in the next planning pass that edits WS-001 or the target's conventions: (a) one projected element per line in inline templates, reformatting the hugging layout where it is met;…",
+          "summary": "{ \"id\": \"WO-006-D021\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: final review; the operator's read of draft pull request #4, ten numbered notes, all non-blocking (ignored capture docs/intake/notes/wo006-final-review-pr-notes-2026-10-21.md, SHA-256 7149ef8857a4609e5575991e431a772c085245da12f6b5898ed9183cf223d1c3)\", \"decision\": \"Route the operator's ten notes without widening the order, as their tenth note directs: get this foundational change in and keep improving. Five are conventions for the planning route (one projected element per line in inline templates instead of the hugging layout Prettier wrote before D004; a per-section threshold at which a template or style section moves to its ow",
+          "missing": false
+        },
+        {
+          "hash": "fcc36ad89a21aff0c3b51c35c05d35c8b3551347bb211e07dc72616ae155e5a8",
+          "ref": "docs/evidence/WO-006/decisions.md#wo-006-d021",
+          "title": "WO-006-D021: Settle in the next planning pass that edits WS-001 or the target's conventions: (a) one projected element per line in inline templates, reformatting the hugging layout where it is met;…",
+          "summary": "{ \"id\": \"WO-006-D021\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: final review; the operator's ten non-blocking notes on draft pull request #4, paraphrased from the ignored capture of 2026-10-21 (SHA-256 7149ef8857a4609e5575991e431a772c085245da12f6b5898ed9183cf223d1c3)\", \"decision\": \"Route the operator's ten notes without widening the order, as their tenth note directs: get this foundational change in and keep improving. Five are conventions for the planning route (one projected element per line in inline templates instead of the hugging layout Prettier wrote before D004; a per-section threshold at which a template or style section moves to its own file, one file staying the default; a granu",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The operator's five readability and granularity conventions from the read of draft #4, non-blocking by their word (WO-006-D021); the next planning pass that edits WS-001 or the target's conventions settles them.",
+          "reopenWhen": "The next planning pass that edits WS-001 or the target's conventions, or the first order that touches the house library's templates.",
+          "targets": [],
+          "at": "2026-10-21T16:41:40.615Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-52178afa5a081d86",
+      "key": "decision:docs/evidence/WO-006/decisions.md#wo-006-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "771d5c2e76a612122cad2b4bc2dc1d7356c97ea618d9ec765bc672f1a55534db",
+          "ref": "docs/evidence/WO-006/decisions.md#wo-006-d022",
+          "title": "WO-006-D022: The next UI planning pass runs a UX ideation over the console with research workers over the platform's records: two or three candidate first screens built from the operator's tasks…",
+          "summary": "{ \"id\": \"WO-006-D022\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: final review; the operator's sixth note on draft pull request #4 (capture SHA-256 7149ef8857a4609e5575991e431a772c085245da12f6b5898ed9183cf223d1c3)\", \"decision\": \"Record for the next UI planning pass, which already owes WO-007 its base amendment after this merge: the operator reads the recorded board as the platform's own HTML problem restated, data shown without regard to how the operator interacts with it or benefits from it; the console exists for operator flow and knowledge, never as a skin over JSON, with any datum reachable when needed; the operator asks for help designing that experience and can judge candidates by sayi",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "The console's purpose, the persistence of operator interactions and the isolation of app use from the worktree and gate machinery (WO-006-D022) are inputs to the next UI planning pass, which already owes WO-007 its base amendment after this merge.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-10-21T16:41:40.619Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e9c71a41e7c1eb8b",
+      "key": "decision:docs/evidence/WO-006/decisions.md#wo-006-d024",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "334aba99d550ddf3747dc9f82601e16dd579691aa2173ec79d9acd15ff991068",
+          "ref": "docs/evidence/WO-006/decisions.md#wo-006-d024",
+          "title": "WO-006-D024: Resolve the board's local anchors against the current route for new-tab and copied links, for example by passing the current path into the link mapper or by rendering router fragment…",
+          "summary": "{ \"id\": \"WO-006-D024\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: final review; Adjacent Repair of VER-001 F1 inside the order's declared surfaces\", \"decision\": \"Repair the skip link in the target: the shell layout handles the link's activation by focusing the main landmark in place and preventing the fragment navigation, keeping the href for the link's semantics and the non-script path. The shell spec asserts the handled activation, and the keyboard browser test starts from the Work panel and asserts that the document is not reloaded (a dataset marker survives), the URL stays /board and the selection is preserved. The shell spec's host template is laid out one projected element per line, th",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The local-anchor remainder of VER-001 F1: primary activation works through the facade, only new-tab and copied links take the root URL, and passing the current route into the mapper is a design choice for the planning route (WO-006-D024).",
+          "reopenWhen": "A change touches the board link mapper, or a copied board anchor opens the root instead of the board.",
+          "targets": [],
+          "at": "2026-10-21T16:41:40.572Z"
         }
       ]
     }

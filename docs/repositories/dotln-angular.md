@@ -2,13 +2,16 @@
 
 **Class:** `angular-nx-monorepo`
 **Base branch:** `main`
-**Checked:** `2e983e8ad40252b90453b5b03ae65f7f49525df5` (WO-005's reviewed
-commit of 2026-10-20 over the base `651d76ff68e9b3a38fe770226deb634bca28b54c`,
-WO-004's merge commit). Node 26.9.0, npm 11.19.1, Nx 23.3.0, Angular 22.2.3,
+**Checked:** `eb7dfdf0f1898e597c865f08c04813000029bb9b` (WO-006's reviewed
+commit of 2026-10-21 over the base `5102783f5cf575a6b487e75ed9bb0c064d6dbd9c`,
+WO-005's merge commit). Node 26.9.0, npm 11.19.1, Nx 23.3.0, Angular 22.2.3,
 TypeScript 6.0.3 and Vitest 4.1.12 were observed, with Transloco 8.4.0, Ramda
-0.32.0, Ramda Adjunct 6.1.0 and AnalogJS 2.9.1 added by WO-005. The commands
-below passed the declared review gate at that commit; the order's evidence
-records the preflight and gate results.
+0.32.0, Ramda Adjunct 6.1.0 and AnalogJS 2.9.1 added by WO-005, and Angular
+Aria 22.2.3, the CDK 22.2.3, Storybook 10.6.3, axe-core for Playwright 4.14.0,
+Ajv 8.20.0 and the Inter variable font 5.3.0 added by WO-006. The declared
+review gate, with the catalog and visual commands below, passed at that commit
+with no tracked-byte mutation; the order's evidence records the preflight and
+gate results.
 
 The launchpad that registers a repository owns its profile; this file is
 repo-native convention authority for sessions acting in
@@ -22,7 +25,7 @@ The workstream document [WS-001](../workstreams/WS-001-dotln-angular.md)
 carries the outcome, the twenty-one house rules and the component taxonomy.
 WO-004 demonstrates the shell app in `apps/dotln`. WO-005 adds shared core,
 utils and i18n in its target worktree; the examples below identify their source
-paths. Feature libraries remain later orders.
+paths. WO-006 adds the house UI, app layout and recorded-board feature.
 
 ## Commands
 
@@ -37,11 +40,12 @@ tracked file fails the gate):
 | test    | `npx nx run-many -t test`                  | plain and review; Vitest, no watch                           |
 | format  | `npx nx format:check`                      | plain and review                                             |
 | build   | `npx nx run-many -t build`                 | review                                                       |
-| e2e     | `npx nx run-many -t e2e`                   | review; needs `npx playwright install --with-deps chromium`  |
+| e2e     | `npx nx run-many -t e2e`                   | review; production app and Storybook behavior/axe checks; needs Chromium |
+| visual  | `npx nx e2e-visual dotln-e2e`              | review; tracked macOS pixel baselines, separate macOS CI job |
 
 The target's package scripts `lint`, `test`, `format:check`, `build` and `e2e`
 mirror those Nx commands. The registration prefixes checks with
-`env NX_DAEMON=false`. CI also runs `npm run lint:fixtures` to prove that a
+`env NX_DAEMON=false NX_ISOLATE_PLUGINS=false` to keep plugin workers in process. CI also runs `npm run lint:fixtures` to prove that a
 forbidden dependency is rejected, `npm run test:tooling` for title validation
 and literal argument handling, `npm run typecheck:e2e` for the NodeNext
 Playwright files, and `npm run boards` to print visible boards.
@@ -50,7 +54,11 @@ WO-005 adds `env:prime`, `i18n:check`, `check:templates`, `check:tokens`,
 `check:kits` and `typecheck:foundations`. The `tools` project's uncached `lint`
 target runs the three structural checks, translation extraction, foundation
 compiler checks, negative lint fixtures and tooling tests, so the declared
-gate exercises them through its existing lint command.
+gate exercises them through its existing lint command. WO-006 adds
+`lint:components`, `check:shared-types` and `check:fixtures` to that target.
+The e2e target builds the local Storybook catalog as a dependency; the review
+gate also runs the visual target. Baselines under the e2e source tree are
+tracked inputs, not disposable output.
 
 Cache finding, 2026-10-20: installed Angular 22.2.3's
 `node_modules/@angular/build/src/utils/normalize-cache.js` resolves a relative
@@ -59,9 +67,8 @@ base checkout. The target's `nx.json` disables that additional Angular disk
 cache and retains Nx caching in `.nx/cache`; Vite uses Angular's separate local
 path inside the worktree. Disabling that cache also disables the dev server's
 Vite dependency prebundling: `@angular/build`'s dev-server options enable
-prebundling only while the cache is enabled, so every `nx serve` and the e2e
-dev server print that prebundling will not be used because caching is
-disabled (VER-001 F6, WO-005-D013). An absolute Angular cache path also stays
+prebundling only while the cache is enabled, so `nx serve` reports that
+prebundling is disabled. WO-006 e2e serves production builds instead (VER-001 F6, WO-005-D013). An absolute Angular cache path also stays
 local and keeps both the disk cache and prebundling, but would require
 machine-specific configuration. WO-005 chooses portable isolation at that
 whole cost and records the comparison and build readback in its evidence and
@@ -72,8 +79,8 @@ dev-server rebuild time becomes a concern.
 ## Local application startup
 
 Run `npm ci`, then `npx nx serve dotln` (or `npm start`). Open the address
-Nx prints; the home page shows the heading **DotLn**. The scaffold requires
-no environment file, API or account. Playwright starts its own server at
+Nx prints; the root redirects to `/board` and shows **The actor board** from
+the recorded fixture. No environment file, API or account is required. Playwright starts its own server at
 `http://127.0.0.1:4200`, refuses to reuse an existing process, and checks the
 heading, document title and absence of page errors. WO-005 adds `.env.example`,
 `npm run env:prime` and the `local` serve configuration for public local
@@ -158,11 +165,15 @@ WO-007 and WO-008 and WO-006's typed dependency on WO-012 before activation.
 `baseDisposablePolicy: "judge-only"` keeps the clone's base-checkout output
 after the same ignored-material and filesystem judgment. The target
 worktree's declared disposable output is still deleted at close. `loadConfig`
-composes the class's declaration into this sorted list, unchanged by WO-012:
+composes the class's declaration into this sorted list, unchanged by WO-012; WO-006 adds only the exact generated probe-diagnostic path below:
 
 ```json
-[".angular",".nx","__screenshots__","coverage","dist","node_modules","out-tsc","playwright-report","test-output","test-results","tmp"]
+[".angular",".nx","__screenshots__","coverage","dist","docs/control/local/harness/memory-incidents.jsonl","node_modules","out-tsc","playwright-report","test-output","test-results","tmp"]
 ```
+
+The bounded probe wrapper can create the named diagnostic in the target worktree.
+Treat it as private: ignore it and exclude it from review packets; only that
+exact generated file is disposable, not the surrounding local-control directory.
 
 The match is relative to each checkout, not a directory-name glob:
 `test-output/result.json` is covered, while
@@ -223,12 +234,13 @@ no host-qualification claim.
 
 - Standalone bootstrap: `apps/dotln/src/main.ts`.
 - Zoneless, router and fetch HTTP providers: `apps/dotln/src/app/app.config.ts`.
-- Slim outlet shell and lazy home route: `apps/dotln/src/app/app.ts`
+- Projected shell and lazy board route: `apps/dotln/src/app/app.ts`
   and `apps/dotln/src/app/app.routes.ts`.
 - Tagged dependencies: `eslint.config.mjs`; the isolated fixture runner is
   `tools/check-lint-fixtures.mjs`.
 - Unit and browser checks: `apps/dotln/src/app/app.spec.ts`,
-  `apps/dotln/src/app/home.spec.ts`, `apps/dotln-e2e/src/example.spec.ts`.
+  `apps/dotln-e2e/src/board.spec.ts`, `apps/dotln-e2e/src/storybook.spec.ts`
+  and the two `*.visual.spec.ts` files.
 - Provider composition:
   `libs/shared/core/src/lib/providers/provide-dotln-core.ts`.
 - Typed environment and token:
@@ -245,8 +257,23 @@ no host-qualification claim.
   `libs/shared/i18n/testing/src/lib/i18n-test-kits.ts`, exported through each
   library's `testing` secondary entry point.
 
-Wrappers, composites, layouts, mappers, containers, facades, stores, MSW
-handlers, interceptors and guards remain later workstream members.
+- Fragment: `libs/shared/ui/src/lib/fragments/badge/badge.ts`.
+- Template: `libs/shared/ui/src/lib/templates/button/button.ts`.
+- Wrapper: `libs/shared/ui/src/lib/wrappers/tabs/tabs.ts`.
+- Composite: `libs/features/board/src/lib/composites/board-row/board-row.ts`.
+- Layout: `libs/dotln/shell/src/lib/layouts/app-layout/app-layout.ts`.
+- Mapper: `libs/features/board/src/lib/mappers/cell-value-mapper/cell-value-mapper.ts`.
+- Container: `libs/features/board/src/lib/containers/board-page/board-page.ts`.
+- Facade: `libs/features/board/src/lib/facades/board.facade.ts`.
+- Data path: scrubbed `libs/features/board/src/testing/fixtures/launchpad-board-2026-10-21.json`
+  through `BoardFixtureToken`, facade, container, composites and mappers; WO-007
+  supplies HTTP/MSW and a later platform host supplies live data.
+- Role and convention checks: `eslint.config.mjs`, `tools/check-taxonomy-fixtures.mjs`,
+  `tools/scripts/check-component-order.mjs` and `tools/scripts/check-shared-types.mjs`.
+- Component catalog: `.storybook/`, component-local stories, and
+  `docs/dev-reference/workspace/storybook.md`.
+
+Stores, MSW handlers, interceptors and guards remain later workstream members.
 
 ## Upstream references
 
@@ -263,11 +290,12 @@ handlers, interceptors and guards remain later workstream members.
   installed (planning pass of 2026-10-21, D2). PrimeNG 22.x ships under the
   PrimeUI License with a required key, and its last MIT release peers
   Angular 21, so it is not a candidate.
-- `DylanBWood/DotLn@a54f8d65 packages/console/uifa-board-v1.schema.json`,
+- `DylanBWood/DotLn@a54f8d6520ed54d05e5209455c67541562716404 packages/console/uifa-board-v1.schema.json`,
   `packages/console/README.md` and `docs/product/04-interfaces.md`
   (§Plural UI hosts, one projection contract; §Actor board v0; §Later
   console hosts; §Console parity contract v1) — the view model the `board`
   feature renders and the host rules WS-001 §The console restates; WO-006
   pins the schema's commit and SHA-256 in its decisions and the generator
   log, and the pin is reported stale by `resume: status`, never a live
-  dependency.
+  dependency. The exact schema SHA-256 is
+  `7d20e785c718b4b601f45a9c351461955666ea16d49f17ae6d8fde0676629cd3`.

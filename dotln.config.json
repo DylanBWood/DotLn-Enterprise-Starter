@@ -2,23 +2,40 @@
   "version": 1,
   "classes": {
     "angular-nx-monorepo": {
-      "checks": [], "supports": [],
+      "checks": [],
+      "supports": [],
       "disposable": [
-        "node_modules", ".nx", "dist", ".angular", "coverage",
-        "test-output", "playwright-report", "test-results", "tmp",
-        "out-tsc", "__screenshots__"
+        ".angular",
+        ".nx",
+        "__screenshots__",
+        "coverage",
+        "dist",
+        "docs/control/local/harness/memory-incidents.jsonl",
+        "node_modules",
+        "out-tsc",
+        "playwright-report",
+        "test-output",
+        "test-results",
+        "tmp"
       ]
     }
   },
-  "release": { "displayName": "Launchpad" },
-  "contributions": { "operatorAuthor": "Dylan Wood <dylanwoodconsulting@gmail.com>" },
+  "release": {
+    "displayName": "Launchpad"
+  },
+  "contributions": {
+    "operatorAuthor": "Dylan Wood <dylanwoodconsulting@gmail.com>"
+  },
   "repositories": {
     "dotln-angular": {
       "baseBranch": "main",
       "worktreeParent": "..",
       "repositoryClass": "angular-nx-monorepo",
       "profile": "docs/repositories/dotln-angular.md",
-      "release": { "policy": "declared", "displayName": "DotLn Angular" },
+      "release": {
+        "policy": "declared",
+        "displayName": "DotLn Angular"
+      },
       "baseDisposablePolicy": "judge-only",
       "documentationRoot": "docs/dotln",
       "authorityProfile": {
@@ -34,41 +51,121 @@
           "pr.thread.resolve",
           "release.close"
         ],
-        "deniedEffects": ["package.publish"],
-        "resourceLimits": { "writers": 1 },
+        "deniedEffects": [
+          "package.publish"
+        ],
+        "resourceLimits": {
+          "writers": 1
+        },
         "requiredEvidence": [],
         "expiresAt": 4102444800000,
-        "revocationEventTypes": ["AuthorityRevoked"]
+        "revocationEventTypes": [
+          "AuthorityRevoked"
+        ]
       },
       "gate": {
         "commands": {
           "install": {
-            "argv": ["env", "NX_DAEMON=false", "npm", "ci"],
+            "argv": [
+              "env",
+              "NX_DAEMON=false",
+              "NX_ISOLATE_PLUGINS=false",
+              "npm",
+              "ci"
+            ],
             "timeoutMs": 600000
           },
           "lint": {
-            "argv": ["env", "NX_DAEMON=false", "npx", "nx", "run-many", "-t", "lint"],
+            "argv": [
+              "env",
+              "NX_DAEMON=false",
+              "NX_ISOLATE_PLUGINS=false",
+              "npx",
+              "nx",
+              "run-many",
+              "-t",
+              "lint"
+            ],
             "timeoutMs": 600000
           },
           "test": {
-            "argv": ["env", "NX_DAEMON=false", "npx", "nx", "run-many", "-t", "test"],
+            "argv": [
+              "env",
+              "NX_DAEMON=false",
+              "NX_ISOLATE_PLUGINS=false",
+              "npx",
+              "nx",
+              "run-many",
+              "-t",
+              "test"
+            ],
             "timeoutMs": 900000
           },
           "format": {
-            "argv": ["env", "NX_DAEMON=false", "npx", "nx", "format:check"],
+            "argv": [
+              "env",
+              "NX_DAEMON=false",
+              "NX_ISOLATE_PLUGINS=false",
+              "npx",
+              "nx",
+              "format:check"
+            ],
             "timeoutMs": 600000
           },
           "build": {
-            "argv": ["env", "NX_DAEMON=false", "npx", "nx", "run-many", "-t", "build"],
+            "argv": [
+              "env",
+              "NX_DAEMON=false",
+              "NX_ISOLATE_PLUGINS=false",
+              "npx",
+              "nx",
+              "run-many",
+              "-t",
+              "build"
+            ],
             "timeoutMs": 900000
           },
           "e2e": {
-            "argv": ["env", "NX_DAEMON=false", "npx", "nx", "run-many", "-t", "e2e"],
+            "argv": [
+              "env",
+              "NX_DAEMON=false",
+              "NX_ISOLATE_PLUGINS=false",
+              "npx",
+              "nx",
+              "run-many",
+              "-t",
+              "e2e"
+            ],
+            "timeoutMs": 1200000
+          },
+          "visual": {
+            "argv": [
+              "env",
+              "NX_DAEMON=false",
+              "NX_ISOLATE_PLUGINS=false",
+              "npx",
+              "nx",
+              "e2e-visual",
+              "dotln-e2e"
+            ],
             "timeoutMs": 1200000
           }
         },
-        "plain": ["install", "lint", "test", "format"],
-        "review": ["install", "lint", "test", "format", "build", "e2e"]
+        "plain": [
+          "install",
+          "lint",
+          "test",
+          "format"
+        ],
+        "review": [
+          "install",
+          "lint",
+          "test",
+          "format",
+          "build",
+          "e2e",
+          "visual"
+        ]
       }
     }
   }
