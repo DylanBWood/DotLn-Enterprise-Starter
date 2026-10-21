@@ -709,5 +709,19 @@ collector and builds projection; read-only Git and shell commands only; no
 planning document, receipt, intake, operator record, ledger or decision
 record; no kit, npm, network, model or agent command; no write. The
 judged, committed and workspace subjects agree (`sha256:2486099d…`).
-After the receipt, the known-issues record and D13, the second document
-gate is recorded below.
+After the receipt, the known-issues record and D13, the document gate at
+v0.88.0 in the primary checkout: 14 passed, 0 failed, 1,509.74 s of
+wall-clock with 14 fresh tasks, each task's own duration again under 6 s;
+the handoff run is in the pull request.
+
+Process cost at handoff (`node scripts/harness.mjs usage <session>`, source
+`claude-transcript-message-usage`, scope `dispatch`, observed
+2026-10-21T06:00:30Z): 20,347,242 total tokens (1,118 input, 19,481,406
+cached input, 642,838 cache-write, 221,880 output; reasoning tokens and
+cost unknown, the counters unavailable); 12 of 20 subagent admissions used,
+exact-observed, none unresolved. The fan-out matched the plan stated in §1
+after the operator's split of the intake: eleven research workers and one
+refuter, no descendants. The outcome matched the aim as read: WO-006 is
+activatable, the vendor is settled from the operator's direction and
+today's facts, the console's first screen is cut into WO-006 and the road
+after it is recorded.
