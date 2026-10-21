@@ -257,5 +257,17 @@ handlers, interceptors and guards remain later workstream members.
   guide and performance guidance house rule 1 defers to.
 - `ngrx/platform` — not installed in WO-004; record the selected version when
   later members add SignalStore and the Events plugin.
-- `primefaces/primeng` — not installed in WO-004; the vendor choice and its
-  license are checked when the feature order introduces wrappers.
+- `angular/components@v22.2.3 src/aria` and `src/cdk` — the behavior
+  libraries WO-006 wraps (Angular Aria, stable since v22 and MIT; the CDK's
+  overlay, a11y and dialog entry points); no vendor component library is
+  installed (planning pass of 2026-10-21, D2). PrimeNG 22.x ships under the
+  PrimeUI License with a required key, and its last MIT release peers
+  Angular 21, so it is not a candidate.
+- `DylanBWood/DotLn@a54f8d65 packages/console/uifa-board-v1.schema.json`,
+  `packages/console/README.md` and `docs/product/04-interfaces.md`
+  (§Plural UI hosts, one projection contract; §Actor board v0; §Later
+  console hosts; §Console parity contract v1) — the view model the `board`
+  feature renders and the host rules WS-001 §The console restates; WO-006
+  pins the schema's commit and SHA-256 in its decisions and the generator
+  log, and the pin is reported stale by `resume: status`, never a live
+  dependency.

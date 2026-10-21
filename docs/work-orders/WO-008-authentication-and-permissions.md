@@ -6,6 +6,7 @@
 **Track:** delivery
 **Release classification:** none; a target order records no launchpad release.
 **Repository:** dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4
+**Target release classification:** minor
 **Cost:** adds `libs/shared/auth` with its kit, the mocked identity provider
 handlers and signing key for development, the `authHttpEvents` and
 `sessionEvents` groups, guards, the permission directive, the `/login` and
@@ -33,7 +34,10 @@ packages. Amended by the 2026-10-18 main-rules planning pass
 the repairs of receipt 001's known issues.
 **Depends on:** WO-007 merged (hard: the event tiers, interceptors, stores and
 MSW this order extends; the base above is provisional and is set to WO-007's
-merge commit by the planning pass that follows it).
+merge commit by the planning pass that follows it). Amended by the 2026-10-21
+UI planning pass ([planning document](../planning/ui-planning-2026-10-21.md)
+§6 D1 and D4): the release header, the node-spelled draft publish and the
+board's path enum.
 **Workstream:** WS-001
 
 <!-- dotln-dependencies:start -->
@@ -97,7 +101,7 @@ later choice (a hosted provider) must drop in through configuration.
 - Permissions: `PermissionsStore` derives `roles` and `permissions` from the
   ID token and access token claims; `routePermissions` is a declared
   adjacency list in `core` (`Record<BasePaths, Permission[]>`, with
-  `HomePaths` nested); `canMatch` guards (`requirePermissions(...)`) read it;
+  `BoardPaths` nested); `canMatch` guards (`requirePermissions(...)`) read it;
   `*dotlnHasPermission` structural directive (a knowing directive in `auth`)
   hides elements; facades expose `can(permission)` for feature-level checks;
   denied navigation dispatches `navigationEvents.navigate({ route: BasePaths.Denied })`.
@@ -185,10 +189,11 @@ provider; the matrix tests; the two documents; `docs/evidence/WO-008/`.
     delivery states updated by the final review. Check: `npm run test:docs`.
 14. Commit; `implementation-ready`; handoff per §Discipline. After the
     session that records `verification-result pass` has done so, that
-    session runs
-    `npm run worktree -- publish WO-008 --target-worktree --draft --branch feat/authentication-and-permissions --title "feat: add authentication and permissions" --body-file <reviewed path>`,
-    which commits from the tree without moving `HEAD`, pushes the branch and
-    opens the draft pull request.
+    session runs, from the launchpad root,
+    `node scripts/worktree.mjs publish WO-008 --target-worktree --draft --branch feat/authentication-and-permissions --title "feat: add authentication and permissions" --body-file <reviewed path>`
+    (the node spelling is the only form the kit admits for a registered
+    target since starter v0.87.0), which commits from the tree without
+    moving `HEAD`, pushes the branch and opens the draft pull request.
 15. At final review: read the draft's threads and workflow runs into
     `docs/evidence/WO-008/preview-pr.json` and route each item,
     `target-records`, then the same publish command without `--draft`, which
@@ -256,9 +261,10 @@ activates only on a launchpad whose starter carries core WO-221's `--draft`
 form (WO-005 step 1's route guard); the draft pull request and its workflow
 runs are a final-review obligation read from
 `docs/evidence/WO-008/preview-pr.json`, never a criterion (main-rules
-planning document §6 D5 and D7). The `Target release classification` line
-and the Preflight line in the landed grammar are added by the pass that sets
-the base.
+planning document §6 D5 and D7). The `Target release classification`
+header was added by the UI planning pass of 2026-10-21 under WO-012's
+declared policy (`DotLn Angular` releases; minor, a feature release); the
+pass that sets the base confirms it.
 
 **Non-goals:** a real identity provider or API; a backend-for-frontend;
 multi-factor flows; user management screens; social login.

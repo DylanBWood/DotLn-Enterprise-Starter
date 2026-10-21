@@ -869,6 +869,14 @@
           "reopenWhen": "The next UI planning pass or before activation of WO-006; amend the judged order with current licensing and a representative Aria evaluation.",
           "targets": [],
           "at": "2026-10-20T14:49:56.918Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-21 UI planning pass, D2: PrimeNG 22.x ships under the PrimeUI License with a required key and its last MIT release peers Angular 21 (observed 2026-10-21); the component layer is house-owned with @angular/aria 22.2.3 (stable since v22, MIT) and @angular/cdk behind wrappers; the Aria evaluation WO-005-D006 asked for is WO-006's step 2 with the Tabs pattern as the representative component, recorded in its decisions.",
+          "reopenWhen": "WO-006's step 2 evaluation fails on keyboard, focus or axe (then CDK-only house behavior is recorded), or the operator changes the ownership or licensing tradeoff.",
+          "targets": [],
+          "at": "2026-10-21T04:49:30.204Z"
         }
       ]
     },
@@ -893,6 +901,16 @@
           "reopenWhen": "The UI planning pass amends WO-006 or an order edits the lint rules.",
           "targets": [],
           "at": "2026-10-20T20:12:11.755Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "2026-10-21 UI planning pass, D1: WO-006's step 6 makes @typescript-eslint/prefer-readonly effective, with type information, under every project configuration, with a fixture that fails on a never-reassigned private member and a passing control.",
+          "reopenWhen": "WO-006 merges without the repair, or a lint run admits a never-reassigned private member after it.",
+          "targets": [
+            "WO-006"
+          ],
+          "at": "2026-10-21T04:49:30.220Z"
         }
       ]
     },
@@ -1106,6 +1124,16 @@
           "reopenWhen": "The next planning pass or repair that edits the lint rules or the Prettier configuration.",
           "targets": [],
           "at": "2026-10-20T16:37:52.760Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "2026-10-21 UI planning pass, D1: WO-006's step 6 adds the inline-template rule (a newline after the opening backtick and the closing backtick on its own line) with a fixture and applies it to the existing components.",
+          "reopenWhen": "WO-006 merges without the rule.",
+          "targets": [
+            "WO-006"
+          ],
+          "at": "2026-10-21T04:49:30.216Z"
         }
       ]
     },
@@ -1130,6 +1158,16 @@
           "reopenWhen": "The next planning pass or repair that edits the lint rules.",
           "targets": [],
           "at": "2026-10-20T16:37:52.763Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "2026-10-21 UI planning pass, D1: WO-006's step 6 adds the autofixable import-order rule with three groups separated by one blank line (packages, @dotln-angular/* aliases, relative imports with the furthest parent first) and its fixture.",
+          "reopenWhen": "WO-006 merges without the rule.",
+          "targets": [
+            "WO-006"
+          ],
+          "at": "2026-10-21T04:49:30.212Z"
         }
       ]
     },
@@ -1162,6 +1200,16 @@
           "reopenWhen": "The UI planning pass amends WO-006 or an order edits the lint rules; then the check that lists a type alias or interface name declared in more than one file under libs/shared lands with it.",
           "targets": [],
           "at": "2026-10-20T20:12:11.752Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "2026-10-21 UI planning pass, D1: WO-006 is the first order that edits the lint rules; its step 6 adds the house check that lists a type alias or interface name declared in more than one file under libs/shared, run by tools:lint, with a fixture, under house rule 13's per-library types.ts convention.",
+          "reopenWhen": "WO-006 merges without the check, or a second declaration appears before it merges.",
+          "targets": [
+            "WO-006"
+          ],
+          "at": "2026-10-21T04:49:30.208Z"
         }
       ]
     },
@@ -1186,6 +1234,14 @@
           "reopenWhen": "The operator opens the UI planning pass before WO-006, or directs WO-006 to proceed with its filed vendor.",
           "targets": [],
           "at": "2026-10-20T20:12:11.763Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-21 UI planning pass, D1 to D3: WO-006's Repository line reads 5102783f (WO-005's merge commit), its Target release classification header (minor) and typed hard edge on WO-012 are added, the node-spelled draft publish is in its steps, the vendor is settled as the house component library over Angular Aria and the CDK behind wrappers, and the feature is the actor board over uifa-board-v1.",
+          "reopenWhen": "WO-006's activation finds its base, header or edge wrong, or the operator names another vendor or first screen.",
+          "targets": [],
+          "at": "2026-10-21T04:49:30.200Z"
         }
       ]
     },
@@ -1258,6 +1314,174 @@
           "reopenWhen": "The next core planning pass considers this parser defect, a starter release carries the fix, or a target authority contains a malformed duplicate.",
           "targets": [],
           "at": "2026-10-21T03:01:24.246Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-70df0fbdafe8c2d6",
+      "key": "candidate:docs/planning/ui-planning-2026-10-21.md#candidates-not-filed-with-their-reopening-conditions-section-10::0bf68ce447f5790d4dfe3d1c2319525b37d05c22f86632e2c367b05b70e31624",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "5596d81db670edfbf90bfbfd21263993d2f6160f0a7756f632ecd0f1407796f4",
+          "ref": "docs/planning/ui-planning-2026-10-21.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C4 The arrival screen: what changed since the last visit, what is in progress, what needs a decision, what can continue under existing authority.",
+          "summary": "- **C4 The arrival screen: what changed since the last visit, what is in progress, what needs a decision, what can continue under existing authority.** Reopen when C1 exists and the audit projection is served to a browser host.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-21 UI planning pass, D5 and C4: the arrival screen (what changed since the last visit, what is in progress, what needs a decision, what can continue) needs the live view and the audit projection served to a browser host.",
+          "reopenWhen": "The live view (C1) exists and the audit projection is served to a browser host.",
+          "targets": [],
+          "at": "2026-10-21T04:49:30.237Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-deccd7ed510d2b77",
+      "key": "candidate:docs/planning/ui-planning-2026-10-21.md#candidates-not-filed-with-their-reopening-conditions-section-10::27709b97a75e878add734c4861350360206e15e4a14cce766729ef1500d99686",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "438b3b3ba44a247f72d9171b9849488801e6c1050f697121edc7449237a3983d",
+          "ref": "docs/planning/ui-planning-2026-10-21.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C3 The pattern workshop, the genesis: drop a book-derived support on an actor, see the compiled diff and the effect before confirming; saved builds; the RPG and emoji skins over the plain one.",
+          "summary": "- **C3 The pattern workshop, the genesis: drop a book-derived support on an actor, see the compiled diff and the effect before confirming; saved builds; the RPG and emoji skins over the plain one.** Reopen when core's contract carries equip preview, the compiled diff and saved-build selection (its roadmap's pattern workshop rung) and C2 exists.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-21 UI planning pass, D5 and C3: the pattern workshop (the genesis: drop a book-derived support on an actor and see the effect) needs equip preview, the compiled diff and saved-build selection in core's contract, which core's roadmap holds as its pattern workshop rung; the RPG and emoji skins arrive with it over the plain skin.",
+          "reopenWhen": "Core's contract carries equip preview, the compiled diff and saved-build selection, and the command surface (C2) exists.",
+          "targets": [],
+          "at": "2026-10-21T04:49:30.232Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2af7f27fd0e0fe34",
+      "key": "candidate:docs/planning/ui-planning-2026-10-21.md#candidates-not-filed-with-their-reopening-conditions-section-10::2cff719c74cdd4583371ca1de22e6f67e429e927a8f0381c3bbf34580f53f73c",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "412f24fec032eafc74325a2d0b15f3ddcaf6dac4ff6c66a1da23b511fa009792",
+          "ref": "docs/planning/ui-planning-2026-10-21.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C1 The live view over runtime-status-v1: actors, live episodes, presence, holds, budget and every open order's phase; the operator's check-in on running sessions through the UI alone.",
+          "summary": "- **C1 The live view over `runtime-status-v1`: actors, live episodes, presence, holds, budget and every open order's phase; the operator's check-in on running sessions through the UI alone.** Reopen when a resident writes the status file for this launchpad, or core serves it to a browser host; then a `WS-001` member reads it as WO-007 reads the board.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-21 UI planning pass, D5 and C1: the live view needs runtime-status-v1, which no resident writes for this launchpad and which core does not serve to a browser host; the operator's check-in on running sessions through the UI alone waits on it.",
+          "reopenWhen": "A resident writes the status file for this launchpad, or core serves it to a browser host; then a WS-001 member reads it as WO-007 reads the board.",
+          "targets": [],
+          "at": "2026-10-21T04:49:30.225Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-64fb4e3de04debbe",
+      "key": "candidate:docs/planning/ui-planning-2026-10-21.md#candidates-not-filed-with-their-reopening-conditions-section-10::6e0f861d409839a1a01d4ccc89db75f557dcdf82d17edabec39bdbfb08b44158",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "84b79a638bcb2c795118e6712aafc36e56e2a849f50c82c87eec8035df8db7a8",
+          "ref": "docs/planning/ui-planning-2026-10-21.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C5 Counterfactual and QA views: compare configurations, event paths and costs; the tester's mechanisms and acceptance matrices beyond the board's rows.",
+          "summary": "- **C5 Counterfactual and QA views: compare configurations, event paths and costs; the tester's mechanisms and acceptance matrices beyond the board's rows.** Reopen when core publishes those records as view models.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-21 UI planning pass, D5 and C5: counterfactual and QA views need the platform's counterfactual and acceptance records published as view models; the board's Mechanisms panel carries the acceptance rows that exist today.",
+          "reopenWhen": "Core publishes counterfactual or acceptance records as view models.",
+          "targets": [],
+          "at": "2026-10-21T04:49:30.241Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-db45bfeb533eeee6",
+      "key": "candidate:docs/planning/ui-planning-2026-10-21.md#candidates-not-filed-with-their-reopening-conditions-section-10::c0c8b1d707bf9c77eedf41713b59f9d8c2760807d720cff67cfe522188dba8ea",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "8de2bd1fbb8d63d1f7fc5f813f911e63aa863588130730492c4684c8e6c54838",
+          "ref": "docs/planning/ui-planning-2026-10-21.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C7 The console framework evidence to core.",
+          "summary": "- **C7 The console framework evidence to core.** Reopen when WO-006's evidence records the bundle bytes, type cost, maintenance and interoperability of the Aria route; then the next requests-to-core prompt carries it for core's deferred framework decision.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-21 UI planning pass, D5 and C7: core's console framework decision waits on the shell's evidence; WO-006's step 2 records the bundle bytes, type cost, maintenance and interoperability of the Aria route, and the next requests-to-core prompt carries them.",
+          "reopenWhen": "WO-006's evidence records the readings; then the next pass's requests-to-core prompt carries them.",
+          "targets": [],
+          "at": "2026-10-21T04:49:30.250Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1f5953e14b1077b4",
+      "key": "candidate:docs/planning/ui-planning-2026-10-21.md#candidates-not-filed-with-their-reopening-conditions-section-10::ca44d8dbe373aa4a2c232197fec6b3ff36706526e0532c48d193ac8c6d0bb37e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "865c9d17b9881a09305b2c75ce4e95d7a6b8a421685c7ca02ecbd7ec8210cb1f",
+          "ref": "docs/planning/ui-planning-2026-10-21.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C6 The readable work view: future orders only, in sequence, with purpose and dependencies; releases and what each contained; costs per actor.",
+          "summary": "- **C6 The readable work view: future orders only, in sequence, with purpose and dependencies; releases and what each contained; costs per actor.** Reopen when core reads an export's control segments into the board's Work panel (§11) or publishes a work view model; the board's `usage` and `releases` sections already serve part of it.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-21 UI planning pass, D5 and C6: the readable work view (future orders only, in sequence, with purpose and dependencies; releases and what each contained; costs per actor) needs the board's Work panel to read an export's control segments, which it reports unavailable today (the fork's requests-to-core prompt item 5); the usage and releases sections already serve part of it.",
+          "reopenWhen": "Core reads an export's control segments into the board's Work panel or publishes a work view model.",
+          "targets": [],
+          "at": "2026-10-21T04:49:30.245Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d50229455aad453c",
+      "key": "candidate:docs/planning/ui-planning-2026-10-21.md#candidates-not-filed-with-their-reopening-conditions-section-10::e740e197265e946438d85c31f3be4fd075b3a05c36f4d01cdd868c5232adc29b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "bf14a957b499b460d0cae4f5e4360f5bf41429d26fa9b431eba63b4e57a3d2df",
+          "ref": "docs/planning/ui-planning-2026-10-21.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C2 The command surface over console-commands-v1: the resume phrases, away and back, intent declaration and the audit read from the console.",
+          "summary": "- **C2 The command surface over `console-commands-v1`: the resume phrases, `away` and `back`, intent declaration and the audit read from the console.** Reopen when core serves the contract to a browser host (the loopback is bound to the local user and refuses non-local origins by design; §11 asks for the bridge) and WO-008's session model exists.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-21 UI planning pass, D5 and C2: the command surface needs console-commands-v1 served to a browser host; the loopback is bound to the local user and refuses non-local origins by design, and the fork's requests-to-core prompt asks for the bridge.",
+          "reopenWhen": "Core serves the contract to a browser host and WO-008's session model exists.",
+          "targets": [],
+          "at": "2026-10-21T04:49:30.228Z"
         }
       ]
     }

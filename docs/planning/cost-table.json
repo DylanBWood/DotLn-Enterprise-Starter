@@ -1,28 +1,23 @@
 {
   "schemaVersion": 1,
-  "subjectSourceHash": "sha256:71889fc8a760f585b41bbe718c15c7505de8f067967a9c90ab466945a4ac9420",
+  "subjectSourceHash": "sha256:7e820dd04a9cfa60aaa493fd9a46fa74a533fd1ed9df64b111a3972f54b62a8b",
   "acceptances": [],
-  "observedAt": "2026-10-21T02:46:42.030Z",
-  "subjectRevision": "febec0456b91b206b99aa0f7363f0a2a0ef49b2a",
+  "observedAt": "2026-10-21T05:34:21.244Z",
+  "subjectRevision": "485678d055b27d5dc36816c26cc536611666f9fb",
   "rows": [
     {
-      "workOrder": "WO-012",
-      "observedAt": "2026-10-21T02:46:42.030Z",
-      "metrics": null
-    },
-    {
       "workOrder": "WO-006",
-      "observedAt": "2026-10-21T02:46:42.030Z",
+      "observedAt": "2026-10-21T05:34:21.244Z",
       "metrics": null
     },
     {
       "workOrder": "WO-007",
-      "observedAt": "2026-10-21T02:46:42.030Z",
+      "observedAt": "2026-10-21T05:34:21.244Z",
       "metrics": null
     },
     {
       "workOrder": "WO-008",
-      "observedAt": "2026-10-21T02:46:42.030Z",
+      "observedAt": "2026-10-21T05:34:21.244Z",
       "metrics": null
     }
   ],
@@ -32,11 +27,6 @@
       "signal": "Read-obligation bytes against diff bytes; Stop refusals and re-announcements",
       "metric": "readAmplification",
       "series": [
-        {
-          "workOrder": "WO-004",
-          "value": null,
-          "delta": null
-        },
         {
           "workOrder": "WO-009",
           "value": null,
@@ -56,17 +46,17 @@
           "workOrder": "WO-005",
           "value": null,
           "delta": null
+        },
+        {
+          "workOrder": "WO-012",
+          "value": 18.556229327453142,
+          "delta": null
         }
       ],
       "indicators": [
         {
           "metric": "readAmplification",
           "series": [
-            {
-              "workOrder": "WO-004",
-              "value": null,
-              "delta": null
-            },
             {
               "workOrder": "WO-009",
               "value": null,
@@ -85,6 +75,11 @@
             {
               "workOrder": "WO-005",
               "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-012",
+              "value": 18.556229327453142,
               "delta": null
             }
           ]
@@ -93,11 +88,6 @@
           "metric": "stopRefusals",
           "series": [
             {
-              "workOrder": "WO-004",
-              "value": null,
-              "delta": null
-            },
-            {
               "workOrder": "WO-009",
               "value": 0,
               "delta": null
@@ -115,6 +105,11 @@
             {
               "workOrder": "WO-005",
               "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-012",
+              "value": 0,
               "delta": null
             }
           ]
@@ -123,11 +118,6 @@
           "metric": "reAnnouncements",
           "series": [
             {
-              "workOrder": "WO-004",
-              "value": null,
-              "delta": null
-            },
-            {
               "workOrder": "WO-009",
               "value": null,
               "delta": null
@@ -144,6 +134,11 @@
             },
             {
               "workOrder": "WO-005",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-012",
               "value": null,
               "delta": null
             }
@@ -159,14 +154,9 @@
       "metric": "machineryShare",
       "series": [
         {
-          "workOrder": "WO-004",
-          "value": 0.6901825050206487,
-          "delta": null
-        },
-        {
           "workOrder": "WO-009",
           "value": 0.7147504238067274,
-          "delta": 0.02456791878607867
+          "delta": null
         },
         {
           "workOrder": "WO-010",
@@ -182,6 +172,11 @@
           "workOrder": "WO-005",
           "value": 0.5206116443737944,
           "delta": -0.015040469050658256
+        },
+        {
+          "workOrder": "WO-012",
+          "value": 0.7557616192455047,
+          "delta": 0.2351499748717103
         }
       ],
       "indicators": [
@@ -189,14 +184,9 @@
           "metric": "machineryShare",
           "series": [
             {
-              "workOrder": "WO-004",
-              "value": 0.6901825050206487,
-              "delta": null
-            },
-            {
               "workOrder": "WO-009",
               "value": 0.7147504238067274,
-              "delta": 0.02456791878607867
+              "delta": null
             },
             {
               "workOrder": "WO-010",
@@ -212,17 +202,17 @@
               "workOrder": "WO-005",
               "value": 0.5206116443737944,
               "delta": -0.015040469050658256
+            },
+            {
+              "workOrder": "WO-012",
+              "value": 0.7557616192455047,
+              "delta": 0.2351499748717103
             }
           ]
         },
         {
           "metric": "elapsedPerCodeByte",
           "series": [
-            {
-              "workOrder": "WO-004",
-              "value": null,
-              "delta": null
-            },
             {
               "workOrder": "WO-009",
               "value": null,
@@ -242,6 +232,11 @@
               "workOrder": "WO-005",
               "value": null,
               "delta": null
+            },
+            {
+              "workOrder": "WO-012",
+              "value": 2069.9746416758544,
+              "delta": null
             }
           ]
         }
@@ -253,14 +248,6 @@
       "id": "shifting-the-burden-to-the-intervenor",
       "signal": "Operator corrections and directions, manual closeout steps and emergency planning passes",
       "corrections": [
-        {
-          "workOrder": "WO-004",
-          "total": null,
-          "byPhase": null,
-          "byUnit": null,
-          "byPhaseAndUnit": null,
-          "source": "unavailable"
-        },
         {
           "workOrder": "WO-009",
           "total": 0,
@@ -308,30 +295,25 @@
           "byUnit": null,
           "byPhaseAndUnit": null,
           "source": "unavailable"
+        },
+        {
+          "workOrder": "WO-012",
+          "total": 1,
+          "byPhase": {
+            "verification": 1
+          },
+          "byUnit": {
+            "unnamed": 1
+          },
+          "byPhaseAndUnit": {
+            "verification": {
+              "unnamed": 1
+            }
+          },
+          "source": "session-journal"
         }
       ],
       "directions": [
-        {
-          "workOrder": "WO-004",
-          "total": 1,
-          "byKind": {
-            "scopeExpand": 0,
-            "operatorOverride": 0,
-            "analysis": 0,
-            "conversationOnly": 0,
-            "operatorLabel": 0,
-            "resumeCorrection": 0,
-            "resumeDirection": 0,
-            "resumeScopeExpansion": 0,
-            "resumeOverride": 0,
-            "resumeTakeover": 0,
-            "resumeAnswer": 0,
-            "OperatorOverrideRecorded": 0,
-            "RecordCorrected": 0,
-            "CriterionWaived": 1
-          },
-          "source": "committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events"
-        },
         {
           "workOrder": "WO-009",
           "total": 0,
@@ -397,7 +379,28 @@
         },
         {
           "workOrder": "WO-005",
-          "total": 0,
+          "total": 5,
+          "byKind": {
+            "scopeExpand": 0,
+            "operatorOverride": 0,
+            "analysis": 0,
+            "conversationOnly": 0,
+            "operatorLabel": 0,
+            "resumeCorrection": 1,
+            "resumeDirection": 4,
+            "resumeScopeExpansion": 0,
+            "resumeOverride": 0,
+            "resumeTakeover": 0,
+            "resumeAnswer": 0,
+            "OperatorOverrideRecorded": 0,
+            "RecordCorrected": 0,
+            "CriterionWaived": 0
+          },
+          "source": "committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events"
+        },
+        {
+          "workOrder": "WO-012",
+          "total": 1,
           "byKind": {
             "scopeExpand": 0,
             "operatorOverride": 0,
@@ -405,7 +408,7 @@
             "conversationOnly": 0,
             "operatorLabel": 0,
             "resumeCorrection": 0,
-            "resumeDirection": 0,
+            "resumeDirection": 1,
             "resumeScopeExpansion": 0,
             "resumeOverride": 0,
             "resumeTakeover": 0,
@@ -419,11 +422,6 @@
       ],
       "metric": "operatorCorrections",
       "series": [
-        {
-          "workOrder": "WO-004",
-          "value": null,
-          "delta": null
-        },
         {
           "workOrder": "WO-009",
           "value": 0,
@@ -443,17 +441,17 @@
           "workOrder": "WO-005",
           "value": null,
           "delta": null
+        },
+        {
+          "workOrder": "WO-012",
+          "value": 1,
+          "delta": null
         }
       ],
       "indicators": [
         {
           "metric": "operatorCorrections",
           "series": [
-            {
-              "workOrder": "WO-004",
-              "value": null,
-              "delta": null
-            },
             {
               "workOrder": "WO-009",
               "value": 0,
@@ -473,6 +471,11 @@
               "workOrder": "WO-005",
               "value": null,
               "delta": null
+            },
+            {
+              "workOrder": "WO-012",
+              "value": 1,
+              "delta": null
             }
           ]
         },
@@ -480,14 +483,9 @@
           "metric": "operatorDirections",
           "series": [
             {
-              "workOrder": "WO-004",
-              "value": 1,
-              "delta": null
-            },
-            {
               "workOrder": "WO-009",
               "value": 0,
-              "delta": -1
+              "delta": null
             },
             {
               "workOrder": "WO-010",
@@ -501,19 +499,19 @@
             },
             {
               "workOrder": "WO-005",
-              "value": 0,
-              "delta": -1
+              "value": 5,
+              "delta": 4
+            },
+            {
+              "workOrder": "WO-012",
+              "value": 1,
+              "delta": -4
             }
           ]
         },
         {
           "metric": "manualCloseoutSteps",
           "series": [
-            {
-              "workOrder": "WO-004",
-              "value": null,
-              "delta": null
-            },
             {
               "workOrder": "WO-009",
               "value": null,
@@ -531,6 +529,11 @@
             },
             {
               "workOrder": "WO-005",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-012",
               "value": null,
               "delta": null
             }
@@ -540,11 +543,6 @@
           "metric": "emergencyPasses",
           "series": [
             {
-              "workOrder": "WO-004",
-              "value": null,
-              "delta": null
-            },
-            {
               "workOrder": "WO-009",
               "value": null,
               "delta": null
@@ -563,6 +561,11 @@
               "workOrder": "WO-005",
               "value": null,
               "delta": null
+            },
+            {
+              "workOrder": "WO-012",
+              "value": null,
+              "delta": null
             }
           ]
         }
@@ -570,6 +573,11 @@
       "worsening": [],
       "reopenCandidate": false,
       "planningCaptures": [
+        {
+          "pass": "planning-24597b606f20e33d",
+          "date": "2026-10-21",
+          "captures": 1
+        },
         {
           "pass": "planning-fc1c0ec6bba3073a",
           "date": "2026-10-21",
@@ -603,11 +611,6 @@
       "metric": "coldStartBytes",
       "series": [
         {
-          "workOrder": "WO-004",
-          "value": null,
-          "delta": null
-        },
-        {
           "workOrder": "WO-009",
           "value": 29364,
           "delta": null
@@ -626,17 +629,17 @@
           "workOrder": "WO-005",
           "value": null,
           "delta": null
+        },
+        {
+          "workOrder": "WO-012",
+          "value": 29364,
+          "delta": null
         }
       ],
       "indicators": [
         {
           "metric": "coldStartBytes",
           "series": [
-            {
-              "workOrder": "WO-004",
-              "value": null,
-              "delta": null
-            },
             {
               "workOrder": "WO-009",
               "value": 29364,
@@ -656,17 +659,17 @@
               "workOrder": "WO-005",
               "value": null,
               "delta": null
+            },
+            {
+              "workOrder": "WO-012",
+              "value": 29364,
+              "delta": null
             }
           ]
         },
         {
           "metric": "subjectCharacters",
           "series": [
-            {
-              "workOrder": "WO-004",
-              "value": 85,
-              "delta": null
-            },
             {
               "workOrder": "WO-009",
               "value": null,
@@ -686,6 +689,11 @@
               "workOrder": "WO-005",
               "value": 98,
               "delta": 11
+            },
+            {
+              "workOrder": "WO-012",
+              "value": 117,
+              "delta": 19
             }
           ]
         },
@@ -693,14 +701,9 @@
           "metric": "gateStepCount",
           "series": [
             {
-              "workOrder": "WO-004",
-              "value": 2,
-              "delta": null
-            },
-            {
               "workOrder": "WO-009",
               "value": 7,
-              "delta": 5
+              "delta": null
             },
             {
               "workOrder": "WO-010",
@@ -716,6 +719,11 @@
               "workOrder": "WO-005",
               "value": 7,
               "delta": 0
+            },
+            {
+              "workOrder": "WO-012",
+              "value": 7,
+              "delta": 0
             }
           ]
         }
@@ -723,7 +731,7 @@
       "worsening": [],
       "reopenCandidate": false,
       "coldStart": {
-        "comparisonEdition": "v0.3.2",
+        "comparisonEdition": "v0.3.3",
         "profiles": [
           {
             "role": "executor",
@@ -795,9 +803,9 @@
             "role": "release-close",
             "skillsRoot": ".claude/skills",
             "path": ".claude/skills/dotln-release-close/SKILL.md",
-            "skillBytes": 10593,
-            "bytes": 17616,
-            "previousBytes": 17616,
+            "skillBytes": 10867,
+            "bytes": 17890,
+            "previousBytes": 17890,
             "previousCause": null,
             "delta": 0,
             "ceiling": null,
@@ -927,9 +935,9 @@
             "role": "release-close",
             "skillsRoot": ".agents/skills",
             "path": ".agents/skills/dotln-release-close/SKILL.md",
-            "skillBytes": 10593,
-            "bytes": 17616,
-            "previousBytes": 17616,
+            "skillBytes": 10867,
+            "bytes": 17890,
+            "previousBytes": 17890,
             "previousCause": null,
             "delta": 0,
             "ceiling": null,
@@ -998,11 +1006,6 @@
       "metric": "guardRefusals",
       "series": [
         {
-          "workOrder": "WO-004",
-          "value": null,
-          "delta": null
-        },
-        {
           "workOrder": "WO-009",
           "value": 1,
           "delta": null
@@ -1021,17 +1024,17 @@
           "workOrder": "WO-005",
           "value": null,
           "delta": null
+        },
+        {
+          "workOrder": "WO-012",
+          "value": 0,
+          "delta": null
         }
       ],
       "indicators": [
         {
           "metric": "guardRefusals",
           "series": [
-            {
-              "workOrder": "WO-004",
-              "value": null,
-              "delta": null
-            },
             {
               "workOrder": "WO-009",
               "value": 1,
@@ -1051,17 +1054,17 @@
               "workOrder": "WO-005",
               "value": null,
               "delta": null
+            },
+            {
+              "workOrder": "WO-012",
+              "value": 0,
+              "delta": null
             }
           ]
         },
         {
           "metric": "bypassTools",
           "series": [
-            {
-              "workOrder": "WO-004",
-              "value": null,
-              "delta": null
-            },
             {
               "workOrder": "WO-009",
               "value": null,
@@ -1079,6 +1082,11 @@
             },
             {
               "workOrder": "WO-005",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-012",
               "value": null,
               "delta": null
             }
@@ -1088,11 +1096,6 @@
           "metric": "adHocScripts",
           "series": [
             {
-              "workOrder": "WO-004",
-              "value": null,
-              "delta": null
-            },
-            {
               "workOrder": "WO-009",
               "value": null,
               "delta": null
@@ -1109,6 +1112,11 @@
             },
             {
               "workOrder": "WO-005",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-012",
               "value": null,
               "delta": null
             }
@@ -1120,7 +1128,7 @@
     }
   ],
   "firstVerifications": {
-    "counted": 7,
+    "counted": 8,
     "failed": 1,
     "orders": [
       {
@@ -1149,6 +1157,10 @@
       },
       {
         "workOrder": "WO-005",
+        "firstVerification": "pass"
+      },
+      {
+        "workOrder": "WO-012",
         "firstVerification": "pass"
       }
     ],

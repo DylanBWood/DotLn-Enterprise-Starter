@@ -31,21 +31,25 @@ the last member's pull request.
 | WO-004 | dotln-angular | `bc9133e932a00d33c15bc5289d683b8078f51ee4` | scaffolds the Nx and Angular workspace, tooling, CI and the two documentation roots  |
 | WO-011 | self          | this launchpad's `main` after update #8    | declares the class's disposable output and the tag guard the v0.85.0 close needs; the target release waited on the kit's display name |
 | WO-005 | dotln-angular | `651d76ff68e9b3a38fe770226deb634bca28b54c` | foundation libraries: core, utils, i18n, the test-kit convention; base set 2026-10-18 |
-| WO-012 | self          | this launchpad's `main` after update #16 | declares the target release policy and the name `DotLn Angular`, the judge-only base checkout and the operator's commit identity that starter v0.87.0 admits (taken inside v0.88.0), and the operator grant naming `release.close` |
-| WO-006 | dotln-angular | provisional; set when WO-005 merges        | the component taxonomy, PrimeNG behind wrappers, the shell layout, the home feature  |
-| WO-007 | dotln-angular | provisional; set when WO-006 merges        | events, signal stores, call state, data access, MSW, navigation and flags            |
+| WO-012 | self          | this launchpad's `main` after update #16 | declares the target release policy and the name `DotLn Angular`, the judge-only base checkout and the operator's commit identity that starter v0.87.0 admits (taken inside v0.88.0), and the operator grant naming `release.close`; closed 2026-10-21 as Launchpad v0.3.3 |
+| WO-006 | dotln-angular | `5102783f5cf575a6b487e75ed9bb0c064d6dbd9c` | the component taxonomy, the house `ui` library with Angular Aria and the CDK behind wrappers, the shell layout, the `board` feature rendering the actor board from a recorded fixture; base set 2026-10-21 |
+| WO-007 | dotln-angular | provisional; set when WO-006 merges        | events, signal stores, call state, data access, the board over HTTP answered by MSW, navigation and flags |
 | WO-008 | dotln-angular | provisional; set when WO-007 merges        | authentication and permissions, legitimate from the Angular side                     |
 
-Proposed later members, not yet filed (the planning document records each
-with its reopening condition): typed translation keys and their lint; the WoW
-app and its non-TypeScript libraries; the example API and a real identity
-provider behind the auth port; the DotLn console feature that renders the
-actor-board view model and grows into the operator's agent-orchestration UI,
-status and check-ins on running sessions through the UI alone (operator
-direction of 2026-10-18, capture SHA-256
-`b9e38a5ded14d08a7d235886bf014bb5fc1919e4cf2bff0a7efe34dd573bf3ca`); a
-production environment with file replacements and a `.env` primer, if WO-005
-leaves any of it out.
+Proposed later members, not yet filed (§The console below and the planning
+document record each with its reopening condition): the console's facets
+after the board, in the order their platform contracts land (the live view
+over `runtime-status-v1`; the command surface over the parity contract; the
+pattern workshop that overlays book-derived supports on actors and shows
+the effect; the arrival screen; counterfactual and QA views; skins); typed
+translation keys and their lint; the WoW app and its non-TypeScript
+libraries; the example API and a real identity provider behind the auth
+port; a production environment with file replacements and a `.env` primer,
+if WO-005 leaves any of it out. The operator's direction of 2026-10-18
+(capture SHA-256
+`b9e38a5ded14d08a7d235886bf014bb5fc1919e4cf2bff0a7efe34dd573bf3ca`) that
+status and check-ins on running sessions come through the UI alone is the
+live view's reopening condition.
 
 ## Dependency and compatibility plan
 
@@ -77,8 +81,12 @@ refutation receipt 004's known issue on the header). No two members run side by
 side: every member edits `nx.json`, `tsconfig.base.json`, the ESLint
 configuration and the generator log, so their surfaces overlap. A member that
 needs something a later member delivers (WO-006's facade needs WO-007's
-stores) ships the smallest honest stand-in (a facade reading static signals)
-and names the replacement in its known issues.
+stores) ships the smallest honest stand-in (a facade reading a recorded
+board) and names the replacement in its known issues. WO-006's base was set
+to `5102783f` (WO-005's merge commit, DotLn-Angular pull request #3) and its
+typed hard edge on WO-012 added by the UI planning pass of 2026-10-21; the
+same pass added the `Target release classification` header to WO-006,
+WO-007 and WO-008 (minor: the first three `DotLn Angular` releases).
 
 ## House rules
 
@@ -124,9 +132,13 @@ an order's recorded decision, never silently.
    tests. Nearly every injectable ships a test kit (`provide<Name>TestKit()`)
    in its library's `testing` entry point, so a spec provides a service and its
    dependencies in one call.
-6. **Style.** Sass (`.scss`), design tokens as CSS custom properties, PrimeNG
-   (MIT) used only behind wrappers (rule 14), styles inline while a component
-   is small and extracted first when it grows.
+6. **Style.** Sass (`.scss`), design tokens as CSS custom properties with a
+   skin layer of token overrides over them (the plain skin first), no vendor
+   component library: the house `ui` library owns every component's API,
+   markup, styling and tests, and Angular Aria and the CDK supply behavior
+   only, behind wrappers (rule 14; the operator's direction of 2026-10-20,
+   WO-005-D006, settled by the UI planning pass of 2026-10-21, D2). Styles
+   inline while a component is small and extracted first when it grows.
 7. **Functional first.** Ramda and Ramda Adjunct through
    `import { R, RA } from '@dotln-angular/utils'`: re-exported namespaces whose
    types compose cleanly in this workspace, verified by specs ported from the
@@ -172,10 +184,15 @@ an order's recorded decision, never silently.
     than one file under `libs/shared`, run by `tools:lint`, lands with the
     first order that edits the lint rules (WO-005-D022; planning pass of
     2026-10-20).
-14. **Vendors behind wrappers.** A third-party UI library is imported only
-    inside `wrappers/` directories (and the theme setup in `ui`); lint refuses
-    it elsewhere. A wrapper standardizes the vendor API to the house API and
-    is swappable.
+14. **Behavior and vendor libraries behind wrappers.** `@angular/aria`,
+    `@angular/cdk` and any third-party UI library are imported only inside
+    `wrappers/` directories (and the provider setup in `ui`); lint refuses
+    them elsewhere. A wrapper standardizes the library's API to the house
+    API and is swappable. Aria carries keyboard, focus and ARIA semantics
+    for the patterns it ships (accordion, combobox, grid, listbox, menu,
+    tabs, toolbar, tree at 22.2.3); the CDK carries overlay positioning,
+    the focus trap, the live announcer and the unstyled dialog; the house
+    library carries everything a user sees.
 15. **Dependency constraints.** `app` may depend on any `type`. `feature` may
     depend on everything except `app` and another `feature`. `data-access` on
     `events`, `models`, `core`, `util`. `state` on `events`, `models`, `core`,
@@ -192,7 +209,10 @@ an order's recorded decision, never silently.
     reusable), `app` (cross-cutting: flags, shell, errors). Mapping flows one
     way: `ui → data-access`, `ui → navigation`, `ui → app`,
     `data-access → navigation`, `data-access → app`, `app → navigation`.
-    Nothing maps to an event of its own tier. Every feature hooks the one event
+    Nothing maps to an event of its own tier. An action's own `actionSuccess`
+    and `actionFailure` (the trinity of rule 8) are that action's outcomes,
+    not mappings, and the hygiene check does not count them (receipt 006;
+    UI planning pass of 2026-10-21, D13). Every feature hooks the one event
     stream and therefore sees every event; by convention a feature reacts to
     its own `ui` events, the `data-access` events it owns and `app` events. An
     exception is written as `// hygiene-exception: <reason>` and CI counts and
@@ -232,7 +252,7 @@ know?**
 
 | Role      | Asks                   | Knows                        | May inject                                | Lives in                                                        |
 | --------- | ---------------------- | ---------------------------- | ----------------------------------------- | --------------------------------------------------------------- |
-| Salesman  | Does it look right?    | its own inputs               | platform tokens only (`ElementRef`, `DOCUMENT`) | `libs/shared/ui`, `libs/<app>/ui`                               |
+| Salesman  | Does it look right?    | its own inputs               | nothing; a component that needs `ElementRef` or `DOCUMENT` is a wrapper, which may inject platform tokens (receipt 006; UI planning pass of 2026-10-21, D13) | `libs/shared/ui`, `libs/<app>/ui`                               |
 | Connector | Does it fit together?  | other components             | nothing from the application              | `libs/shared/ui/composites`, `<feature>/composites`, `<feature>/layouts` |
 | Maven     | What does it mean?     | the view model and the state | facades, stores, router, tokens           | `<feature>/mappers`, `<feature>/containers`                     |
 
@@ -249,8 +269,9 @@ Salesmen, presentational, many and cheap:
 2. **Template.** A Salesman that uses Angular features: content projection,
    `model()`, host bindings, directives, animations. Give it any content and it
    renders it.
-3. **Wrapper.** The only component that imports a vendor UI library. It maps
-   the vendor's API to the house API, applies house defaults and is swappable;
+3. **Wrapper.** The only component that imports a behavior or vendor library
+   (Angular Aria, the CDK, or a third-party UI library). It maps the
+   library's API to the house API, applies house defaults and is swappable;
    small tweaks only. Consultants, not family.
 
 Connectors, composition:
@@ -287,8 +308,8 @@ not by memory:
 - **R2 Two hops.** An output is forwarded at most twice before a Container
   handles it; a third hop means the container splits. Review checklist, no
   lint.
-- **R3 Vendors behind wrappers.** House rule 14, enforced by
-  `no-restricted-imports` per path glob.
+- **R3 Behavior and vendor libraries behind wrappers.** House rule 14,
+  enforced by `no-restricted-imports` per path glob.
 - **R4 Mavens stay thin.** A Container's class holds injection, the `vm` and
   intent mapping; logic lives in the facade, the stores and pure functions.
 - **R5 Role by location.** The directory names the role, so a file in the
@@ -309,6 +330,85 @@ the analogy is deliberate: it is sticky (people remember the book), teachable
 in one table, and checkable (roles map to directories, directories map to
 lint globs).
 
+## The console: the first screen and the road after it
+
+DotLn is an agentic platform (the operator's words of 2026-09-05 in the
+platform's intake, read by the UI planning pass of 2026-10-21); its UI is
+the console, and the console's first screen is the actor board. The
+operator's direction of 2026-10-21 (ignored intake capture
+`docs/intake/notes/planning-ui-2026-10-21.md`, SHA-256 recorded in the
+planning document of that date, §1), paraphrased: the genesis is overlaying
+the leadership and personal-development book shelf on real agents in the UI
+and seeing how that changes their behavior; the vision is a UI that makes
+the platform better and shows the work agents do, intuitively, as they run
+more freely; the UI spans the orchestration view and the platform's loadout
+authoring, inspection, preview, counterfactuals and QA; the console sits
+over `uifa-board-v1`. The platform's own records carry the contracts
+(DotLn `docs/product/04-interfaces.md` §Plural UI hosts, §Actor board v0,
+§Later console hosts and §Console parity contract v1; `packages/console`;
+its idea ledger's adopted entries of 2026-09-06 and 2026-10-13).
+
+**The first screen (WO-006).** The actor board, `uifa-board-v1`: five
+panels in the document's order (Actors, Builds, Mechanisms, Work,
+Blueprint), each naming the UIFA roles it serves and the question it
+answers, with sections, rows and evidence-linked cells. WO-006 renders a
+recorded, scrubbed board of this launchpad; WO-007 loads one through HTTP
+answered by MSW; a live board waits on a browser-reachable host the
+platform has not built (the fork's request of 2026-10-21). The data path
+is written in the target's `docs/dev-reference/architecture/console.md`.
+
+**Host rules** (from the platform's contract; each enforced by a spec or a
+lint in WO-006):
+
+- **H1 Version first.** The host checks `viewModelVersion` and shows the
+  unavailable state, naming the version, when it is not the one it renders.
+- **H2 Three cell states.** `known`, `unknown` and `unavailable` are
+  rendered distinctly, each with a text equivalent; an unavailable source
+  or section stays visible with its explanation, never an empty success.
+- **H3 Label shown, key addressed.** `cell.label` is what a person reads;
+  `cell.key` is the DOM and test identity.
+- **H4 Local links only.** A link resolves to an id in the same board;
+  the host never turns a link into a command or a URL.
+- **H5 No second state machine.** The host derives no lifecycle legality
+  from the table and dispatches nothing the platform's parity contract
+  does not list; a projection, never an authority.
+
+**Design rules** (from the platform's glyph grammar and the operator's
+intake, read 2026-10-21):
+
+- **G1 Accessibility first.** House rule 18; keyboard paths through the
+  behavior library, axe in e2e.
+- **G2 Motion means transition.** A stable state is calm, idle actors are
+  not animated, `prefers-reduced-motion` is honored, and every visual
+  state has a text equivalent.
+- **G3 Strings in the message system from the start.** House rule 9; the
+  board's own titles, labels and values are data and are not translated.
+- **G4 Skins over tokens.** Appearance is a token layer (`[data-skin]`);
+  CSS never decides behavior, and no utility-class string lives in domain
+  state. The plain skin ships first; the RPG and emoji skins the platform
+  describes arrive with the pattern workshop.
+- **G5 Native emoji first for glyphs**, each with a text equivalent.
+- **G6 Readable, fluid layout.** Lists of label, value and status over
+  dense tables; no fixed page width (the operator reads on an ultrawide
+  display); the true value or `unknown`, never an invented number.
+
+**The road after WO-008**, each a later member with its reopening
+condition (the planning document of 2026-10-21 §10 carries the NoOp
+records):
+
+| Facet | What the operator sees or does | Platform contract it needs | Reopens when |
+| --- | --- | --- | --- |
+| Live view | actors, live episodes, presence, holds, budget and every open order's phase; the check-in on running sessions | `runtime-status-v1` as a file or its loopback equivalent | a resident writes the status file for this launchpad, or core serves it to a browser host |
+| Command surface | the resume phrases, `away` and `back`, intent declaration, the audit read, from the console | `console-commands-v1` over the loopback, through a browser bridge | core serves the contract to a browser host (the fork's request of 2026-10-21) |
+| Pattern workshop | drop a book-derived support on an actor, see the compiled diff and the effect before confirming; saved builds; the RPG and emoji skins | equip preview and saved-build selection in the contract; the compiled-diff command | core adds those commands (its roadmap's pattern workshop rung) |
+| Arrival screen | what changed since the last visit, what is in progress, what needs a decision, what can continue under existing authority | the audit projection and the status file | the live view exists |
+| Counterfactuals and QA | compare configurations, event paths and costs; the tester's mechanisms and acceptance matrices beyond the board's rows | the platform's counterfactual and acceptance records | core publishes them as view models |
+| Readable work view | future orders only, in sequence, with purpose and dependencies; releases and what each contained; costs per actor | the board's Work panel (its `orders` section is unavailable in an exported instance today) | core reads an export's control segments |
+
+The console framework decision core deferred is answered by WO-006's
+evidence (bundle bytes, type cost, maintenance, interoperability), which
+the fork sends back through the requests-to-core prompt.
+
 ## Delivery states
 
 | Member | State    | Evidence                              |
@@ -317,11 +417,11 @@ lint globs).
 | WO-004 | merged   | closed 2026-10-18; [evidence](../evidence/WO-004/README.md) |
 | WO-011 | merged   | merged as #12 and released as Launchpad v0.3.2 on 2026-10-20; [configuration, tag guard and gate evidence](../evidence/WO-011/README.md) (`docs/evidence/WO-011/`) |
 | WO-005 | merged   | merged in DotLn-Angular as #3 and its records as #13 on 2026-10-20; the first draft-at-verified publish and the first target close; [evidence](../evidence/WO-005/README.md) |
-| WO-012 | proposed | declares `DotLn Angular` releases, grants `release.close`, retains judged base output and names the operator's public commit identity; [configuration, grant and gate evidence](../evidence/WO-012/README.md) (`docs/evidence/WO-012/`) |
-| WO-006 | proposed | filed by the 2026-10-18 planning pass; its base, vendor and release header are set by the UI planning pass |
-| WO-007 | proposed | filed by the 2026-10-18 planning pass |
-| WO-008 | proposed | filed by the 2026-10-18 planning pass |
+| WO-012 | merged   | merged as #18 and released as Launchpad v0.3.3 on 2026-10-21; declares `DotLn Angular` releases, grants `release.close`, retains judged base output and names the operator's public commit identity; [configuration, grant and gate evidence](../evidence/WO-012/README.md) (`docs/evidence/WO-012/`) |
+| WO-006 | proposed | filed by the 2026-10-18 planning pass; its base (`5102783f`), the house component library over Angular Aria and the CDK, the actor board as its feature, the release header and the typed edge on WO-012 were set by the UI planning pass of 2026-10-21 |
+| WO-007 | proposed | filed by the 2026-10-18 planning pass; re-targeted to the board and given its release header by the UI planning pass of 2026-10-21 |
+| WO-008 | proposed | filed by the 2026-10-18 planning pass; given its release header by the UI planning pass of 2026-10-21 |
 
 <!-- dotln-workstream:start -->
-{ "id": "WS-001", "members": [{ "workOrderId": "WO-003", "repositoryId": "self" }, { "workOrderId": "WO-004", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-011", "repositoryId": "self" }, { "workOrderId": "WO-005", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-012", "repositoryId": "self" }, { "workOrderId": "WO-006", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-007", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-008", "repositoryId": "dotln-angular" }], "edges": [{ "from": "WO-003", "to": "WO-004", "relation": "hard" }, { "from": "WO-004", "to": "WO-005", "relation": "hard" }, { "from": "WO-011", "to": "WO-005", "relation": "hard" }, { "from": "WO-005", "to": "WO-006", "relation": "hard" }, { "from": "WO-006", "to": "WO-007", "relation": "hard" }, { "from": "WO-007", "to": "WO-008", "relation": "hard" }] }
+{ "id": "WS-001", "members": [{ "workOrderId": "WO-003", "repositoryId": "self" }, { "workOrderId": "WO-004", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-011", "repositoryId": "self" }, { "workOrderId": "WO-005", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-012", "repositoryId": "self" }, { "workOrderId": "WO-006", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-007", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-008", "repositoryId": "dotln-angular" }], "edges": [{ "from": "WO-003", "to": "WO-004", "relation": "hard" }, { "from": "WO-004", "to": "WO-005", "relation": "hard" }, { "from": "WO-011", "to": "WO-005", "relation": "hard" }, { "from": "WO-005", "to": "WO-006", "relation": "hard" }, { "from": "WO-012", "to": "WO-006", "relation": "hard" }, { "from": "WO-006", "to": "WO-007", "relation": "hard" }, { "from": "WO-007", "to": "WO-008", "relation": "hard" }] }
 <!-- dotln-workstream:end -->

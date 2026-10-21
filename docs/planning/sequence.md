@@ -6,7 +6,6 @@ Two entries between blank lines are a lane pair; the entries after the last
 pair run one at a time.
 
 <!-- dotln-work-order-sequence:start -->
-- WO-012 — Register starter v0.88.0: the target release name, the judge-only base checkout, the operator's commit identity, the release-close grant
 - WO-006 — Component taxonomy, shell layout and the home feature
 - WO-007 — Events, signal stores, data access and MSW
 - WO-008 — Authentication and permissions
