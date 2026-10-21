@@ -134,3 +134,51 @@ that, `worktree finish` refuses a main checkout with tracked changes
 (`scripts/worktree.mjs` calls `ensureMaterialClean(mainPath, …, { leaving: false })`).
 Landing the change on main first, through its own pull request, removes this
 step.
+
+## Closed-phase publish (FINAL-001 session, 2026-10-21)
+
+- Host: Claude Code 2.1.306 with auto mode on; model `claude-fable-5-1`, effort
+  `xhigh` from `CLAUDE_EFFORT`. The publish ran after
+  `final-review-result pass` (16:49:43Z) and `target-records` (16:50:00Z),
+  with the instance records committed on `wo-006` at `c92fcff`.
+- Helper command line as run, verbatim, from the launchpad root, as the
+  briefing spelled it, prefixed by the shell's directory change and the
+  launchpad variable, with no pipe or redirection:
+  `cd /Users/dylanwood/Projects/DotLn-Instance-wo006 && DOTLN_LAUNCHPAD='/Users/dylanwood/Projects/DotLn-Instance-wo006' node '/Users/dylanwood/Projects/DotLn-Instance-wo006/scripts/worktree.mjs' publish WO-006 --target-worktree --branch feat/component-taxonomy --title "feat: add the component taxonomy, shell layout and actor board" --body-file docs/final-reviews/WO-006/PR.md`
+- Journal: the PreToolUse rows at 2026-10-21T16:50:57.448Z to .518Z show the
+  outside-write check unobserved (destination not extractable), the
+  no-attribution unit allowed, the generic effect row (`shell.run`,
+  allowed), the writer-isolation unit allowed, and the three hook timings.
+  No row carries `registeredTargetAdmission` and there is no
+  "Registered-target admission withheld" advisory: the admission did not
+  evaluate, because the call reached the hook with the directory change and
+  the variable assignment in front of the node spelling, which the plain-word
+  parser does not read as the helper form (the same class as the verifier's
+  first attempt, D018, where a pipe had the same effect). The PostToolUse
+  rows at 16:51:04.958Z to .981Z show the lint-suppression unit allowed and
+  the observe row (reviewer, WO-006, finalReview). No `PermissionDenied` or
+  `HostPermissionDenied` row exists for the call.
+- Prompt: none. The host's auto-mode classifier allowed the call without
+  asking; nobody answered anything. This is the opposite outcome from the
+  verifier's two attempts, on the same host and settings, and the cause of
+  the difference is unobserved.
+- Effects: the helper printed "Pushed feat/component-taxonomy at
+  5eee5951baed8e6cddf19a6c4050607253b85eb5 over draft
+  a9e58af4aabc370eb82edcdd2b9b0f619cc809f0 and marked pull request #4 on
+  github.com/DylanBWood/DotLn-Angular ready." Readback through `gh pr view 4`:
+  `OPEN`, `isDraft: false`, `MERGEABLE`, head `5eee5951…` (the draft commit,
+  the skip-link repair `eb7dfdf0…` and the records commit), base `main`, the
+  reviewed title; the title run 39638473965 completed with success and the CI
+  run 39638474008 was in progress at readback. Target `HEAD` on `wo-006` is
+  `5eee5951…`; `refs/dotln/draft/WO-006` still names `a9e58af4…`.
+- Trust entries by pattern: the project `.claude/settings.json` has no allow
+  list (a four-entry deny list only); the user-level settings carry no allow
+  entry, and none of their auto-mode environment entries matches `worktree`,
+  `publish`, `git push` or `gh pr` (0 matches); `hostRules` is absent
+  from the `dotln-angular` registration. No private journal contents or
+  entry names are copied here.
+- Authority on record: the operator grant `operator.dotln-angular.publication`
+  admits `repo.push` and `pr.open` for an order branch; the host decided
+  alone, since the registered-target admission did not evaluate.
+
+Release-close observation: to be recorded by the close.
