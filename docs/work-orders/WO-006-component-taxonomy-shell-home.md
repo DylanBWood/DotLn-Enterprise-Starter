@@ -265,7 +265,11 @@ observation of the host after a hook admission alone (planning pass of
 2026-10-21, D4, of the latest-upstream-fixes document); its record is an
 evidence obligation, never a criterion.
 
-**Deliverables:** the four libraries; the lint overrides, the four follow-up
+**Operator scope expansion (2026-10-21):** WO-006-D007 records authorization
+for a local Storybook catalog and persistent Playwright screenshot coverage
+with visual inspection for layout, typography, spacing and interaction states.
+
+**Deliverables:** the local Storybook catalog and visual e2e coverage; the four libraries; the lint overrides, the four follow-up
 rules and their fixtures; the component-order script; the board fixtures,
 the schema pin and `check:fixtures`; the board feature behind its route; the
 axe and keyboard e2e; the three documents; `docs/evidence/WO-006/` with the
@@ -355,7 +359,8 @@ host-qualification record.
 **Preflight:** in the target worktree `npx nx format:check`,
 `npx nx run-many -t lint test build`, `npm run lint:fixtures`,
 `npm run lint:components`, `npm run check:fixtures`, `npm run i18n:check`,
-`npx nx e2e dotln-e2e`; in the launchpad order worktree `npm run test:docs`;
+`npx nx e2e dotln-e2e`, `npx nx build-storybook ui`,
+`npx nx e2e-visual dotln-e2e`; in the launchpad order worktree `npm run test:docs`;
 then the target gate plain and review once each.
 
 **Acceptance criteria (all required)**
@@ -411,6 +416,12 @@ then the target gate plain and review once each.
    `npm run test:docs` passes in the launchpad order worktree; the Preflight
    line ran before the first full gate.
 
+9. `npx nx build-storybook ui` passes; the catalog documents every shared UI
+   component and representative shell and board states. The persistent
+   Playwright suite covers the board at desktop and mobile sizes and the
+   component interaction states with screenshot assertions. The executor
+   inspects the resulting images and records visual findings and corrections.
+
 **Evidence gate:** the gate rows, the recorded command outputs,
 `docs/evidence/WO-006/README.md`, `docs/evidence/WO-006/decisions.md` (the
 Aria evaluation, the schema pin, the fixture capture) and
@@ -437,8 +448,8 @@ declared policy (`DotLn Angular` releases; minor, the first target release,
 **Non-goals:** stores, events, HTTP, MSW (WO-007); authentication (WO-008);
 `runtime-status-v1`, the command surface over the parity contract, the
 arrival screen, drag-equip authoring, counterfactual and QA views, a second
-skin or the RPG layer (WS-001 §The console, later members); a design-system
-site or Storybook; dark mode beyond token readiness; a second feature.
+skin or the RPG layer (WS-001 §The console, later members); a hosted design-system
+site; dark mode beyond token readiness; a second feature.
 
 **Operator-review assumptions:** the operator accepts the house component
 library over Angular Aria and the CDK as the reading of their direction of

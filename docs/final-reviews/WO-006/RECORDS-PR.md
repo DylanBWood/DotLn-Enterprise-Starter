@@ -1,0 +1,22 @@
+# WO-006 records
+
+This branch files the instance records of WO-006, the component taxonomy, shell layout and actor board of DotLn-Angular, reviewed and published to `DylanBWood/DotLn-Angular` as the pull request `feat: add the component taxonomy, shell layout and actor board`. No code of this instance changes; the branch carries the control segment, the evidence, the registration and profile write-backs the order names, the operator's outward-vocabulary placeholder and the draft publish's host observations.
+
+## What a reviewer gets
+
+- The order's [evidence](../../evidence/WO-006/README.md) with the preflight, gate and lifecycle record; the executor [handoff](../../evidence/WO-006/handoff.md), [self-review](../../evidence/WO-006/self-review.md) and [visual review](../../evidence/WO-006/visual-review.md); the draft body the verifier wrote; the draft pull request's captured state and the operator's ten routed notes in [preview-pr.json](../../evidence/WO-006/preview-pr.json), which also records that no automated reviewer ran on it; and the [host qualification](../../evidence/WO-006/host-qualification.md) of the draft publish (the admission withheld, two host denials, the outward-lint refusal, the operator's own run) and of the final publish.
+- [Decisions](../../evidence/WO-006/decisions.md) D001 to D026: the executor's design choices and worker dispositions, the verifier's four follow-ups and its judgment of the receipt's scrub issue, the draft-publish observations, the integration record, the operator's notes routed, the skip-link repair, the serial Nx default recorded, and the register dispositions.
+- Verification VER-001 (pass, four follow-ups) and final review FINAL-001 (pass, one follow-up repaired in the target, one recorded, two boarded, the operator's ten notes boarded) are filed under `docs/dotln/` in the target branch by the records commit; the publication bodies [PR.md](PR.md), [RELEASE-NOTES.md](RELEASE-NOTES.md) and this file stay beside the report path here.
+- The refreshed [repository profile](../../repositories/dotln-angular.md): the `Checked` line names the reviewed commit and the added dependencies, the commands section names the catalog and visual commands and the three added checks, the demonstrated architecture names one path per component kind and the board's data path, and the upstream references name the pinned schema commit and digest.
+- The registration `dotln.config.json` with the `visual` gate command, the in-process plugin flag and the one disposable diagnostic path; the outward vocabulary's placeholder term, the operator's edit of 2026-10-21 that main's checkout holds uncommitted; the control segment `docs/control/orders/WO-006.jsonl`, the current-state projection, the work-order index and history, the decisions index and the follow-up register with its dispositions (one settled, six deferred, one duplicate, six open for the next planning pass).
+
+## Validation
+
+- The target's declared review gate (install, lint, test, format, build, e2e, visual) passed at the reviewed commit with no tracked-byte mutation; the final review reran the affected checks and the uncached browser suite after its repair, and the verification's uncached runs cover the rest.
+- All nine criteria are met; no waiver, correction or override was recorded.
+- Gates in this worktree at the reviewed records: `npm run test:docs` passed, as FINAL-001 records; a target order acquires no launchpad complete gate; `git diff --check` clean; `node scripts/harness.mjs check`, `npm run release -- check-surfaces --local`, `npm run publication:check` and `npm run plan -- check` passed after the no-op integration.
+
+## Limits and follow-ups
+
+- Open for the next planning pass: the publication route for an order that edits its registration (the admission's byte comparison, the literal host-rules fallback, the request to core), the outward vocabulary's placeholder, the console-framework readings for core, and the console's purpose with the persistence and isolation of operator use. Deferred: the local anchors, the initial-bundle bytes, the lint's unjudged forms, the operator's five conventions and the app/shared grouping.
+- After both merges, the operator discards the uncommitted vocabulary edit in main's checkout and fast-forwards `main` before `resume: release close`, which closes the target worktree with the no-release outcome. Base: this branch starts at `main`'s current head, so the pull request carries only WO-006's own records.
