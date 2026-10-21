@@ -184,7 +184,22 @@ in one short question rather than guessing in either direction.
   (refreshing an open update pull request or replacing it), which records
   its choice and the reason (direction of 2026-10-21, capture SHA-256
   `9b1e3fe9d122ddc83053b6a8b03ac46f2cb97f90eabd15e3404d3f6b2db913a4`;
-  planning pass of 2026-10-21, D1).
+  planning pass of 2026-10-21, D1). After such a pass the operator merges
+  the update pull request and the planning pull request (either order
+  unless the handoff says otherwise), fast-forwards `main`, runs
+  `node scripts/bootstrap.mjs`, and starts the self order's worktree.
+- Lifecycle steps the operator runs: for every order, on the platform and
+  in this fork, the operator starts the worktree themselves with
+  `npm run worktree -- start WO-NNN <order path>` from `main`; opens a
+  session in that worktree and dispatches `resume: next`, then
+  `resume: verify` and `resume: final review` there; merges the pull
+  request; and dispatches `resume: release close` in a session on `main`,
+  which runs main's helper and removes the worktree. A session never claims
+  to do these for them, and an order's activation command is written for
+  the executor's check, not for a session on `main` to run. Recorded from
+  the operator's corrections of 2026-10-21 (capture SHA-256
+  `c4667a2702092238db7952862788a8ef39d83f70e09d75bf5e8ff251590e506b`;
+  planning pass of 2026-10-21, D10).
 - Harness: Claude Code at the operator's chosen effort; spawned workers at the
   kit's pinned model and effort.
 - No direct quotes: the operator's messages are never quoted in a committed

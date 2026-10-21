@@ -263,6 +263,27 @@ that reopens it.
   was pushed. Source: §4. Rejected: keeping the tags (the local release
   checks at v0.85.0 on `main` would count them until the update merges).
   Reopen: a starter tag appears on `origin` or in the local list.
+- **D10 The operator record gains the lifecycle steps the operator runs,
+  dated 2026-10-21, from their corrections during this pass.** The operator
+  starts every order worktree themselves with
+  `npm run worktree -- start WO-NNN <order>` from `main`, dispatches
+  `resume: next`, `verify` and `final review` in a session opened in that
+  worktree, merges the pull request, and dispatches `release close` in a
+  session on `main`, which runs main's helper and removes the worktree; a
+  session never claims to do any of these for them, and a handoff names the
+  steps in that order. This session's claims of the opposite, made while the
+  refuter ran, were wrong against the README's route (§How to start, steps 6
+  and 7) and the operator's practice on the platform and in this fork; the
+  corrections are captured verbatim in ignored intake
+  (`docs/intake/notes/planning-latest-upstream-fixes-2026-10-21-corrections.md`,
+  SHA-256 `c4667a2702092238db7952862788a8ef39d83f70e09d75bf5e8ff251590e506b`).
+  Source: the corrections; README §How to start; product 07 §Workflow
+  closeout and releases (the close runs main's helper with `main` as the
+  working directory). Rejected: rewording WO-012's step 1 now (its
+  activation command is the operator's in practice and its check is the
+  session's; the order is frozen at the judged subject, and the next
+  amending pass may reword it). Reopen: the kit lets a session on `main`
+  open the worktree session, or the operator changes the practice.
 
 Immaterial lenses for the document-only writes: no shared compute beyond
 the one refuter, no proxy goal, no process that provokes process; every
@@ -346,6 +367,61 @@ update branch, the advisory at its source).
   issues as the executor's carry-in; the key stays, on the operator's
   request of 2026-10-19 item 5.
 
+### 9.2 Known issues from receipt 005, by order
+
+The refutation (§14) returned `aligned-with-findings` with seven known
+issues on WO-012 and no hold. The order is frozen at the judged subject;
+each issue is a carry-in the executor meets inside the frozen order's
+authority, recorded in its decisions and evidence, or an amendment for the
+next pass that changes the order's text (the UI planning pass amends WO-006
+beside it).
+
+- **(a) Criterion 1's identity readback tests the declaration against
+  itself.** The kit's rule compares `%an <%ae>` exactly over
+  `origin/main..HEAD` of the order branch; the readback compares the
+  declaration with one log line of `main`. Carry-in: after the first session
+  commit on `wo-012`, the executor runs the rule read-only
+  (`node -e "import('./scripts/lib/contributions.mjs').then(m=>{const r=m.contributionSignoffRules(process.cwd());console.log(r.map(x=>x.line).join('\n'));process.exit(r.every(x=>x.pass)?0:1)})"`)
+  and records its `PASS contribution-signoff` lines, which name commit ids
+  and not identities; a `FAIL` line stops the order before handoff. The
+  amending pass replaces the identity line of the readback with an equality
+  boolean, so no evidence file repeats the identity.
+- **(b) The header is mandatory once the policy is declared and the kit
+  checks it only at the close.** Carry-in: the executor's rewritten
+  `## Release close` section states that
+  `grep -cE '^\*\*Target release classification:\*\*[[:space:]]*(patch|minor|major)' <order>`
+  must print 1 before any `dotln-angular` order starts; the UI pass adds the
+  header to WO-006 to WO-008 and WO-006's typed edge on WO-012 (D2, D7).
+- **(c) The grant readback checks JSON shape, not the kit's admission.**
+  Carry-in: at step 3 the executor also runs the read-only probe through
+  `readAuthorityGrantRegistry`, `authorizeRegisteredEffects` with
+  `release.close` and `authorizeRegisteredPublication`, and records
+  `authorized`; a refusal is recorded and boarded, as the Design's
+  contingency says.
+- **(d) Criterion 4 mostly passes on `main` already**, the interim sentence
+  wraps across a line break that a line grep cannot see, and step 6's row
+  already exists. Carry-in: the executor updates the existing delivery-state
+  row (exactly one WO-012 row under Delivery states) and records the
+  line-joined count
+  (`tr '\n' ' ' < docs/repositories/dotln-angular.md | grep -c 'Until WO-012 merges'`
+  prints 0) beside criterion 4's counts; the amending pass writes both into
+  the criterion.
+- **(e) `npm run sync` may regenerate the `harness` surfaces outside
+  `docs/`**, which criterion 5 does not admit. Carry-in: if the sync at step
+  4 or 8 names `harness`, the executor records the order `blocked` as an
+  update defect and boards it instead of committing emitted surfaces; the
+  amending pass says so in step 4.
+- **(f) Step 4 repeats the two full gates step 10 runs again.** Cost only;
+  the executor records each gate's wall-clock, as step 4 asks; the amending
+  pass drops step 4's `npm test` and `npm run test:docs`, keeping
+  `harness check` and `launchpad verify`, if the measured runs show the
+  cost.
+- **(g) The kept tag-guard paragraph still instructs `git tag -d` after a
+  named-tag preview**, which the v0.88.0 README's non-tag route makes
+  unnecessary. Carry-in: the executor keeps the `tagOpt` and
+  keep-tags-off-origin sentences and drops the deletion instruction,
+  recording the README route it rests on.
+
 ## Candidates not filed, with their reopening conditions (section 10)
 
 - **C1 The Entropy Reducer on WS-001's repositories.** Core's WO-224
@@ -401,7 +477,8 @@ planning: observations from the DotLn-Enterprise-Starter fork (dylanwoodconsulti
 
 ## 12. Write-backs
 
-- `docs/operator/README.md`: the dated directions of D5.
+- `docs/operator/README.md`: the dated directions of D5 and, after the
+  receipt, the lifecycle steps the operator runs (D10).
 - `docs/repositories/dotln-angular.md`: the policy paragraph and the opening
   of `## Release close` naming v0.88.0, #16 and the grant (D1, D2); the
   section's interim sentences stay for WO-012's executor to remove
@@ -458,3 +535,44 @@ recorded here when they ran: `npm run meta`, `npm run plan -- followups
 --sync` and `--apply`, `npm run work-orders -- index` and `--check`,
 `node scripts/lineage.mjs index`, `node scripts/docs-check.mjs`,
 `npm run publication:check`, `npm run plan -- check`, `npm run test:docs`.
+
+Results at the subject commit `51574f3` (cost table) over `5c1606b` (the
+subject): `npm run meta` no budget breach; `followups --sync` minted two
+rows and `--apply` took four dispositions in one batch (register revision
+`0cea4ef1…`); `work-orders index --check` PASS (both pages current);
+`lineage index` regenerated and current; `docs-check` PASS (1 product
+document; the three pre-existing advisories on filed records; one failure
+repaired within authority: the rename of WO-012's file broke the 2026-10-20
+planning document's link to it, declared historical in
+`docs/control/doc-baseline.json` with its note, as the moved-record links
+of WO-004 and WO-005 were); `publication:check` reporting no editions
+declared; `format:check` clean; `plan check` waiting on the receipt. The
+document gate at v0.85.0 before the receipt: 12 passed, 2 failed (the two
+plan checks), 14.80 s.
+
+Refutation: one fresh `dotln-worker` (`claude-opus-5-5` by its definition
+and the host's system prompt; reasoning effort unknown, nothing reports it)
+on the canonical prompt from `npm run plan -- refute` at base `51574f3`,
+default pass scope (WO-012, plus the sequence; WO-006 to WO-008 carried by
+hash), dispatched at 02:25:45Z. The worker returned its judgment and
+statement in its final message, as briefed, because scratch writes may be
+refused for a session that holds no role; the parent saved them as ignored
+local files and filed the receipt. Receipt
+[`2026-10-21-planning-fc1c0ec6bba3073a-005`](refutations/2026-10-21-planning-fc1c0ec6bba3073a-005.md),
+verdict `aligned-with-findings`, 0 holds, 7 known issues (§9.2), judgment
+frozen 02:44:15Z, dispatch-to-file 1,151,253 ms (19.2 minutes; the worker's
+own run 999,381 ms, 215,009 tokens, 78 tool uses). The worker's statement
+names what it read: the whole prompt and nothing else under the control
+lane; the order, the configuration, the grant file, the profile's section
+and WS-001's counts on the branch and on `main`; WO-006 to WO-008's header
+counts; the baseline file and its diff; the v0.88.0 kit in the read-only
+update worktree (the configuration, contributions, target-publish,
+authority-grants, target-close, generated-artifacts, evidence-sources and
+target-planning libraries; the release, worktree, sync, registrations-check
+and runner scripts; the compiler's normalizer and the skeleton's harness
+host); read-only Git and shell commands only; identities counted, never
+printed or compared; no planning document, receipt or intake; no npm or
+node kit command, no gate, no network, no model tool, no agent, no write.
+The judged, committed and workspace subjects agree (`sha256:b7cf8f1d…`).
+The document gate after the receipt and the known-issues record is recorded
+in the closing paragraph below.
