@@ -1,0 +1,1589 @@
+{
+  "schemaVersion": "plan-refutation-receipt-v1",
+  "receiptId": "2026-10-21-planning-24597b606f20e33d-006",
+  "pass": {
+    "id": "planning-24597b606f20e33d",
+    "kind": "planning",
+    "heading": "2026-10-21 — planning pass: the UI (WO-006's base, the house component library, the actor board as the first screen) (operator dispatch of 2026-10-21)"
+  },
+  "ordinal": 6,
+  "previousReceiptHash": "sha256:1c16404e2eedec8e3a6ea5bcc55b74257d9f27e8ad0c837c9db22d4efd2af43e",
+  "subject": {
+    "schemaVersion": "plan-subject-v1",
+    "revision": "32c833de90e5f439f957c4dbbafac536295cf977",
+    "hash": "sha256:2486099d55fa1a8aaa9bc37c129c0fd9784e6e9ef2203832c3d80020dd83b609",
+    "sequenceHash": "sha256:5f2784b4cbf32ebd9eb59212b7f9511e5c2bf8974eeb43e8587eb2b7befac97d",
+    "inputs": [
+      {
+        "name": "sequence",
+        "hash": "sha256:5f2784b4cbf32ebd9eb59212b7f9511e5c2bf8974eeb43e8587eb2b7befac97d"
+      },
+      {
+        "name": "docs/work-orders/WO-006-component-taxonomy-shell-home.md",
+        "hash": "sha256:611a7961a47566ded2478b8849b0470fc103c38cab5010029fae62596de3d2b1"
+      },
+      {
+        "name": "docs/work-orders/WO-007-events-stores-data-access.md",
+        "hash": "sha256:6265b84663abbaa050eda032979d2c8ef808706ea22f035ecfe05705c1423d80"
+      },
+      {
+        "name": "docs/work-orders/WO-008-authentication-and-permissions.md",
+        "hash": "sha256:aa329588b9b9aee1d0e90597e40516226c37ee100e83b20e4b1c334740dceab8"
+      },
+      {
+        "name": "vision:unavailable",
+        "hash": "sha256:65e325c17ca6b3c6219d1e9ef62b815b236ce63a5d8b2563ac9e08eb0e6c8df5"
+      },
+      {
+        "name": "vision:what-dotln-is-not",
+        "hash": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "roles",
+        "hash": "sha256:50fce8a97c8d1fe03e3975fd318c6ee8021d6c155294b5eddbe7fecf44b7453a"
+      },
+      {
+        "name": "capability:unavailable",
+        "hash": "sha256:eeb378703698eaa12a1105f5874dc17930699970f4b6dcdd1b737238df89795f"
+      },
+      {
+        "name": "goal-review",
+        "hash": "sha256:de0519ce1afa749822c0c8bdd20bd14f229f1490daf6a232cd26e8a7121fe3f7"
+      },
+      {
+        "name": "cost-table",
+        "hash": "sha256:0950156b17d98f619aeddc242d96fd30d4ed661f06c629ae983f5bdbff701844"
+      }
+    ],
+    "standard": {
+      "theses": [],
+      "exclusions": [],
+      "roles": [],
+      "rolesTable": "",
+      "capabilities": [],
+      "unavailable": [
+        "docs/product/00-vision.md",
+        "docs/product/13-uifa-roles.md",
+        "docs/planning/capability-table.md"
+      ]
+    },
+    "orders": [
+      {
+        "workOrderId": "WO-006",
+        "path": "docs/work-orders/WO-006-component-taxonomy-shell-home.md",
+        "title": "WO-006 — The component taxonomy made real in DotLn-Angular: `ui` as the house component library with Angular Aria and the CDK behind wrappers, the lint rules that enforce the roles by location, the `dotln` shell layout, and the `board` feature rendering the actor board (`uifa-board-v1`) from a recorded fixture through its composites, layout, mappers, container and facade behind a lazy route, with accessibility checks in e2e",
+        "objective": "a developer opening any component in DotLn-Angular can tell\nfrom its directory what it is allowed to know, lint refuses the violations the\ntaxonomy's rules name, the `dotln` shell renders through a layout library with\ncontent projection, and the `board` feature renders the DotLn actor board\n(`uifa-board-v1`: five panels, their sections, rows and evidence-linked cells,\nwith `known`, `unknown` and `unavailable` states kept visible) from a\nrecorded fixture of this launchpad, demonstrating every kind once: fragments\nand templates in `ui`, wrappers over Angular Aria and the CDK, composites, a\nlayout, mappers over the cell-value and link unions, a container reading one\n`vm` signal from `BoardFacade`, behind a lazy route built from `BasePaths`.\n\n**Observed gap (dated 2026-10-18; restated 2026-10-21 by the UI planning\npass that set the base):** at `5102783f` the workspace has `core`, `utils`,\n`i18n` and their `testing` entry points, one placeholder page\n(`apps/dotln/src/app/home.ts`, one translated heading) and no other\ncomponent, no behavior or vendor UI library, no lint override by directory,\nand no board. PrimeNG 22.x ships under the PrimeUI License (a key is\nrequired; the free Community License is conditional and renewed annually) and\nPrimeNG 21.1.10, the last MIT release, peers Angular 21 (observed 2026-10-17\nand 2026-10-20, WO-005-D006). On 2026-10-20 the operator directed that the\ncomponent API, markup, styling and tests be house-owned, with Angular Aria\nevaluated for reusable accessibility behavior (WO-005-D006); on 2026-10-21\nthey confirmed the console sits over `uifa-board-v1`. The platform renders\nthat board in the terminal and as a static page and exports it as JSON\n(`board --json`); no browser-reachable host serves it yet (the loopback\nparity contract excludes `console board`), so this order renders a recorded\nboard and WO-007 loads one through HTTP answered by MSW.",
+        "cost": "adds `libs/shared/ui`, `libs/shared/models`, `libs/dotln/shell`,\n`libs/features/board`, the role-by-location lint overrides and the four\nlint follow-ups WO-005 recorded, `@angular/aria`, `@angular/cdk`,\n`@axe-core/playwright`, two board fixtures (the launchpad's board of\n2026-10-21 at about 360 KB, scrubbed, and a derived all-unavailable one), the\npinned `uifa-board-v1` schema, about 75 source files and the taxonomy\ndocuments. Removes the WO-004 placeholder page and `BasePaths.Home`.\nWall-clock: about 8 to 10 hours of executor work plus the fixed cycle;\nunknown until run. Context bytes: WS-001 §Design and §The console, the\nfoundation documents, the Angular Aria guide for the Tabs and Menu patterns\nand the CDK overlay and a11y entry points at the installed versions, the\n`uifa-board-v1` schema, this order, about 160 KB. Commands added in the\ntarget: `npm run lint:components`, `npm run check:fixtures`. Tokens: unknown\nuntil run. Steps: 16. Re-mints: none.",
+        "criteria": [
+          {
+            "id": "criterion:1",
+            "text": "`grep -rlE \"@angular/(aria|cdk)\" libs apps --include='*.ts'` lists only\n   files under `**/wrappers/**` and `libs/shared/ui/src/lib/provide-dotln-ui.ts`,\n   and `npm run lint:fixtures` exits 0 by observing each fixture fail its\n   rule with its control passing (inject in a fragment, a template, a\n   composite and a layout; an `@angular/aria` import outside wrappers; a\n   data-access import in a mapper; a never-reassigned private member under\n   a project configuration; an out-of-order or unseparated import group; an\n   inline template without the two newlines; a type alias name declared in\n   two files under `libs/shared`)."
+          },
+          {
+            "id": "criterion:2",
+            "text": "`grep -rlE \"inject\\(|constructor\\(\" libs/shared/ui/src/lib/{fragments,templates,composites} libs/features/board/src/lib/{composites,layouts}`\n   prints nothing, and every component under `libs` and `apps` declares\n   `changeDetection: ChangeDetectionStrategy.OnPush`\n   (`grep -rL \"ChangeDetectionStrategy.OnPush\" $(grep -rl \"@Component\" libs apps --include='*.ts' | grep -v spec)`\n   prints nothing)."
+          },
+          {
+            "id": "criterion:3",
+            "text": "`npm run lint:components` exits 0 on the workspace and exits nonzero on\n   `tools/lint-fixtures/component-order.ts`."
+          },
+          {
+            "id": "criterion:4",
+            "text": "`libs/features/board/src/lib/` has `containers/`, `facades/`, `mappers/`,\n   `composites/`, `layouts/` and `models/` each with at least one non-spec\n   file; `libs/features/board/src/index.ts` exports only `boardRoutes`; no\n   file under `libs/features/board/src/lib` imports from `@dotln-angular/board`\n   (`grep -rl \"@dotln-angular/board'\" libs/features/board/src/lib` prints\n   nothing); `apps/dotln/src/app/app.routes.ts` lazy-loads it\n   (`grep -c \"loadChildren\" apps/dotln/src/app/app.routes.ts` is at least 1)\n   and `grep -c \"Home\" libs/shared/core/src/lib/paths/routes.ts` prints 0."
+          },
+          {
+            "id": "criterion:5",
+            "text": "`npm run check:fixtures` exits 0: both fixtures validate against the\n   pinned schema, whose SHA-256 is recorded in `docs/evidence/WO-006/decisions.md`\n   and the generator log, carry `\"viewModelVersion\": \"uifa-board-v1\"`, and\n   contain no absolute path (`grep -cE \"/Users/|/home/|[A-Z]:\\\\\\\\\" libs/features/board/src/testing/fixtures/*.json`\n   prints 0 for each file); and `npx nx test board` exits 0 with a spec that\n   renders `unavailable-board.json` and asserts every section shows the\n   unavailable state with its explanation, and a spec that renders a document\n   whose `viewModelVersion` differs and asserts the page shows the unavailable\n   state naming that version."
+          },
+          {
+            "id": "criterion:6",
+            "text": "`npx nx e2e dotln-e2e` exits 0 and includes a test that runs\n   `AxeBuilder` with the `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa` and\n   `wcag22aa` tags on the board route and asserts no serious or critical\n   violations; a keyboard test that reaches the main landmark from the skip\n   link and moves the selected panel with the arrow keys; and a test that the\n   board route renders five panel tabs from the fixture with the Actors panel\n   selected first and at least one row's cells showing label, value and\n   status."
+          },
+          {
+            "id": "criterion:7",
+            "text": "`docs/dev-reference/architecture/component-taxonomy.md` names the seven\n   kinds with one repository path each, `docs/ai-reference/component-rules.md`\n   states R1 to R7, H1 to H5 and G1 to G6 by identifier, and\n   `docs/dev-reference/architecture/console.md` names the fixture path, the\n   schema pin and the data path."
+          },
+          {
+            "id": "criterion:8",
+            "text": "`node scripts/target-gate.mjs WO-006 --review` records a passing row for\n   every declared command with no tracked-byte mutation, and\n   `npm run test:docs` passes in the launchpad order worktree; the Preflight\n   line ran before the first full gate."
+          }
+        ],
+        "nonGoals": "stores, events, HTTP, MSW (WO-007); authentication (WO-008);\n`runtime-status-v1`, the command surface over the parity contract, the\narrival screen, drag-equip authoring, counterfactual and QA views, a second\nskin or the RPG layer (WS-001 §The console, later members); a design-system\nsite or Storybook; dark mode beyond token readiness; a second feature."
+      },
+      {
+        "workOrderId": "WO-007",
+        "path": "docs/work-orders/WO-007-events-stores-data-access.md",
+        "title": "WO-007 — Events, stores and data access for DotLn-Angular: the tiered event groups in `events`, NgRx SignalStore with the Events plugin, call state and the trinity through `data-access`, `BoardStore` behind `BoardFacade` loading the actor board over HTTP, the app-tier stores for feature flags, navigation with canonical routes and errors in `state`, HTTP interceptors for base URL, timeouts and errors, MSW in development and in tests, and the action-hygiene check",
+        "objective": "state in DotLn-Angular flows one way through typed events:\nUI events dispatched by containers through facades, data-access events as\nreusable commands with call state, navigation events resolved by one store\nthrough canonical routes, app events for flags and errors; every event is\ndeclared in `@dotln-angular/events` under its tier, the hygiene check counts\nthe exceptions, `BoardStore` loads the actor board (`uifa-board-v1`) through\nHTTP answered by MSW in development and in tests, and the shell shows the\nerror store's state.",
+        "cost": "adds `libs/shared/events`, `libs/shared/data-access`,\n`libs/shared/state`, `libs/features/board-data-access`, the MSW worker and\nhandlers, the interceptors, the hygiene check script, about 70 source files;\nadds `@ngrx/signals`, `@angular-architects/ngrx-toolkit` (or a house\n`withCallState`), `msw` pinned to 3.x (`~3.0.3` or the current 3.x at\nactivation, recorded) to the workspace. Removes `BoardFacade`'s recorded-fixture\nprovider (`BoardFixtureToken`); the fixture itself stays as the handler's\nresponse and the specs' input.\nWall-clock: about 6 to 8 hours of executor work plus the fixed cycle; unknown\nuntil run. Context bytes: WS-001 house rules 8, 11, 16, the NgRx Events plugin\nand toolkit declarations, the MSW browser and Node guides, this order, about\n150 KB. Commands added in the target: `npm run lint:hygiene`, `npm run msw:init`.\nTokens: unknown until run. Steps: 15. Re-mints: none.",
+        "criteria": [
+          {
+            "id": "criterion:1",
+            "text": "Every `eventGroup(` call in the workspace is under `libs/shared/events/src/lib/{app,navigation,data-access,ui}/`\n   (`grep -rl \"eventGroup(\" libs apps --include='*.ts' | grep -v \"libs/shared/events/src/lib/\" | grep -v spec`\n   prints nothing) and `npx nx test events` exits 0 with the tier-prefix and\n   uniqueness spec."
+          },
+          {
+            "id": "criterion:2",
+            "text": "`npm run lint:hygiene` exits 0 on the workspace, prints the exception\n   count, and exits nonzero on each fixture under `tools/lint-fixtures/hygiene/`\n   (an own-tier dispatch, a data-access to data-access mapping, a UI to UI\n   mapping)."
+          },
+          {
+            "id": "criterion:3",
+            "text": "`grep -rc \"withEffects\" libs apps --include='*.ts' | grep -v \":0\"` prints\n   nothing; `BoardStore` uses `withCallState`, a reducer on `boardPageEvents`\n   and event handlers dispatching `boardHttpEvents.loadSuccess` or\n   `loadFailure`, and `npx nx test board-data-access` exits 0 with specs for\n   success, HTTP failure and timeout through MSW handlers."
+          },
+          {
+            "id": "criterion:4",
+            "text": "`grep -c \"setupWorker\" apps/dotln/src/mocks/browser.ts` is 1,\n   `apps/dotln/public/mockServiceWorker.js` exists, `npm ls msw` reports a\n   3.x version, one spec under `libs/shared/data-access` issues a request no\n   handler matches and asserts that it fails (the unhandled-request option\n   proved by behavior), and the browser worker starts only when\n   `environment.mocks` is true (`grep -c \"environment.mocks\" apps/dotln/src/main.ts`\n   is at least 1)."
+          },
+          {
+            "id": "criterion:5",
+            "text": "`npx nx build dotln --configuration=production` exits 0 and\n   `grep -rlE \"setupWorker|mockServiceWorker\" dist/apps/dotln/browser` prints\n   nothing, and for every request path the handler files declare (listed by\n   `grep -rhoE \"http\\\\.(get|post|put|patch|delete)\\\\('[^']+'\" libs apps --include='*.ts' | sort -u`,\n   recorded in the evidence README) `grep -rl \"<path>\" dist/apps/dotln/browser`\n   prints nothing; and `grep -c \"featureFlagOverrides\" apps/dotln/src/environments/environment.prod.ts`\n   is at least 1 with the value `false`."
+          },
+          {
+            "id": "criterion:6",
+            "text": "`npx nx e2e dotln-e2e` exits 0 and includes: the board's five panels\n   rendered from the mocked endpoint (the recorded fixture served by the\n   handler, with `grep -c \"BoardFixtureToken\" libs/features/board/src -r`\n   printing 0); a forced failure showing the empty state and the toast;\n   `?ff=<flag>:on` changing a flagged element; a navigation triggered by\n   `navigationEvents.navigate` landing on the canonical route with its query\n   parameters."
+          },
+          {
+            "id": "criterion:7",
+            "text": "`docs/dev-reference/architecture/events-and-state.md` and\n   `docs/ai-reference/state-rules.md` exist and the rules file carries the\n   rule 16 flow table."
+          },
+          {
+            "id": "criterion:8",
+            "text": "`node scripts/target-gate.mjs WO-007 --review` records a passing row for\n   every declared command with no tracked-byte mutation, and\n   `npm run test:docs` passes in the launchpad order worktree; the Preflight\n   line ran before the first full gate."
+          }
+        ],
+        "nonGoals": "authentication, tokens and permissions (WO-008); a real API;\npersistence (`withStorageSync`); devtools beyond `withDevtools` in\ndevelopment; a second feature."
+      },
+      {
+        "workOrderId": "WO-008",
+        "path": "docs/work-orders/WO-008-authentication-and-permissions.md",
+        "title": "WO-008 — Authentication and permissions for DotLn-Angular, legitimate from the Angular side: `auth` with an OpenID Connect authorization-code-with-PKCE client behind a port, in-memory token handling with single-flight refresh, expiry and invalid-token paths, the auth and permission stores, route and feature permission checks from a declared adjacency list, the mocked identity provider through MSW, and the failure-case matrix in unit and e2e tests",
+        "objective": "a visitor to `apps/dotln` signs in through an OpenID Connect\nauthorization-code flow with PKCE against a mocked provider, holds tokens only\nin memory, is refreshed once when a request meets an expired token and\nsigned out when refresh fails or a token is invalid, sees only the routes and\nfeatures the declared permission model grants, and every failure case in the\nmatrix below has a passing test; swapping the mocked provider for a real one\nchanges configuration and nothing in the Angular code.",
+        "cost": "adds `libs/shared/auth` with its kit, the mocked identity provider\nhandlers and signing key for development, the `authHttpEvents` and\n`sessionEvents` groups, guards, the permission directive, the `/login` and\n`/denied` routes, about 60 source files; adds one OpenID Connect client\nlibrary and `jose` (development signing in the mock) to the workspace.\nRemoves nothing. Wall-clock: about 8 to 12 hours of executor work plus the\nfixed cycle; unknown until run. Context bytes: WS-001 house rule 17, the\nevents and state documents, the client library's documentation, this order,\nabout 160 KB. Commands added in the target: none. Tokens: unknown until run.\nSteps: 15. Re-mints: none.",
+        "criteria": [
+          {
+            "id": "criterion:1",
+            "text": "`grep -rlE \"localStorage|sessionStorage\" libs/shared/auth/src apps/dotln/src --include='*.ts' | grep -v spec`\n   prints nothing; `grep -rc \"console.log\" libs/shared/auth/src --include='*.ts' | grep -v \":0\"`\n   prints nothing; and an e2e step after the sign-in reads every key of\n   `localStorage` and `sessionStorage` and asserts that no value matches the\n   JWT shape (three dot-separated base64url segments), which covers the\n   client library's own stores as well as house code."
+          },
+          {
+            "id": "criterion:2",
+            "text": "`libs/shared/auth/src/lib/session/transitions.ts` declares the transition\n   table for the six states and `transitions.spec.ts` asserts every state and\n   event pair (the spec iterates the table and the event list, so an\n   unhandled pair fails); `npx nx test auth` exits 0."
+          },
+          {
+            "id": "criterion:3",
+            "text": "Unit specs exist and pass for each matrix row: timeout on exchange,\n   `invalid_grant`, expired-then-refresh-then-replay, refresh failure to\n   sign-out, invalid signature, wrong audience, skew within and beyond\n   tolerance, two concurrent `401`s producing one refresh request (asserted\n   through the MSW handler's call count), `state` mismatch, redirect loop\n   stop, cross-tab sign-out."
+          },
+          {
+            "id": "criterion:4",
+            "text": "`core` exports `routePermissions` covering every `BasePaths` member\n   (a spec asserts the record's keys equal the enum's values), guards use it,\n   and `npx nx e2e dotln-e2e` includes: sign in through the mocked provider\n   and land on `returnTo`; a denied route redirecting to `/denied`; an\n   element hidden by `*dotlnHasPermission` for a user without the permission;\n   token expiry during use followed by a transparent refresh; refresh failure\n   returning to `/login`."
+          },
+          {
+            "id": "criterion:5",
+            "text": "The production build contains no mock provider code:\n   `npx nx build dotln --configuration=production` exits 0, and for the\n   development signing key's identifier (the `kid` constant) and for every\n   path the mocked provider's constants file declares (both listed in the\n   evidence README), `grep -rl \"<value>\" dist/apps/dotln/browser` prints\n   nothing; and the bearer token is attached only to requests under\n   `apiBaseUrl` (a spec asserts a request to another origin carries no\n   `Authorization` header)."
+          },
+          {
+            "id": "criterion:6",
+            "text": "`docs/dev-reference/security/authentication.md` states the storage rule,\n   the refresh rule, the matrix, the provider swap and that the server\n   enforces authorization while client checks shape presentation only\n   (`grep -c \"server enforces authorization\" docs/dev-reference/security/authentication.md`\n   is at least 1), and `docs/ai-reference/auth-rules.md` exists."
+          },
+          {
+            "id": "criterion:7",
+            "text": "`node scripts/target-gate.mjs WO-008 --review` records a passing row for\n   every declared command with no tracked-byte mutation, and\n   `npm run test:docs` passes in the launchpad order worktree; the Preflight\n   line ran before the first full gate."
+          }
+        ],
+        "nonGoals": "a real identity provider or API; a backend-for-frontend;\nmulti-factor flows; user management screens; social login."
+      }
+    ],
+    "deferrals": [],
+    "costTable": {
+      "schemaVersion": 1,
+      "subjectSourceHash": "sha256:7e820dd04a9cfa60aaa493fd9a46fa74a533fd1ed9df64b111a3972f54b62a8b",
+      "acceptances": [],
+      "observedAt": "2026-10-21T05:16:52.183Z",
+      "subjectRevision": "b3c8121cbc9cbe4f015d1cdc57c466bc6760a7fc",
+      "rows": [
+        {
+          "workOrder": "WO-006",
+          "observedAt": "2026-10-21T05:16:52.183Z",
+          "metrics": null
+        },
+        {
+          "workOrder": "WO-007",
+          "observedAt": "2026-10-21T05:16:52.183Z",
+          "metrics": null
+        },
+        {
+          "workOrder": "WO-008",
+          "observedAt": "2026-10-21T05:16:52.183Z",
+          "metrics": null
+        }
+      ],
+      "traps": [
+        {
+          "id": "rule-beating",
+          "signal": "Read-obligation bytes against diff bytes; Stop refusals and re-announcements",
+          "metric": "readAmplification",
+          "series": [
+            {
+              "workOrder": "WO-009",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-010",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-011",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-005",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-012",
+              "value": 18.556229327453142,
+              "delta": null
+            }
+          ],
+          "indicators": [
+            {
+              "metric": "readAmplification",
+              "series": [
+                {
+                  "workOrder": "WO-009",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-010",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-011",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-005",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-012",
+                  "value": 18.556229327453142,
+                  "delta": null
+                }
+              ]
+            },
+            {
+              "metric": "stopRefusals",
+              "series": [
+                {
+                  "workOrder": "WO-009",
+                  "value": 0,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-010",
+                  "value": 0,
+                  "delta": 0
+                },
+                {
+                  "workOrder": "WO-011",
+                  "value": 0,
+                  "delta": 0
+                },
+                {
+                  "workOrder": "WO-005",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-012",
+                  "value": 0,
+                  "delta": null
+                }
+              ]
+            },
+            {
+              "metric": "reAnnouncements",
+              "series": [
+                {
+                  "workOrder": "WO-009",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-010",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-011",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-005",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-012",
+                  "value": null,
+                  "delta": null
+                }
+              ]
+            }
+          ],
+          "worsening": [],
+          "reopenCandidate": false
+        },
+        {
+          "id": "seeking-the-wrong-goal",
+          "signal": "Machinery share of elapsed time; phase durations against code-change size",
+          "metric": "machineryShare",
+          "series": [
+            {
+              "workOrder": "WO-009",
+              "value": 0.7147504238067274,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-010",
+              "value": 0.8241037921823849,
+              "delta": 0.10935336837565757
+            },
+            {
+              "workOrder": "WO-011",
+              "value": 0.5356521134244526,
+              "delta": -0.2884516787579323
+            },
+            {
+              "workOrder": "WO-005",
+              "value": 0.5206116443737944,
+              "delta": -0.015040469050658256
+            },
+            {
+              "workOrder": "WO-012",
+              "value": 0.7557616192455047,
+              "delta": 0.2351499748717103
+            }
+          ],
+          "indicators": [
+            {
+              "metric": "machineryShare",
+              "series": [
+                {
+                  "workOrder": "WO-009",
+                  "value": 0.7147504238067274,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-010",
+                  "value": 0.8241037921823849,
+                  "delta": 0.10935336837565757
+                },
+                {
+                  "workOrder": "WO-011",
+                  "value": 0.5356521134244526,
+                  "delta": -0.2884516787579323
+                },
+                {
+                  "workOrder": "WO-005",
+                  "value": 0.5206116443737944,
+                  "delta": -0.015040469050658256
+                },
+                {
+                  "workOrder": "WO-012",
+                  "value": 0.7557616192455047,
+                  "delta": 0.2351499748717103
+                }
+              ]
+            },
+            {
+              "metric": "elapsedPerCodeByte",
+              "series": [
+                {
+                  "workOrder": "WO-009",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-010",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-011",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-005",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-012",
+                  "value": 2069.9746416758544,
+                  "delta": null
+                }
+              ]
+            }
+          ],
+          "worsening": [],
+          "reopenCandidate": false
+        },
+        {
+          "id": "shifting-the-burden-to-the-intervenor",
+          "signal": "Operator corrections and directions, manual closeout steps and emergency planning passes",
+          "corrections": [
+            {
+              "workOrder": "WO-009",
+              "total": 0,
+              "byPhase": {},
+              "byUnit": {},
+              "byPhaseAndUnit": {},
+              "source": "session-journal"
+            },
+            {
+              "workOrder": "WO-010",
+              "total": 2,
+              "byPhase": {
+                "verification": 2
+              },
+              "byUnit": {
+                "unnamed": 2
+              },
+              "byPhaseAndUnit": {
+                "verification": {
+                  "unnamed": 2
+                }
+              },
+              "source": "session-journal"
+            },
+            {
+              "workOrder": "WO-011",
+              "total": 1,
+              "byPhase": {
+                "verification": 1
+              },
+              "byUnit": {
+                "unnamed": 1
+              },
+              "byPhaseAndUnit": {
+                "verification": {
+                  "unnamed": 1
+                }
+              },
+              "source": "session-journal"
+            },
+            {
+              "workOrder": "WO-005",
+              "total": null,
+              "byPhase": null,
+              "byUnit": null,
+              "byPhaseAndUnit": null,
+              "source": "unavailable"
+            },
+            {
+              "workOrder": "WO-012",
+              "total": 1,
+              "byPhase": {
+                "verification": 1
+              },
+              "byUnit": {
+                "unnamed": 1
+              },
+              "byPhaseAndUnit": {
+                "verification": {
+                  "unnamed": 1
+                }
+              },
+              "source": "session-journal"
+            }
+          ],
+          "directions": [
+            {
+              "workOrder": "WO-009",
+              "total": 0,
+              "byKind": {
+                "scopeExpand": 0,
+                "operatorOverride": 0,
+                "analysis": 0,
+                "conversationOnly": 0,
+                "operatorLabel": 0,
+                "resumeCorrection": 0,
+                "resumeDirection": 0,
+                "resumeScopeExpansion": 0,
+                "resumeOverride": 0,
+                "resumeTakeover": 0,
+                "resumeAnswer": 0,
+                "OperatorOverrideRecorded": 0,
+                "RecordCorrected": 0,
+                "CriterionWaived": 0
+              },
+              "source": "committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events"
+            },
+            {
+              "workOrder": "WO-010",
+              "total": 0,
+              "byKind": {
+                "scopeExpand": 0,
+                "operatorOverride": 0,
+                "analysis": 0,
+                "conversationOnly": 0,
+                "operatorLabel": 0,
+                "resumeCorrection": 0,
+                "resumeDirection": 0,
+                "resumeScopeExpansion": 0,
+                "resumeOverride": 0,
+                "resumeTakeover": 0,
+                "resumeAnswer": 0,
+                "OperatorOverrideRecorded": 0,
+                "RecordCorrected": 0,
+                "CriterionWaived": 0
+              },
+              "source": "committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events"
+            },
+            {
+              "workOrder": "WO-011",
+              "total": 1,
+              "byKind": {
+                "scopeExpand": 0,
+                "operatorOverride": 0,
+                "analysis": 0,
+                "conversationOnly": 0,
+                "operatorLabel": 0,
+                "resumeCorrection": 0,
+                "resumeDirection": 1,
+                "resumeScopeExpansion": 0,
+                "resumeOverride": 0,
+                "resumeTakeover": 0,
+                "resumeAnswer": 0,
+                "OperatorOverrideRecorded": 0,
+                "RecordCorrected": 0,
+                "CriterionWaived": 0
+              },
+              "source": "committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events"
+            },
+            {
+              "workOrder": "WO-005",
+              "total": 5,
+              "byKind": {
+                "scopeExpand": 0,
+                "operatorOverride": 0,
+                "analysis": 0,
+                "conversationOnly": 0,
+                "operatorLabel": 0,
+                "resumeCorrection": 1,
+                "resumeDirection": 4,
+                "resumeScopeExpansion": 0,
+                "resumeOverride": 0,
+                "resumeTakeover": 0,
+                "resumeAnswer": 0,
+                "OperatorOverrideRecorded": 0,
+                "RecordCorrected": 0,
+                "CriterionWaived": 0
+              },
+              "source": "committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events"
+            },
+            {
+              "workOrder": "WO-012",
+              "total": 1,
+              "byKind": {
+                "scopeExpand": 0,
+                "operatorOverride": 0,
+                "analysis": 0,
+                "conversationOnly": 0,
+                "operatorLabel": 0,
+                "resumeCorrection": 0,
+                "resumeDirection": 1,
+                "resumeScopeExpansion": 0,
+                "resumeOverride": 0,
+                "resumeTakeover": 0,
+                "resumeAnswer": 0,
+                "OperatorOverrideRecorded": 0,
+                "RecordCorrected": 0,
+                "CriterionWaived": 0
+              },
+              "source": "committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events"
+            }
+          ],
+          "metric": "operatorCorrections",
+          "series": [
+            {
+              "workOrder": "WO-009",
+              "value": 0,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-010",
+              "value": 2,
+              "delta": 2
+            },
+            {
+              "workOrder": "WO-011",
+              "value": 1,
+              "delta": -1
+            },
+            {
+              "workOrder": "WO-005",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-012",
+              "value": 1,
+              "delta": null
+            }
+          ],
+          "indicators": [
+            {
+              "metric": "operatorCorrections",
+              "series": [
+                {
+                  "workOrder": "WO-009",
+                  "value": 0,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-010",
+                  "value": 2,
+                  "delta": 2
+                },
+                {
+                  "workOrder": "WO-011",
+                  "value": 1,
+                  "delta": -1
+                },
+                {
+                  "workOrder": "WO-005",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-012",
+                  "value": 1,
+                  "delta": null
+                }
+              ]
+            },
+            {
+              "metric": "operatorDirections",
+              "series": [
+                {
+                  "workOrder": "WO-009",
+                  "value": 0,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-010",
+                  "value": 0,
+                  "delta": 0
+                },
+                {
+                  "workOrder": "WO-011",
+                  "value": 1,
+                  "delta": 1
+                },
+                {
+                  "workOrder": "WO-005",
+                  "value": 5,
+                  "delta": 4
+                },
+                {
+                  "workOrder": "WO-012",
+                  "value": 1,
+                  "delta": -4
+                }
+              ]
+            },
+            {
+              "metric": "manualCloseoutSteps",
+              "series": [
+                {
+                  "workOrder": "WO-009",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-010",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-011",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-005",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-012",
+                  "value": null,
+                  "delta": null
+                }
+              ]
+            },
+            {
+              "metric": "emergencyPasses",
+              "series": [
+                {
+                  "workOrder": "WO-009",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-010",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-011",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-005",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-012",
+                  "value": null,
+                  "delta": null
+                }
+              ]
+            }
+          ],
+          "worsening": [],
+          "reopenCandidate": false,
+          "planningCaptures": [
+            {
+              "pass": "planning-24597b606f20e33d",
+              "date": "2026-10-21",
+              "captures": 1
+            },
+            {
+              "pass": "planning-fc1c0ec6bba3073a",
+              "date": "2026-10-21",
+              "captures": 1
+            },
+            {
+              "pass": "planning-56357ae66bd3a7f6",
+              "date": "2026-10-20",
+              "captures": 1
+            },
+            {
+              "pass": "planning-e0dd1f8a7a5b84af",
+              "date": "2026-10-19",
+              "captures": 1
+            },
+            {
+              "pass": "planning-14fefa7dc1ee9d3b",
+              "date": "2026-10-18",
+              "captures": 1
+            },
+            {
+              "pass": "planning-afc1740dd0afc954",
+              "date": "2026-10-18",
+              "captures": 1
+            }
+          ]
+        },
+        {
+          "id": "drift-to-low-performance",
+          "signal": "Subject length, gate step count and cold-start byte series",
+          "metric": "coldStartBytes",
+          "series": [
+            {
+              "workOrder": "WO-009",
+              "value": 29364,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-010",
+              "value": 29364,
+              "delta": 0
+            },
+            {
+              "workOrder": "WO-011",
+              "value": 29364,
+              "delta": 0
+            },
+            {
+              "workOrder": "WO-005",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-012",
+              "value": 29364,
+              "delta": null
+            }
+          ],
+          "indicators": [
+            {
+              "metric": "coldStartBytes",
+              "series": [
+                {
+                  "workOrder": "WO-009",
+                  "value": 29364,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-010",
+                  "value": 29364,
+                  "delta": 0
+                },
+                {
+                  "workOrder": "WO-011",
+                  "value": 29364,
+                  "delta": 0
+                },
+                {
+                  "workOrder": "WO-005",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-012",
+                  "value": 29364,
+                  "delta": null
+                }
+              ]
+            },
+            {
+              "metric": "subjectCharacters",
+              "series": [
+                {
+                  "workOrder": "WO-009",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-010",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-011",
+                  "value": 87,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-005",
+                  "value": 98,
+                  "delta": 11
+                },
+                {
+                  "workOrder": "WO-012",
+                  "value": 117,
+                  "delta": 19
+                }
+              ]
+            },
+            {
+              "metric": "gateStepCount",
+              "series": [
+                {
+                  "workOrder": "WO-009",
+                  "value": 7,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-010",
+                  "value": 7,
+                  "delta": 0
+                },
+                {
+                  "workOrder": "WO-011",
+                  "value": 7,
+                  "delta": 0
+                },
+                {
+                  "workOrder": "WO-005",
+                  "value": 7,
+                  "delta": 0
+                },
+                {
+                  "workOrder": "WO-012",
+                  "value": 7,
+                  "delta": 0
+                }
+              ]
+            }
+          ],
+          "worsening": [],
+          "reopenCandidate": false,
+          "coldStart": {
+            "comparisonEdition": "v0.3.3",
+            "profiles": [
+              {
+                "role": "executor",
+                "skillsRoot": ".claude/skills",
+                "path": ".claude/skills/dotln-executor/SKILL.md",
+                "skillBytes": 22341,
+                "bytes": 29364,
+                "previousBytes": 29364,
+                "previousCause": null,
+                "delta": 0,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.executor",
+                "verdict": "unset"
+              },
+              {
+                "role": "verifier",
+                "skillsRoot": ".claude/skills",
+                "path": ".claude/skills/dotln-verifier/SKILL.md",
+                "skillBytes": 19104,
+                "bytes": 26127,
+                "previousBytes": 26127,
+                "previousCause": null,
+                "delta": 0,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.verifier",
+                "verdict": "unset"
+              },
+              {
+                "role": "reviewer",
+                "skillsRoot": ".claude/skills",
+                "path": ".claude/skills/dotln-reviewer/SKILL.md",
+                "skillBytes": 21927,
+                "bytes": 28950,
+                "previousBytes": 28950,
+                "previousCause": null,
+                "delta": 0,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.reviewer",
+                "verdict": "unset"
+              },
+              {
+                "role": "release-close",
+                "skillsRoot": ".claude/skills",
+                "path": ".claude/skills/dotln-release-close/SKILL.md",
+                "skillBytes": 10867,
+                "bytes": 17890,
+                "previousBytes": 17890,
+                "previousCause": null,
+                "delta": 0,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.release-close",
+                "verdict": "unset"
+              },
+              {
+                "role": "planner",
+                "skillsRoot": ".claude/skills",
+                "path": ".claude/skills/dotln-planner/SKILL.md",
+                "skillBytes": 11616,
+                "bytes": 18639,
+                "previousBytes": 18639,
+                "previousCause": null,
+                "delta": 0,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.planner",
+                "verdict": "unset"
+              },
+              {
+                "role": "refuter",
+                "skillsRoot": ".claude/skills",
+                "path": ".claude/skills/dotln-refuter/SKILL.md",
+                "skillBytes": 10590,
+                "bytes": 17613,
+                "previousBytes": 17613,
+                "previousCause": null,
+                "delta": 0,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.refuter",
+                "verdict": "unset"
+              },
+              {
+                "role": "executor",
+                "skillsRoot": ".agents/skills",
+                "path": ".agents/skills/dotln-executor/SKILL.md",
+                "skillBytes": 22341,
+                "bytes": 29364,
+                "previousBytes": 29364,
+                "previousCause": null,
+                "delta": 0,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.executor",
+                "verdict": "unset"
+              },
+              {
+                "role": "verifier",
+                "skillsRoot": ".agents/skills",
+                "path": ".agents/skills/dotln-verifier/SKILL.md",
+                "skillBytes": 19104,
+                "bytes": 26127,
+                "previousBytes": 26127,
+                "previousCause": null,
+                "delta": 0,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.verifier",
+                "verdict": "unset"
+              },
+              {
+                "role": "reviewer",
+                "skillsRoot": ".agents/skills",
+                "path": ".agents/skills/dotln-reviewer/SKILL.md",
+                "skillBytes": 21927,
+                "bytes": 28950,
+                "previousBytes": 28950,
+                "previousCause": null,
+                "delta": 0,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.reviewer",
+                "verdict": "unset"
+              },
+              {
+                "role": "release-close",
+                "skillsRoot": ".agents/skills",
+                "path": ".agents/skills/dotln-release-close/SKILL.md",
+                "skillBytes": 10867,
+                "bytes": 17890,
+                "previousBytes": 17890,
+                "previousCause": null,
+                "delta": 0,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.release-close",
+                "verdict": "unset"
+              },
+              {
+                "role": "planner",
+                "skillsRoot": ".agents/skills",
+                "path": ".agents/skills/dotln-planner/SKILL.md",
+                "skillBytes": 11616,
+                "bytes": 18639,
+                "previousBytes": 18639,
+                "previousCause": null,
+                "delta": 0,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.planner",
+                "verdict": "unset"
+              },
+              {
+                "role": "refuter",
+                "skillsRoot": ".agents/skills",
+                "path": ".agents/skills/dotln-refuter/SKILL.md",
+                "skillBytes": 10590,
+                "bytes": 17613,
+                "previousBytes": 17613,
+                "previousCause": null,
+                "delta": 0,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.refuter",
+                "verdict": "unset"
+              }
+            ]
+          }
+        },
+        {
+          "id": "policy-resistance",
+          "signal": "Guard refusals, bypass tools and ad hoc scripts",
+          "metric": "guardRefusals",
+          "series": [
+            {
+              "workOrder": "WO-009",
+              "value": 1,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-010",
+              "value": 3,
+              "delta": 2
+            },
+            {
+              "workOrder": "WO-011",
+              "value": 0,
+              "delta": -3
+            },
+            {
+              "workOrder": "WO-005",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-012",
+              "value": 0,
+              "delta": null
+            }
+          ],
+          "indicators": [
+            {
+              "metric": "guardRefusals",
+              "series": [
+                {
+                  "workOrder": "WO-009",
+                  "value": 1,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-010",
+                  "value": 3,
+                  "delta": 2
+                },
+                {
+                  "workOrder": "WO-011",
+                  "value": 0,
+                  "delta": -3
+                },
+                {
+                  "workOrder": "WO-005",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-012",
+                  "value": 0,
+                  "delta": null
+                }
+              ]
+            },
+            {
+              "metric": "bypassTools",
+              "series": [
+                {
+                  "workOrder": "WO-009",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-010",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-011",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-005",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-012",
+                  "value": null,
+                  "delta": null
+                }
+              ]
+            },
+            {
+              "metric": "adHocScripts",
+              "series": [
+                {
+                  "workOrder": "WO-009",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-010",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-011",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-005",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-012",
+                  "value": null,
+                  "delta": null
+                }
+              ]
+            }
+          ],
+          "worsening": [],
+          "reopenCandidate": false
+        }
+      ],
+      "firstVerifications": {
+        "counted": 8,
+        "failed": 1,
+        "orders": [
+          {
+            "workOrder": "WO-001",
+            "firstVerification": "pass"
+          },
+          {
+            "workOrder": "WO-003",
+            "firstVerification": "fail"
+          },
+          {
+            "workOrder": "WO-004",
+            "firstVerification": "pass"
+          },
+          {
+            "workOrder": "WO-009",
+            "firstVerification": "pass"
+          },
+          {
+            "workOrder": "WO-010",
+            "firstVerification": "pass"
+          },
+          {
+            "workOrder": "WO-011",
+            "firstVerification": "pass"
+          },
+          {
+            "workOrder": "WO-005",
+            "firstVerification": "pass"
+          },
+          {
+            "workOrder": "WO-012",
+            "firstVerification": "pass"
+          }
+        ],
+        "source": "canonical control fold: the first completed verification of each of the last eight orders by close time"
+      }
+    },
+    "goalReview": {
+      "platformStandard": "the point is to create a platform, not to prove every\nconstructible case before filing, and the refutation pass must be made worth\nits cost before a later pass pays it again.",
+      "goalStandard": "## Goal-aligned decisions\n\nThe [sequence](../planning/sequence.md) and selected work order determine\ncurrent placement and authority. The mission is the outcome; the critical path\nis the dependency route to the next outcome. Useful prerequisite or\nrisk-reduction work must name the blocked outcome it enables. Process activity,\nreceipt volume and agent utilization are not progress by themselves. Goal\nalignment grants no authority to reorder or expand work. In all phases, the Goal\nAlignment and Process Cost procedure lives in the generated role skills\n[WO-043, 2026-09-11].\n\nAccuracy takes priority over agreement in every phase. The already-equipped\nCorrectness over Sycophancy rule applies to operator suggestions and the agent's\nown premises equally: challenge unsupported claims, distinguish observation\nfrom inference, state material uncertainty, and correct mistakes when evidence\nchanges. A confident request or an earlier decision is not proof of correctness.\nRecord material disagreement and its evidence in the same decision or phase\nreceipt; do not manufacture dissent or seek approval for ordinary judgment.\n\n| Lens                                  | Decision question                                                                                         |\n| ------------------------------------- | --------------------------------------------------------------------------------------------------------- |\n| Policy resistance / fixes that fail   | Will local goals or guards undo one another?                                                              |\n| Tragedy of the commons                | Does the solution consume shared compute, context or operator attention without accounting for the total? |\n| Drift to low performance              | Does it improve an explicit outcome standard rather than normalize a worse baseline?                      |\n| Escalation                            | Will additional process provoke more process or workarounds?                                              |\n| Success to the successful             | Are credible alternatives excluded merely because the current mechanism already has investment?           |\n| Shifting the burden to the intervenor | Does the solution remove recurring operator rescue or depend on it?                                       |\n| Rule beating                          | Can the evidence pass without the intended behavior occurring?                                            |\n| Seeking the wrong goal                | Does it advance operator flow and the selected product outcome rather than a proxy?                       |\n\nNaive Interventionism adds the existing system's useful functions, affected\nconsumers, second-order harm, reversibility and smallest useful probe. NoOp\nrecords what happens if nothing changes, why action or inaction wins, and the\nevidence that would reopen the choice. Scale detail to consequence: explain\napplicable risks and briefly group immaterial lenses with a reason; do not\nmanufacture eight repetitive paragraphs for routine edits.\n\nRecord evidence of benefit and the risks of intervening in existing behavior;\nverification and handoff compare observed outcomes with the promised benefit.\nRequired legal or release actions retain their existing authority; NoOp is a\nconsidered alternative, not an ambient veto or permission to abandon authorized\nwork.\n\n\n\nMaterial choices and rationales go in existing phase evidence: per-order\n`docs/evidence/WO-NNN/decisions.md` and cited product sections for work-order\ndecisions; planning dispositions/candidate records for planning choices; the\nindependent report or refutation receipt for its judgment; retained closeout\nevidence for release decisions. The decisions index exposes per-order records.\nReuse and link a current rationale until its assumptions change; do not create\na parallel decision log or an extra approval ritual.\n\n\nThis launchpad is the operator's own DotLn instance. Its purpose is to plan and\nrun bounded, evidence-gated work orders across the operator's repositories, so\nthat every change arrives as a pull request the operator reads before it merges,\nwhile the kit itself stays upstream and reaches this fork only through starter\nupdates. The first workstream is DotLn-Angular, an Nx and Angular monorepo that\nserves two outcomes at once: the operator's reference Angular workspace, which a\ncolleague should recognize as the way the operator builds Angular, and the home\nof the DotLn console, the Angular shell that will render DotLn's actor-board\nview model. Its product purpose is a UI over DotLn's features, for playing\nwith them and changing them more intuitively, so that the Angular app improves\nthe platform, the platform the starter, the starter this fork, and the fork\nthe Angular app in turn. The operator means to live in that UI rather than in\nterminals: an agent-orchestration view that shows status and lets them check\nin on running sessions. The critical path runs from registering that repository in this\nlaunchpad, through one witnessed target order that scaffolds the workspace, to a\nfoundation where a feature is added by convention: shared libraries, the\ncomponent taxonomy, events and stores, and a legitimate client-side\nauthentication and permission model. Later workstreams join the same way: one\nregistration and one planning pass each, with the fork's own machinery changes\ncut as self orders beside them.\n",
+      "criticalPath": "unavailable: docs/planning/critical-path-2026-09-08.md; this instance has not declared a critical path",
+      "evidenceHash": "sha256:a3707ee863d39152e8a959f1c51daec9873e42eeee9dbd18bdf17b6fdab0e79c",
+      "observations": [
+        {
+          "id": "docs/planning/cost-table.json#trap:rule-beating",
+          "text": "{\"id\":\"rule-beating\",\"signal\":\"Read-obligation bytes against diff bytes; Stop refusals and re-announcements\",\"metric\":\"readAmplification\",\"series\":[{\"workOrder\":\"WO-009\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-010\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-011\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-005\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-012\",\"value\":18.556229327453142,\"delta\":null}],\"indicators\":[{\"metric\":\"readAmplification\",\"series\":[{\"workOrder\":\"WO-009\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-010\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-011\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-005\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-012\",\"value\":18.556229327453142,\"delta\":null}]},{\"metric\":\"stopRefusals\",\"series\":[{\"workOrder\":\"WO-009\",\"value\":0,\"delta\":null},{\"workOrder\":\"WO-010\",\"value\":0,\"delta\":0},{\"workOrder\":\"WO-011\",\"value\":0,\"delta\":0},{\"workOrder\":\"WO-005\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-012\",\"value\":0,\"delta\":null}]},{\"metric\":\"reAnnouncements\",\"series\":[{\"workOrder\":\"WO-009\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-010\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-011\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-005\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-012\",\"value\":null,\"delta\":null}]}],\"worsening\":[],\"reopenCandidate\":false}"
+        },
+        {
+          "id": "docs/planning/cost-table.json#trap:seeking-the-wrong-goal",
+          "text": "{\"id\":\"seeking-the-wrong-goal\",\"signal\":\"Machinery share of elapsed time; phase durations against code-change size\",\"metric\":\"machineryShare\",\"series\":[{\"workOrder\":\"WO-009\",\"value\":0.7147504238067274,\"delta\":null},{\"workOrder\":\"WO-010\",\"value\":0.8241037921823849,\"delta\":0.10935336837565757},{\"workOrder\":\"WO-011\",\"value\":0.5356521134244526,\"delta\":-0.2884516787579323},{\"workOrder\":\"WO-005\",\"value\":0.5206116443737944,\"delta\":-0.015040469050658256},{\"workOrder\":\"WO-012\",\"value\":0.7557616192455047,\"delta\":0.2351499748717103}],\"indicators\":[{\"metric\":\"machineryShare\",\"series\":[{\"workOrder\":\"WO-009\",\"value\":0.7147504238067274,\"delta\":null},{\"workOrder\":\"WO-010\",\"value\":0.8241037921823849,\"delta\":0.10935336837565757},{\"workOrder\":\"WO-011\",\"value\":0.5356521134244526,\"delta\":-0.2884516787579323},{\"workOrder\":\"WO-005\",\"value\":0.5206116443737944,\"delta\":-0.015040469050658256},{\"workOrder\":\"WO-012\",\"value\":0.7557616192455047,\"delta\":0.2351499748717103}]},{\"metric\":\"elapsedPerCodeByte\",\"series\":[{\"workOrder\":\"WO-009\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-010\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-011\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-005\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-012\",\"value\":2069.9746416758544,\"delta\":null}]}],\"worsening\":[],\"reopenCandidate\":false}"
+        },
+        {
+          "id": "docs/planning/cost-table.json#trap:shifting-the-burden-to-the-intervenor",
+          "text": "{\"id\":\"shifting-the-burden-to-the-intervenor\",\"signal\":\"Operator corrections and directions, manual closeout steps and emergency planning passes\",\"corrections\":[{\"workOrder\":\"WO-009\",\"total\":0,\"byPhase\":{},\"byUnit\":{},\"byPhaseAndUnit\":{},\"source\":\"session-journal\"},{\"workOrder\":\"WO-010\",\"total\":2,\"byPhase\":{\"verification\":2},\"byUnit\":{\"unnamed\":2},\"byPhaseAndUnit\":{\"verification\":{\"unnamed\":2}},\"source\":\"session-journal\"},{\"workOrder\":\"WO-011\",\"total\":1,\"byPhase\":{\"verification\":1},\"byUnit\":{\"unnamed\":1},\"byPhaseAndUnit\":{\"verification\":{\"unnamed\":1}},\"source\":\"session-journal\"},{\"workOrder\":\"WO-005\",\"total\":null,\"byPhase\":null,\"byUnit\":null,\"byPhaseAndUnit\":null,\"source\":\"unavailable\"},{\"workOrder\":\"WO-012\",\"total\":1,\"byPhase\":{\"verification\":1},\"byUnit\":{\"unnamed\":1},\"byPhaseAndUnit\":{\"verification\":{\"unnamed\":1}},\"source\":\"session-journal\"}],\"directions\":[{\"workOrder\":\"WO-009\",\"total\":0,\"byKind\":{\"scopeExpand\":0,\"operatorOverride\":0,\"analysis\":0,\"conversationOnly\":0,\"operatorLabel\":0,\"resumeCorrection\":0,\"resumeDirection\":0,\"resumeScopeExpansion\":0,\"resumeOverride\":0,\"resumeTakeover\":0,\"resumeAnswer\":0,\"OperatorOverrideRecorded\":0,\"RecordCorrected\":0,\"CriterionWaived\":0},\"source\":\"committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events\"},{\"workOrder\":\"WO-010\",\"total\":0,\"byKind\":{\"scopeExpand\":0,\"operatorOverride\":0,\"analysis\":0,\"conversationOnly\":0,\"operatorLabel\":0,\"resumeCorrection\":0,\"resumeDirection\":0,\"resumeScopeExpansion\":0,\"resumeOverride\":0,\"resumeTakeover\":0,\"resumeAnswer\":0,\"OperatorOverrideRecorded\":0,\"RecordCorrected\":0,\"CriterionWaived\":0},\"source\":\"committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events\"},{\"workOrder\":\"WO-011\",\"total\":1,\"byKind\":{\"scopeExpand\":0,\"operatorOverride\":0,\"analysis\":0,\"conversationOnly\":0,\"operatorLabel\":0,\"resumeCorrection\":0,\"resumeDirection\":1,\"resumeScopeExpansion\":0,\"resumeOverride\":0,\"resumeTakeover\":0,\"resumeAnswer\":0,\"OperatorOverrideRecorded\":0,\"RecordCorrected\":0,\"CriterionWaived\":0},\"source\":\"committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events\"},{\"workOrder\":\"WO-005\",\"total\":5,\"byKind\":{\"scopeExpand\":0,\"operatorOverride\":0,\"analysis\":0,\"conversationOnly\":0,\"operatorLabel\":0,\"resumeCorrection\":1,\"resumeDirection\":4,\"resumeScopeExpansion\":0,\"resumeOverride\":0,\"resumeTakeover\":0,\"resumeAnswer\":0,\"OperatorOverrideRecorded\":0,\"RecordCorrected\":0,\"CriterionWaived\":0},\"source\":\"committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events\"},{\"workOrder\":\"WO-012\",\"total\":1,\"byKind\":{\"scopeExpand\":0,\"operatorOverride\":0,\"analysis\":0,\"conversationOnly\":0,\"operatorLabel\":0,\"resumeCorrection\":0,\"resumeDirection\":1,\"resumeScopeExpansion\":0,\"resumeOverride\":0,\"resumeTakeover\":0,\"resumeAnswer\":0,\"OperatorOverrideRecorded\":0,\"RecordCorrected\":0,\"CriterionWaived\":0},\"source\":\"committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events\"}],\"metric\":\"operatorCorrections\",\"series\":[{\"workOrder\":\"WO-009\",\"value\":0,\"delta\":null},{\"workOrder\":\"WO-010\",\"value\":2,\"delta\":2},{\"workOrder\":\"WO-011\",\"value\":1,\"delta\":-1},{\"workOrder\":\"WO-005\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-012\",\"value\":1,\"delta\":null}],\"indicators\":[{\"metric\":\"operatorCorrections\",\"series\":[{\"workOrder\":\"WO-009\",\"value\":0,\"delta\":null},{\"workOrder\":\"WO-010\",\"value\":2,\"delta\":2},{\"workOrder\":\"WO-011\",\"value\":1,\"delta\":-1},{\"workOrder\":\"WO-005\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-012\",\"value\":1,\"delta\":null}]},{\"metric\":\"operatorDirections\",\"series\":[{\"workOrder\":\"WO-009\",\"value\":0,\"delta\":null},{\"workOrder\":\"WO-010\",\"value\":0,\"delta\":0},{\"workOrder\":\"WO-011\",\"value\":1,\"delta\":1},{\"workOrder\":\"WO-005\",\"value\":5,\"delta\":4},{\"workOrder\":\"WO-012\",\"value\":1,\"delta\":-4}]},{\"metric\":\"manualCloseoutSteps\",\"series\":[{\"workOrder\":\"WO-009\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-010\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-011\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-005\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-012\",\"value\":null,\"delta\":null}]},{\"metric\":\"emergencyPasses\",\"series\":[{\"workOrder\":\"WO-009\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-010\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-011\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-005\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-012\",\"value\":null,\"delta\":null}]}],\"worsening\":[],\"reopenCandidate\":false,\"planningCaptures\":[{\"pass\":\"planning-24597b606f20e33d\",\"date\":\"2026-10-21\",\"captures\":1},{\"pass\":\"planning-fc1c0ec6bba3073a\",\"date\":\"2026-10-21\",\"captures\":1},{\"pass\":\"planning-56357ae66bd3a7f6\",\"date\":\"2026-10-20\",\"captures\":1},{\"pass\":\"planning-e0dd1f8a7a5b84af\",\"date\":\"2026-10-19\",\"captures\":1},{\"pass\":\"planning-14fefa7dc1ee9d3b\",\"date\":\"2026-10-18\",\"captures\":1},{\"pass\":\"planning-afc1740dd0afc954\",\"date\":\"2026-10-18\",\"captures\":1}]}"
+        },
+        {
+          "id": "docs/planning/cost-table.json#trap:drift-to-low-performance",
+          "text": "{\"id\":\"drift-to-low-performance\",\"signal\":\"Subject length, gate step count and cold-start byte series\",\"metric\":\"coldStartBytes\",\"series\":[{\"workOrder\":\"WO-009\",\"value\":29364,\"delta\":null},{\"workOrder\":\"WO-010\",\"value\":29364,\"delta\":0},{\"workOrder\":\"WO-011\",\"value\":29364,\"delta\":0},{\"workOrder\":\"WO-005\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-012\",\"value\":29364,\"delta\":null}],\"indicators\":[{\"metric\":\"coldStartBytes\",\"series\":[{\"workOrder\":\"WO-009\",\"value\":29364,\"delta\":null},{\"workOrder\":\"WO-010\",\"value\":29364,\"delta\":0},{\"workOrder\":\"WO-011\",\"value\":29364,\"delta\":0},{\"workOrder\":\"WO-005\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-012\",\"value\":29364,\"delta\":null}]},{\"metric\":\"subjectCharacters\",\"series\":[{\"workOrder\":\"WO-009\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-010\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-011\",\"value\":87,\"delta\":null},{\"workOrder\":\"WO-005\",\"value\":98,\"delta\":11},{\"workOrder\":\"WO-012\",\"value\":117,\"delta\":19}]},{\"metric\":\"gateStepCount\",\"series\":[{\"workOrder\":\"WO-009\",\"value\":7,\"delta\":null},{\"workOrder\":\"WO-010\",\"value\":7,\"delta\":0},{\"workOrder\":\"WO-011\",\"value\":7,\"delta\":0},{\"workOrder\":\"WO-005\",\"value\":7,\"delta\":0},{\"workOrder\":\"WO-012\",\"value\":7,\"delta\":0}]}],\"worsening\":[],\"reopenCandidate\":false,\"coldStart\":{\"comparisonEdition\":\"v0.3.3\",\"profiles\":[{\"role\":\"executor\",\"skillsRoot\":\".claude/skills\",\"path\":\".claude/skills/dotln-executor/SKILL.md\",\"skillBytes\":22341,\"bytes\":29364,\"previousBytes\":29364,\"previousCause\":null,\"delta\":0,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.executor\",\"verdict\":\"unset\"},{\"role\":\"verifier\",\"skillsRoot\":\".claude/skills\",\"path\":\".claude/skills/dotln-verifier/SKILL.md\",\"skillBytes\":19104,\"bytes\":26127,\"previousBytes\":26127,\"previousCause\":null,\"delta\":0,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.verifier\",\"verdict\":\"unset\"},{\"role\":\"reviewer\",\"skillsRoot\":\".claude/skills\",\"path\":\".claude/skills/dotln-reviewer/SKILL.md\",\"skillBytes\":21927,\"bytes\":28950,\"previousBytes\":28950,\"previousCause\":null,\"delta\":0,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.reviewer\",\"verdict\":\"unset\"},{\"role\":\"release-close\",\"skillsRoot\":\".claude/skills\",\"path\":\".claude/skills/dotln-release-close/SKILL.md\",\"skillBytes\":10867,\"bytes\":17890,\"previousBytes\":17890,\"previousCause\":null,\"delta\":0,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.release-close\",\"verdict\":\"unset\"},{\"role\":\"planner\",\"skillsRoot\":\".claude/skills\",\"path\":\".claude/skills/dotln-planner/SKILL.md\",\"skillBytes\":11616,\"bytes\":18639,\"previousBytes\":18639,\"previousCause\":null,\"delta\":0,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.planner\",\"verdict\":\"unset\"},{\"role\":\"refuter\",\"skillsRoot\":\".claude/skills\",\"path\":\".claude/skills/dotln-refuter/SKILL.md\",\"skillBytes\":10590,\"bytes\":17613,\"previousBytes\":17613,\"previousCause\":null,\"delta\":0,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.refuter\",\"verdict\":\"unset\"},{\"role\":\"executor\",\"skillsRoot\":\".agents/skills\",\"path\":\".agents/skills/dotln-executor/SKILL.md\",\"skillBytes\":22341,\"bytes\":29364,\"previousBytes\":29364,\"previousCause\":null,\"delta\":0,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.executor\",\"verdict\":\"unset\"},{\"role\":\"verifier\",\"skillsRoot\":\".agents/skills\",\"path\":\".agents/skills/dotln-verifier/SKILL.md\",\"skillBytes\":19104,\"bytes\":26127,\"previousBytes\":26127,\"previousCause\":null,\"delta\":0,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.verifier\",\"verdict\":\"unset\"},{\"role\":\"reviewer\",\"skillsRoot\":\".agents/skills\",\"path\":\".agents/skills/dotln-reviewer/SKILL.md\",\"skillBytes\":21927,\"bytes\":28950,\"previousBytes\":28950,\"previousCause\":null,\"delta\":0,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.reviewer\",\"verdict\":\"unset\"},{\"role\":\"release-close\",\"skillsRoot\":\".agents/skills\",\"path\":\".agents/skills/dotln-release-close/SKILL.md\",\"skillBytes\":10867,\"bytes\":17890,\"previousBytes\":17890,\"previousCause\":null,\"delta\":0,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.release-close\",\"verdict\":\"unset\"},{\"role\":\"planner\",\"skillsRoot\":\".agents/skills\",\"path\":\".agents/skills/dotln-planner/SKILL.md\",\"skillBytes\":11616,\"bytes\":18639,\"previousBytes\":18639,\"previousCause\":null,\"delta\":0,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.planner\",\"verdict\":\"unset\"},{\"role\":\"refuter\",\"skillsRoot\":\".agents/skills\",\"path\":\".agents/skills/dotln-refuter/SKILL.md\",\"skillBytes\":10590,\"bytes\":17613,\"previousBytes\":17613,\"previousCause\":null,\"delta\":0,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.refuter\",\"verdict\":\"unset\"}]}}"
+        },
+        {
+          "id": "docs/planning/cost-table.json#trap:policy-resistance",
+          "text": "{\"id\":\"policy-resistance\",\"signal\":\"Guard refusals, bypass tools and ad hoc scripts\",\"metric\":\"guardRefusals\",\"series\":[{\"workOrder\":\"WO-009\",\"value\":1,\"delta\":null},{\"workOrder\":\"WO-010\",\"value\":3,\"delta\":2},{\"workOrder\":\"WO-011\",\"value\":0,\"delta\":-3},{\"workOrder\":\"WO-005\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-012\",\"value\":0,\"delta\":null}],\"indicators\":[{\"metric\":\"guardRefusals\",\"series\":[{\"workOrder\":\"WO-009\",\"value\":1,\"delta\":null},{\"workOrder\":\"WO-010\",\"value\":3,\"delta\":2},{\"workOrder\":\"WO-011\",\"value\":0,\"delta\":-3},{\"workOrder\":\"WO-005\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-012\",\"value\":0,\"delta\":null}]},{\"metric\":\"bypassTools\",\"series\":[{\"workOrder\":\"WO-009\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-010\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-011\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-005\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-012\",\"value\":null,\"delta\":null}]},{\"metric\":\"adHocScripts\",\"series\":[{\"workOrder\":\"WO-009\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-010\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-011\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-005\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-012\",\"value\":null,\"delta\":null}]}],\"worsening\":[],\"reopenCandidate\":false}"
+        }
+      ],
+      "costEvidenceStatus": "current"
+    }
+  },
+  "episode": {
+    "kind": "direct-session",
+    "harness": "unknown",
+    "harnessVersion": "unknown",
+    "model": "unknown",
+    "effort": "unknown",
+    "settingsVerification": "unverified",
+    "profileId": "plan-refutation-v1",
+    "completedAt": "2026-10-21T05:32:22.993Z",
+    "resultHash": "sha256:3f459f67df175f86fe3a5de898443f783205d167fd82cc9f93bd3c4dd93b0f08",
+    "judgmentBasis": "canonical-subject-and-protocol",
+    "independence": "session-attested",
+    "contextIsolation": "not-enforced",
+    "modelTools": "available",
+    "statement": "Read: docs/control/local/refute-prompt-2026-10-21-ui-planning.json in full (Read tool up to character 46329, then tail -c +46000 for the rest); docs/work-orders/WO-006-component-taxonomy-shell-home.md, docs/work-orders/WO-007-events-stores-data-access.md and docs/workstreams/WS-001-dotln-angular.md in full (the host saved the oversized WS-001 output to its own tool-results file, which I read back); the header lines of docs/work-orders/WO-008-authentication-and-permissions.md (grep); packages/console/dist/src/collect.js lines 55-110 and packages/console/dist/src/builds.js lines 80-95; a grep for path string literals across packages/console/dist/src/*.js; six matching lines of docs/repositories/dotln-angular.md from a visibility grep. Ran read-only: git rev-parse HEAD (32c833de, equal to the baseCommit), git status, git log --oneline on the subject files, git ls-files (names, filtered; counts only under docs/control), git check-ignore, git remote (names only), ls and wc -c on the root, docs, packages/console/dist/src and the subject files, existence checks of packages/console/dist/src/cli.js, scripts/target-gate.mjs, scripts/worktree.mjs and docs/control/resume.jsonl (absent), find for a board schema under packages, node -e reading only the package.json script names, and python3 -I validating this result from a pipe. Did not read: any docs/planning file (including sequence.md, cost-table.json and refutation receipts) beyond what the prompt embeds, any other docs/control file (names and counts only), docs/control/local/terms.txt, docs/intake, docs/operator, ledgers, the WO-005 decisions, the DotLn-Angular target repository or the DotLn platform repository; ran no kit, npm, network, model or agent command. Made no repository, Git or file writes.",
+    "review": {
+      "scope": "pass",
+      "judgedOrderIds": [
+        "WO-006",
+        "WO-007"
+      ],
+      "carried": [
+        {
+          "workOrderId": "WO-008",
+          "orderHash": "sha256:c59d677c52eb7830fae207c281a45134de4060b727a88a0a8d44c53ba9176fad",
+          "receiptId": "2026-10-21-planning-fc1c0ec6bba3073a-005",
+          "receiptHash": "sha256:1c16404e2eedec8e3a6ea5bcc55b74257d9f27e8ad0c837c9db22d4efd2af43e"
+        }
+      ],
+      "dispatchedAt": "2026-10-21T05:16:52.969Z",
+      "durationMs": 930024
+    }
+  },
+  "result": {
+    "schemaVersion": "plan-goal-review-v1",
+    "orders": [
+      {
+        "workOrderId": "WO-006",
+        "verdict": "aligned-with-findings",
+        "criticalPathAndNoOp": "Gate: no critical-path record is declared (goalReview.criticalPath is unavailable), so the gate is read from the supplied vision passage in goalReview.goalStandard. That passage runs the path from registration, through the scaffold order, to a foundation of shared libraries, the component taxonomy, events and stores, and a client-side authentication and permission model. WO-005 delivered the shared libraries (merge commit 5102783f, per the order and the WS-001 delivery states). WO-006 is the component-taxonomy gate. Its hard edge is the only predecessor of WO-007, which is the only predecessor of WO-008, so it unblocks the rest of the WS-001 chain and the workstream acceptance contract (the component taxonomy demonstrated by one feature). It also opens the console’s first screen, the actor board named in WS-001 §The console. Its own hard dependencies are recorded as met: WO-005 merged 2026-10-20 and WO-012 closed 2026-10-21 as v0.3.3. The supplied sequence WO-006, WO-007, WO-008 matches the WS-001 edges and the order of the vision passage, and no deferrals are supplied. NoOp cost in the records: unknown. The cost-table row for WO-006 has metrics null (observedAt 2026-10-21T05:16:52.183Z), the order carries no NoOp line, and no planning NoOp record was supplied. The only recorded consequence of inaction is the order’s observed gap: at 5102783f the console is one placeholder heading, with no component, no behavior library, no lint by directory and no board, and WO-007 and WO-008 stay hard-blocked. Inaction does not win: the vision passage names this gate, and nothing else in the subject delivers it.",
+        "systemTraps": "Policy resistance: R1 is guarded three ways (the no-restricted-syntax override, the criterion 2 grep and review), and their definitions differ (finding on criterion 2). The four bundled WO-005 lint follow-ups run beside the Preflight nx format:check, and the inline-template newline rule can fight Prettier’s embedded-template output (finding on criterion 1). The policy-resistance observation shows kit guard refusals of 1, 3, 0, null and 0 with no worsening; the target’s own refusals are not measured. Tragedy of the commons: about 160 KB of order context on top of 29,364 executor cold-start bytes (flat in the drift observation), 16 steps, about 75 files and xhigh effort for three roles. WO-012’s read amplification was 18.56 (rule-beating observation); WO-006’s is unknown until run. Reusing the 360 KB fixture as WO-007’s handler response is economical. Drift to low performance: the order raises explicit standards (WCAG 2.2 AA tags in axe, OnPush everywhere, role-by-location lint, visible unavailable states) rather than normalizing a worse baseline. The axe threshold admits moderate violations, which fits house rule 18’s “reasonable extent”. Gate step count stays flat at 7. Escalation: the order adds two target commands, the role-by-location overrides and four follow-up rules, two house scripts (component order and scrub) and a host-qualification record. It retires no check, so each WS-001 member lengthens the target Preflight (7 target commands here, 8 in WO-007). Success to the successful: credible alternatives are rejected on stated grounds, not sunk investment. PrimeNG 22 fails on licence, Material on ownership and the tile grid on product relevance; runtime-status-v1 and loading over HTTP fail because no host exists yet. The Aria evaluation keeps a CDK-only fallback. Shifting the burden: the shifting-the-burden observation puts every recorded operator correction in verification (WO-010 2, WO-011 1, WO-012 1), and WO-005 drew 5 directions. WO-006 is larger than any of those orders and adds an operator-review assumption about the house-library reading. Its criteria are mechanical greps and exit codes, though, which lowers verifier judgment, and reading the draft PR is the vision’s design, not rescue. Rule beating: the criterion 2 grep counts spec files, the criterion 5 scrub check is narrower than the floor, and the Aria decision’s bundle bytes can be read before the route exists or with the fixture inside the chunk (findings). Seeking the wrong goal: the order advances the named gate and the first screen. The host-qualification record in steps 15 and 16 is platform qualification inside a delivery order, but it is kept out of the criteria. Machinery share was 0.756 for WO-012 (+0.235, seeking-the-wrong-goal observation); WO-006’s is unknown until run and is worth reopening if it exceeds 0.756.",
+        "removalBalance": "No. The Cost line removes the WO-004 placeholder page (apps/dotln/src/app/home.ts, one translated heading) and BasePaths.Home. It adds four libraries (ui, models, dotln/shell, board), about 75 source files, three dependencies (@angular/aria, @angular/cdk, @axe-core/playwright), two fixtures (about 360 KB plus a derived one), the pinned schema, the lint overrides and four follow-up rules with fixtures, two house scripts, two target commands, three documents and a host-qualification record. The addition is far larger. For a foundation order on the declared path that is expected rather than a defect, but no process or check is retired, and wall-clock (8 to 10 hours) and tokens are stated as unknown until run.",
+        "failureBehavior": "Mostly degrades. If the Aria evaluation fails, the wrapper keeps its house API over CDK-only behavior and the decision records why (Design and step 2), so consumers are unaffected. A board with a different viewModelVersion renders the unavailable state naming that version (H1, criterion 5) instead of throwing. Unavailable sources and sections stay visible with their explanation (H2). If the order fails or is not merged, DotLn-Angular stays at 5102783f with the placeholder page, which is the old behavior, and WO-007 is held by its hard edge. Three refusals are intended and correct: the scrub refuses any remaining absolute path (a clean-room refusal), lint refuses taxonomy violations, and the axe e2e fails on serious or critical violations. One path has no stated fallback: step 4 and criterion 5 need the uifa-board-v1 schema from the platform repository at a pinned commit, and packages/console at HEAD ships only the types and a test, not the schema file. Reopen if the platform repository cannot be reached at activation.",
+        "findings": [
+          {
+            "criterionId": "criterion:5",
+            "kind": "known-issue",
+            "reason": "The scrubbed launchpad board goes into a public repository (WS-001 Outcome: DylanBWood/DotLn-Angular, public), yet the scrub and criterion 5 check only absolute path prefixes (/Users/, /home/, drive letters). The locked floor also protects private hostnames, account identifiers, the contents of docs/control/local and the private local-terms list. The board collector projects tracked instance documents (work-order history and README, roadmap, execution guide, audience index, capability table, refutation receipts), the Builds panel’s inspection environment identifier and, when present, the control log and the full status fold. A path-only scrub cannot show that none of this carries protected material. No leak is observed; this is a constructible gap.",
+            "evidence": null,
+            "reopenWhen": "At capture (step 4, run from the launchpad, because a target script would have to name a private path), the instance’s local-terms check, reported by file and line, matches either fixture; or a reviewer finds a hostname, remote URL or account identifier in either fixture; or docs/control/resume.jsonl exists at capture, so control-derived sections become available in the committed fixture. Improvement: run the local-terms check at capture and record the capture’s available and unavailable source list in the WO-006 decisions."
+          },
+          {
+            "criterionId": "criterion:2",
+            "kind": "known-issue",
+            "reason": "Two definitions of a Salesman conflict. The WS-001 taxonomy table lets Salesmen inject platform tokens (ElementRef, DOCUMENT), while R1, the Design’s lint override and the criterion 2 grep forbid any inject( or constructor( under fragments/ and templates/. The grep also has no spec filter, so a colocated spec that uses TestBed.inject( matches, although the lint selector (callee name inject) does not flag it, and step 5 gives every ui piece a spec. The criterion can therefore fail on correct code, or push a template that needs ElementRef into wrappers/, which misnames its role (R5).",
+            "evidence": null,
+            "reopenWhen": "The criterion 2 grep lists a .spec.ts file at the gate, or a fragment or template that needs ElementRef or DOCUMENT is moved to wrappers/ or reworked only to pass the grep. Improvement: exclude specs from the grep, as the OnPush half already does, and settle one injection rule for Salesmen."
+          },
+          {
+            "criterionId": "criterion:1",
+            "kind": "known-issue",
+            "reason": "The inline-template follow-up rule (a newline after the opening backtick and the closing backtick on its own line) is applied to existing components and proved by a fixture, while Preflight runs npx nx format:check. Prettier formats Angular inline templates and can collapse a short one onto a single line, so the lint autofix and the formatter can undo each other. That is fixes-that-fail inside one gate, from one of four unrelated WO-005 follow-ups bundled into the taxonomy order.",
+            "evidence": null,
+            "reopenWhen": "In the step 6 or Preflight output, npx nx format:check fails on a file the inline-template autofix produced, or nx format:write reintroduces a violation the rule refuses."
+          },
+          {
+            "criterionId": "criterion:5",
+            "kind": "known-issue",
+            "reason": "The Aria evaluation’s bundle-bytes reading is misplaced in two ways. Step 2 records the board route’s bundle bytes in WO-006-D002, but the board route only exists from step 9. From step 9, the route’s providers embed the roughly 360 KB recorded fixture through BoardFixtureToken, which production code imports from src/testing/fixtures. Measured as written, the bytes would mostly read the fixture rather than the behavior library. WS-001 §The console sends this evidence to core as the answer to its deferred console-framework decision, so the error would travel beyond this order.",
+            "evidence": null,
+            "reopenWhen": "WO-006-D002 records board-route bytes before step 9, or records a lazy-chunk size that includes the fixture without separating out what @angular/aria and @angular/cdk contribute."
+          },
+          {
+            "criterionId": "criterion:5",
+            "kind": "known-issue",
+            "reason": "The fixture name launchpad-board-2026-10-21.json fixes a date, but the board is captured at activation. If activation falls on a later day, the name misstates the snapshot that WO-007’s handler later serves as the board.",
+            "evidence": null,
+            "reopenWhen": "Activation happens after 2026-10-21 and the committed file name disagrees with the capture date recorded in the decisions or the generator log."
+          }
+        ]
+      },
+      {
+        "workOrderId": "WO-007",
+        "verdict": "aligned-with-findings",
+        "criticalPathAndNoOp": "Gate: read from the supplied vision passage, since no critical-path record is declared. Events and stores follow the component taxonomy and precede the client-side authentication and permission model, and WO-007 is that gate. Its hard edge is the only predecessor of WO-008 (the WS-001 edges; WO-008 depends on WO-007 merged), and house rule 15 makes auth depend on data-access and events, which WO-007 creates. Its own hard dependency, WO-006 merged, is not yet met. Its base (bc9133e9, the repository’s first commit and WO-004’s base in WS-001) is provisional, and its first step refuses to activate until a later pass sets the base to WO-006’s merge commit. Placement after WO-006 is correct. NoOp cost in the records: unknown. The cost-table row for WO-007 has metrics null, the order carries no NoOp line, and no planning NoOp record was supplied. The recorded consequence of inaction is the order’s observed gap: no NgRx, events, HTTP or mocks, with BoardFacade reading the recorded board through BoardFixtureToken; WO-008 and the WS-001 acceptance contract stay blocked. In development, the screen the operator sees is the same under NoOp and success: the same recorded board, served from a token before and from an MSW handler after. The value is the architecture the path names, not a new view.",
+        "systemTraps": "Policy resistance: the hygiene check and the store it must pass work against each other. The check refuses a dispatch to the store’s own tier, yet criterion 3 requires the data-access BoardStore to dispatch data-access results, and FeatureFlagStore dispatches an app event from the app tier. WO-006’s lint also refuses @dotln-angular/state under layouts, while this order renders the error store from the shell layout (findings on criteria 2 and 6). Tragedy of the commons: about 150 KB of order context on top of 29,364 cold-start bytes. Every Vitest setup file starts an MSW server, so the cost of nx run-many test rises for every project, unmeasured. Drift to low performance: criterion 2 requires only that the exception count be printed (step 8 expects 0), so a first reference store carrying hygiene-exception lines would pass and set a worse baseline. Escalation: the order adds lint:hygiene, msw:init and a CI step (Preflight reaches 8 target commands). Its provisional base means another planning pass amends and refutes this order after WO-006 merges (WS-001 dependency plan), and the Cost line (Re-mints: none) does not count that process. Success to the successful: NgRx SignalStore with Events comes from the operator’s direction in the provenance, not from sunk investment. resource() and httpResource() stay admitted inside stores with a decision, and the toolkit-or-house withCallState choice stays open, which is acceptable. Shifting the burden: every recorded operator correction falls in verification (shifting-the-burden observation), and the planning-capture series shows six planning passes from 2026-10-18 to 2026-10-21. The serial provisional-base design adds one operator-dispatched pass per member. Rule beating: the per-path grep in criterion 5, the setupWorker count in criterion 4, the hygiene check’s textual scope, and an e2e flag the Design never names can each pass or fail regardless of the intended behavior (findings). Seeking the wrong goal: the order advances the named gate, but GET /board is an endpoint the fork invents for a host the platform owns and has not built, so the live outcome still waits on core. Machinery share is unknown until run; WO-012’s was 0.756.",
+        "removalBalance": "No. The order removes BoardFacade’s recorded-fixture provider (BoardFixtureToken); the fixture stays as the handler response and the spec input. It adds four libraries (events, data-access, state, board-data-access), about 70 source files, three dependencies (@ngrx/signals, the toolkit or a house withCallState, msw 3.x), the tracked worker file, three interceptors, the hygiene script and fixtures, two target commands, a CI step and two documents, and models gains AppError and FeatureFlags. The addition is far larger and no process is retired. Wall-clock, tokens and the cost of the base-setting pass and its second refutation are unknown.",
+        "failureBehavior": "Mixed. Several paths degrade. If the toolkit’s peer range does not admit the installed Angular, a house withCallState replaces it (recorded). Flag overrides are off in production, so flags fall back to the EnvironmentConfig defaults. errorInterceptor maps failures to errorEvents and never swallows them, and ErrorHandler still forwards uncaught errors. If the order fails, the target keeps WO-006’s fixture-backed board, which is the old behavior. Two refusals are intended: MSW fails an unhandled request in tests, and lint:hygiene refuses forbidden flows. One path does not degrade to the old behavior. BoardFixtureToken is removed, a real API is a non-goal and the worker starts only when environment.mocks is true, so a production or mocks-off build has no data source and shows the empty state and toast where WO-006 showed the recorded board (finding on criterion 6). A fallback provider for the recorded fixture when no host answers, or a stated decision that only mocked builds render the board until core’s host exists, would restore degradation.",
+        "findings": [
+          {
+            "criterionId": "criterion:2",
+            "kind": "known-issue",
+            "reason": "The hygiene check as designed refuses the store this order requires. The Design says the check refuses a dispatch to the store’s own tier, and rule 16 says nothing maps to an event of its own tier. Criterion 3 requires BoardStore, a data-access store, to dispatch the data-access results boardHttpEvents.loadSuccess and loadFailure: the trinity of rule 8, which is a data-access to data-access flow, and criterion 2 requires exactly such a flow in a fixture to fail. FeatureFlagStore, an app-tier store, dispatches the app event featureFlagEvents.overridden. Neither the order nor rule 16 exempts the trinity. Read literally, criterion 2 fails on the workspace. Read loosely, the reference workspace’s first store carries hygiene exceptions (step 8 expects 0), or the check is narrowed until it stops seeing them.",
+            "evidence": null,
+            "reopenWhen": "The first npm run lint:hygiene after step 6 exits nonzero on the BoardStore or FeatureFlagStore file; or it exits 0 with hygiene-exception lines in either; or state-rules.md adds a trinity exemption that WS-001 rule 16 does not carry. Improvement: state in rule 16 whether an action’s own success and failure count as a mapping."
+          },
+          {
+            "criterionId": "criterion:2",
+            "kind": "known-issue",
+            "reason": "The check observes something other than what the Design wires. It reads literal on(group.event and dispatch(group.event text in .store.ts files and resolves tiers by import path. But withCommand({ trigger, success, failure, call }) passes events as object properties inside libs/shared/data-access, which is not a store file. Event handlers in the Events plugin can emit events by returning them rather than calling dispatch. And every group is imported through the single @dotln-angular/events alias (the one-line barrel of rule 4), whose path carries no tier. The check can therefore pass, and print zero exceptions, while the store’s real flows go unread: the evidence passes without the intended behavior being checked.",
+            "evidence": null,
+            "reopenWhen": "A fixture store that wires a forbidden flow through withCommand, or through a handler that returns the event, passes lint:hygiene; or the script reports no inspected flow for the BoardStore file. Improvement: resolve tiers from the eventGroup source prefix that criterion 1’s spec already asserts, and include withCommand arguments and returned events."
+          },
+          {
+            "criterionId": "criterion:5",
+            "kind": "known-issue",
+            "reason": "The per-path grep contradicts how MSW works. A handler intercepts the request the real BoardApi makes, so the GET /board path BoardApi requests must appear in the production bundle. On an honest build, grep -rl for the handler path over dist/apps/dotln/browser lists BoardApi’s chunk and the criterion fails. It passes only if the handler spells the path differently from the API (a wildcard or absolute URL), which proves nothing. The first clause, no setupWorker or mockServiceWorker in dist, already carries the intended proof that the mocks are excluded.",
+            "evidence": null,
+            "reopenWhen": "The gate output for grep -rl on a recorded handler path lists a file under dist/apps/dotln/browser, or the handler path recorded in the evidence README is spelled differently from the path BoardApi requests."
+          },
+          {
+            "criterionId": "criterion:4",
+            "kind": "known-issue",
+            "reason": "Criterion 4 requires grep -c setupWorker on apps/dotln/src/mocks/browser.ts to print exactly 1, but the canonical MSW browser module has two matching lines: the import from msw/browser and the setupWorker(...handlers) call. The honest file fails unless it is contorted. Separately, step 9’s check names onUnhandledFrame: error while the Design names onUnhandledRequest: error and asks the executor to read the installed declaration. The criterion itself is name-agnostic (proved by behavior), so only the step text drifts.",
+            "evidence": null,
+            "reopenWhen": "The gate row for the setupWorker count prints 2, or the evidence records an option name that differs from the installed MSW 3.x declarations."
+          },
+          {
+            "criterionId": "criterion:6",
+            "kind": "known-issue",
+            "reason": "The shell’s error surface has no legal home for its Maven. This order renders the error store’s latest error through dotln-toast from the shell layout, but every obvious home is closed. libs/dotln/shell is tagged type:ui, and rule 15 lets ui depend only on util, i18n and models. Its layouts directory refuses injection (R1) and @dotln-angular/state imports (WO-006’s override for layouts). Rule 2 keeps apps slim. The one legal route is for app.ts to inject ErrorStore, pass the latest error down as an input and map a dismiss output back up, and the order does not name it. The criterion 6 toast test therefore invites a boundary or lint exception.",
+            "evidence": null,
+            "reopenWhen": "The implementation imports @dotln-angular/state under libs/dotln/shell, adds an eslint disable or a module-boundary exception, or moves store injection into apps/dotln/src/app/app.ts without a recorded decision."
+          },
+          {
+            "criterionId": "criterion:6",
+            "kind": "known-issue",
+            "reason": "Failure does not degrade to the old behavior. Once BoardFixtureToken is removed, with a real API a non-goal and the worker started only when environment.mocks is true, a production or mocks-off build has no data source: it shows the empty state and toast where WO-006 showed the recorded board. GET /board is also an endpoint the fork invents for a browser host whose contract the platform owns and has not built (WO-006 observed gap; H5), so the mock may encode a shape the platform never adopts.",
+            "evidence": null,
+            "reopenWhen": "A production or mocks-off build of dotln is served to the operator after WO-007 merges, or core publishes the browser host’s board route and it differs from GET /board. Improvement: keep the recorded board as a stated fallback when no host answers, or record that only mocked builds render the board until the host exists."
+          },
+          {
+            "criterionId": "criterion:6",
+            "kind": "known-issue",
+            "reason": "Criterion 6 requires ?ff=flag:on to change a flagged element, but the Design names no flag and no flagged element. The executor has to invent one, so the test can pass on a flag that exists only for the test.",
+            "evidence": null,
+            "reopenWhen": "The flag the e2e toggles has no product purpose recorded in the evidence README, or the element it toggles exists only for the e2e."
+          },
+          {
+            "criterionId": "criterion:8",
+            "kind": "known-issue",
+            "reason": "This is process cost the Cost line does not count. The base is provisional (bc9133e9, the repository’s first commit), so under the WS-001 dependency plan the pass after WO-006 merges amends the Repository line and refutes this order again under the default pass scope. The Cost line says Re-mints: none and prices neither the amendment nor the second refutation. This pass’s judgment of WO-007 is therefore paid for twice, against the supplied platform standard that a refutation pass be made worth its cost before a later pass pays it again.",
+            "evidence": null,
+            "reopenWhen": "The pass that sets WO-007’s base refutes the whole order rather than only the changed Repository line. Improvement: the kit route that resolves the base at activation, which WS-001 already records as an upstream candidate."
+          },
+          {
+            "criterionId": "criterion:3",
+            "kind": "known-issue",
+            "reason": "The Deliverables name the home store, API and handlers, left over from the tile-grid and home target the UI pass replaced, while criterion 3 and the Design name BoardStore and BoardApi. The order’s own vocabulary disagrees with what it asks for.",
+            "evidence": null,
+            "reopenWhen": "The evidence README, the pull request body or the handoff lists a home store or home API as delivered."
+          }
+        ]
+      },
+      {
+        "workOrderId": "WO-008",
+        "verdict": "aligned-with-findings",
+        "criticalPathAndNoOp": "The final foundation step ('a legitimate client-side authentication and permission model'). WS-001 is delivered when WO-004 to WO-008 merge, and this order unblocks the unfiled DotLn console feature the goal standard names as the product purpose. Its gates are WO-007's merge, the base-reset planning pass and the starter `--draft` gate. NoOp in the records: the row's metrics are null. NoOp leaves WS-001 undelivered.",
+        "systemTraps": "Rule beating (material): criterion 1's storage scan asserts that no stored value matches the JWT shape, so an opaque refresh or access token written to storage by the client library passes, and 'holds tokens only in memory' goes unproved for non-JWT tokens. The mock knows every token it issues and could assert that none appears in storage. The objective's 'swapping the mocked provider for a real one changes configuration and nothing in the Angular code' is documented (criterion 6) but no criterion exercises a second provider configuration. Policy resistance and secrets: the Cost line commits a development signing key to a public repository. A development key is not a credential to any real system, but it matches the private-key patterns forge secret scanning looks for: it can raise an alert and, where push protection covers the pattern, refuse the publish. Generating the key pair when the mock starts (jose) avoids committing it. Criterion 5 keeps the kid out of the production bundle but not out of the repository. Tragedy of the commons: the largest order (about 160 KB, 8 to 12 hours, 15 steps; tokens unknown), and the record shows 1 of the last 3 orders failed first verification (WO-003), so size raises re-verification exposure. Escalation, drift, success to the successful, shifting the burden and seeking the wrong goal are immaterial: no new commands, a stricter failure matrix, the client library is chosen at activation, no operator step is added, and the work is the product.",
+        "removalBalance": "No. It says 'Removes nothing' and adds libs/shared/auth with its kit, the mocked provider's handlers and key, two event groups, guards, a permission directive, two routes, about 60 files and two dependencies.",
+        "failureBehavior": "Fails toward safety by design: refresh failure and invalid tokens sign the user out, and a denied route redirects to /denied (criteria 3 and 4). Session loss on reload, from memory-only tokens, leads to a new sign-in through the provider rather than an error. The mock is excluded from production (criterion 5), and an unreachable real provider leads to /login. One failure refuses rather than degrades: committed private-key material can be refused by forge secret scanning when the branch is published.",
+        "findings": [
+          {
+            "criterionId": "criterion:1",
+            "kind": "known-issue",
+            "reason": "The JWT-shape storage assertion misses opaque tokens, so a stored non-JWT refresh token passes. Comparing storage values with the tokens the mock issued would prove the memory-only rule.",
+            "evidence": null,
+            "reopenWhen": "The mocked provider or the chosen client library issues or stores a non-JWT token, or a storage value after sign-in equals a token the mock issued, while criterion 1's assertion passes."
+          },
+          {
+            "criterionId": "criterion:6",
+            "kind": "known-issue",
+            "reason": "The provider-swap property is stated in documentation but never exercised, so its evidence can pass without the behavior.",
+            "evidence": null,
+            "reopenWhen": "The first real identity provider configuration, in the later example-API member, requires a change to any file under libs/ or apps/ other than environment files."
+          },
+          {
+            "criterionId": "criterion:5",
+            "kind": "known-issue",
+            "reason": "A committed development signing key puts private-key material in a public repository, where secret scanning can flag it or refuse the push. Generating the key when the mock starts removes the material.",
+            "evidence": null,
+            "reopenWhen": "After WO-008, a tracked DotLn-Angular file contains a PEM private-key block or a JWK with a private `d` member, or a secret-scanning alert or push refusal is raised on WO-008's branch."
+          }
+        ]
+      }
+    ],
+    "planVerdict": "aligned-with-findings",
+    "holdReasons": []
+  },
+  "holds": [],
+  "dispositions": [],
+  "localTerms": {
+    "status": "present"
+  },
+  "receiptHash": "sha256:54825ddc1b5a69688fa8baac4a9bda073170e84f21c58b8dffaf1f9c9d61ba54"
+}
