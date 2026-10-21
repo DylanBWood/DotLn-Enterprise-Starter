@@ -9,6 +9,8 @@ import { fileURLToPath } from "node:url";
 import {
   lintOutwardArtifact,
   runtimeIdentifierForms,
+  outwardFindingText,
+  subjectLengthLimit,
 } from "./lib/outward-lint.mjs";
 import { checkOutwardArtifact } from "./outward-lint.mjs";
 
@@ -27,6 +29,23 @@ const lint = (kind, text) =>
     localTerms: { status: "present" },
   });
 const rules = (result) => result.findings.map((finding) => finding.rule);
+
+test("subject-length diagnostics count characters and name the shared limit", () => {
+  for (const subject of [
+    `fix: ${"x".repeat(85)}`,
+    `🐛 fix: ${"x".repeat(83)}`,
+  ]) {
+    const text = `${subject}\r\n\r\nA separate body.\n`;
+    const finding = lint("commit", text).findings.find(
+      (row) => row.rule === "subject.length",
+    );
+    assert.ok(finding);
+    assert.equal(
+      outwardFindingText(finding, text),
+      `subject.length: 90 of ${subjectLengthLimit} characters`,
+    );
+  }
+});
 const fixture = (t, control = "docs/control") => {
   const root = mkdtempSync(join(tmpdir(), "outward-lint-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
@@ -92,6 +111,23 @@ for (const [name, kind, text, expected] of [
     ["branch.shape"],
   ],
   ["ref traversal refused", "branch", "fix/../main", ["branch.shape"]],
+  ["gitmoji commit", "commit", "🐛 fix: handle input", []],
+  ["gitmoji title", "pr-title", "✨ feat: handle input", []],
+  ["gitmoji shortcode title", "pr-title", ":sparkles: feat: handle input", []],
+  ["gitmoji shortcode commit", "commit", ":memo: docs: add the guide", []],
+  [
+    "gitmoji shortcode requires type",
+    "pr-title",
+    ":memo: Fork requests land",
+    ["subject.shape"],
+  ],
+  ["gitmoji requires type", "pr-title", "✨ Handle input", ["subject.shape"]],
+  [
+    "gitmoji preserves type refusal",
+    "commit",
+    "🐛 ship: handle input",
+    ["subject.type"],
+  ],
   ["conforming PR title", "pr-title", "fix: handle input", []],
   ["PR title shape", "pr-title", "Handle input", ["subject.shape"]],
   [
@@ -603,4 +639,9 @@ test("CLI stdin, redacted JSON, framing, and distinct pass/refused/unavailable/e
     result.stdout + result.stderr,
     /SyntheticForbidden|malformed/,
   );
+});
+
+test("a large fenced body retains its rendered units without an argument limit", () => {
+  const body = `\`\`\`text\n${"x".repeat(150000)}\n\`\`\`\n`;
+  assert.equal(lint("pr-body", body).checks.runtime.status, "pass");
 });

@@ -1,19 +1,19 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:c0a496bda5f362de"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/cdb959b4933e4d77/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/cdb959b4933e4d77/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/881e2843f7728c46/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/881e2843f7728c46/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
-  "compilerPackageVersion": "0.27.1",
+  "compilerPackageVersion": "0.28.0",
   "runtime": {
     "skeletonVersion": "0.37.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
         "path": "packages/compiler/dist/src/artifact-identity.js",
-        "hash": "fnv1a64:21d29028719c9c17"
+        "hash": "fnv1a64:0dd3aa9df21f8c4d"
       },
       {
         "path": "packages/compiler/dist/src/harness.js",
-        "hash": "fnv1a64:ca17237c3de620f9"
+        "hash": "fnv1a64:2107a9ec813853e8"
       },
       {
         "path": "packages/compiler/dist/src/codex-continuation.mjs",
@@ -37,7 +37,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:c83747ea933f185b"
+        "hash": "fnv1a64:1bd4dfb1794b37f7"
       },
       {
         "path": "packages/skeleton/dist/src/subagent-budget.js",
@@ -65,7 +65,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
-        "hash": "fnv1a64:becd80a79da2bdac"
+        "hash": "fnv1a64:5fa4903dc42c59b0"
       },
       {
         "path": "packages/skeleton/dist/src/gate-evidence.mjs",
@@ -73,7 +73,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/gate-deadlines.mjs",
-        "hash": "fnv1a64:fed0ae4064c93d4a"
+        "hash": "fnv1a64:813c9c2b9c64ce27"
       },
       {
         "path": "packages/skeleton/dist/src/runtime-inputs.mjs",
@@ -172,11 +172,11 @@ await runCommitMessageHook({
         "hash": "fnv1a64:5ad495017c40b9b2"
       }
     ],
-    "snapshot": ".runtime/harness/cdb959b4933e4d77"
+    "snapshot": ".runtime/harness/881e2843f7728c46"
   },
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.27.1",
+    "compilerPackageVersion": "0.28.0",
     "units": [
       {
         "unitId": "no-attribution",
@@ -229,6 +229,6 @@ await runCommitMessageHook({
         "enforcement": "hard"
       }
     ],
-    "policyHash": "fnv1a64:66ee1cbc484a381d"
+    "policyHash": "fnv1a64:f6971c05e868769f"
   }
 }, feedbackBoundary);

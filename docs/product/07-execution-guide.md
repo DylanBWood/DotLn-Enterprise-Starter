@@ -457,8 +457,11 @@ target change on its `wo-NNN` branch before recording the passing result,
 records the order's records in the target's documentation root as one
 records-only commit after it, and may push that commit to one conventional
 branch on the target's origin and open its pull request with `worktree publish
-WO-NNN --target-worktree` under an admitted operator grant; it never merges
-either. An instance order may name an actor and the phrase for the opt-in
+WO-NNN --target-worktree` under an admitted operator grant, spelled
+`node scripts/worktree.mjs publish WO-NNN --target-worktree …` from the
+launchpad root (since v0.87.0 the hook admits only that spelling and
+withholds the `npm run worktree -- publish` form with an advisory naming
+it, WO-218 D062); it never merges either. An instance order may name an actor and the phrase for the opt-in
 `--draft` form at `verified`, which pushes the target worktree's working tree
 to that branch under a draft pull request the closed-phase publish reuses;
 core declares no draft step and no actor (WO-221). Release close of a target
@@ -670,12 +673,26 @@ review binds the clean target commit and its review gate. Reports are drafted
 in the launchpad; `resume target-records` copies the order and moves its
 decisions and filed reports into the target's `documentationRoot`, retaining
 control state, raw evidence and links in the launchpad.
+The moved-record readers check the ignored clone mapping in the running
+launchpad checkout, then the primary checkout whose Git directory is the
+common Git directory, then a worktree on `main`. The primary checkout may
+hold any branch; keeping the mapping there lets secondary update worktrees
+run their gates and regenerate meta artifacts. With no mapping in those
+places, the refusal names all three and the required arrangement.
 
 `dotln.config.json` at the launchpad root declares schema `version: 1` and the
-optional sections `roots`, `classes`, `repositories`, `build`, `release`, `kit`, `derivedOrders` and `portfolios` (§Declaring a portfolio). **Its absence
-means today's layout, byte for byte**, so this repository ships no such file and
-`status --json`, `current.md`, the generated index, `times`, `usage` and a
-release manifest derived over the real log are unchanged by its introduction.
+optional sections `roots`, `classes`, `repositories`, `build`, `release`, `kit`, `derivedOrders`, `portfolios` (§Declaring a portfolio), `historicalWorkOrders` and `contributions`. **Its absence
+means today's layout, byte for byte**, with no pre-control historical order and no
+contributor sign-off exemption, so `status --json`, `current.md`, the generated
+index, `times`, `usage` and a release manifest derived over the real log are
+unchanged by its introduction. This repository ships the file with
+`historicalWorkOrders` naming `WO-001` and `WO-002` and `contributions.operatorAuthor`
+naming the operator's public author identity, and no other section (WO-218); an
+exported instance declares its own pre-control ids and exemption or neither, because
+the kit supplies none. `historicalWorkOrders` lists distinct `WO-NNN` ids that the
+index shows as historical and that no typed dependency may name as hard or
+satisfied; `contributions.operatorAuthor` is one `Name <email>` identity the
+contribution check exempts from sign-off, never read from Git configuration.
 `kit.applyInstanceActions` defaults to false; true permits `launchpad export --update <dir> --apply` to perform the kit's declared instance actions.
 
 `roots` maps a root name to a relative POSIX path inside the launchpad. The
@@ -805,7 +822,14 @@ The command lists authored conflicts and exits nonzero while work remains.
 Resolve those paths explicitly, stage those resolutions, then use
 `npm run worktree -- integrate WO-NNN --continue`. The ignored integration
 receipt keeps the original bases, checkpoint and stash across this boundary;
-the stash is never popped or dropped. A clean-tree continuation adopts only
+the stash is never popped or dropped. If application was interrupted at stage
+`applying`, inspect and complete the application, stage resolved content, and
+use `worktree integrate WO-NNN --continue --stash-applied`; this attestation
+still checks conflicts, restored untracked files and upstream ancestry. The
+stash-drop helper publishes a whole recovery snapshot atomically before changing
+the ref and reflog. A stopped helper retains its locks and snapshot; its named
+remedy requires checking for a live Git process before removing stale locks,
+and restoring both the ref and reflog when they disagree. A clean-tree continuation adopts only
 the stash named for this integration and its original base; ambiguous matches
 require explicit inspection. The helper commits a resolved divergent merge
 before applying the stash, retaining uncommitted work for the current role. An authored
@@ -1133,10 +1157,17 @@ happen. The phrase is itself the operator request that authorizes the external
 CLI launch of the pinned reviewer and its refuter, and it adds no scheduler:
 nothing runs a review unless the operator opens a pass this way. A pass opened
 any other way may still consume an earlier review's surviving findings as one
-input among others. Consumptions: [[REVIEW-002 pass](../planning/entropy-review-002-2026-09-22.md),
+input among others. The subject is the launchpad; a review of a registered
+target repository at a recorded commit, or of a workstream's repositories,
+is WO-224's (`--repository <id>` and `--workstream WS-NNN`, filed by the
+2026-10-20 fork-answers pass), with the same pinned reviewer, refutation,
+receipts and disposition, paid once per repository. Consumptions: [[REVIEW-002 pass](../planning/entropy-review-002-2026-09-22.md),
 2026-09-22]; [[off-ramps pass](../planning/off-ramps-5s-entropy-2026-09-25.md)
 §9, 2026-09-25]; [[REVIEW-006 pass](../planning/entropy-review-006-2026-10-10.md),
-2026-10-10: one order from one finding, one product sentence from the other].
+2026-10-10: one order from one finding, one product sentence from the other];
+[[REVIEW-007 pass](../planning/entropy-review-007-2026-10-20.md),
+2026-10-20: no new order, both findings to WO-219 as steps, one of them a
+guard on the review machinery itself].
 
 Preconditions and inputs:
 
@@ -1432,9 +1463,22 @@ step 7 had moved onto receipts while the criterion still required the
 console to show them); and an order whose criteria need a live run names, at
 its base, each surface the run must show, write or traverse, and whether it
 exists and has been run (WO-118 needed three mid-run scope amendments for
-four such surfaces, and WO-083's publication step named a command that
-publishes only a source-change episode). Order size [2026-10-13 pass,
-operator direction]: the 2026-09-08 cut (one seam and one outcome per order,
+four such surfaces, and WO-083's publication step named a command that publishes only a
+source-change episode). One more [2026-10-19 pass]: a criterion names the
+behavior a host's configuration form must give (the admitted command, the
+removal at close) and cites the published host page it was read from; the
+form itself (a settings key, a marker, a rules file) is the executor's,
+read from that page at execution, so a host that documents a different
+form costs no failed verification (WO-221's criteria 2 and 3 fixed a
+marker and a `config.toml` form the hosts do not support; VER-001 failed
+them as written and D028's operator amendment replaced them). One more
+[2026-10-20 pass]: a criterion that settles a boarded row by a case that
+fails without the fix names the control, the case run with only that
+row's fix reverted and recorded with both arms' exit codes in a replayable
+file, as WO-218's repair recorded its 91 controls after VER-001 found three
+named cases passing at the base; a case that also passes at the base, or
+with the fix reverted, settles nothing. Order size
+[2026-10-13 pass, operator direction]: the 2026-09-08 cut (one seam and one outcome per order,
 split again above four hours) was a correction for its time and no longer
 binds. The binding cost is now the full gate run and the fixed cycle every
 order pays (activation, verification, final review and release close). A
@@ -1445,12 +1489,13 @@ owes one, against a larger first verification. Unrelated subsystems are not
 bundled to save runs. Each order names its Preflight line. Parallel orders stay the aim
 where they pay (operator direction, 2026-10-13): two orders run side by side
 when their surfaces are disjoint, no hard edge joins them, and the operator
-will run both at once. Every order pays the complete gate once, fresh, at
-final review, whether or not main moved (§Preflight before the full gate);
-a pair therefore costs two fresh final-review runs and no reuse-dependent
-extra (WO-078 had measured that extra at 22.9 minutes under the earlier
-reuse rule). That is less than the implementation a pair overlaps (median
-72.9 minutes).
+will run both at once. Final review reuses the passing complete row at the integrated code
+identity and pays a fresh run only when the identity changed (§Preflight
+before the full gate; WO-221 D017 restored this reading on 2026-10-18); a
+pair whose second member integrates a sibling that moved its identity
+therefore pays one fresh run at final review, which WO-078 measured at 22.9
+minutes. That is less than the implementation a pair overlaps (median 72.9
+minutes).
 Serial order is a pass's reading of its evidence, never a standing rule.
 Reopen the order-size rule when the full run's median falls to half its 24.9
 minutes, or when merged orders fail first verification more often than the
@@ -1571,15 +1616,22 @@ Run main's helper with main as the working directory; retries use the same
 updated main after the subject is removed.
 
 Run the printed helper exactly as printed, with no redirect, prefix, `cd` or
-pipe. Its stdout is a summary; the full output is retained beside
+pipe. For a matching dispatched order whose helper suffix differs, the
+advisory names the expected `--publish` and `--dry-run` spellings and the
+mismatch class: extra words or whitespace, a shell operator or redirect, or
+non-canonical material flag quoting or value. The admitted forms stay the
+same. Its stdout is a summary; the full output is retained beside
 `release-close.json` and the summary names that report. A close is done when
 the tag and Release exist, no worktree for the order appears in
 `git worktree list`, its directory is gone and `git branch --list wo-NNN` is
 empty, and no starter-refresh blocker remains. The lower-version no-release
 outcome remains explicit. Diagnose and
 finish cleanup blockers in the dispatched session; re-running the same command
-re-checks an existing Release and never publishes twice. A retry after main
-moves can refuse and remains a blocker. Retry a host denial of the exact
+re-checks an existing Release and never publishes twice. A retry after main moves validates the original annotated tag's commit,
+manifest and order binding; later main commits do not retarget publication.
+One close per order runs at a time. The latest receipt keeps eight inline
+attempts and hash-named immutable archives; retries verify those archives
+before using older publication or cleanup bindings. Retry a host denial of the exact
 command once through the host permission flow before handing the operator the
 printed command for `!`. A scratch repository, a nested repository outside
 the intake lane that the tracked tree does not declare as a submodule, is
@@ -1614,11 +1666,22 @@ clone map. The helper checks the published head, checkout identity, branch,
 cleanliness, remote binding and ancestry, then updates a disposable worktree
 (or exports the kit for the first time). The export’s own emit, predicted
 bundle comparison, harness check, kit verify and exact staged-file check run
-before the hookless push. After the push, core's release tag name is pushed
+before the hookless push. Before the branch push, an existing sibling tag must name the proposed
+refresh commit or a proven prior refresh of the same core release. GitHub
+availability and authentication precede the tag push. After the branch push,
+core's release tag name is pushed
 as an annotated tag onto the refresh commit through the same isolated lane
 and the sibling's GitHub Release is created pointing at it, with a one-line
 body naming core's Release, so a fork previews `--from vX.Y.Z`; a retry
-finds both and reports current. A tag at another commit refuses unless it is
+finds both and reports current. The tag's name is core's. A fork configures
+`remote.upstream.tagOpt=--no-tags`, fetches with `--no-tags`, and previews a
+named starter release through a non-tag ref. Local instance release checks
+exclude annotated tags whose message begins `Starter <tag>` and binds a
+`Core commit:`; ordinary tags reachable from the current `HEAD` still count.
+Both `check-surfaces --local` and `release prepare --local` use that ancestry
+boundary: worktrees share tag refs, so an unintegrated sibling release must
+not retime this worktree. Integrating its history makes its ordinary tags
+eligible; publication still checks origin. A tag at another commit refuses unless it is
 an ancestor whose committed kit manifest names this exact core commit and
 release tag, preserving the first tag through a seed-only refresh; ancestry
 alone does not establish that provenance (WO-221). Direct template seeds are refreshed only when each
@@ -1665,19 +1728,26 @@ name a relative path and the read-access remedy. Refresh and target-close
 receipts record metadata-scan durations and skipped ignored directories.
 An ignored ownership record retains disposable
 worktree and branch cleanup across failures; retries finish that cleanup before
-reporting current or skipped. If the clone map has changed, inspect the ignored
+reporting current or skipped. Cleanup uses the recorded temporary parent and
+filesystem identity, so changing TMPDIR alone does not strand it. If the clone map has changed, inspect the ignored
 `<control-root>/local/starter-refresh/<sibling-id>.json`, restore its `checkout`
 with `worktree clone <sibling-id> <absolute-path>`, retry close to finish cleanup,
 then record the replacement checkout. Cleanup never adopts that replacement's
-objects. The checkout fast-forwards after success.
+objects. If the physical checkout moved or disappeared, changing the mapping
+alone cannot recover it: restore the checkout at its recorded path or perform
+explicit manual ownership recovery. The checkout fast-forwards after success.
 The five-field sibling receipt waits in main’s ignored pending lane; the next
 `worktree start` carries it into the new order’s reviewed change and regenerates
-its registry before consuming the pending file. `release-close.json` and the
+its registry before consuming the pending file. Duplicate receipts for one
+manifest collapse to one registry entry. A resumed start skips a missing
+captured receipt only after finding the same hash in another worktree;
+otherwise it refuses and names restoring the evidence. `release-close.json` and the
 summary record each refresh without the local path. A refusal is a close
 blocker with the same retry command and leaves publication unchanged. Target
 orders, older-version closes and non-publishing closes refresh nothing;
 dry runs judge the head main would fast-forward to and preview the checks
-without changing checkout files or publishing. Pending refresh or validated
+without changing checkout files or publishing, including the proposed sibling
+tag and Release. Pending refresh or validated
 cleanup work reports `preview`; an already current starter reports `current`,
 and a cleanup ownership mismatch refuses with the same recovery guidance.
 
@@ -1694,8 +1764,8 @@ refuses naming the entry and the remedy; a checkout it cannot inspect
 refuses. A close refusal that names a path names it relative to its tree, by
 the tree's role, never as an absolute path; the rerun command it prints is
 the one exception, carrying the launchpad's real path so it runs as pasted. An
-ignored-material refusal lists each foreign path
-once, collapsing a directory only when it contains no bundle-owned path, and
+ignored-material refusal lists each foreign path once, retaining nested path
+names in the base checkout, and
 prints the exact close command to rerun after moving or removing the listed
 paths. Regular untracked `.DS_Store` files at any depth are disposable Finder
 metadata, whether Git ignores them or not: they do not make the target or its
@@ -1716,13 +1786,20 @@ ignored path under a declared path is deleted from the target worktree before
 the ignored-material judgment, and the base checkout's untracked files are
 judged by the fetched base's `.gitignore` blobs, never the pre-merge working
 copy's rules, global excludes or init templates. The ignore judgment supports
-the same 16 MiB path list as its candidate scan. Unreadable ignored base
-directories and unreadable declared target output refuse before deletion,
-naming the directory and the read/search-access remedy. The scan includes already-ignored files and files the fetched
+a streaming tracked-tree scan that retains only ignore blobs; a candidate
+path list exceeding 16 MiB refuses with a named reduce-tree remedy and never
+echoes the captured path list. Unreadable ignored base directories, unwritable declared output and symlink
+components under disposable paths refuse before deletion, naming the tree,
+path and access or preservation remedy. The scan includes already-ignored files and files the fetched
 tree stops ignoring: one the fetched tree ignores under a declared path is deleted,
 one it ignores outside every declaration refuses naming the path and the
 registration remedy, and one it does not ignore keeps the ordinary refusal.
-Regenerable output is deleted, never moved to scratch or offered back;
+The registration's optional `baseDisposablePolicy: "judge-only"` retains the
+base checkout's output while keeping every material judgment and refusing
+collisions with fetched tracked paths; the default `"delete"` also deletes
+its declared output. Both policies delete the target worktree's declared output.
+Preview, receipt and role text name the policy. Regenerable output selected
+for deletion is deleted, never moved to scratch or offered back;
 preservation is for operator material, evidence and intake. The receipt lists
 the deleted roots with their file counts and repeats the gate's
 `baseCheckoutWrites` advisory, the untracked files a gate command left in the
@@ -1737,8 +1814,13 @@ proven, the next `v*` tag above the tags the merged base reaches (none means
 with that attempt's recorded commit, even if the base later advances) is
 created as an annotated tag on the merged base through the
 isolated lane and the target's GitHub Release is created from the order's
-title and objective; `--dry-run` previews the tag, an equal tag on the merged
-commit is an idempotent retry, and a tag at another commit refuses by name.
+title and objective. The registration's optional `release.displayName` uses the launchpad name
+shape and 64-character limit, defaults to the registration id, and makes the
+Release title and tag message's first line `<displayName> <tag>`; the order title
+and close line follow. Existing Releases keep their titles. `--dry-run` previews
+the tag and title. Only a recorded real attempt owns an idempotent tag retry;
+a different order's same-commit tag remains a baseline, and a tag at another
+commit refuses by name. All publication prerequisites precede target deletion.
 A retry never adopts a moved tag; if the remote tag disappeared, it can only
 recreate the tag at the recorded commit
 (WO-221).
@@ -1836,7 +1918,12 @@ is legal at `verified` with a passing verification: it reads the body's
 working bytes, writes a commit object from the target worktree's working tree
 through a temporary index (HEAD and the index unchanged), pushes it to the
 declared branch from the isolated lane, opens a draft pull request and records
-`PullRequestOpened` with `draft`, `branch` and `headSha`; a draft at `active`
+`DraftPrepared` before remote effects, then `PullRequestOpened` with `draft`,
+`branch` and `headSha`. Retries reuse the prepared commit, bind the repository,
+and refuse an unexpected remote head with the branch, recorded head, PR and
+recovery direction; an attempt that never created its branch may create it
+under an empty lease. Ignored and intake body paths, including symlinks into
+those paths, refuse. A draft at `active`
 or `ready-to-verify` refuses naming the phase, a second draft at the same tree
 reports already published, and one at a new tree updates the same pull
 request. The closed-phase publish of the same order reuses that branch and
@@ -1845,19 +1932,40 @@ the recorded draft head, updates the title and body, marks the pull request
 ready and records the reuse; another `--branch` refuses. One pull request per
 order; core names no draft step and no actor, the instance's order does
 (WO-221). Trust for these commands comes from the registration and the kit:
-the emitted hook admits the recorded target worktree's push, `gh pr` and
-helper forms at the phases the lifecycle makes them legal, under main's
-committed registration and operator grant, with host deny rules still
-applying; `worktree start` prints the Codex `--add-dir` and Copilot
+the emitted hook admits only the node spelling of the controlled publish
+helper at the phases the lifecycle makes them legal, under main's
+committed registration, authority profile, operator grant and clone map, with
+host deny rules still applying. Raw Git, gh and npm receive no automatic
+registered-target admission; `worktree start` prints the Codex `--add-dir` and Copilot
 `--allow-tool` lines; and a registration's `hostRules: "literal"` writes that
 order's exact rules to the main checkout's untracked local settings and
 `.codex/rules/dotln-WO-NNN.rules` until the close removes them, `harness check`
-naming a stale one. Claude ownership is held in an ignored per-order sidecar
+naming a stale one. The hook journals each admission it carries as a
+`registeredTargetAdmission` row (the order, the registration and the
+command's kind) and each withholding as an `advisory` row in the session's
+host observation log, `docs/control/local/harness/<session digest>.jsonl`
+under the launchpad root (the digest is the SHA-256 of the session id),
+which a session reads as a file; a host denial after the hook's allow is
+journaled as a `HostPermissionDenied` row, and a prompt the operator
+answers leaves no row (the 2026-10-19 fork-requests pass §6). A session that
+ran the npm spelling reads, at v0.85.0, the ordinary PreToolUse row with
+`effect: "lifecycle.run"` and `allowed: true` and no
+`registeredTargetAdmission` row, which is what the operator's instance
+observed for its WO-005 draft on 2026-10-20; since v0.87.0 it reads an
+`advisory` row naming the node spelling (the 2026-10-20 fork-answers pass §4). Claude ownership is held in an ignored per-order sidecar
 under the configured control root's `local/host-rules/`, preserving rules the
 operator already held; JSON settings contain no comment markers and Codex's
 TOML configuration contains no prefix-rule table. A `host-rules --rewrite`
 requires the committed literal opt-in and matching target registration before
 changing any rules; `--remove` remains available after opt-out for recovery.
+Settings and sidecars are checked before start or close mutations. The Codex
+file hash and path are owned by that sidecar and its exact ignore line is
+removed at teardown. Rewrite removes retired owned prefixes; removal journals
+the before/after allow lists by hash before replacing settings atomically, so
+a retry removes one owned occurrence and preserves duplicates. Intervening
+allow-list edits refuse for inspection, and an incomplete removal must finish
+before a rewrite. A removed and identically re-added
+sole operator rule is unobservable and remains an ownership limitation.
 Its latest passing final
 review must bind `targetSubject` and `targetGate`, and `TargetRecordsCommitted`
 must bind the target's current clean HEAD as a records-only child of the
@@ -1893,7 +2001,11 @@ the launchpad document gate still judges its documents. Passing final review
 records `targetGate` at the clean reviewed commit. `npm run resume --
 target-records` copies the order and moves decisions and every filed report
 into that root as one records-only commit, recording paths and hashes in
-`TargetRecordsCommitted`. An ignored pending receipt lets the same command
+`TargetRecordsCommitted`. Metadata, follow-up indexes and status resolve moved
+records through the recorded repository, commit, root, path and hash, reading
+regular blobs without replacement refs; current registration paths and working
+copies cannot replace that evidence. Run `npm run meta` and `npm run plan --
+followups --sync` after moving records. An ignored pending receipt lets the same command
 resume an interrupted commit or source removal after verifying the exact bytes.
 Records-only and planning commits use the host's signing policy, as starter
 refresh does; hooks and filesystem monitors stay disabled. A signing failure
@@ -1901,7 +2013,8 @@ retains the pending work for retry.
 Changed inputs refuse with the work retained. Raw evidence and the body stay in the instance.
 `npm run plan -- target-publish <repository-id> --base <commit> --from
 <directory> --branch docs/<slug> --title <title> --body-file <path>` publishes
-only product and planning documents under the same root from the planner's
+only product and planning documents under the same root, refusing hidden files,
+Finder metadata, editor backups and unsupported file extensions from the planner's
 read commit. The title becomes the commit subject and must use the conventional
 `docs:` or `docs(scope):` type; other types refuse before remote access.
 Its operator-grant registry must match committed authority bytes; unrelated
@@ -2130,8 +2243,9 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   with one detached guard per user, shared across clones and exported instances
   through the operating system's per-user temporary root. The runner, guard and
   `node scripts/harness.mjs bounded -- <command>` use physical footprint budgets
-  from `docs/control/budgets.json`: a task gets one quarter of physical RAM, a
-  gate one half, and all attributed DotLn trees two thirds. Breaches kill the
+  from `docs/control/budgets.json`: a gate gets one half of physical RAM,
+  each task gets that gate share divided by the recorded host lane capacity,
+  and all attributed DotLn trees get two thirds. Breaches kill the
   offending process groups before writing typed `memory-budget` incidents.
   Ledger and membership-publication failures are reported without preventing
   the stop or its task/gate result. Bare stops name the largest member and retain
@@ -2142,9 +2256,12 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   signals are named and readable signals remain active. The runner records
   sampled task and gate peaks, bounds output, retains failure diagnostics and
   stops its task groups on interrupt, termination and hang-up without recording
-  a gate row. Every gate shares four weighted host lanes; nested gates
-  suballocate the parent reservation validated at gate entry and waits name the
-  holders. A wait-notification failure rejects acquisition after cancelling and
+  a gate row. Every gate shares the host registry's weighted lanes: the first
+  acquirer records the lesser of eight and half the logical processors, at
+  least one, and later acquirers inherit that capacity. Nested gates
+  suballocate the parent reservation validated at gate entry and waits name
+  the holders. The structural host check refuses a per-lane budget below the
+  largest measured task RSS of the baseline passing runs. A wait-notification failure rejects acquisition after cancelling and
   draining its lock helper; it leaves no reservation or heartbeat behind.
   Swap growth triggers a footprint census relative to the last such
   census, so past growth alone does not force a lifetime of fast sampling.
@@ -2852,24 +2969,26 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   sibling's bytes; a starter runtime pass cannot satisfy them. Carried
   platform fixtures remain explicit `--only` or `--machinery` diagnostics,
   with order-specific evidence required for intentional machinery changes.
-  The scheduler retains load-derived deadlines, peer observations, a four-lane
-  cap and bounded live progress. Harness fixtures and process-debt fixtures use
-  exclusive scheduling, restoring the faster measured WO-128 D010 choice
-  (462 seconds exclusive versus 666 shared). Skeleton remains shared: WO-115's
+  The scheduler retains load-derived deadlines, peer observations, host-derived
+  lane capacity and bounded live progress. Harness fixtures, process-debt and
+  worktree-integration keep an exclusive reservation with up to two measured
+  light peers. The older WO-128 D010 comparison (462 seconds exclusive versus
+  666 shared) remains historical evidence for retaining their reservation. Skeleton remains shared: WO-115's
   [same-source comparison](../evidence/WO-115/scheduling-comparison.json) passed
   all 28 suites in 312.441 seconds shared and 430.952 seconds exclusive, with
   only its isolation declaration changed. Isolation shortened skeleton itself
   from 309.511 to 286.508 seconds but added 118.511 seconds to the complete
-  gate. Shared skeleton has priority 80, reserves one of four lanes and uses
-  deadline load factor 8; exclusive skeleton would take priority 200 before
-  shared suites, reserve all four lanes and use factor 2. Each lock-matrix
+  gate. Shared skeleton has priority 80, reserves one host lane and uses
+  twice the scheduler concurrency as its deadline load factor; exclusive
+  skeleton without overlap would take priority 200 before shared suites,
+  reserve every scheduler lane and use factor 2. Each lock-matrix
   cell now has its own 120 s deadline (WO-173). This single ordered pair
   supports retaining shared scheduling; it does not establish the historical
   timeout cause or reliability under all host loads. Future scheduling changes
-  require a same-source comparison. The acceptance target is three consecutive
-  fresh
-  product gates below 360 seconds on the operator's host; their rows belong in
-  WO-132 evidence. No product test is deleted; product-test removal still goes
+  require a same-source comparison. WO-132's acceptance target was three consecutive
+  fresh product gates below 360 seconds on the operator's host; its evidence
+  records 254.908, 250.500 and 246.160 seconds. That historical product
+  selection is not the later complete-review selection. No product test is deleted; product-test removal still goes
   through the mutation corpus. The immutable WO-129–WO-131 records describe
   the former implementation, not current reuse behavior.
 
@@ -2958,6 +3077,33 @@ row supplies no passing claim. An execution finishing after its row was
 recorded also supplies no pass. Launchpad's export/verify, update/refresh and
 seeds/staging files run two at a time, each with its own 900-second deadline.
 
+The host-lane registry records the first acquirer's capacity, the lesser of
+eight and half the logical processors, at least one; later clones inherit
+it. A task's budget is the gate share divided by that capacity, and the host
+structural task compares it with the maximum task RSS in the three baseline
+passing rows. The three exclusive suites reserve every scheduler lane but
+at most two. Only shared tasks whose latest baseline sample is below 60
+seconds and 512 MiB RSS may use those spare lanes. The exclusive task's
+shared deadline declaration has at most three concurrent tasks and a factor
+twice that declaration, up to six; nested gates remain inside its inherited
+reservation. Target-worktree's
+start, publication, close and release files run two at a time, each under
+its own 900-second deadline, preserving the base's complete case inventory.
+The [WO-222 measurement](../evidence/WO-222/README.md) compares these levers
+with a before median of 2,538.373 seconds and a three-fresh-run after median
+of 1,668.518 seconds, 34.2682% lower, with no outer task deadline hit. The
+combined comparison retains all three levers; it does not isolate their
+individual contributions. Summed task duration increased, and the target-worktree
+group span improved by 9.24%; the evidence keeps those tradeoffs and the
+reversal condition alongside the complete-run gain.
+
+The maintained [gate-execution architecture record](../architecture/gate-execution.md)
+connects earlier scheduling and reuse decisions, their measured reversals and
+research from books and public implementations. Orders changing these surfaces
+cite and update that record alongside their ordinary decision files. It separates
+the implemented capacity and file lanes from proposed fair host admission, its
+mixed-version boundary and optional future host resource profiles.
+
 The [WO-216 measurements](../evidence/WO-216/README.md) retain the base's
 seven complete and seventeen document failures with their task timelines,
 three timings of the reused checks it names (the `siblings` and
@@ -2970,8 +3116,14 @@ existed at that base. The split file tasks measured 164.231 seconds for
 export, 247.940 for update and 4.863 for seeds, each within its own
 900-second deadline. The five closes after this order judge the design
 against 11 complete runs, 1.3 late structural-class failures and 545 gate
-task minutes per closed order. Any statistic not below its baseline reopens
-the decision; isolated check timings do not establish that outcome.
+task minutes per closed order. Any statistic not below its baseline reopens the decision; isolated check
+timings do not establish that outcome. At the first of those closes
+(WO-221, 2026-10-19) the window held fifteen complete runs (four stopped,
+eight failed, three passed), no late structural-class failure and 691 gate
+task minutes, under three operator scope expansions that changed the gate
+process mid-order (WO-221 D016 to D020); the
+[2026-10-19 pass](../planning/standard-pass-2026-10-19.md) §3 reads them,
+and WO-222 takes the capacity levers D019 measured.
 
 ## Model-specific notes
 

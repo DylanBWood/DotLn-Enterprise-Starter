@@ -57,6 +57,7 @@ import {
   disposeReviewThread,
   bindReviewRepairInput,
   TARGET_PUBLISH_HOST,
+  lintArtifacts,
 } from "./lib/target-publish.mjs";
 import {
   resolveReviewComments,
@@ -91,9 +92,11 @@ import {
 import { fixtureVerificationResult } from "../packages/skeleton/dist/src/verification-fake.js";
 import { deliveryContractHash } from "./lib/github-body.mjs";
 import { lintOutwardArtifact } from "./lib/outward-lint.mjs";
+import { deadlineLimit } from "../packages/skeleton/src/gate-deadlines.mjs";
 
-// Cold, standalone case durations rounded up to 0.1 s (WO-197). Register
-// bounds after the callback so Node's FIFO after hooks include fixture cleanup.
+// Cold, standalone case durations rounded up to 0.1 s. Preserve twice-baseline
+// standalone bounds and derive loaded bounds from the scheduler declaration.
+// Register after the callback so FIFO after hooks include fixture cleanup.
 const repairedCaseMs = new Map([
   [
     "WO-182 AC3: readiness refusal precedes every remote call; operator publication shows the same gaps",
@@ -206,6 +209,7 @@ const test = (name, ...args) => {
   unregisteredCaseBounds.delete(name);
   const measuredMs = repairedCaseMs.get(name);
   if (measuredMs === undefined) return nodeTest(name, ...args);
+  const limitMs = deadlineLimit(measuredMs, 2 * measuredMs);
   const run = args.pop();
   assert.equal(typeof run, "function");
   return nodeTest(name, ...args, async (t) => {
@@ -215,8 +219,8 @@ const test = (name, ...args) => {
     } finally {
       t.after(() =>
         assert.ok(
-          performance.now() - started <= 2 * measuredMs,
-          `${name} stays within twice its measured ${measuredMs} ms duration`,
+          performance.now() - started <= limitMs,
+          `${name} stays within ${limitMs} ms derived from its measured ${measuredMs} ms duration`,
         ),
       );
     }
@@ -1223,6 +1227,13 @@ await test("WO-064 AC1/AC2: lint and target refusals name their rule; the grante
     /outward lint: branch unavailable: local-terms list absent; commit unavailable: local-terms list absent; pr-title unavailable: local-terms list absent; pr-body unavailable: local-terms list absent/u,
   );
   subject.terms("zephyrcanary\n");
+  assert.throws(
+    () =>
+      lintArtifacts(subject.launchpad, [
+        { kind: "commit", text: `fix: ${"x".repeat(85)}` },
+      ]),
+    /outward lint: commit refused: subject.length: 90 of 72 characters \(line 1\)/u,
+  );
 
   fixtureGit(target, "update-ref", `refs/heads/${BRANCH}`, baseCommit);
   refusedBeforeRemote(
