@@ -37,6 +37,13 @@
       "reason": "missing file",
       "count": 1,
       "note": "WO-005's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-005/ by target-records (TargetRecordsCommitted, 2026-10-20); the launchpad record keeps its original link; declared by the 2026-10-20 planning pass (docs/planning/latest-upstream-and-core-answers-2026-10-20.md §15), which found the failure inherited from the #13 merge."
+    },
+    {
+      "file": "docs/planning/latest-upstream-and-core-answers-2026-10-20.md",
+      "href": "../work-orders/WO-012-starter-v0.87.0-registration.md",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-012 was renamed WO-012-starter-v0.88.0-registration.md when the 2026-10-21 planning pass amended it for starter v0.88.0 (docs/planning/latest-upstream-fixes-2026-10-21.md §6 D2 and §14); the 2026-10-20 planning document keeps its original link to the order as it was filed."
     }
   ]
 }

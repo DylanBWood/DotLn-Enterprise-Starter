@@ -4,6 +4,18 @@ Statuses: `adopted`, `preserved`, `raw`, `superseded`, `transformed`, `rejected`
 
 Insert this instance's dated sessions below, newest first.
 
+## 2026-10-21 — planning pass: the latest upstream with core's fixes (starter v0.88.0) and the update route (operator dispatch of 2026-10-21)
+
+Dispatch: a `planning:` request stating that the upstream carries fixes,
+leaving the choice between refreshing the open update pull request and
+replacing it to the pass, and asking for the fork to be updated, captured
+verbatim in ignored intake
+(`docs/intake/notes/planning-latest-upstream-fixes-2026-10-21.md`, SHA-256
+`9b1e3fe9d122ddc83053b6a8b03ac46f2cb97f90eabd15e3404d3f6b2db913a4`). The
+record is [the planning document](../planning/latest-upstream-fixes-2026-10-21.md);
+this heading registers the pass for the plan tooling. No idea is ledgered:
+the pass was not an ideation dispatch.
+
 ## 2026-10-20 — planning pass: the latest upstream (starter v0.87.0) and core's answers (operator dispatch of 2026-10-20)
 
 Dispatch: a `planning:` request naming three subjects (a standard pass, the

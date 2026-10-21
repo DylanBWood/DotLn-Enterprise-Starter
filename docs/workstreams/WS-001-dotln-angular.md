@@ -31,7 +31,7 @@ the last member's pull request.
 | WO-004 | dotln-angular | `bc9133e932a00d33c15bc5289d683b8078f51ee4` | scaffolds the Nx and Angular workspace, tooling, CI and the two documentation roots  |
 | WO-011 | self          | this launchpad's `main` after update #8    | declares the class's disposable output and the tag guard the v0.85.0 close needs; the target release waited on the kit's display name |
 | WO-005 | dotln-angular | `651d76ff68e9b3a38fe770226deb634bca28b54c` | foundation libraries: core, utils, i18n, the test-kit convention; base set 2026-10-18 |
-| WO-012 | self          | this launchpad's `main` after update #14 | declares the target release policy and the name `DotLn Angular`, the judge-only base checkout and the operator's commit identity that starter v0.87.0 admits |
+| WO-012 | self          | this launchpad's `main` after update #16 | declares the target release policy and the name `DotLn Angular`, the judge-only base checkout and the operator's commit identity that starter v0.87.0 admits (taken inside v0.88.0), and the operator grant naming `release.close` |
 | WO-006 | dotln-angular | provisional; set when WO-005 merges        | the component taxonomy, PrimeNG behind wrappers, the shell layout, the home feature  |
 | WO-007 | dotln-angular | provisional; set when WO-006 merges        | events, signal stores, call state, data access, MSW, navigation and flags            |
 | WO-008 | dotln-angular | provisional; set when WO-007 merges        | authentication and permissions, legitimate from the Angular side                     |
@@ -63,11 +63,17 @@ precedes WO-005 by a typed hard edge: starter v0.85.0's release close
 deletes the class's declared disposable output and refuses an undeclared
 ignored base file, so the declaration lands first (planning pass of
 2026-10-19, D2). WO-012, a self order, precedes WO-006 the same way: starter
-v0.87.0 reads the target's release policy, display name and base-checkout
-policy from this launchpad's `main` at the close, so WO-012 lands them
-before WO-006 activates, and the UI planning pass that sets WO-006's base
-adds the typed edge and the `Target release classification` header
-(planning pass of 2026-10-20, D2 and D7). No two members run side by
+v0.87.0 and later read the target's release policy, display name,
+base-checkout policy and the operator grant from this launchpad's `main` at
+the close, so WO-012 lands them before WO-006 activates, and the UI
+planning pass that sets WO-006's base adds the typed edge and the
+`Target release classification` header (planning pass of 2026-10-20, D2 and
+D7). Once WO-012 declares the policy, every `dotln-angular` member needs
+exactly one `Target release classification` header before it activates,
+because the kit checks the header only at the close (`exactly one is
+needed`); the UI planning pass adds it to WO-006, WO-007 and WO-008, and no
+member activates without it (planning pass of 2026-10-21, D2, from
+refutation receipt 004's known issue on the header). No two members run side by
 side: every member edits `nx.json`, `tsconfig.base.json`, the ESLint
 configuration and the generator log, so their surfaces overlap. A member that
 needs something a later member delivers (WO-006's facade needs WO-007's

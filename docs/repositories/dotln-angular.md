@@ -102,9 +102,12 @@ the disposable output the v0.85.0 close deletes and the core-named-tag
 guard, and no target order activates before it merges (a typed hard edge on
 WO-005; planning pass of 2026-10-19, D2). DotLn-Angular declared no target
 release while the kit titled a declared target Release by the registration id
-and the tag (2026-10-19, D4); starter v0.87.0 (update pull request
-#14 of 2026-10-20) carries `release.displayName`, and WO-012
-declares the policy and `DotLn Angular` (planning pass of 2026-10-20, D2).
+and the tag (2026-10-19, D4); starter v0.87.0 carries
+`release.displayName`, taken by this fork inside starter v0.88.0 (update
+pull request #16 of 2026-10-21, after the draft #14 of 2026-10-20 was
+closed as superseded), and WO-012 declares the policy, `DotLn Angular` and
+the operator grant naming `release.close` (planning passes of 2026-10-20,
+D2, and 2026-10-21, D2).
 The same starter admits only the node spelling of the helper for a
 registered target, `node scripts/worktree.mjs publish WO-NNN --target-worktree …`
 run from the launchpad root at the phases that make the draft and closed
@@ -125,8 +128,10 @@ record the applied policy.
 
 ## Release close
 
-Starter v0.87.0 (update pull request #14, 2026-10-20) adds
-three things this section carries once WO-012 merges: a declared target
+Starter v0.87.0, which this fork takes inside starter v0.88.0 (update
+pull request #16, 2026-10-21), adds three things this section carries once
+WO-012 merges, and WO-012 adds a fourth beside them, the operator grant
+naming `release.close` for `dotln-angular`: a declared target
 release titled `DotLn Angular <tag>` (the first tag `v0.1.0`) with
 `release.close` in the allowed effects; `baseDisposablePolicy: "judge-only"`,
 under which the close keeps the base checkout's output after the same
