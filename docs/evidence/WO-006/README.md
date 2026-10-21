@@ -112,3 +112,30 @@ were read back at 2026-10-21 14:12:55 UTC. The
 [handoff](handoff.md) maps this evidence to all nine criteria and records the
 reviews, scope limits and usage source. The final document gate follows the
 last handoff edit and is consumed by the completion event.
+
+## Final review publication
+
+The final review (FINAL-001, pass, 2026-10-21) committed the reviewed target
+series on `wo-006` (the draft commit `a9e58af4…`, the skip-link repair
+`eb7dfdf0…`) and `target-records` added the records commit `5eee5951…`. The
+kit's final target publish (`node scripts/worktree.mjs publish WO-006
+--target-worktree …`, the briefing's spelling, run from the launchpad root)
+pushed `feat/component-taxonomy` at `5eee5951…` over the draft head and marked
+pull request #4 ready; the host allowed the call without a prompt, and the
+registered-target admission did not evaluate, as
+[host-qualification.md](host-qualification.md) records row by row.
+
+The records publish (`node scripts/worktree.mjs publish WO-006 --title …`)
+refused twice with "no recorded passing reviewer npm test row": a target
+order's `final-review-result` records no launchpad product gate (the kit
+acquires none for an order with a repository), while the launchpad publish
+reads one from the review's control event. The review session ran
+`npm test -- --review` at the integrated code identity
+`62cd24ebc9df0bd488d9d8d5c8206f9b6449d2106fa7b68d995c618d712f5914` (seven
+fresh suites, exit 0, 12,467 ms, recorded 2026-10-21T16:53:38.098Z) and bound
+the row to the review through the documented route,
+`npm run resume -- correct 6 --set productGate=<evidenceRef>` (control ordinal
+8, `RecordCorrected`; no verdict or report byte changed), then published the
+records branch. Request to core from this episode: let a target order's
+`final-review-result` carry the launchpad complete row, or let the records
+publish accept a passing row at the identity without a correction.
