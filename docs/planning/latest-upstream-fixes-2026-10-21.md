@@ -574,5 +574,6 @@ host); read-only Git and shell commands only; identities counted, never
 printed or compared; no planning document, receipt or intake; no npm or
 node kit command, no gate, no network, no model tool, no agent, no write.
 The judged, committed and workspace subjects agree (`sha256:b7cf8f1d…`).
-The document gate after the receipt and the known-issues record is recorded
-in the closing paragraph below.
+After the receipt and the known-issues record, the document gate at
+v0.85.0: 14 passed, 0 failed, 13.99 s; the handoff run is in the pull
+request.
