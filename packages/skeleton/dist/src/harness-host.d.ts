@@ -554,6 +554,14 @@ export declare function ensureHarnessSessionScratch(sessionId: string): {
  * so no sanitizing rule is guessed. null admits nothing.
  */
 export declare function claudeHostScratchpad(input: Pick<HarnessInput, "cwd" | "session_id" | "transcript_path">): string | null;
+/** Inspect every named component below the trusted temporary prefix.
+ * The system temporary prefix may itself be an alias. Missing components
+ * still admit creation; inspection failures retain the guard's advisory.
+ * The outer shared directory need not belong to the session user. */
+export declare function grantedSessionRoot(path: string, prefix: string): {
+    readonly physical: string;
+    readonly cause?: string;
+};
 export declare function evaluateHarnessHook(config: HookConfig, input: HarnessInput, root: string, boundary: typeof feedbackBoundary, moved?: unknown): Promise<Record<string, unknown>>;
 export declare function runHarnessHook(config: HookConfig, boundary: typeof feedbackBoundary, decodedInput?: unknown, inputText?: string, operatorControl?: unknown): Promise<void>;
 export declare function runCommitMessageHook(config: Pick<HookConfig, "compilerPackageVersion" | "runtime"> & {

@@ -22,8 +22,9 @@ test "$("$node_bin" -e 'process.stdout.write(Buffer.from(process.argv[1], "utf8"
 git init --bare "$test_root/origin.git" >/dev/null
 git clone "$test_root/origin.git" "$test_root/project" >/dev/null 2>&1
 main="$test_root/project"
-git -C "$main" config user.email dylanwoodconsulting@gmail.com
-git -C "$main" config user.name "Dylan Wood"
+git -C "$main" config user.email operator@example.invalid
+git -C "$main" config user.name "Fixture Operator"
+printf '%s\n' '{"version":1,"contributions":{"operatorAuthor":"Fixture Operator <operator@example.invalid>"}}' >"$main/dotln.config.json"
 git -C "$main" config core.quotePath true
 github_repo="dotln-fixture/worktree"
 github_origin="https://github.com/$github_repo.git"
@@ -118,6 +119,9 @@ grep -Fq "cd '$subject'" <<<"$start_output"
 grep -Fq '  codex' <<<"$start_output"
 grep -Fq 'resume: next' <<<"$start_output"
 grep -Fq 'Carried sibling receipts:' <<<"$start_output"
+if grep -Fq 'contributions.operatorAuthor' <<<"$start_output"; then
+  printf 'error: declared sign-off exemption still printed an advisory\n' >&2; exit 1
+fi
 test -f "$subject/docs/evidence/siblings/starter-fixture/2026-10-13T12-00-00-000Z.json"
 test ! -f "$pending_lane/2026-10-13T12-00-00-000Z.json"
 (cd "$subject" && node scripts/siblings.mjs index --check)

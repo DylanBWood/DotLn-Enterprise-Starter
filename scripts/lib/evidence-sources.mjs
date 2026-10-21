@@ -49,8 +49,9 @@ const commonSources = [
   "packages/skeleton/src/source-change-command.ts",
   "packages/skeleton/src/source-change-host.ts",
   "packages/skeleton/src/host-interruption.ts",
-  // WO-199: the source host dynamically loads native launch and ownership tools.
+  // The source host dynamically loads native launch and ownership tools.
   "scripts/lib/host-resources.mjs",
+  "scripts/lib/gate-scheduling-baseline.json",
   "scripts/lib/host-lock.c",
   "scripts/lib/host-footprint.c",
   "scripts/lib/gate-evidence.mjs",
@@ -63,6 +64,7 @@ const commonSources = [
   "packages/skeleton/src/review.ts",
   "packages/skeleton/src/repair-host.ts",
   "packages/skeleton/src/resident-state.ts",
+  "packages/skeleton/src/target-publication-policy.ts",
   "packages/skeleton/src/vertical.ts",
   "packages/skeleton/src/presence-signals.ts",
   "packages/skeleton/src/presence-heartbeat.ts",
@@ -119,6 +121,7 @@ const commonSources = [
   "scripts/lib/evidence-sources.mjs",
   // WO-162: evidence tools consume the shared byte serializers and Git/JSON IO.
   "scripts/lib/helpers.mjs",
+  "scripts/lib/harness-instruction.mjs",
   "scripts/lib/git.mjs",
   "scripts/lib/paths.mjs",
   "packages/skeleton/src/runtime-inputs.mjs",

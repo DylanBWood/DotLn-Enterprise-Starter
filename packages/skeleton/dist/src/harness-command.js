@@ -1364,7 +1364,6 @@ function readCommand(program, args) {
             return false;
         const words = args.slice(1);
         // Add an explicitly effect-reduced spelling without changing legacy forms.
-        // Gate metadata exceptions still need the separately boarded N7 repair.
         if (words[0] === "--no-optional-locks" &&
             words[1] === "-c" &&
             words[2] === "core.fsmonitor=false")
@@ -1782,6 +1781,7 @@ export function liveGateReads(source) {
                     if (!literalRedirectOperand(operand) ||
                         operand.expands ||
                         operand.redirects ||
+                        /^\/dev\/(?:tcp|udp)(?:\/|$)/.test(operand.value) ||
                         (!redirect[1].endsWith("<") && operand.value !== "/dev/null"))
                         return null;
                     continue;
@@ -2293,7 +2293,7 @@ export function invocationEffects(source) {
             return ["settings.user"];
         if (program === "npm" &&
             args[0] === "run" &&
-            ["resume", "worktree", "release", "plan", "discover"].includes(args[1] ?? ""))
+            ["resume", "worktree", "release", "plan", "discover"].includes(args[args[1] === "--silent" ? 2 : 1] ?? ""))
             return ["lifecycle.run"];
         if (program === "node" &&
             /^scripts\/(?:resume|worktree|release|refute-plan|discover)\.mjs$/.test(args[0] ?? ""))
