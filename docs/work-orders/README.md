@@ -4,7 +4,6 @@
 
 ## Proposed order
 
-- [x] [WO-012] — Register starter v0.88.0: the target release name, the judge-only base checkout, the operator's commit identity, the release-close grant · **final-reviewed**
 - [ ] [WO-006] — Component taxonomy, shell layout and the home feature · **queued**
 - [ ] [WO-007] — Events, signal stores, data access and MSW · **queued**
 - [ ] [WO-008] — Authentication and permissions · **queued**
@@ -27,25 +26,25 @@ None.
 
 ### WO-006
 
-[WO-006 — The component taxonomy made real in DotLn-Angular: &#96;ui&#96; with fragments, templates, wrappers over the operator-confirmed vendor and shared composites, the lint rules that enforce the roles by location, the &#96;dotln&#96; shell layout, and the &#96;home&#96; feature with its composites, layout, mapper, container and facade behind a lazy route, with accessibility checks in e2e](WO-006-component-taxonomy-shell-home.md)
+[WO-006 — The component taxonomy made real in DotLn-Angular: &#96;ui&#96; as the house component library with Angular Aria and the CDK behind wrappers, the lint rules that enforce the roles by location, the &#96;dotln&#96; shell layout, and the &#96;board&#96; feature rendering the actor board (&#96;uifa-board-v1&#96;) from a recorded fixture through its composites, layout, mappers, container and facade behind a lazy route, with accessibility checks in e2e](WO-006-component-taxonomy-shell-home.md)
 
 - State: draft.
-- Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
-- Application target: unassigned.
+- Repository: dotln-angular @ 5102783f5cf575a6b487e75ed9bb0c064d6dbd9c.
+- Application target: malformed.
 - Dependencies: typed; dependency-ready.
-- References: WO-005: hard (met) — the foundation libraries every component here imports; the base line is set to its merge commit before activation.
+- References: WO-005: hard (met) — the foundation libraries every component here imports; the base line is its merge commit 5102783f, set by the 2026-10-21 UI planning pass; WO-012: hard (met) — the declared target release policy, display name and release.close grant this order's close reads from the launchpad's main; closed 2026-10-21.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
 - Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh; reviewer xhigh.
 - Track: delivery
-- Cost: adds &#96;libs/shared/ui&#96;, &#96;libs/dotln/shell&#96;, &#96;libs/features/home&#96;, the role-by-location lint overrides, the vendor dependency, &#96;@axe-core/playwright&#96;, about 60 source files and the taxonomy documents. Removes the WO-004 placeholder page. Wall-clock: about 6 to 8 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 §Design, the foundation documents, the vendor's component API for the four wrapped components, this order, about 120 KB. Commands added in the target: none (&#96;lint:fixtures&#96; gains cases). Tokens: unknown until run. Steps: 14. Re-mints: none.
+- Cost: adds &#96;libs/shared/ui&#96;, &#96;libs/shared/models&#96;, &#96;libs/dotln/shell&#96;, &#96;libs/features/board&#96;, the role-by-location lint overrides and the four lint follow-ups WO-005 recorded, &#96;@angular/aria&#96;, &#96;@angular/cdk&#96;, &#96;@axe-core/playwright&#96;, two board fixtures (the launchpad's board of 2026-10-21 at about 360 KB, scrubbed, and a derived all-unavailable one), the pinned &#96;uifa-board-v1&#96; schema, about 75 source files and the taxonomy documents. Removes the WO-004 placeholder page and &#96;BasePaths.Home&#96;. Wall-clock: about 8 to 10 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 §Design and §The console, the foundation documents, the Angular Aria guide for the Tabs and Menu patterns and the CDK overlay and a11y entry points at the installed versions, the &#96;uifa-board-v1&#96; schema, this order, about 160 KB. Commands added in the target: &#96;npm run lint:components&#96;, &#96;npm run check:fixtures&#96;. Tokens: unknown until run. Steps: 16. Re-mints: none.
 - Authority: [docs/work-orders/WO-006-component-taxonomy-shell-home.md](WO-006-component-taxonomy-shell-home.md)
 
 ### WO-007
 
-[WO-007 — Events, stores and data access for DotLn-Angular: the tiered event groups in &#96;events&#96;, NgRx SignalStore with the Events plugin, call state and the trinity through &#96;data-access&#96;, &#96;HomeStore&#96; behind &#96;HomeFacade&#96;, the app-tier stores for feature flags, navigation with canonical routes and errors in &#96;state&#96;, HTTP interceptors for base URL, timeouts and errors, MSW in development and in tests, and the action-hygiene check](WO-007-events-stores-data-access.md)
+[WO-007 — Events, stores and data access for DotLn-Angular: the tiered event groups in &#96;events&#96;, NgRx SignalStore with the Events plugin, call state and the trinity through &#96;data-access&#96;, &#96;BoardStore&#96; behind &#96;BoardFacade&#96; loading the actor board over HTTP, the app-tier stores for feature flags, navigation with canonical routes and errors in &#96;state&#96;, HTTP interceptors for base URL, timeouts and errors, MSW in development and in tests, and the action-hygiene check](WO-007-events-stores-data-access.md)
 
 - State: draft.
 - Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
@@ -58,7 +57,7 @@ None.
 - Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh; reviewer xhigh.
 - Track: delivery
-- Cost: adds &#96;libs/shared/events&#96;, &#96;libs/shared/data-access&#96;, &#96;libs/shared/state&#96;, &#96;libs/features/home-data-access&#96;, the MSW worker and handlers, the interceptors, the hygiene check script, about 70 source files; adds &#96;@ngrx/signals&#96;, &#96;@angular-architects/ngrx-toolkit&#96; (or a house &#96;withCallState&#96;), &#96;msw&#96; pinned to 3.x (&#96;~3.0.3&#96; or the current 3.x at activation, recorded) to the workspace. Removes &#96;HomeFacade&#96;'s static data. Wall-clock: about 6 to 8 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 house rules 8, 11, 16, the NgRx Events plugin and toolkit declarations, the MSW browser and Node guides, this order, about 150 KB. Commands added in the target: &#96;npm run lint:hygiene&#96;, &#96;npm run msw:init&#96;. Tokens: unknown until run. Steps: 15. Re-mints: none.
+- Cost: adds &#96;libs/shared/events&#96;, &#96;libs/shared/data-access&#96;, &#96;libs/shared/state&#96;, &#96;libs/features/board-data-access&#96;, the MSW worker and handlers, the interceptors, the hygiene check script, about 70 source files; adds &#96;@ngrx/signals&#96;, &#96;@angular-architects/ngrx-toolkit&#96; (or a house &#96;withCallState&#96;), &#96;msw&#96; pinned to 3.x (&#96;~3.0.3&#96; or the current 3.x at activation, recorded) to the workspace. Removes &#96;BoardFacade&#96;'s recorded-fixture provider (&#96;BoardFixtureToken&#96;); the fixture itself stays as the handler's response and the specs' input. Wall-clock: about 6 to 8 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 house rules 8, 11, 16, the NgRx Events plugin and toolkit declarations, the MSW browser and Node guides, this order, about 150 KB. Commands added in the target: &#96;npm run lint:hygiene&#96;, &#96;npm run msw:init&#96;. Tokens: unknown until run. Steps: 15. Re-mints: none.
 - Authority: [docs/work-orders/WO-007-events-stores-data-access.md](WO-007-events-stores-data-access.md)
 
 ### WO-008
@@ -82,4 +81,3 @@ None.
 [WO-006]: WO-006-component-taxonomy-shell-home.md
 [WO-007]: WO-007-events-stores-data-access.md
 [WO-008]: WO-008-authentication-and-permissions.md
-[WO-012]: WO-012-starter-v0.88.0-registration.md

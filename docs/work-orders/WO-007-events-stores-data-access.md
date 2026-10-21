@@ -1,4 +1,4 @@
-# WO-007 — Events, stores and data access for DotLn-Angular: the tiered event groups in `events`, NgRx SignalStore with the Events plugin, call state and the trinity through `data-access`, `HomeStore` behind `HomeFacade`, the app-tier stores for feature flags, navigation with canonical routes and errors in `state`, HTTP interceptors for base URL, timeouts and errors, MSW in development and in tests, and the action-hygiene check
+# WO-007 — Events, stores and data access for DotLn-Angular: the tiered event groups in `events`, NgRx SignalStore with the Events plugin, call state and the trinity through `data-access`, `BoardStore` behind `BoardFacade` loading the actor board over HTTP, the app-tier stores for feature flags, navigation with canonical routes and errors in `state`, HTTP interceptors for base URL, timeouts and errors, MSW in development and in tests, and the action-hygiene check
 
 **Model:** any capable model; state the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
@@ -6,12 +6,15 @@
 **Track:** delivery
 **Release classification:** none; a target order records no launchpad release.
 **Repository:** dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4
+**Target release classification:** minor
 **Cost:** adds `libs/shared/events`, `libs/shared/data-access`,
-`libs/shared/state`, `libs/features/home-data-access`, the MSW worker and
+`libs/shared/state`, `libs/features/board-data-access`, the MSW worker and
 handlers, the interceptors, the hygiene check script, about 70 source files;
 adds `@ngrx/signals`, `@angular-architects/ngrx-toolkit` (or a house
 `withCallState`), `msw` pinned to 3.x (`~3.0.3` or the current 3.x at
-activation, recorded) to the workspace. Removes `HomeFacade`'s static data.
+activation, recorded) to the workspace. Removes `BoardFacade`'s recorded-fixture
+provider (`BoardFixtureToken`); the fixture itself stays as the handler's
+response and the specs' input.
 Wall-clock: about 6 to 8 hours of executor work plus the fixed cycle; unknown
 until run. Context bytes: WS-001 house rules 8, 11, 16, the NgRx Events plugin
 and toolkit declarations, the MSW browser and Node guides, this order, about
@@ -37,9 +40,13 @@ main-rules planning pass
 ([planning document](../planning/main-rules-and-platform-items-2026-10-18.md)
 §6 D5, D7 and §8.1): the `--draft` route, the final-review obligation and
 the repairs of receipt 001's known issues.
-**Depends on:** WO-006 merged (hard: `HomeFacade`, the container and the
-shell this order wires to stores; the base above is provisional and is set to
-WO-006's merge commit by the planning pass that follows it).
+**Depends on:** WO-006 merged (hard: `BoardFacade`, the board container, the
+`models` library with the `uifa-board-v1` types, the recorded fixture and
+the shell this order wires to stores; the base above is provisional and is
+set to WO-006's merge commit by the planning pass that follows it). Amended
+by the 2026-10-21 UI planning pass ([planning document](../planning/ui-planning-2026-10-21.md)
+§6 D1 and D4): the release header, the node-spelled draft publish, and the
+feature re-targeted from a tile grid to the actor board WO-006 renders.
 **Workstream:** WS-001
 
 <!-- dotln-dependencies:start -->
@@ -66,11 +73,13 @@ UI events dispatched by containers through facades, data-access events as
 reusable commands with call state, navigation events resolved by one store
 through canonical routes, app events for flags and errors; every event is
 declared in `@dotln-angular/events` under its tier, the hygiene check counts
-the exceptions, `HomeStore` loads tiles through HTTP answered by MSW in
-development and in tests, and the shell shows the error store's state.
+the exceptions, `BoardStore` loads the actor board (`uifa-board-v1`) through
+HTTP answered by MSW in development and in tests, and the shell shows the
+error store's state.
 
 **Observed gap (dated 2026-10-18; restated by the pass that sets the base):**
-no NgRx, no events, no HTTP and no mocks; `HomeFacade` reads static signals.
+no NgRx, no events, no HTTP and no mocks; `BoardFacade` reads a recorded
+board through `BoardFixtureToken`.
 The Events plugin is stable since NgRx 21 and `withEffects` is now
 `withEventHandlers`; the toolkit's `withCallState` exists for 22; MSW 3.x
 moved `http` and `HttpResponse` to `msw/http`; `resource()` and
@@ -82,8 +91,8 @@ moved `http` and `HttpResponse` to `msw/http`; `resource()` and
   per group, grouped by tier directory: `app/` (`appShellEvents`,
   `featureFlagEvents`, `errorEvents`), `navigation/` (`navigationEvents`:
   `navigate({ route, query? })`, `back()`, `replaceQuery(query)`),
-  `data-access/` (`homeHttpEvents`: `load`, `loadSuccess`, `loadFailure`),
-  `ui/` (`homePageEvents`: `opened`, `refreshRequested`, `tileSelected`).
+  `data-access/` (`boardHttpEvents`: `load`, `loadSuccess`, `loadFailure`),
+  `ui/` (`boardPageEvents`: `opened`, `refreshRequested`, `panelSelected`).
   Each `eventGroup({ source: '[<Tier> <Name>]', events })` with `type<T>()`
   payloads. A spec asserts every source string's tier prefix matches its
   directory and sources are unique. Rule 16's flow table lives in
@@ -101,15 +110,17 @@ moved `http` and `HttpResponse` to `msw/http`; `resource()` and
   `errorEvents.httpFailed` with the request's correlation id and never swallows
   the error). `AppError` is a discriminated union (`network`, `timeout`,
   `http`, `unknown`) in `@dotln-angular/models`.
-- `libs/shared/models` (`@dotln-angular/models`, `type:models`): `AppError`,
-  `Tile` DTOs, `FeatureFlags`.
-- `libs/features/home-data-access` (`@dotln-angular/home-data-access`,
-  `type:data-access`): `HomeStore = signalStore(withState, withCallState, withReducer(on(homePageEvents.opened, homePageEvents.refreshRequested → trigger)), withCommand(homeHttpEvents.load…), withEventHandlers(…))`
-  provided by `provideHomeDataAccess()` in `homeRoutes`' providers; `HomeApi`
-  (an injectable using `HttpClient`, typed DTOs); `testing/` with
-  `provideHomeStoreTestKit()` and the MSW handlers for home endpoints.
-  `HomeFacade` now composes `HomeStore` and `FeatureFlagStore` into `vm`;
-  its intents dispatch `homePageEvents`.
+- `libs/shared/models` (`@dotln-angular/models`, created by WO-006 with the
+  `uifa-board-v1` types): gains `AppError` and `FeatureFlags`.
+- `libs/features/board-data-access` (`@dotln-angular/board-data-access`,
+  `type:data-access`): `BoardStore = signalStore(withState, withCallState, withReducer(on(boardPageEvents.opened, boardPageEvents.refreshRequested → trigger)), withCommand(boardHttpEvents.load…), withEventHandlers(…))`
+  provided by `provideBoardDataAccess()` in `boardRoutes`' providers;
+  `BoardApi` (an injectable using `HttpClient`, `GET /board` returning a
+  `BoardDocument`); `testing/` with `provideBoardStoreTestKit()` and the MSW
+  handlers for the board endpoint, which serve WO-006's recorded fixture
+  and, under a test-only header, its unavailable variant. `BoardFacade` now
+  composes `BoardStore` and `FeatureFlagStore` into `vm` and
+  `BoardFixtureToken` is removed; its intents dispatch `boardPageEvents`.
 - `libs/shared/state` (`@dotln-angular/state`, `type:state`):
   `FeatureFlagStore` (initial flags from `EnvironmentConfig.featureFlags`,
   overrides from the URL query `ff=<flag>:<on|off>` read once at boot only
@@ -143,9 +154,9 @@ moved `http` and `HttpResponse` to `msw/http`; `resource()` and
   `environment.mocks` branch through a dynamic import, and the mocked
   endpoint paths live in the handler files only.
 - Shell: the error store's `latest` renders through a `dotln-toast` wrapper
-  added to `ui` (vendor behind the wrapper) from the shell layout; the home
-  container shows `loading` through `dotln-skeleton` and `error` through
-  `dotln-empty-state`.
+  added to `ui` (the CDK live announcer behind the wrapper) from the shell
+  layout; the board container shows `loading` through `dotln-skeleton` and
+  `error` through `dotln-empty-state`.
 - Documents: `docs/dev-reference/architecture/events-and-state.md` (tiers,
   flow, trinity, call state, stores, MSW, with one path each) and
   `docs/ai-reference/state-rules.md` (rule 16 as a table, `withEventHandlers`
@@ -167,15 +178,16 @@ two documents; `docs/evidence/WO-007/`.
 1. Base guard and activation as WO-005 step 1, for WO-007.
 2. Install `@ngrx/signals`, the toolkit and `msw` at the versions `npx nx report`
    admits; log them. Check: `npm ls @ngrx/signals msw` exits 0.
-3. Generate `events`, `models`, `data-access`, `state`, `home-data-access`
-   with logged commands and tags. Check: `npx nx show projects` lists them.
+3. Generate `events`, `data-access`, `state`, `board-data-access` with
+   logged commands and tags (`models` exists from WO-006). Check:
+   `npx nx show projects` lists them.
 4. `events` groups and the tier spec. Check: `npx nx test events` exits 0.
 5. `models`, then `data-access` (`withCallState`, `withCommand`,
    interceptors, `provideDotlnHttp()`), each with specs and kits. Check:
    `npx nx test data-access` exits 0.
-6. `home-data-access` (`HomeStore`, `HomeApi`, handlers, kit); `HomeFacade`
-   rewired; `homeRoutes` providers. Check: `npx nx test home home-data-access`
-   exits 0.
+6. `board-data-access` (`BoardStore`, `BoardApi`, handlers, kit);
+   `BoardFacade` rewired and `BoardFixtureToken` removed; `boardRoutes`
+   providers. Check: `npx nx test board board-data-access` exits 0.
 7. `state` stores and `provideDotlnState()`; `app.config.ts` wiring. Check:
    `npx nx test state` and `npx nx build dotln` exit 0.
 8. Hygiene script, fixtures, `npm run lint:hygiene`, CI step. Check:
@@ -184,7 +196,7 @@ two documents; `docs/evidence/WO-007/`.
 9. MSW init, browser worker, Node setup in each Vitest setup file, handlers
    aggregation. Check: `npx nx serve dotln` logs the worker's enabled line
    (recorded), `npx nx run-many -t test` exits 0 with `onUnhandledFrame: 'error'`.
-10. `dotln-toast` wrapper and the shell's error surface; home loading and
+10. `dotln-toast` wrapper and the shell's error surface; board loading and
     error states. Check: `npx nx e2e dotln-e2e` exits 0 including a test that
     forces `loadFailure` through an MSW handler and sees the empty state and
     the toast.
@@ -197,10 +209,11 @@ two documents; `docs/evidence/WO-007/`.
     path. Check: `npm run test:docs`.
 14. Commit; `implementation-ready`; handoff per §Discipline. After the
     session that records `verification-result pass` has done so, that
-    session runs
-    `npm run worktree -- publish WO-007 --target-worktree --draft --branch feat/events-and-state --title "feat: add events, signal stores, data access and MSW" --body-file <reviewed path>`,
-    which commits from the tree without moving `HEAD`, pushes the branch and
-    opens the draft pull request.
+    session runs, from the launchpad root,
+    `node scripts/worktree.mjs publish WO-007 --target-worktree --draft --branch feat/events-and-state --title "feat: add events, signal stores, data access and MSW" --body-file <reviewed path>`
+    (the node spelling is the only form the kit admits for a registered
+    target since starter v0.87.0), which commits from the tree without
+    moving `HEAD`, pushes the branch and opens the draft pull request.
 15. At final review: read the draft's threads and workflow runs into
     `docs/evidence/WO-007/preview-pr.json` and route each item,
     `target-records`, then the same publish command without `--draft`, which
@@ -225,9 +238,9 @@ then the target gate plain and review once each.
    (an own-tier dispatch, a data-access to data-access mapping, a UI to UI
    mapping).
 3. `grep -rc "withEffects" libs apps --include='*.ts' | grep -v ":0"` prints
-   nothing; `HomeStore` uses `withCallState`, a reducer on `homePageEvents`
-   and event handlers dispatching `homeHttpEvents.loadSuccess` or
-   `loadFailure`, and `npx nx test home-data-access` exits 0 with specs for
+   nothing; `BoardStore` uses `withCallState`, a reducer on `boardPageEvents`
+   and event handlers dispatching `boardHttpEvents.loadSuccess` or
+   `loadFailure`, and `npx nx test board-data-access` exits 0 with specs for
    success, HTTP failure and timeout through MSW handlers.
 4. `grep -c "setupWorker" apps/dotln/src/mocks/browser.ts` is 1,
    `apps/dotln/public/mockServiceWorker.js` exists, `npm ls msw` reports a
@@ -243,8 +256,10 @@ then the target gate plain and review once each.
    recorded in the evidence README) `grep -rl "<path>" dist/apps/dotln/browser`
    prints nothing; and `grep -c "featureFlagOverrides" apps/dotln/src/environments/environment.prod.ts`
    is at least 1 with the value `false`.
-6. `npx nx e2e dotln-e2e` exits 0 and includes: tiles rendered from the
-   mocked endpoint; a forced failure showing the empty state and the toast;
+6. `npx nx e2e dotln-e2e` exits 0 and includes: the board's five panels
+   rendered from the mocked endpoint (the recorded fixture served by the
+   handler, with `grep -c "BoardFixtureToken" libs/features/board/src -r`
+   printing 0); a forced failure showing the empty state and the toast;
    `?ff=<flag>:on` changing a flagged element; a navigation triggered by
    `navigationEvents.navigate` landing on the canonical route with its query
    parameters.
@@ -267,8 +282,9 @@ launchpad whose starter carries core WO-221's `--draft` form (WO-005 step
 1's route guard); the draft pull request and its workflow runs are a
 final-review obligation read from `docs/evidence/WO-007/preview-pr.json`,
 never a criterion (main-rules planning document §6 D5 and D7). The `Target
-release classification` line and the Preflight line in the landed grammar
-are added by the pass that sets the base.
+release classification` header was added by the UI planning pass of
+2026-10-21 under WO-012's declared policy (`DotLn Angular` releases; minor,
+a feature release); the pass that sets the base confirms it.
 
 **Non-goals:** authentication, tokens and permissions (WO-008); a real API;
 persistence (`withStorageSync`); devtools beyond `withDevtools` in

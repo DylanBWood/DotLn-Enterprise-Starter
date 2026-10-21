@@ -178,7 +178,12 @@ in one short question rather than guessing in either direction.
   document gate green), closed #14 as superseded and amended WO-012 for
   v0.88.0 and the refutation's known issues; the operator merges #16 and
   the pass, dispatches `resume: next` on WO-012, then opens the UI planning
-  pass (planning pass of 2026-10-21, D1, D2 and D6).
+  pass (planning pass of 2026-10-21, D1, D2 and D6). On 2026-10-21 the
+  operator merged #17 and #18, took WO-012 through its cycle and closed it
+  as Launchpad v0.3.3, then opened the UI planning pass; that pass set
+  WO-006's base, vendor, feature and release header. The operator merges
+  the pass and starts WO-006's worktree (UI planning pass of 2026-10-21,
+  D1 to D4 and D10).
 - Upstream updates: the operator asks for the outcome, the fork updated to
   the latest starter, and leaves the pull-request mechanics to the pass
   (refreshing an open update pull request or replacing it), which records
@@ -199,7 +204,26 @@ in one short question rather than guessing in either direction.
   the executor's check, not for a session on `main` to run. Recorded from
   the operator's corrections of 2026-10-21 (capture SHA-256
   `c4667a2702092238db7952862788a8ef39d83f70e09d75bf5e8ff251590e506b`;
+  planning pass of 2026-10-21, D10). After fast-forwarding `main` the
+  operator runs `node scripts/bootstrap.mjs` before the next dispatch: a
+  session opened before it runs with its hooks advisory and its first
+  release-close prompt withheld, as WO-012's close of 2026-10-21 showed
+  (the close completed and is fully recorded; UI planning pass of
+  2026-10-21, D12).
+- Research before asking: the product the UI serves is described at length
+  in the DotLn platform's records (its private intake, its idea ledger and
+  its product pages); a pass reads them through research workers, splitting
+  a large corpus across several agents, rather than asking the operator to
+  restate the product (direction of 2026-10-21, capture SHA-256
+  `58478e8d07e3a40ac562f408e513e575d99702d9d3545dab5e940144c77d0b56`; UI
   planning pass of 2026-10-21, D10).
+- Naming: DotLn is an agentic platform (the operator's words of 2026-09-05
+  in the platform's intake); its UI is the console, whose first screen is
+  the actor board over `uifa-board-v1`, and whose facets span the
+  orchestration view, loadout authoring, inspection, preview,
+  counterfactuals and QA (direction of 2026-10-21, same capture). Records of
+  this fork use those names; the purpose record's sentence stands until the
+  operator changes it (UI planning pass of 2026-10-21, D7).
 - Harness: Claude Code at the operator's chosen effort; spawned workers at the
   kit's pinned model and effort.
 - No direct quotes: the operator's messages are never quoted in a committed

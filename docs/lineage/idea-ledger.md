@@ -4,6 +4,21 @@ Statuses: `adopted`, `preserved`, `raw`, `superseded`, `transformed`, `rejected`
 
 Insert this instance's dated sessions below, newest first.
 
+## 2026-10-21 — planning pass: the UI (WO-006's base, the house component library, the actor board as the first screen) (operator dispatch of 2026-10-21)
+
+Dispatch: a `planning:` request for the UI planning pass, followed by eight
+directions in the same session (research the product in the DotLn
+platform's records through fan-out rather than restating it; split the
+private intake across several agents; a note that WO-012's release close
+ran before bootstrap; DotLn as a platform whose UI spans orchestration,
+loadout, inspection, preview, counterfactuals and QA over `uifa-board-v1`;
+the vision and the genesis of the UI), captured verbatim in ignored intake
+(`docs/intake/notes/planning-ui-2026-10-21.md`, SHA-256
+`58478e8d07e3a40ac562f408e513e575d99702d9d3545dab5e940144c77d0b56`). The
+record is [the planning document](../planning/ui-planning-2026-10-21.md);
+this heading registers the pass for the plan tooling. No idea is ledgered:
+the pass was not an ideation dispatch.
+
 ## 2026-10-21 — planning pass: the latest upstream with core's fixes (starter v0.88.0) and the update route (operator dispatch of 2026-10-21)
 
 Dispatch: a `planning:` request stating that the upstream carries fixes,
