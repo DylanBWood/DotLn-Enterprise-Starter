@@ -8,22 +8,42 @@ function endpoint(connection, path) {
         throw new Error("invalid local console connection");
     return `http://127.0.0.1:${connection.port}${path}`;
 }
-/** A transport failure names its cause, the socket error's code and message,
- * so a reset or refused connection is told apart from a refusal the resident
- * answered. The token and the request never appear in the message. */
-async function transport(url, init) {
+/** Retain only diagnostic codes: error messages, stacks and arbitrary cause
+ * objects can contain the private token or request arguments. */
+function transportCodes(error, seen = new Set()) {
+    if (!error || typeof error !== "object" || seen.has(error) || seen.size >= 8)
+        return [];
+    seen.add(error);
+    const row = error;
+    const names = [
+        "Error",
+        "TypeError",
+        "AggregateError",
+        "AbortError",
+        "TimeoutError",
+    ];
+    return [
+        ...(typeof row.name === "string" && names.includes(row.name)
+            ? [row.name]
+            : []),
+        ...(typeof row.code === "string" &&
+            /^(?:E[A-Z0-9_]{2,40}|UND_ERR_[A-Z0-9_]{1,40})$/.test(row.code)
+            ? [row.code]
+            : []),
+        ...transportCodes(row.cause, seen),
+        ...(Array.isArray(row.errors)
+            ? row.errors.flatMap((item) => transportCodes(item, seen))
+            : []),
+    ];
+}
+async function transport(url, init, operation) {
     try {
         return await fetch(url, init);
     }
     catch (error) {
-        const cause = error
-            .cause;
-        const detail = cause && typeof cause === "object"
-            ? `${typeof cause.code === "string" ? cause.code : "error"}: ${String(cause.message)}`
-            : error instanceof Error
-                ? error.message
-                : String(error);
-        throw new Error(`console request failed (${detail})`, { cause: error });
+        const detail = [...new Set(transportCodes(error))].join(" > ") ||
+            "unknown transport error";
+        throw new Error(`console request ${operation} failed (${detail})`);
     }
 }
 function decodeResult(value) {
@@ -49,7 +69,7 @@ export async function invokeConsoleCommand(connection, request, signal) {
         },
         body: JSON.stringify(request),
         ...(signal ? { signal } : {}),
-    });
+    }, /^[a-z][a-z.-]{0,59}$/.test(request.command) ? request.command : "invoke");
     const result = decodeResult(await response.json());
     if (response.ok ? result.command !== request.command : result.exitCode === 0)
         throw new Error("invalid console command result");
@@ -59,7 +79,7 @@ export async function readConsoleContract(connection, signal) {
     const response = await transport(endpoint(connection, "/console-commands-v1"), {
         headers: { authorization: `Bearer ${connection.token}` },
         ...(signal ? { signal } : {}),
-    });
+    }, "contract");
     if (!response.ok)
         throw new Error(`console contract refused (${response.status})`);
     return response.json();

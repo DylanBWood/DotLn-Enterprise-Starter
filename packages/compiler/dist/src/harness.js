@@ -226,6 +226,7 @@ export function assertHarnessProfile(profile) {
             !capability.evidence.startsWith("docs/intake/"), "public observation reference");
         ensure(capability.available || verificationLine(capability.reason ?? ""), "unavailable capability must explain why");
     }
+    ensure(profile.skills.format === "agent-skills", "declared Agent Skills format");
     ensure(repositoryPath(profile.skills.root) &&
         repositoryPath(profile.settings.path) &&
         repositoryPath(profile.instruction.path), "contained profile paths");
@@ -327,6 +328,11 @@ export function lowerToHarness(program, feedback, envelope, profile) {
             verificationLine(role.description) &&
             role.procedure.length > 0 &&
             role.intents.length > 0, "role contract");
+        if (profile.skills.available)
+            ensure(/^dotln-[a-z0-9]+(?:-[a-z0-9]+)*$/.test(`dotln-${role.name}`) &&
+                `dotln-${role.name}`.length <= 64 &&
+                role.description.trim().length > 0 &&
+                [...role.description].length <= 1024, "native Agent Skills frontmatter");
         for (const intent of role.intents) {
             ensure(verificationLine(intent) && !seenIntents.has(intent), "unique exact intent binding");
             seenIntents.add(intent);

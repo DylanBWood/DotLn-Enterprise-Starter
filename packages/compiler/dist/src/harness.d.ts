@@ -26,6 +26,7 @@ export interface HarnessProfile {
     };
     readonly skills: HarnessObservation & {
         readonly root: string;
+        readonly format: "agent-skills";
     };
     readonly settings: HarnessObservation & {
         readonly path: string;

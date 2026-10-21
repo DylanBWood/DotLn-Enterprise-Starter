@@ -107,7 +107,7 @@ test("confined npm test leaves committed source clean through host and writer ro
             scripts: { test: "node fixture-test.mjs" },
         }));
         fixtureGit(target, "add", "-A");
-        fixtureGit(target, "commit", "-m", "Synthetic npm check");
+        fixtureGit(target, "-c", "maintenance.auto=false", "commit", "-m", "Synthetic npm check");
         fixtureGit(target, "worktree", "add", "-b", "npm-check", tree);
         const host = runFocusedTest(tree, "npm test");
         assert.equal(host.exitCode, 0, JSON.stringify(host));

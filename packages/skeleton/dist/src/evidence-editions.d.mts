@@ -52,3 +52,20 @@ export declare function sameEvidenceSourceContent(root: string, evidenceFiles: s
  * @param {string} contents
  */
 export declare function writeEvidenceFile(path: string | URL, contents: string): void;
+/** A new revision may pin the unchanged transcript's canonical blob. Historical
+ * full records remain readable; references resolve by identity, never by a
+ * mutable pathname alone, and never form a reference chain.
+ * @param {string} root
+ * @param {string} directory */
+export declare function readAuthorityEvidence(root: string, directory: string): {
+    contents: string;
+    recordPath: string;
+    reference: any;
+};
+/** Keep only a reference when the selected predecessor has identical bytes;
+ * an absent or damaged predecessor cannot supply a reference.
+ * @param {string} root
+ * @param {string} directory
+ * @param {string} contents
+ * @param {string} [previousDirectory] */
+export declare function writeAuthorityEvidence(root: string, directory: string, contents: string, previousDirectory?: string): string;
