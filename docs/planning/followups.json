@@ -1236,6 +1236,30 @@
           "at": "2026-10-21T02:23:19.892Z"
         }
       ]
+    },
+    {
+      "id": "FUP-2232a29f1061494f",
+      "key": "decision:docs/evidence/WO-012/decisions.md#wo-012-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "36ff4401aa8d696e5a8ec447e0cadedecb18a24095b99edbd22e42a6b5876af2",
+          "ref": "docs/evidence/WO-012/decisions.md#wo-012-d008",
+          "title": "WO-012-D008: Core planning: make scripts/release.mjs targetReleaseClassification count all Target release classification declarations before validating the sole value. Add a…",
+          "summary": "{ \"id\": \"WO-012-D008\", \"date\": \"2026-10-21\", \"dispatch\": \"resume: next; criteria-adversary finding 1\", \"decision\": \"Strengthen the profile pre-start check to count all classification declarations as well as recognized values, and board the kit parser defect for core. The instance documentation refuses a valid header paired with a malformed duplicate; the shipped kit parser remains unchanged because kit edits are a non-goal.\", \"evidence\": [ \"The criteria adversary found that the single grep counted only recognized values and could admit a malformed duplicate\", \"classification-probe.json executes the current targetReleaseClassification function extracted from scripts/release.mjs with fixture t",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-012-D008: the actual kit parser admits one valid classification header plus a malformed duplicate. The profile precheck is repaired here; scripts/release.mjs and its platform fixtures are carried kit files explicitly outside WO-012 scope.",
+          "reopenWhen": "The next core planning pass considers this parser defect, a starter release carries the fix, or a target authority contains a malformed duplicate.",
+          "targets": [],
+          "at": "2026-10-21T03:01:24.246Z"
+        }
+      ]
     }
   ]
 }

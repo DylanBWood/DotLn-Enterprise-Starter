@@ -1,0 +1,38 @@
+
+> test:docs
+> node scripts/test-runner.mjs --document
+
+PROGRESS [format] 0.0 s started
+PASS format 3.35 s
+PROGRESS [configuration-root] 0.0 s started
+PROGRESS [configuration-root] 6.5 s # Subtest: publication declarations under a configured root require both editions
+PASS configuration-root 6.47 s
+PROGRESS [registrations] 0.0 s started
+PASS registrations 0.08 s
+PROGRESS [declarations] 0.0 s started
+PASS declarations 0.25 s
+PROGRESS [generated] 0.0 s started
+PASS generated 2.74 s
+PROGRESS [host] 0.0 s started
+PASS host 0.07 s
+PROGRESS [kit-verify] 0.0 s started
+PASS kit-verify 0.11 s
+  [kit-verify] kit: 977 files verified at a54f8d6520ed54d05e5209455c67541562716404
+PROGRESS [license-surfaces] 0.0 s started
+PROGRESS [docs-check] 0.0 s started
+PROGRESS [harness-context] 0.0 s started
+PASS harness-context 0.10 s
+PASS docs-check 1.12 s
+  [docs-check] ADVISORY docs/evidence/WO-003/decisions.md#WO-003-D003: operator-attributed words need a capture digest (SHA-256 or --capture-hash), or a paraphrase
+  [docs-check] ADVISORY docs/final-reviews/WO-001/FINAL-001.md#paragraph-eb2388ac509b: operator-attributed words need a capture digest (SHA-256 or --capture-hash), or a paraphrase
+  [docs-check] ADVISORY docs/verifications/WO-003/VER-002.md#paragraph-253bc476533f: operator-attributed words need a capture digest (SHA-256 or --capture-hash), or a paraphrase
+PASS license-surfaces 1.36 s
+PROGRESS [plan-refutation-current] 0.0 s started
+PROGRESS [plan] 0.0 s started
+PROGRESS [reader-profiles] 0.0 s started
+PROGRESS [entropy] 0.0 s started
+PASS reader-profiles 0.06 s
+PASS entropy 0.10 s
+PASS plan-refutation-current 0.41 s
+PASS plan 0.52 s
+npm run test:docs: 14 passed; 0 failed; 15.35 s; 14 fresh tasks
