@@ -1,0 +1,14 @@
+
+> sync
+> node scripts/sync.mjs
+
+artifact | before | after | action
+format | current | current | none
+runtime | current | current | none
+meta | current | current | none
+lineage | current | current | none
+index | current | current | none
+release-surfaces | current | current | none
+siblings | current | current | none
+harness | current | current | none
+publication | current | current | none

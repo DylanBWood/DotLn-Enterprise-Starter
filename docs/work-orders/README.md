@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-012] — Register starter v0.88.0: the target release name, the judge-only base checkout, the operator's commit identity, the release-close grant · **queued**
+- [x] [WO-012] — Register starter v0.88.0: the target release name, the judge-only base checkout, the operator's commit identity, the release-close grant · **final-reviewed**
 - [ ] [WO-006] — Component taxonomy, shell layout and the home feature · **queued**
 - [ ] [WO-007] — Events, signal stores, data access and MSW · **queued**
 - [ ] [WO-008] — Authentication and permissions · **queued**
@@ -24,23 +24,6 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 None.
 
 ## Open
-
-### WO-012
-
-[WO-012 — Register starter v0.88.0: name DotLn-Angular's releases &#96;DotLn Angular&#96;, keep the base checkout's output at close, declare the operator's commit identity, grant the kit its release close and verify the instance](WO-012-starter-v0.88.0-registration.md)
-
-- State: draft.
-- Application target: v0.88.0.
-- Dependencies: typed; dependency-ready.
-- References: none declared.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh; verifier xhigh; reviewer xhigh.
-- Track: machinery
-- Cost: adds to &#96;dotln.config.json&#96; one &#96;release&#96; object and one &#96;baseDisposablePolicy&#96; key on the &#96;dotln-angular&#96; registration and one top-level &#96;contributions&#96; object (about 300 bytes), moves &#96;release.close&#96; from the registration's denied effects to its allowed effects, adds &#96;release.close&#96; to the effects and operations of the existing operator grant in &#96;packages/skeleton/loadouts/grants.json&#96; and rewrites that grant's reason (about 200 bytes), rewrites the profile's &#96;## Release close&#96; section, adds WS-001's delivery-state row and this order's evidence. Removes nothing tracked beyond the moved effect and the grant reason's superseded sentence. Wall-clock: about 30 to 60 minutes of executor work plus the fixed cycle (activation, verification, final review, release close); unknown until run. Context bytes: the 2026-10-21 planning document §4 and §6, the 2026-10-20 planning document §4, §6, §7 and §9.1, core's v0.87.0 release notes §Read before upgrading (WO-218) and v0.88.0's (WO-223), &#96;scripts/lib/config.mjs&#96; (&#96;validateRepositoryRelease&#96;, &#96;validateRepositories&#96;, &#96;validateContributions&#96;, &#96;validateHistoricalWorkOrders&#96;), &#96;scripts/lib/contributions.mjs&#96;, &#96;scripts/lib/target-publish.mjs&#96; (&#96;authorizeRegisteredEffects&#96;), &#96;scripts/release.mjs&#96; (&#96;prepareTargetRelease&#96;), &#96;scripts/worktree.mjs&#96; §start and §publish, &#96;scripts/lib/target-worktree-close.mjs&#96;, this order, about 100 KB. Commands added: none. Tokens: unknown until run. Steps: 10. Re-mints: none; no registered evidence source, feedback source or machinery suite source is edited, so &#96;npm test&#96; is the product gate.
-- Authority: [docs/work-orders/WO-012-starter-v0.88.0-registration.md](WO-012-starter-v0.88.0-registration.md)
 
 ### WO-006
 

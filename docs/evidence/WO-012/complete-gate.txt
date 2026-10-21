@@ -1,0 +1,21 @@
+
+> test
+> node scripts/test-runner.mjs --review
+
+PROGRESS [format] 0.0 s started
+PASS format 3.46 s
+PROGRESS [configuration-root] 0.0 s started
+PROGRESS [configuration-root] 6.7 s # Subtest: publication declarations under a configured root require both editions
+PASS configuration-root 6.71 s
+PROGRESS [registrations] 0.0 s started
+PASS registrations 0.09 s
+PROGRESS [declarations] 0.0 s started
+PASS declarations 0.25 s
+PROGRESS [generated] 0.0 s started
+PASS generated 2.82 s
+PROGRESS [host] 0.0 s started
+PASS host 0.07 s
+PROGRESS [kit-verify] 0.0 s started
+PASS kit-verify 0.10 s
+  [kit-verify] kit: 977 files verified at a54f8d6520ed54d05e5209455c67541562716404
+npm test: 7 passed; 0 failed; 13.82 s; 7 fresh tasks
