@@ -457,8 +457,11 @@ target change on its `wo-NNN` branch before recording the passing result,
 records the order's records in the target's documentation root as one
 records-only commit after it, and may push that commit to one conventional
 branch on the target's origin and open its pull request with `worktree publish
-WO-NNN --target-worktree` under an admitted operator grant; it never merges
-either. An instance order may name an actor and the phrase for the opt-in
+WO-NNN --target-worktree` under an admitted operator grant, spelled
+`node scripts/worktree.mjs publish WO-NNN --target-worktree …` from the
+launchpad root (since v0.87.0 the hook admits only that spelling and
+withholds the `npm run worktree -- publish` form with an advisory naming
+it, WO-218 D062); it never merges either. An instance order may name an actor and the phrase for the opt-in
 `--draft` form at `verified`, which pushes the target worktree's working tree
 to that branch under a draft pull request the closed-phase publish reuses;
 core declares no draft step and no actor (WO-221). Release close of a target
@@ -670,6 +673,12 @@ review binds the clean target commit and its review gate. Reports are drafted
 in the launchpad; `resume target-records` copies the order and moves its
 decisions and filed reports into the target's `documentationRoot`, retaining
 control state, raw evidence and links in the launchpad.
+The moved-record readers check the ignored clone mapping in the running
+launchpad checkout, then the primary checkout whose Git directory is the
+common Git directory, then a worktree on `main`. The primary checkout may
+hold any branch; keeping the mapping there lets secondary update worktrees
+run their gates and regenerate meta artifacts. With no mapping in those
+places, the refusal names all three and the required arrangement.
 
 `dotln.config.json` at the launchpad root declares schema `version: 1` and the
 optional sections `roots`, `classes`, `repositories`, `build`, `release`, `kit`, `derivedOrders`, `portfolios` (§Declaring a portfolio), `historicalWorkOrders` and `contributions`. **Its absence
@@ -1148,10 +1157,17 @@ happen. The phrase is itself the operator request that authorizes the external
 CLI launch of the pinned reviewer and its refuter, and it adds no scheduler:
 nothing runs a review unless the operator opens a pass this way. A pass opened
 any other way may still consume an earlier review's surviving findings as one
-input among others. Consumptions: [[REVIEW-002 pass](../planning/entropy-review-002-2026-09-22.md),
+input among others. The subject is the launchpad; a review of a registered
+target repository at a recorded commit, or of a workstream's repositories,
+is WO-224's (`--repository <id>` and `--workstream WS-NNN`, filed by the
+2026-10-20 fork-answers pass), with the same pinned reviewer, refutation,
+receipts and disposition, paid once per repository. Consumptions: [[REVIEW-002 pass](../planning/entropy-review-002-2026-09-22.md),
 2026-09-22]; [[off-ramps pass](../planning/off-ramps-5s-entropy-2026-09-25.md)
 §9, 2026-09-25]; [[REVIEW-006 pass](../planning/entropy-review-006-2026-10-10.md),
-2026-10-10: one order from one finding, one product sentence from the other].
+2026-10-10: one order from one finding, one product sentence from the other];
+[[REVIEW-007 pass](../planning/entropy-review-007-2026-10-20.md),
+2026-10-20: no new order, both findings to WO-219 as steps, one of them a
+guard on the review machinery itself].
 
 Preconditions and inputs:
 
@@ -1455,7 +1471,13 @@ form itself (a settings key, a marker, a rules file) is the executor's,
 read from that page at execution, so a host that documents a different
 form costs no failed verification (WO-221's criteria 2 and 3 fixed a
 marker and a `config.toml` form the hosts do not support; VER-001 failed
-them as written and D028's operator amendment replaced them). Order size
+them as written and D028's operator amendment replaced them). One more
+[2026-10-20 pass]: a criterion that settles a boarded row by a case that
+fails without the fix names the control, the case run with only that
+row's fix reverted and recorded with both arms' exit codes in a replayable
+file, as WO-218's repair recorded its 91 controls after VER-001 found three
+named cases passing at the base; a case that also passes at the base, or
+with the fix reverted, settles nothing. Order size
 [2026-10-13 pass, operator direction]: the 2026-09-08 cut (one seam and one outcome per order,
 split again above four hours) was a correction for its time and no longer
 binds. The binding cost is now the full gate run and the fixed cycle every
@@ -1594,7 +1616,11 @@ Run main's helper with main as the working directory; retries use the same
 updated main after the subject is removed.
 
 Run the printed helper exactly as printed, with no redirect, prefix, `cd` or
-pipe. Its stdout is a summary; the full output is retained beside
+pipe. For a matching dispatched order whose helper suffix differs, the
+advisory names the expected `--publish` and `--dry-run` spellings and the
+mismatch class: extra words or whitespace, a shell operator or redirect, or
+non-canonical material flag quoting or value. The admitted forms stay the
+same. Its stdout is a summary; the full output is retained beside
 `release-close.json` and the summary names that report. A close is done when
 the tag and Release exist, no worktree for the order appears in
 `git worktree list`, its directory is gone and `git branch --list wo-NNN` is
@@ -1921,7 +1947,12 @@ host observation log, `docs/control/local/harness/<session digest>.jsonl`
 under the launchpad root (the digest is the SHA-256 of the session id),
 which a session reads as a file; a host denial after the hook's allow is
 journaled as a `HostPermissionDenied` row, and a prompt the operator
-answers leaves no row (the 2026-10-19 fork-requests pass §6). Claude ownership is held in an ignored per-order sidecar
+answers leaves no row (the 2026-10-19 fork-requests pass §6). A session that
+ran the npm spelling reads, at v0.85.0, the ordinary PreToolUse row with
+`effect: "lifecycle.run"` and `allowed: true` and no
+`registeredTargetAdmission` row, which is what the operator's instance
+observed for its WO-005 draft on 2026-10-20; since v0.87.0 it reads an
+`advisory` row naming the node spelling (the 2026-10-20 fork-answers pass §4). Claude ownership is held in an ignored per-order sidecar
 under the configured control root's `local/host-rules/`, preserving rules the
 operator already held; JSON settings contain no comment markers and Codex's
 TOML configuration contains no prefix-rule table. A `host-rules --rewrite`
