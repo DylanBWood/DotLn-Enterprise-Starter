@@ -395,6 +395,17 @@ where the decision is to act, and the observation that reopens it.
   the kit's own idempotent re-check, which the operator already ran once).
   Reopen: a later `plan start` or `plan failures` reads WO-012's close as
   withheld or absent, or the operator names what the denied call was.
+- **D13 Two clarifications of WS-001 from receipt 006, written after the
+  receipt into the workstream document, which is outside the judged
+  subject: a Salesman injects nothing, and a component that needs
+  `ElementRef` or `DOCUMENT` is a wrapper (the taxonomy table now agrees
+  with R1 and the lint); and an action's own success and failure, the
+  trinity of rule 8, are that action's outcomes and not mappings under rule
+  16, so the hygiene check does not count them.** Source: receipt 006's
+  known issues on WO-006 criterion 2 and WO-007 criterion 2 (§9.2).
+  Rejected: a lint selector that admits platform tokens under
+  `templates/` (two injection rules for one role). Reopen: a Salesman that
+  needs a platform token appears and a wrapper misnames it.
 
 Immaterial lenses for the document-only writes (purpose, record, workstream,
 orders, register, profile, ledger): the same as the previous passes'; no
@@ -459,6 +470,75 @@ order in one pass; its known issue on the vendor (activation without an
 operator-confirmed vendor) is met by D2. Receipt 001's WO-006 issues on
 unquoted `--include` patterns under zsh are carried: every grep in WO-006's
 criteria quotes its pattern. Receipt 005 named no issue on these orders.
+
+### 9.2 Known issues from receipt 006, by order
+
+The refutation (§14) returned `aligned-with-findings` with five known
+issues on WO-006, eight on WO-007 and no hold. WO-006 is frozen at the
+judged subject; each of its issues is a carry-in its executor meets inside
+the order's authority and records in `docs/evidence/WO-006/decisions.md`.
+WO-007's base is provisional, and the pass that sets it after WO-006 merges
+amends the order and pays its refutation (its own issue (h)), so its issues
+are that pass's amendments, listed here so nothing is re-derived.
+
+WO-006:
+
+- **(a) The scrub checks paths only (criterion 5).** Carry-in: at capture
+  (step 4, from the launchpad root) the executor runs
+  `node scripts/terms.mjs check <fixture>` on both fixtures and records the
+  result by file and line, the capture's available and unavailable source
+  list, and a read for hostnames, remote URLs and account identifiers; a
+  match stops the fixture until it is scrubbed.
+- **(b) The Salesman injection rule and the spec filter (criterion 2).**
+  The rule is settled (D13). Carry-in: Salesman specs use
+  `TestBed.createComponent` and `setInput` and call no `inject(`; the
+  executor records criterion 2's grep as written and, beside it, the same
+  grep with `--exclude='*.spec.ts'`; a spec that must reach an injector uses
+  `fixture.debugElement.injector.get` and the decision says so.
+- **(c) The inline-template rule against Prettier (criterion 1).**
+  Carry-in: before writing the rule the executor runs `npx prettier --check`
+  on a component in each form (WO-005-D020's probe showed Prettier keeps
+  the two newlines when they are written), the rule requires only the form
+  Prettier preserves, the fixture's control is a formatted file, and if the
+  two disagree on any file the rule becomes a check without autofix and
+  the decision says why.
+- **(d) The bundle reading (criterion 5, D002).** Carry-in: D002 records
+  the behavior libraries' bytes from the production build's stats after
+  step 9, as WO-005-D009 read Ramda's, separating `@angular/aria` and
+  `@angular/cdk` from the fixture, which is loaded from its own chunk or
+  excluded from the measure; step 2 records the evaluation's other readings
+  and names the deferral.
+- **(e) The fixture's date.** Carry-in: the fixture is named for its
+  capture date (`launchpad-board-<YYYY-MM-DD>.json`) and the decision and
+  the generator log record it; the Design's name is the planner's example.
+
+WO-007, amendments for the pass that sets its base:
+
+- **(a) Rule 16 and the trinity:** settled in WS-001 (D13); the amendment
+  restates criterion 2's fixture set (an own-tier dispatch other than an
+  action's outcomes) and step 8's expected count.
+- **(b) The hygiene check's scope:** resolve tiers from the `eventGroup`
+  source prefix criterion 1's spec asserts, and inspect `withCommand`
+  arguments and returned events as well as `dispatch(` calls.
+- **(c) Criterion 5's per-path grep:** drop it; the `setupWorker` and
+  `mockServiceWorker` clause carries the proof, and the handler's knobs and
+  fixtures are excluded by import.
+- **(d) Criterion 4:** the `setupWorker` count is at least 1 (the import and
+  the call); step 9 names the option as the installed declaration spells it
+  (`onUnhandledRequest` in MSW 3.x).
+- **(e) The shell's error surface:** `app.ts` injects `ErrorStore`, passes
+  `latest` down to the layout as an input and maps `dismiss` up, or the
+  shell gains a `containers/` directory; the amendment names one.
+- **(f) Degradation without a host:** record that only mocked builds render
+  the board until the platform's host exists, with the production build
+  showing the unavailable state naming the missing host (H2), or keep the
+  recorded board as a stated fallback; the amendment decides.
+- **(g) The flag:** the Design names one flag with a product purpose (the
+  sources footer is a candidate) and the element it toggles.
+- **(h) The second refutation's cost:** the base-setting pass counts it in
+  WO-007's Cost line; the kit route that resolves a base at activation stays
+  the upstream candidate (the 2026-10-18 pass's C7 (b)).
+- **(i) Deliverables:** "the board store, API and handlers".
 
 ## Candidates not filed, with their reopening conditions (section 10)
 
@@ -532,6 +612,8 @@ planning: observations and requests from the DotLn-Enterprise-Starter fork (dyla
 8. Naming, for the record: the fork's records now follow the platform's names (an agentic platform; the console; the actor board; UIFA roles) and read "agent orchestration" as one facet of the UI, per the operator's words of 2026-09-05 and 2026-10-21; the fork's D17 row in your map may read the same way.
 
 9. Confirmations by id: your 2026-10-20 items 1 (the qualification fields are WO-006's steps 15 and 16), 2 (the node spelling is in WO-006 to WO-008), 3 (observed at WO-012's close: three runs of the printed form) and 6 (WO-012 closed with the declaration).
+
+10. The document gate's wall-clock on this host at v0.88.0 (the fork's register row on the v0.86.0 scheduler, its second observation): npm run test:docs in the primary checkout on the planning branch, 12 passed and 2 failed (the two plan checks waiting on the receipt), 1,520.76 s of wall-clock with every task's own duration under 6 s and 14 fresh tasks; WO-012's step 4 recorded 15.35 s for the same gate on main on 2026-10-21, and the fork's previous pass recorded 304.86 s in a fresh worktree. The row's condition (a median above 30 s) has fired; say whether the lane rule serializes the gate's fixture tasks or waits on a holder on a 16-CPU host, and what the fork should measure next. The second run of this pass is recorded in its §14.
 ```
 
 ## 12. Write-backs
@@ -595,5 +677,37 @@ recorded here when they ran: `npm run meta`, `npm run plan -- followups
 --sync` and `--apply`, `npm run work-orders -- index` and `--check`,
 `node scripts/lineage.mjs index`, `node scripts/docs-check.mjs`,
 `npm run publication:check`, `npm run plan -- check`, `npm run test:docs`.
-The results, the refutation receipt and its known issues are appended
-below once they exist.
+
+Results at the subject commit `32c833d` (cost table) over `b3c8121` (the
+subject): `npm run meta` no budget breach; `followups --sync` minted seven
+rows (§10's C1 to C7) and `--apply` took thirteen dispositions in one batch
+(register revision `400e3b68…`); `work-orders index --check` PASS (both
+pages current); `lineage index` regenerated and current; `docs-check` PASS
+(1 product document; the three pre-existing advisories on filed records;
+three advisories on this document's own paragraphs repaired by paraphrase
+before the commit); `publication:check` reporting no editions declared;
+`plan check` waiting on the receipt. The document gate before the receipt:
+12 passed, 2 failed (the two plan checks), 1,520.76 s of wall-clock with 14
+fresh tasks whose own durations stayed under 6 s each (§11 item 10; the
+register's wall-clock row fired on this measurement and is carried to core;
+the next pass re-disposes it with core's answer).
+
+Refutation: one fresh `dotln-worker` (`claude-opus-5-5` by its definition
+and the host's system prompt; reasoning effort unknown, nothing reports it)
+on the canonical prompt from `npm run plan -- refute` at base `32c833d`,
+default pass scope (WO-006 and WO-007, plus the sequence; WO-008 carried by
+hash), dispatched at 05:17:22Z. The worker returned its judgment and
+statement in its final message, as briefed; the parent saved them as
+ignored local files and filed the receipt. Receipt
+[`2026-10-21-planning-24597b606f20e33d-006`](refutations/2026-10-21-planning-24597b606f20e33d-006.md),
+verdict `aligned-with-findings`, 0 holds, 13 known issues (§9.2),
+dispatch-to-file 930,024 ms (15.5 minutes; the worker's own run 728,784 ms,
+174,740 tokens, 16 tool uses). The worker's statement names what it read:
+the whole prompt and nothing else under the control lane; WO-006, WO-007
+and WS-001 in full and WO-008's header lines; the compiled console's
+collector and builds projection; read-only Git and shell commands only; no
+planning document, receipt, intake, operator record, ledger or decision
+record; no kit, npm, network, model or agent command; no write. The
+judged, committed and workspace subjects agree (`sha256:2486099d…`).
+After the receipt, the known-issues record and D13, the second document
+gate is recorded below.

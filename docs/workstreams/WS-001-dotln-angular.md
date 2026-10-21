@@ -209,7 +209,10 @@ an order's recorded decision, never silently.
     reusable), `app` (cross-cutting: flags, shell, errors). Mapping flows one
     way: `ui → data-access`, `ui → navigation`, `ui → app`,
     `data-access → navigation`, `data-access → app`, `app → navigation`.
-    Nothing maps to an event of its own tier. Every feature hooks the one event
+    Nothing maps to an event of its own tier. An action's own `actionSuccess`
+    and `actionFailure` (the trinity of rule 8) are that action's outcomes,
+    not mappings, and the hygiene check does not count them (receipt 006;
+    UI planning pass of 2026-10-21, D13). Every feature hooks the one event
     stream and therefore sees every event; by convention a feature reacts to
     its own `ui` events, the `data-access` events it owns and `app` events. An
     exception is written as `// hygiene-exception: <reason>` and CI counts and
@@ -249,7 +252,7 @@ know?**
 
 | Role      | Asks                   | Knows                        | May inject                                | Lives in                                                        |
 | --------- | ---------------------- | ---------------------------- | ----------------------------------------- | --------------------------------------------------------------- |
-| Salesman  | Does it look right?    | its own inputs               | platform tokens only (`ElementRef`, `DOCUMENT`) | `libs/shared/ui`, `libs/<app>/ui`                               |
+| Salesman  | Does it look right?    | its own inputs               | nothing; a component that needs `ElementRef` or `DOCUMENT` is a wrapper, which may inject platform tokens (receipt 006; UI planning pass of 2026-10-21, D13) | `libs/shared/ui`, `libs/<app>/ui`                               |
 | Connector | Does it fit together?  | other components             | nothing from the application              | `libs/shared/ui/composites`, `<feature>/composites`, `<feature>/layouts` |
 | Maven     | What does it mean?     | the view model and the state | facades, stores, router, tokens           | `<feature>/mappers`, `<feature>/containers`                     |
 

@@ -2,22 +2,22 @@
   "schemaVersion": 1,
   "subjectSourceHash": "sha256:7e820dd04a9cfa60aaa493fd9a46fa74a533fd1ed9df64b111a3972f54b62a8b",
   "acceptances": [],
-  "observedAt": "2026-10-21T05:16:52.183Z",
-  "subjectRevision": "b3c8121cbc9cbe4f015d1cdc57c466bc6760a7fc",
+  "observedAt": "2026-10-21T05:34:21.244Z",
+  "subjectRevision": "485678d055b27d5dc36816c26cc536611666f9fb",
   "rows": [
     {
       "workOrder": "WO-006",
-      "observedAt": "2026-10-21T05:16:52.183Z",
+      "observedAt": "2026-10-21T05:34:21.244Z",
       "metrics": null
     },
     {
       "workOrder": "WO-007",
-      "observedAt": "2026-10-21T05:16:52.183Z",
+      "observedAt": "2026-10-21T05:34:21.244Z",
       "metrics": null
     },
     {
       "workOrder": "WO-008",
-      "observedAt": "2026-10-21T05:16:52.183Z",
+      "observedAt": "2026-10-21T05:34:21.244Z",
       "metrics": null
     }
   ],
