@@ -11,12 +11,15 @@
     }
   },
   "release": { "displayName": "Launchpad" },
+  "contributions": { "operatorAuthor": "Dylan Wood <dylanwoodconsulting@gmail.com>" },
   "repositories": {
     "dotln-angular": {
       "baseBranch": "main",
       "worktreeParent": "..",
       "repositoryClass": "angular-nx-monorepo",
       "profile": "docs/repositories/dotln-angular.md",
+      "release": { "policy": "declared", "displayName": "DotLn Angular" },
+      "baseDisposablePolicy": "judge-only",
       "documentationRoot": "docs/dotln",
       "authorityProfile": {
         "authorityEnvelopeId": "target-orders",
@@ -28,9 +31,10 @@
           "shell.run",
           "repo.push",
           "pr.open",
-          "pr.thread.resolve"
+          "pr.thread.resolve",
+          "release.close"
         ],
-        "deniedEffects": ["package.publish", "release.close"],
+        "deniedEffects": ["package.publish"],
         "resourceLimits": { "writers": 1 },
         "requiredEvidence": [],
         "expiresAt": 4102444800000,

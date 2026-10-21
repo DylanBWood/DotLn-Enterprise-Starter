@@ -86,10 +86,11 @@ Branches: `wo-NNN` while an order runs (the launchpad creates it), `<type>/<slug
 for the published change (`worktree publish --target-worktree --branch`). Pull
 requests target `main`; the merge method is a merge commit whose message is
 the pull-request title (repository setting, operator-owned). A session never
-pushes to `main`, merges, tags or changes repository settings, except where
-an order the operator dispatched names the setting (WO-010). The
-registration permits `repo.push`, `pr.open` and `pr.thread.resolve` through the
-operator grant; everything else stays local. Draft at verified (planning
+pushes to `main` or merges; repository settings change only where an order
+the operator dispatched names the setting (WO-010). Target tags and Releases
+use the declared release-close route below. The registration permits
+`repo.push`, `pr.open`, `pr.thread.resolve` and `release.close` through the
+operator grant. Draft at verified (planning
 pass of 2026-10-18, D5): after the session that records
 `verification-result pass` has done so, it runs `worktree publish WO-NNN
 --target-worktree --draft --branch <type>/<slug> …`, which commits from the
@@ -128,80 +129,95 @@ record the applied policy.
 
 ## Release close
 
-Starter v0.87.0, which this fork takes inside starter v0.88.0 (update
-pull request #16, 2026-10-21), adds three things this section carries once
-WO-012 merges, and WO-012 adds a fourth beside them, the operator grant
-naming `release.close` for `dotln-angular`: a declared target
-release titled `DotLn Angular <tag>` (the first tag `v0.1.0`) with
-`release.close` in the allowed effects; `baseDisposablePolicy: "judge-only"`,
-under which the close keeps the base checkout's output after the same
-judgment and still refuses undeclared ignored material there; and
-`contributions.operatorAuthor`, the commit identity the kit's publish helper
-exempts from its sign-off rule. The first target close ran on 2026-10-20 for
-WO-005 under the default policy: it deleted `.nx` (119 files), `dist` (10)
-and `node_modules` (37,877) in the target worktree and found nothing to
-delete in the base checkout, which held no ignored file; nothing was
-reinstalled. The v0.87.0 README previews a named starter release through a
-non-tag ref (`git fetch --no-tags upstream refs/tags/vX.Y.Z:refs/upstream-releases/vX.Y.Z`),
-and the local release checks exclude an annotated starter tag by its
-message, so the named-tag deletion step below is no longer needed. Until
-WO-012 merges, the paragraphs below describe the registration as WO-011 left
-it.
+WO-012 declares `release: { "policy": "declared", "displayName": "DotLn Angular" }`
+on the `dotln-angular` registration under starter v0.88.0. A target order's
+release close creates an annotated tag and a GitHub Release titled
+`DotLn Angular <tag>`; the first is `DotLn Angular v0.1.0` while the target
+has no release baseline. The tag annotation opens with the same title. The
+registration allows `release.close`, and the existing operator grant
+`operator.dotln-angular.publication` names it in both `effects` and
+`operations`, alongside `repo.push`, `pr.open` and `pr.thread.resolve`.
+The release-close route is authorized to tag and publish the Release under
+the operator's direction of 2026-10-19; merging, repository settings and
+package publication remain with the operator. The close reads this
+launchpad's merged `main` registration and grant.
 
-WO-011 declares the class's disposable output. `loadConfig` composes it into
-the registration as this sorted list:
+Before any `dotln-angular` order starts, its authority must carry exactly
+one `**Target release classification:**` header naming `patch`, `minor` or
+`major` on the same line. First count every declaration with
+`grep -c '^\*\*Target release classification:\*\*' <order>`, then count recognized
+values with
+`grep -cE '^\*\*Target release classification:\*\*[[:space:]]*(patch|minor|major)([^[:alnum:]_]|$)' <order>`.
+Both counts must be 1. Counting only recognized values misses a second header
+with a malformed value. The kit checks recognized headers only at close;
+the before-start check also rejects that malformed-duplicate case, which is
+boarded in [WO-012-D008](../evidence/WO-012/decisions.md#wo-012-d008).
+The UI planning pass adds the headers to WO-006,
+WO-007 and WO-008 and WO-006's typed dependency on WO-012 before activation.
+
+`baseDisposablePolicy: "judge-only"` keeps the clone's base-checkout output
+after the same ignored-material and filesystem judgment. The target
+worktree's declared disposable output is still deleted at close. `loadConfig`
+composes the class's declaration into this sorted list, unchanged by WO-012:
 
 ```json
 [".angular",".nx","__screenshots__","coverage","dist","node_modules","out-tsc","playwright-report","test-output","test-results","tmp"]
 ```
 
-Starter v0.85.0 deletes ignored files beneath these paths in both the target
-worktree and the clone's base checkout at close, without moving them to
-scratch. The base checkout consequently needs `npm ci` again before use
-after its dependencies are deleted; its build caches must also regenerate.
 The match is relative to each checkout, not a directory-name glob:
 `test-output/result.json` is covered, while
 `apps/example/test-output/result.json` is not. The merged scaffold's build
 and Nx Playwright preset use paths under root `dist`; a later generator or
 configuration that introduces nested output must identify its exact path
 before extending the declaration. Never declare `apps/` or `libs/` as
-disposable.
+disposable. The preview and close receipt name the base policy and retained
+output; keeping dependencies and caches avoids the base reinstall required
+by the default `delete` policy.
 
 `.env`, `.env.*` and
 `apps/dotln/src/environments/environment.local.ts` remain undeclared.
-An undeclared ignored file refuses close; the base refusal may name only
-its top-level directory. WO-005's sessions remove the two generated local
-environment files from its target worktree after the checks that create
-them and record that removal (the 2026-10-19 planning pass §8.2). Local
-material in the base checkout remains the operator's responsibility.
+An undeclared ignored file refuses close in either checkout. A target order
+removes generated local environment files after the checks that create them
+and records the removal; local material in the base checkout remains the
+operator's responsibility. `judge-only` also refuses when retained base
+output collides with a path the fetched base tracks:
+`judge-only output collides with fetched tracked paths`. The base merge uses
+`--no-overwrite-ignore`. Move the output outside the conflicting paths before
+retrying; changing the registration back to `delete` is a separate reviewed
+policy change, not an automatic cleanup fallback.
 
-The registration has no `release` key and continues to deny `release.close`.
-Target publication therefore creates no target tag or Release. This was
-boarded pending a kit option that titles the Release `DotLn Angular`;
-starter v0.85.0 used the registration id and tag, and starter v0.87.0 admits
-the display name WO-012 declares. The planning pass's
-[target-name blocker](../planning/latest-upstream-2026-10-19.md#6-decisions-and-noop-records)
-reopens when that option exists.
+The launchpad's `contributions.operatorAuthor` declares the public author
+identity read from `git log --no-merges -1 --format='%an <%ae>' main`.
+The launchpad `worktree publish` helper compares every commit author in
+`origin/main..HEAD` with that declaration: the operator's own commits need
+no sign-off, while every other author needs a matching `Signed-off-by`
+trailer. Mutable Git configuration grants no exemption. WO-012's final
+review records the helper's `PASS contribution-signoff` lines before
+publication; the target publish route itself does not run that rule.
 
 The launchpad clone's shared Git configuration sets
 `remote.upstream.tagOpt` to `--no-tags`; this is local to that clone and is
 not transmitted by its pull request. Ordinary upstream fetches therefore
-do not follow the starter's tags. An explicit named-tag preview still
-creates its requested tag: for example, fetch with
-`git fetch --no-tags upstream tag v0.85.0`, run that release's preview, then
-delete that preview tag with `git tag -d v0.85.0`. Keep starter/core tags off this
-fork's `origin`. The readbacks are in
+do not follow the starter's tags. The current README's named-release
+preview uses a non-tag ref:
+`git fetch --no-tags upstream refs/tags/v0.88.0:refs/upstream-releases/v0.88.0`.
+Use that ref for the detached preview worktree and `preview --from`; no local
+tag is created or deleted. Keep starter/core tags off this fork's `origin`.
+The original setting readbacks are in
 [WO-011 evidence](../evidence/WO-011/README.md).
 
-WO-005's verified-phase draft publish is the first live observation of the
-kit's publication admission. Its session records the hook's decision from
-the session journal, whether the host prompted, and which interim trust
-entries were present. Under the 2026-10-19 planning decision D6 those entries
-stay for WO-005. An admitted hook decision is followed by a planning pass
-asking the operator to remove them; WO-006's draft then tests whether the
-host honors that admission without the entries. A prompt or denial there
-reopens the literal-host-rules fallback through a self order. WO-011 runs
-no live episode and makes no host-qualification claim.
+WO-006's verified-phase draft publish uses
+`node scripts/worktree.mjs publish WO-006 --target-worktree --draft` with its
+reviewed branch, title and body-file arguments, run from the launchpad root;
+the final publish uses the same helper without `--draft`. Raw `git`, `gh`
+and `npm` forms receive no registered-target admission. WO-005's draft was
+admitted with the interim trust entries present; the operator removed those
+entries on 2026-10-20, as the planning pass of 2026-10-21 records. WO-006's
+session records the exact helper invocation, the hook's decision and whether
+the host prompts or denies after that admission, with no private journal
+contents copied. A prompt or denial reopens the existing literal-host-rules
+fallback through a self order. WO-012 runs no live target episode and makes
+no host-qualification claim.
 
 ## Demonstrated architecture
 

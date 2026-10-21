@@ -1,4 +1,4 @@
-# WO-012 — Register starter v0.88.0: name DotLn-Angular's releases `DotLn Angular`, keep the base checkout's output at close, declare the operator's commit identity, grant the kit its release close and verify the instance
+# WO-012 — Register starter 0.88.0: name DotLn-Angular's releases `DotLn Angular`, keep the base checkout's output at close, declare the operator's commit identity, grant the kit its release close and verify the instance (v0.3.3)
 
 **Model:** any capable model; state the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

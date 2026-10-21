@@ -317,7 +317,7 @@ lint globs).
 | WO-004 | merged   | closed 2026-10-18; [evidence](../evidence/WO-004/README.md) |
 | WO-011 | merged   | merged as #12 and released as Launchpad v0.3.2 on 2026-10-20; [configuration, tag guard and gate evidence](../evidence/WO-011/README.md) (`docs/evidence/WO-011/`) |
 | WO-005 | merged   | merged in DotLn-Angular as #3 and its records as #13 on 2026-10-20; the first draft-at-verified publish and the first target close; [evidence](../evidence/WO-005/README.md) |
-| WO-012 | proposed | filed by the 2026-10-20 planning pass; evidence will land under `docs/evidence/WO-012/` |
+| WO-012 | proposed | declares `DotLn Angular` releases, grants `release.close`, retains judged base output and names the operator's public commit identity; [configuration, grant and gate evidence](../evidence/WO-012/README.md) (`docs/evidence/WO-012/`) |
 | WO-006 | proposed | filed by the 2026-10-18 planning pass; its base, vendor and release header are set by the UI planning pass |
 | WO-007 | proposed | filed by the 2026-10-18 planning pass |
 | WO-008 | proposed | filed by the 2026-10-18 planning pass |

@@ -3,9 +3,9 @@
     "grantId": "operator.dotln-angular.publication",
     "version": 1,
     "grantedBy": "operator",
-    "effects": ["repo.push", "pr.open", "pr.thread.resolve"],
-    "operations": ["repo.push", "pr.open", "pr.thread.resolve"],
+    "effects": ["repo.push", "pr.open", "pr.thread.resolve", "release.close"],
+    "operations": ["repo.push", "pr.open", "pr.thread.resolve", "release.close"],
     "repo": "dotln-angular",
-    "reason": "The operator's direction of 2026-10-17 (captured verbatim in ignored intake, SHA-256 4f14c6c09512576abfd701335f4dd8a347694ff23785724422cb8d943b5d67aa): target orders of this launchpad publish pull requests in DylanBWood/DotLn-Angular that the operator reads and merges. The grant admits pushing an order's branch (never main), opening its pull request and resolving its review threads; merging, tagging, repository settings and package publication stay with the operator."
+    "reason": "The operator's directions of 2026-10-17 (captured verbatim in ignored intake, SHA-256 4f14c6c09512576abfd701335f4dd8a347694ff23785724422cb8d943b5d67aa) and 2026-10-19 (SHA-256 01b3d03564fe733b600083183008b4fb46ee3350ae33469cd379121cc262a177): target orders of this launchpad publish pull requests in DylanBWood/DotLn-Angular that the operator reads and merges, and the kit names and makes DotLn Angular releases at a target order's close. The grant admits pushing an order's branch (never main), opening its pull request, resolving its review threads and release.close; merging, repository settings and package publication stay with the operator."
   }
 ]
