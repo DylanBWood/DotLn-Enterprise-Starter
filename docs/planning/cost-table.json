@@ -1,28 +1,28 @@
 {
   "schemaVersion": 1,
-  "subjectSourceHash": "sha256:5eefb37c0367ecd27b90ec4750e9db6b650a5a2bed2d38d24075a0e2d750c232",
+  "subjectSourceHash": "sha256:71889fc8a760f585b41bbe718c15c7505de8f067967a9c90ab466945a4ac9420",
   "acceptances": [],
-  "observedAt": "2026-10-20T20:29:57.867Z",
-  "subjectRevision": "31a2f0028ea840fcde0cac87474377ad0008d88b",
+  "observedAt": "2026-10-21T02:46:42.030Z",
+  "subjectRevision": "febec0456b91b206b99aa0f7363f0a2a0ef49b2a",
   "rows": [
     {
       "workOrder": "WO-012",
-      "observedAt": "2026-10-20T20:29:57.867Z",
+      "observedAt": "2026-10-21T02:46:42.030Z",
       "metrics": null
     },
     {
       "workOrder": "WO-006",
-      "observedAt": "2026-10-20T20:29:57.867Z",
+      "observedAt": "2026-10-21T02:46:42.030Z",
       "metrics": null
     },
     {
       "workOrder": "WO-007",
-      "observedAt": "2026-10-20T20:29:57.867Z",
+      "observedAt": "2026-10-21T02:46:42.030Z",
       "metrics": null
     },
     {
       "workOrder": "WO-008",
-      "observedAt": "2026-10-20T20:29:57.867Z",
+      "observedAt": "2026-10-21T02:46:42.030Z",
       "metrics": null
     }
   ],
@@ -570,6 +570,11 @@
       "worsening": [],
       "reopenCandidate": false,
       "planningCaptures": [
+        {
+          "pass": "planning-fc1c0ec6bba3073a",
+          "date": "2026-10-21",
+          "captures": 1
+        },
         {
           "pass": "planning-56357ae66bd3a7f6",
           "date": "2026-10-20",

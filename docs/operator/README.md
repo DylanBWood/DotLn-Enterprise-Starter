@@ -131,7 +131,13 @@ in one short question rather than guessing in either direction.
   entries, and the launchpad-local allow entry `Bash(node *)` with them,
   before WO-006's verified-phase draft publish, which under starter v0.87.0
   runs the node-spelled helper and is the test of the host honoring the
-  hook's admission alone (planning pass of 2026-10-20, D5).
+  hook's admission alone (planning pass of 2026-10-20, D5). The operator
+  removed the two entries and the local `Bash(node *)` entry on 2026-10-20
+  after that pass: core's fork-answers pass of 2026-10-20 read both files
+  for the three patterns and found none, and the 2026-10-21 planning pass
+  counted the patterns again and found none, so WO-006's verified-phase
+  draft publish is the first observation of the host after a hook admission
+  alone (planning pass of 2026-10-21, D4).
 - Releases: this launchpad's releases are named `Launchpad` from WO-009 on,
   continuing the fork's numbering: the next is `Launchpad v0.3.0`, so WO-009
   is classified minor (direction of 2026-10-19, capture SHA-256
@@ -142,12 +148,18 @@ in one short question rather than guessing in either direction.
   the kit carries a target display name, boarded as a blocker that reopens
   when it lands (same direction; planning pass of 2026-10-19, D4; the option
   of a declared release per order from the 2026-10-18 pass, D9, waits on
-  it). Starter v0.87.0, taken on 2026-10-20 as update pull request
-  #14, carries the target display name: WO-012 declares the
-  release policy and `DotLn Angular`, so DotLn-Angular's Releases and tags
-  read `DotLn Angular vX.Y.Z` from the first target order that closes after
-  it, and the blocker of 2026-10-19 is lifted (planning pass of 2026-10-20,
-  D2).
+  it). Starter v0.87.0 carries the target display name and reaches this
+  fork inside starter v0.88.0 (update pull request #16 of 2026-10-21; the
+  draft #14 of 2026-10-20 was closed as superseded): WO-012 declares the
+  release policy and `DotLn Angular` and names `release.close` in the
+  operator grant, so DotLn-Angular's Releases and tags read
+  `DotLn Angular vX.Y.Z` from the first target order that closes after it,
+  and the blocker of 2026-10-19 is lifted (planning passes of 2026-10-20,
+  D2, and 2026-10-21, D1 and D2). The grant rests on the direction of
+  2026-10-19 and the operator's correction of 2026-10-20 (capture SHA-256
+  `ed22827f76b72eeb7d52ba7802e1b8ad8ab8cbecf9bd01153517ab4f94384cb6`):
+  the releases are theirs to name, and the kit makes them once it can name
+  them; a pass does not ask again.
 - Pace: on 2026-10-18 the operator said they would wait for the platform's
   pending pull requests, take the starter update in the next planning pass,
   and only then activate more orders (planning pass of 2026-10-18, D4 and
@@ -160,6 +172,34 @@ in one short question rather than guessing in either direction.
   the operator merges the update and the pass, dispatches `resume: next` on
   WO-012, then opens the UI planning pass that sets WO-006's base and
   settles the component vendor (planning pass of 2026-10-20, D1, D2 and D7).
+  On 2026-10-20 the operator merged #15; #14 stayed a draft on a red
+  document gate. The 2026-10-21 pass took starter v0.88.0, which carries
+  core's repair of that gate, through update pull request #16 (ready, its
+  document gate green), closed #14 as superseded and amended WO-012 for
+  v0.88.0 and the refutation's known issues; the operator merges #16 and
+  the pass, dispatches `resume: next` on WO-012, then opens the UI planning
+  pass (planning pass of 2026-10-21, D1, D2 and D6).
+- Upstream updates: the operator asks for the outcome, the fork updated to
+  the latest starter, and leaves the pull-request mechanics to the pass
+  (refreshing an open update pull request or replacing it), which records
+  its choice and the reason (direction of 2026-10-21, capture SHA-256
+  `9b1e3fe9d122ddc83053b6a8b03ac46f2cb97f90eabd15e3404d3f6b2db913a4`;
+  planning pass of 2026-10-21, D1). After such a pass the operator merges
+  the update pull request and the planning pull request (either order
+  unless the handoff says otherwise), fast-forwards `main`, runs
+  `node scripts/bootstrap.mjs`, and starts the self order's worktree.
+- Lifecycle steps the operator runs: for every order, on the platform and
+  in this fork, the operator starts the worktree themselves with
+  `npm run worktree -- start WO-NNN <order path>` from `main`; opens a
+  session in that worktree and dispatches `resume: next`, then
+  `resume: verify` and `resume: final review` there; merges the pull
+  request; and dispatches `resume: release close` in a session on `main`,
+  which runs main's helper and removes the worktree. A session never claims
+  to do these for them, and an order's activation command is written for
+  the executor's check, not for a session on `main` to run. Recorded from
+  the operator's corrections of 2026-10-21 (capture SHA-256
+  `c4667a2702092238db7952862788a8ef39d83f70e09d75bf5e8ff251590e506b`;
+  planning pass of 2026-10-21, D10).
 - Harness: Claude Code at the operator's chosen effort; spawned workers at the
   kit's pinned model and effort.
 - No direct quotes: the operator's messages are never quoted in a committed

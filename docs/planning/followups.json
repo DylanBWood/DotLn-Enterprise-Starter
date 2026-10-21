@@ -612,6 +612,14 @@
           "reopenWhen": "WO-006's draft publish runs under the node spelling with the interim entries and the launchpad-local Bash(node *) entry absent, or the operator keeps them (then the test moves to WO-007).",
           "targets": [],
           "at": "2026-10-20T20:12:11.730Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "2026-10-21 latest-upstream-fixes planning pass, D4: the interim entries are gone, so WO-006's verified-phase draft publish under the node-spelled helper is the first observation of the host after a hook admission alone; whether the kit should install or print a trust entry at registration is decided from that observation.",
+          "reopenWhen": "WO-006's verified-phase draft publish records the host's behavior with the entries absent: a prompt, a denial or an admission carried by the hook alone (then this row settles or a self order turns on the literal fallback, FUP-98c85b750cb36bd4).",
+          "targets": [],
+          "at": "2026-10-21T02:23:19.886Z"
         }
       ]
     },
@@ -710,6 +718,14 @@
           "reopenWhen": "The operator removes the entries (then the operator record says so and this row and FUP-2479f6d32b2396a8 settle) or keeps them for WO-006.",
           "targets": [],
           "at": "2026-10-20T20:12:11.733Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-21 latest-upstream-fixes planning pass, D4: the operator removed the two interim autoMode.environment entries of 2026-10-18 and the launchpad-local Bash(node *) allow entry on 2026-10-20; observed by pattern count on 2026-10-21 (no autoMode entry naming this launchpad or DotLn-Angular, no Bash(node *), 11 local allow entries remaining) and by core's fork-answers pass on 2026-10-20; the operator record says so.",
+          "reopenWhen": "An entry naming this launchpad or DotLn-Angular reappears under autoMode.environment, or Bash(node *) reappears in the launchpad-local settings, before WO-006's verified-phase draft publish (then the host test moves to WO-007).",
+          "targets": [],
+          "at": "2026-10-21T02:23:19.881Z"
         }
       ]
     },
@@ -1170,6 +1186,54 @@
           "reopenWhen": "The operator opens the UI planning pass before WO-006, or directs WO-006 to proceed with its filed vendor.",
           "targets": [],
           "at": "2026-10-20T20:12:11.763Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4cbacbbeca2cefab",
+      "key": "candidate:docs/planning/latest-upstream-fixes-2026-10-21.md#candidates-not-filed-with-their-reopening-conditions-section-10::0ca7113139b8375aaff3c700b786f39b75a4aab3f3b7e4a9013141d4436c6eba",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "90940a7ccaf883ce0c2bae3451e0826f1d021e0511d038022cd19622138157b0",
+          "ref": "docs/planning/latest-upstream-fixes-2026-10-21.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C1 The Entropy Reducer on WS-001's repositories.",
+          "summary": "- **C1 The Entropy Reducer on WS-001's repositories.** Core's WO-224 (`npm run entropy -- review --repository <id> [<commit>]` and `--workstream WS-NNN`) freezes a registered clone at a recorded commit with the pinned reviewer, the blinded refutation, immutable receipts in the launchpad and dispositions into its register, one episode per member repository, about USD 5 to 10 and 15 minutes each. Reopen when a starter release carries WO-224: the operator opens `planning: entropy reducer` for WS-001's repositories, DotLn-Angular at its then `main`.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-21 latest-upstream-fixes planning pass, section 10 C1 and section 7 item 9: core filed WO-224 (the Entropy Reducer on a registered target or a workstream's repositories) after WO-080 and WO-219; starter v0.88.0 does not carry it, so nothing can run here yet.",
+          "reopenWhen": "A starter release carries core's WO-224 (then the operator opens planning: entropy reducer for WS-001's repositories, DotLn-Angular at its then main, one episode per member repository).",
+          "targets": [],
+          "at": "2026-10-21T02:23:19.889Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d771ffe939902128",
+      "key": "candidate:docs/planning/latest-upstream-fixes-2026-10-21.md#candidates-not-filed-with-their-reopening-conditions-section-10::7c4f7ff72a3e6cf8d4ecad7fde6e5c8b07aafb468bdaf95d6a56448123426b19",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "24ec9d2b3b3c8045eacef4031e5a6b0329ab0e561e4d495a8c8879ad75f29102",
+          "ref": "docs/planning/latest-upstream-fixes-2026-10-21.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C2 The document gate's wall-clock under the v0.86.0 scheduler.",
+          "summary": "- **C2 The document gate's wall-clock under the v0.86.0 scheduler.** One run of `npm run test:docs` at v0.88.0 took 304.86 s in a fresh secondary worktree, against 13 to 15 s at v0.85.0 on this instance, the time spent in lane waits while fixture tasks held the 8 derived lanes (§4). Reopen when `npm run plan -- conditions --slow` on `main` after #16 merges reports the document-gate median above 30 s, or WO-012's step 4 records a document gate above 60 s on `main`: then a self order or a request to core asks whether the lane rule serializes the document gate's fixture tasks on this host.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-21 latest-upstream-fixes planning pass, section 4 and D8: one run of npm run test:docs at v0.88.0 took 304.86 s in a fresh secondary worktree (every task under 1.4 s; the time in lane waits while fixture tasks held the 8 derived lanes), against 13 to 15 s at v0.85.0 on this instance; one run in that arrangement is not the median the document-gate condition names.",
+          "reopenWhen": "npm run plan -- conditions --slow on main after update pull request #16 merges reports the document-gate median above 30 s, or WO-012's step 4 records a document gate above 60 s on main (then a self order or a request to core asks whether the lane rule serializes the document gate's fixture tasks on this host).",
+          "targets": [],
+          "at": "2026-10-21T02:23:19.892Z"
         }
       ]
     }
