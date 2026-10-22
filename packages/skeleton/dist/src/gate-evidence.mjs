@@ -75,7 +75,7 @@ export function gateInstanceInputDigest(root) {
                 path
                     .split("/")
                     .some((part) => !part || part === "." || part === "..") ||
-                !/^(?:CLAUDE\.md|\.claude\/(?:hooks\/[^\n]+|agents\/dotln-worker\.md|settings\.json|skills\/dotln-[^/]+\/[^\n]+)|\.agents\/skills\/dotln-[^/]+\/[^\n]+|\.codex\/(?:config\.toml|hooks\.json|hooks\/[^\n]+))$/u.test(path))
+                !/^(?:CLAUDE\.md|\.claude\/(?:hooks\/[^\n]+|agents\/dotln-worker(?:-fable)?\.md|settings\.json|skills\/dotln-[^/]+\/[^\n]+)|\.agents\/skills\/dotln-[^/]+\/[^\n]+|\.codex\/(?:config\.toml|hooks\.json|hooks\/[^\n]+))$/u.test(path))
                 throw new Error("Instance harness input is not a generated surface");
             generated.add(path);
         }

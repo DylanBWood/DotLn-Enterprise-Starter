@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { compileFeedbackUnits, compileLoadout, lowerToHarness, mergeHarnessFragments, requireCompiled, seiriEnvironment, seiriLoadout, semanticHash, verifyHarnessBundle, assertOutsideWriteGrants, outsideWriteEffect, harnessPromptIntent, projectAuthorityInspection, } from "../src/index.js";
+import { compileFeedbackUnits, compileLoadout, lowerToHarness, mergeHarnessFragments, requireCompiled, seiriEnvironment, seiriLoadout, semanticHash, verifyHarnessBundle, assertOutsideWriteGrants, outsideWriteEffect, harnessPromptIntent, harnessPromptLine, projectAuthorityInspection, } from "../src/index.js";
 test("leading resume dispatch keeps following direction without matching quoted or continued phrases", () => {
     for (const phrase of [
         "next",
@@ -27,6 +27,28 @@ test("leading resume dispatch keeps following direction without matching quoted 
         "planning: refute full",
     ])
         assert.equal(harnessPromptIntent(prompt), prompt);
+});
+test("a pasted dispatch uses the first content line and keeps its original index", () => {
+    for (const [prompt, expected, index] of [
+        ["planning: fixture", "planning: fixture", 0],
+        ["\n\n  resume: next\nLater text", "resume: next", 2],
+        [
+            "\n```text\n\n planning: refute full fable 5.1\n```",
+            "planning: refute full",
+            3,
+        ],
+        [
+            "```\r\nresume: final review fable; direction\r\n```",
+            "resume: final review",
+            1,
+        ],
+        ["Example follows\nresume: next", "Example follows", 0],
+        ["> resume: next", "> resume: next", 0],
+        ["```\n```\nresume: next", "```", 1],
+    ]) {
+        assert.equal(harnessPromptIntent(prompt), expected);
+        assert.equal(harnessPromptLine(prompt).index, index);
+    }
 });
 const unit = (trigger) => ({
     unitId: `fixture-${trigger}`,
@@ -344,6 +366,39 @@ test("WO-187 a worker definition pins model and effort independently of its root
     }
     assert.notEqual(lower({ ...input, worker: { ...input.worker, effort: "low" } }).manifest
         .loadout.targetHash, bundle.manifest.loadout.targetHash);
+});
+test("multiple workers retain the default definition and bind each opt-in definition", () => {
+    const pinned = {
+        name: "dotln-worker",
+        model: "claude-opus-5-5",
+        effort: "xhigh",
+    };
+    const fable = {
+        name: "dotln-worker-fable",
+        model: "claude-fable-5-1",
+        effort: "xhigh",
+        optIn: true,
+    };
+    const single = lower({ ...program, worker: pinned });
+    const bundle = lower({ ...program, workers: [pinned, fable] });
+    assert.equal(bundle.files.find((file) => file.path === ".claude/agents/dotln-worker.md")
+        ?.contents, single.files.find((file) => file.path === ".claude/agents/dotln-worker.md")
+        ?.contents);
+    const added = bundle.files.find((file) => file.path === ".claude/agents/dotln-worker-fable.md");
+    assert.ok(added);
+    assert.match(added.contents, /^model: claude-fable-5-1$/m);
+    assert.match(added.contents, /^effort: xhigh$/m);
+    assert.match(added.contents, /only when the operator's planning: or resume: dispatch line names Fable/);
+    assert.equal(verifyHarnessBundle({
+        ...bundle,
+        files: bundle.files.map((file) => file === added
+            ? {
+                ...file,
+                contents: file.contents.replace("model: claude-fable-5-1", "model: inherit"),
+            }
+            : file),
+    }), false);
+    assert.throws(() => lower({ ...program, workers: [pinned, pinned] }), /unique worker names/);
 });
 test("WO-132 both harness roles receive identical duties and the shared instruction includes missing-hook residue", () => {
     const availableBundle = lower();
