@@ -11,3 +11,6 @@ export type ConsoleConnection = Readonly<{
  * arrives in the same terminal refusal shape with a non-2xx status. */
 export declare function invokeConsoleCommand(connection: ConsoleConnection, request: ConsoleCommandRequest, signal?: AbortSignal): Promise<ConsoleCommandResult>;
 export declare function readConsoleContract(connection: ConsoleConnection, signal?: AbortSignal): Promise<unknown>;
+/** Read-only projections; the consumer applies the kit's versioned schema. */
+export declare const readRuntimeStatus: (connection: ConsoleConnection, signal?: AbortSignal) => Promise<unknown>;
+export declare const readBoard: (connection: ConsoleConnection, signal?: AbortSignal) => Promise<unknown>;

@@ -38,6 +38,8 @@ const commitArgs = [
     "user.email=fixture@example.invalid",
     "-c",
     "commit.gpgsign=false",
+    "-c",
+    "maintenance.auto=false",
     "commit",
     "--quiet",
     "--allow-empty",

@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { appendFileSync, cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync, } from "node:fs";
+import { appendFileSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync, } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -73,7 +73,7 @@ test("WO-164 console collection spawns a constant number of processes and Git re
         write(`docs/control/orders/${id}.jsonl`, activation(id));
         write(`docs/final-reviews/${id}/RELEASE-NOTES.md`, `# ${id}\n`);
         git("add", "-A");
-        git("commit", "-q", "-m", `${id} merged`);
+        git("-c", "maintenance.auto=false", "commit", "-q", "-m", `${id} merged`);
         tagRelease(`v0.1.${index}`, manifest);
     };
     const lines = (path) => readFileSync(path, "utf8").split("\n").filter(Boolean);
@@ -117,7 +117,7 @@ test("WO-164 console collection spawns a constant number of processes and Git re
         order("WO-900", false);
         write("docs/control/resume.jsonl", activation("WO-900"));
         git("add", "-A");
-        git("commit", "-q", "-m", "fixture");
+        git("-c", "maintenance.auto=false", "commit", "-q", "-m", "fixture");
         for (let index = 1; index <= 4; index += 1)
             release(index, index % 2 === 0
                 ? {
@@ -244,18 +244,18 @@ test("WO-164 console collection spawns a constant number of processes and Git re
         git("checkout", "-q", "-b", "side");
         write("docs/final-reviews/WO-980/RELEASE-NOTES.md", "Side notes\n");
         git("add", "-A");
-        git("commit", "-q", "-m", "side notes");
+        git("-c", "maintenance.auto=false", "commit", "-q", "-m", "side notes");
         git("tag", "side-boundary");
         git("checkout", "-q", "main");
         for (let index = 0; index < 18; index += 1) {
             write("unrelated.txt", `${index}\n`);
             git("add", "-A");
-            git("commit", "-q", "-m", "unrelated change");
+            git("-c", "maintenance.auto=false", "commit", "-q", "-m", "unrelated change");
         }
         write("docs/final-reviews/WO-979/RELEASE-NOTES.md", "Main notes\n");
         write("docs/final-reviews/odd\n\tünicode.md", "Not release membership\n");
         git("add", "-A");
-        git("commit", "-q", "-m", "main notes");
+        git("-c", "maintenance.auto=false", "commit", "-q", "-m", "main notes");
         git("merge", "-q", "--no-ff", "side", "-m", "merge side notes");
         tagRelease("v0.1.9", { release: { previousRelease: "side-boundary" } });
         const many = await census();
@@ -311,7 +311,7 @@ test("WO-164 console collection spawns a constant number of processes and Git re
         // append-only comparison used by the individual reader.
         write("docs/control/orders/WO-911.jsonl", activation("WO-911").replace('"schemaVersion":1', '"schemaVersion": 1'));
         git("add", "-A");
-        git("commit", "-q", "-m", "invalid control rewrite");
+        git("-c", "maintenance.auto=false", "commit", "-q", "-m", "invalid control rewrite");
         tagRelease("v0.1.10");
         assert.throws(listCold, /control log is not append-only/);
         git("tag", "-d", "v0.1.10");
@@ -332,4 +332,96 @@ test("WO-164 console collection spawns a constant number of processes and Git re
                 process.env[key] = value;
         rmSync(base, { recursive: true, force: true });
     }
+});
+test("WO-225 segmented instances and configured roots preserve orders and control actors", async (t) => {
+    const savedLaunchpad = process.env["DOTLN_LAUNCHPAD"];
+    t.after(() => {
+        if (savedLaunchpad === undefined)
+            delete process.env["DOTLN_LAUNCHPAD"];
+        else
+            process.env["DOTLN_LAUNCHPAD"] = savedLaunchpad;
+    });
+    for (const roots of [
+        {},
+        { control: "records/control" },
+        { docs: "records", control: "control-plane", orders: "segments" },
+    ]) {
+        const repo = mkdtempSync(join(tmpdir(), "dotln-control-segments-"));
+        try {
+            cpSync(join(root, "scripts"), join(repo, "scripts"), { recursive: true });
+            installBeaconFixture(repo);
+            process.env["DOTLN_LAUNCHPAD"] = repo;
+            writeFileSync(join(repo, "dotln.config.json"), JSON.stringify({ version: 1, roots }));
+            const docs = "docs" in roots ? roots.docs : "docs";
+            const control = "control" in roots ? roots.control : `${docs}/control`;
+            const orders = "orders" in roots ? roots.orders : `${control}/orders`;
+            mkdirSync(join(repo, orders), { recursive: true });
+            mkdirSync(join(repo, `${docs}/work-orders`), { recursive: true });
+            for (const id of ["WO-901", "WO-902"]) {
+                const workOrderPath = `${docs}/work-orders/${id}-fixture.md`;
+                writeFileSync(join(repo, orders, `${id}.jsonl`), JSON.stringify({
+                    schemaVersion: 1,
+                    type: "WorkOrderActivated",
+                    workOrderId: id,
+                    workOrderPath,
+                }) + "\n");
+                writeFileSync(join(repo, workOrderPath), `# ${id} — fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n**Objective:** fixture.\n`);
+            }
+            assert.equal(existsSync(join(repo, control, "resume.jsonl")), false);
+            const sources = await collectSources(repo);
+            assert.equal(sources.controlLog?.status, "available");
+            assert.equal(sources.controlStatus?.status, "available", JSON.stringify(sources.controlStatus));
+            assert.equal(sources.controlStatus?.ref, "resume:status--json");
+            const sections = projectBoard(sources).panels.flatMap((panel) => panel.sections);
+            assert.deepEqual(sections
+                .find((section) => section.id === "orders")
+                .rows.map((row) => row.title), ["WO-901", "WO-902"]);
+            assert.ok(sections.find((section) => section.id === "control-actors").rows
+                .length > 0);
+            if (sources.controlLog?.status === "available")
+                assert.deepEqual(sources.controlLog.value.map((source) => source.ref), [`${orders}/WO-901.jsonl`, `${orders}/WO-902.jsonl`]);
+            // A legacy log remains optional, but when present it participates in the
+            // same order census. A lying aggregate cannot bypass that cross-check.
+            mkdirSync(join(repo, control), { recursive: true });
+            writeFileSync(join(repo, control, "resume.jsonl"), "");
+            writeFileSync(join(repo, "scripts/resume.mjs"), `if (process.argv.includes('--all')) console.log(JSON.stringify([{workOrder:'WO-999'}])); else process.exit(9);`);
+            const wrong = await collectSources(repo);
+            assert.equal(wrong.controlLog?.status, "available");
+            assert.equal(wrong.controlStatus?.status, "unavailable");
+        }
+        finally {
+            rmSync(repo, { recursive: true, force: true });
+        }
+    }
+});
+test("WO-225 configured control refuses an escaped parent symlink like the canonical reader", async (t) => {
+    const base = mkdtempSync(join(tmpdir(), "dotln-control-escape-"));
+    t.after(() => rmSync(base, { recursive: true, force: true }));
+    const repo = join(base, "repo");
+    const outside = join(base, "outside");
+    mkdirSync(repo);
+    mkdirSync(join(outside, "control/orders"), { recursive: true });
+    writeFileSync(join(repo, "dotln.config.json"), JSON.stringify({
+        version: 1,
+        roots: { control: "records/control" },
+    }));
+    writeFileSync(join(outside, "control/orders/WO-901.jsonl"), JSON.stringify({
+        schemaVersion: 1,
+        type: "WorkOrderActivated",
+        workOrderId: "WO-901",
+        workOrderPath: "docs/work-orders/WO-901-fixture.md",
+    }) + "\n");
+    symlinkSync(outside, join(repo, "records"), "dir");
+    const { readControl } = await import(pathToFileURL(join(root, "scripts/lib/control-store.mjs")).href);
+    assert.throws(() => readControl(repo), /contained regular control segment/u);
+    const sources = await collectSources(repo);
+    assert.deepEqual(sources.controlLog, {
+        ref: "control:canonical-segments",
+        status: "unavailable",
+        reason: "not readable",
+    });
+    assert.equal(sources.controlStatus?.status, "unavailable");
+    const board = JSON.stringify(projectBoard(sources));
+    assert.equal(board.includes(outside), false);
+    assert.equal(board.includes("WO-901"), false);
 });

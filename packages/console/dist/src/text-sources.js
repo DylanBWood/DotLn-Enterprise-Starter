@@ -206,7 +206,12 @@ export function parseConstellation(text) {
             return {
                 key,
                 line: index + 1,
-                values: { observation: parts[1], age: parts[2] },
+                values: {
+                    observation: parts[1],
+                    // Refusals append the private directory after the reason. Only the
+                    // reason belongs in the board; ordinary age text stays unchanged.
+                    age: parts[1] === "refused" ? parts[2].split(": ", 1)[0] : parts[2],
+                },
             };
         if (parts.length === 7)
             return {

@@ -31,6 +31,7 @@ export declare class ConsoleLoopback {
     private readonly store;
     private readonly root;
     private readonly now;
+    private readonly readBoard?;
     private readonly server;
     private readonly token;
     private readonly directory;
@@ -41,7 +42,7 @@ export declare class ConsoleLoopback {
     private envelope?;
     private closing;
     private closed?;
-    constructor(store: ResidentStore, root: string, now?: () => number);
+    constructor(store: ResidentStore, root: string, now?: () => number, readBoard?: (() => Promise<Buffer>) | undefined);
     start(): Promise<Connection>;
     /** Stops admission, interrupts in-flight commands, records their results
      * and stops serving. Repeated calls share one shutdown. */

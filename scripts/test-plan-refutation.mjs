@@ -137,6 +137,8 @@ const commit = (repo, label, date = "2030-01-02T00:00:00Z") => {
       "user.name=Plan Fixture",
       "-c",
       "user.email=fixture@example.invalid",
+      "-c",
+      "maintenance.auto=false",
       "commit",
       "-qm",
       label,
@@ -715,6 +717,7 @@ export async function fixtures() {
   );
   const check = (label, run) => test(label, run);
   try {
+    await laneConditionFixtures();
     await check(
       "WO-178 malformed decision errors name the record without parser excerpts",
       async () => {
@@ -741,6 +744,8 @@ export async function fixtures() {
           "user.name=Fixture",
           "-c",
           "user.email=fixture@example.test",
+          "-c",
+          "maintenance.auto=false",
           "commit",
           "-qm",
           "Malformed fixture",
@@ -915,7 +920,13 @@ export async function fixtures() {
           read(root, "docs/control/reader-profiles.json"),
         );
         runGit(repo, ["add", "docs/control/reader-profiles.json"]);
-        runGit(repo, ["commit", "-qm", "Fixture reader profile"]);
+        runGit(repo, [
+          "-c",
+          "maintenance.auto=false",
+          "commit",
+          "-qm",
+          "Fixture reader profile",
+        ]);
         runGit(repo, [
           "tag",
           "-a",
@@ -949,7 +960,13 @@ export async function fixtures() {
           repo,
         );
         runGit(repo, ["add", "docs/publication/reader-scores.jsonl"]);
-        runGit(repo, ["commit", "-qm", "Fixture reader score"]);
+        runGit(repo, [
+          "-c",
+          "maintenance.auto=false",
+          "commit",
+          "-qm",
+          "Fixture reader score",
+        ]);
         const before = await plan(["start", "operator-record"], repo);
         assert.equal(before.readerScores.figures[0].found, 1);
         assert.equal(before.readerScores.figures[0].questions, 4);
@@ -1970,6 +1987,68 @@ export async function fixtures() {
       },
     );
     await check(
+      "WO-226 direct receipts record the selected worker type without inventing effective settings",
+      async () => {
+        for (const workerType of [
+          "dotln-worker",
+          "dotln-worker-fable",
+          "codex-spawn-agent",
+        ]) {
+          const repo = makeRepo(parent, `worker-type-${workerType}`);
+          await beginDirectRefutation(repo, { scope: "full" });
+          const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
+          const resultPath = "docs/control/local/result.json";
+          const statementPath = "docs/control/local/statement.txt";
+          write(repo, resultPath, JSON.stringify(cannedGoalReview(subject)));
+          write(
+            repo,
+            statementPath,
+            "Synthetic canonical subject review; worker type is parent-attested.",
+          );
+          await assert.rejects(
+            fileDirectRefutation(repo, resultPath, statementPath, {
+              commit: false,
+              workerType: "unregistered-worker",
+            }),
+            /worker type must be/,
+          );
+          const filed = await fileDirectRefutation(
+            repo,
+            resultPath,
+            statementPath,
+            {
+              commit: false,
+              ...(workerType !== "dotln-worker" ? { workerType } : {}),
+            },
+          );
+          assert.equal(filed.workerType, workerType);
+          const receipt = (await readReceipts(repo)).at(-1);
+          assert.equal(receipt.episode.workerType, workerType);
+          assert.equal(receipt.episode.model, "unknown");
+          assert.equal(receipt.episode.effort, "unknown");
+          assert.ok(
+            read(repo, filed.receipt).includes(
+              `Worker type: \`${workerType}\``,
+            ),
+          );
+          assert.match(
+            read(repo, filed.receipt),
+            /parent-attested launch type/,
+          );
+          await assert.rejects(
+            validateReceipt(
+              repo,
+              rehash({
+                ...receipt,
+                episode: { ...receipt.episode, workerType: "invented" },
+              }),
+            ),
+            /provenance/,
+          );
+        }
+      },
+    );
+    await check(
       "direct-session frozen result round-trips and gates without invented launch provenance",
       async () => {
         const repo = makeRepo(parent, "direct-pass");
@@ -2019,6 +2098,7 @@ export async function fixtures() {
         const receipt = await writeDirectReceipt(repo);
         for (const change of [
           { kind: "other" },
+          { workerType: "other" },
           { harness: "other" },
           { harnessVersion: "claimed-version" },
           { model: "claimed-model" },
@@ -2600,6 +2680,40 @@ export async function fixtures() {
       },
     );
     await check(
+      "WO-227 criterion 5: plan check names, as an advisory, the execution-plan paths of a target order that carry a review word or a launchpad identifier, and none for a launchpad order",
+      async () => {
+        const repo = makeRepo(parent, "target-paths");
+        const executionPlan =
+          "\n**Execution plan (observed at the base):**\n\n1. `fixtures/gem-board.json` (new) and `docs/WO-006-notes.md`, checked with `npm test -- --only fixture` and `validateOutwardVocabulary`.\n2. `src/parser.ts`: the change.\n";
+        write(
+          repo,
+          orderPath("WO-901"),
+          order("WO-901").replace(
+            "**Effort:** executor any; verifier any; reviewer any.\n",
+            `**Effort:** executor any; verifier any; reviewer any.\n**Repository:** target @ ${"a".repeat(40)}\n`,
+          ) + executionPlan,
+        );
+        write(repo, orderPath("WO-902"), order("WO-902") + executionPlan);
+        write(
+          repo,
+          "docs/control/outward-vocabulary.json",
+          JSON.stringify({ types: ["fix"], reviewTerms: ["gem", "mask"] }),
+        );
+        commit(repo, "a target order naming paths");
+        await writeDirectReceipt(repo);
+        commit(repo, "record reviewed plan");
+        const result = await plan(["check"], repo);
+        assert.deepEqual(result.advisories, [
+          "advisory: WO-901 names fixtures/gem-board.json in its execution plan, which carries the review word gem; rename the file or list the word deliberately before a draft publish meets it",
+          "advisory: WO-901 names docs/WO-006-notes.md in its execution plan, which carries the launchpad identifier WO-006; rename the file before a draft publish meets it",
+        ]);
+        assert.doesNotMatch(
+          JSON.stringify(result.advisories),
+          /WO-902|parser/u,
+        );
+      },
+    );
+    await check(
       "AC3 local-terms phrases across separators and lines, private diagnostics, and atomic receipt refusal",
       async () => {
         const repo = makeRepo(parent, "terms");
@@ -2619,23 +2733,23 @@ export async function fixtures() {
             { name: "first", text: "Wibble" },
             { name: "second", text: "Sprocket Cloud" },
           ]),
-          { status: "present" },
+          { status: "present", terms: 3 },
         );
-        for (const [text, line] of [
-          ["Synthetic-Forbidden", 1],
-          ["Synthetic\nForbidden", 1],
-          ["Synthetic For bid den", 1],
-          ["Wibble Sprocket Cloud", 1],
-          ["wibbleSprocketCloud", 1],
-          ["ＷＩＢＢＬＥ－ＳＰＲＯＣＫＥＴ　ＣＬＯＵＤ", 1],
-          ["prefix\nWibble\r\nSprocket Cloud", 2],
-          ["Big Fizzle Widget Cloud", 1],
-          ["Big Fizzle-\nWidget\tCloud", 1],
+        for (const [text, line, endLine] of [
+          ["Synthetic-Forbidden", 1, 1],
+          ["Synthetic\nForbidden", 1, 2],
+          ["Synthetic For bid den", 1, 1],
+          ["Wibble Sprocket Cloud", 1, 1],
+          ["wibbleSprocketCloud", 1, 1],
+          ["ＷＩＢＢＬＥ－ＳＰＲＯＣＫＥＴ　ＣＬＯＵＤ", 1, 1],
+          ["prefix\nWibble\r\nSprocket Cloud", 2, 3],
+          ["Big Fizzle Widget Cloud", 1, 1],
+          ["Big Fizzle-\nWidget\tCloud", 1, 2],
         ]) {
           assert.throws(
             () => checkLocalTerms(repo, [{ name: "fixture", text }]),
             {
-              message: `local-terms list present; refused ${JSON.stringify([{ file: "fixture", line, count: 1 }])}`,
+              message: `local-terms list present; refused ${JSON.stringify([{ file: "fixture", line, endLine, count: 1, mode: "review" }])}`,
             },
           );
         }
@@ -2649,7 +2763,7 @@ export async function fixtures() {
             ]),
           {
             message:
-              'local-terms list present; refused [{"file":"fixture","line":2,"count":2},{"file":"fixture","line":4,"count":1}]',
+              'local-terms list present; refused [{"file":"fixture","line":2,"endLine":2,"count":2,"mode":"review"},{"file":"fixture","line":4,"endLine":4,"count":1,"mode":"review"}]',
           },
         );
         for (const reason of [
@@ -2668,7 +2782,7 @@ export async function fixtures() {
             }),
             {
               message:
-                'local-terms list present; refused [{"file":"validated-result","line":1,"count":1}]',
+                'local-terms list present; refused [{"file":"validated-result","line":1,"endLine":1,"count":1,"mode":"review"}]',
             },
           );
           assert.deepEqual(await readReceipts(repo), []);
@@ -6622,4 +6736,158 @@ if (isMainModule(import.meta.url)) {
     console.error(error);
     process.exitCode = 1;
   }
+}
+
+export async function laneConditionFixtures() {
+  await test("document conditions read each child row, exclude lane wait and keep failed contention", async () => {
+    const {
+      measureDocumentGates,
+      documentGateMeasurement,
+      planningConditions,
+      renderPlanningConditions,
+      CONDITION_TABLE,
+    } = await import("./lib/planning-conditions.mjs");
+    let time = Date.parse("2030-01-01T00:00:00Z"),
+      ordinal = 0;
+    const checks = [];
+    const row = (wall, wait, exitCode = 0, planningSampleId) => ({
+      planningSampleId,
+      checkId: "npm run test:docs",
+      gateSelection: "document",
+      executed: true,
+      exitCode,
+      durationMs: wall,
+      evidenceRef: `sample:${ordinal}`,
+      recordedAt: new Date(time).toISOString(),
+      hostLaneWait: {
+        wallMs: wait,
+        byRelation: {
+          "another-checkout": wait,
+          "this-checkout": 0,
+          unknown: 0,
+        },
+        holders: [],
+      },
+      taskTimeline: [{ name: "docs-check", exitCode: 0, durationMs: 3000 }],
+    });
+    const context = { remaining: () => 300_000 };
+    const options = {
+      now: () => time,
+      clock: () => time,
+      readChecks: () => checks,
+      run: (_root, args) => {
+        const wall = 100_000 + ordinal++ * 10_000;
+        time += wall;
+        checks.push(row(wall, wall - 10_000, 0, args.at(-1)));
+        checks.push(row(wall, 0, 0, "unrelated-concurrent-child"));
+      },
+    };
+    const samples = measureDocumentGates(root, context, options);
+    assert.ok(samples.every((sample) => sample.contended));
+    const measurement = documentGateMeasurement(samples);
+    assert.equal(measurement.wallMedianS, 110);
+    assert.equal(measurement.executionMedianS, 10);
+    const result = await planningConditions(root, {
+      slow: true,
+      table: CONDITION_TABLE.filter((row) => row.id === "document-gate"),
+      measure: async () => measurement,
+    });
+    assert.equal(result.rows[0].holds, false);
+    assert.match(
+      renderPlanningConditions(result),
+      /wall median 110 s; execution-only median 10 s; contended samples 3\/3/,
+    );
+    assert.ok(result.host.lanes);
+    const stale = measureDocumentGates(root, context, {
+      ...options,
+      run: () => {
+        time += 1000;
+      },
+    });
+    assert.equal(stale[0].contended, null);
+    assert.equal(stale[0].hostLaneWait, undefined);
+    assert.match(stale[0].unavailable, /did not record/);
+    const stopped = measureDocumentGates(root, context, {
+      ...options,
+      run: (_root, args) => {
+        time += 300_000;
+        checks.push(row(300_000, 290_000, 1, args.at(-1)));
+        throw new Error("ETIMEDOUT");
+      },
+    });
+    assert.equal(stopped.length, 1, "an unavailable sample is not retried");
+    assert.equal(stopped[0].contended, true);
+    assert.equal(stopped[0].hostLaneWait.wallMs, 290_000);
+    assert.equal(documentGateMeasurement(stopped).value, null);
+    assert.match(stopped[0].unavailable, /ETIMEDOUT/);
+  });
+
+  await test("planning reuse drops lane attribution and timeline fields from carried tasks", async (t) => {
+    const repo = mkdtempSync(join(tmpdir(), "dotln-plan-lane-reuse-"));
+    t.after(() => rmSync(repo, { recursive: true, force: true }));
+    runGit(repo, ["init", "-q", "-b", "main"]);
+    writeFileSync(join(repo, "README.md"), "Fixture\n");
+    runGit(repo, ["add", "."]);
+    runGit(repo, [
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "-c",
+      "commit.gpgsign=false",
+      "commit",
+      "-qm",
+      "Fixture",
+    ]);
+    const { recordGateChecks, gateCodeIdentity, gateTreeHash } =
+      await import("./lib/gate-evidence.mjs");
+    const { coveringTaskResults } = await import("./lib/gate-reuse.mjs");
+    const at = new Date().toISOString(),
+      codeIdentity = gateCodeIdentity(repo);
+    recordGateChecks(repo, [
+      {
+        checkId: "npm test",
+        codeIdentity,
+        treeHash: gateTreeHash(repo),
+        recordedAt: at,
+        evidenceRef: "fixture",
+        executed: true,
+        exitCode: 0,
+        durationMs: 10,
+        requiredSuites: ["alpha"],
+        taskTimeline: [
+          {
+            name: "alpha",
+            startedAt: at,
+            finishedAt: at,
+            executed: true,
+            exitCode: 0,
+            durationMs: 10,
+            hostLaneWaitMs: 4,
+            hostLaneWait: { wallMs: 4 },
+            hostLaneWaitObservations: [],
+            hostLaneWaitRelations: [],
+            laneWaitMs: 4,
+            gapMs: 1,
+          },
+        ],
+      },
+    ]);
+    const { results } = await coveringTaskResults(
+      repo,
+      "npm test",
+      [{ name: "alpha" }],
+      codeIdentity,
+    );
+    assert.equal(results.get("alpha")?.reused, true);
+    for (const key of [
+      "hostLaneWaitMs",
+      "hostLaneWait",
+      "hostLaneWaitObservations",
+      "hostLaneWaitRelations",
+      "laneWaitMs",
+      "gapMs",
+    ])
+      assert.equal(results.get("alpha")[key], undefined);
+  });
 }

@@ -26,7 +26,7 @@ export function actorFixture(kind = "writer") {
     writeFileSync(join(launchpad, "fixture.txt"), "baseline\n");
     writeFileSync(join(launchpad, "fixture-test.mjs"), "import assert from 'node:assert/strict'; import {readFileSync} from 'node:fs'; assert.equal(readFileSync('fixture.txt','utf8'), 'resident changed this fixture\\n');\n");
     git(launchpad, "add", "-A");
-    git(launchpad, "commit", "-m", "fixture baseline");
+    git(launchpad, "-c", "maintenance.auto=false", "commit", "-m", "fixture baseline");
     git(launchpad, "worktree", "add", "-b", "writer", cwd);
     git(cwd, "config", "user.name", "Fixture");
     git(cwd, "config", "user.email", "fixture@example.invalid");

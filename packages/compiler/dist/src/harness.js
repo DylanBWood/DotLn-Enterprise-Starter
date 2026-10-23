@@ -19,15 +19,30 @@ export function showHarnessAdvisory(sessionId, event, cause, claimMarker) {
         return true;
     }
 }
-/** A dispatch may lead a longer message, separated from its direction by a
- * newline or semicolon. Quoted phrases and word continuations are prose. */
+/** Read only the first content line, allowing blanks and one opening paste
+ * fence. A later quoted dispatch never becomes the operator's instruction. */
+export function harnessPromptLine(prompt) {
+    const lines = (prompt ?? "").split(/\r?\n/u);
+    let index = 0;
+    while (index < lines.length && !lines[index].trim())
+        index++;
+    if (/^\s*```[^`]*$/u.test(lines[index] ?? "")) {
+        index++;
+        while (index < lines.length && !lines[index].trim())
+            index++;
+    }
+    return { text: (lines[index] ?? "").trim(), index };
+}
+/** A dispatch may lead following direction after a semicolon or newline.
+ * The worker opt-in is a selection, not part of the lifecycle action. */
 export function harnessPromptIntent(prompt) {
-    const text = prompt?.trim() ?? "";
-    return (/^(resume: (?:next|fix|verify|final review|release close|status|times))(?=$|[ \t]*(?:;|\r?\n))/u.exec(text)?.[1] ?? text);
+    const text = harnessPromptLine(prompt).text;
+    return (/^((?:resume: (?:next|fix|verify|final review|release close|status|times)|planning: refute(?: full)?))(?:[ \t]+fable(?:[ \t]+5\.1)?)?(?=$|[ \t]*;)/u.exec(text)?.[1] ?? text);
 }
 /** Source for the emitted stale-main recovery hook. Generated hook text is
  * data; the compiler never loads Node built-ins or executes this recovery. */
 const releaseCloseRecovery = `async function recoverReleaseClose(root, hook, input, event) {
+    const harnessPromptLine = (${harnessPromptLine.toString()});
     if (event !== "UserPromptSubmit" ||
         (${harnessPromptIntent.toString()})(input?.prompt) !== "resume: release close" ||
         process.env.COPILOT_PROJECT_DIR ||
@@ -80,6 +95,10 @@ const releaseCloseRecovery = `async function recoverReleaseClose(root, hook, inp
         const { withWriterReservationLock, writerTeardownBlocker } = await import(pathToFileURL(join(root, "packages/skeleton/src/writer-teardown.mjs"))
             .href);
         const { activeGateRuns } = await import(pathToFileURL(join(root, "packages/skeleton/src/gate-evidence.mjs")).href);
+        const { isKitRoot } = await import(pathToFileURL(join(root, "packages/skeleton/src/runtime-inputs.mjs")).href);
+        const preparation = isKitRoot(root)
+            ? [process.execPath, [join(root, "scripts/lib/release-kit-runtime.mjs"), root]]
+            : ["npm", ["run", "build", "--silent"]];
         withWriterReservationLock(root, () => {
             const writer = writerTeardownBlocker(root);
             if (writer)
@@ -87,7 +106,7 @@ const releaseCloseRecovery = `async function recoverReleaseClose(root, hook, inp
             if (activeGateRuns(root).length)
                 throw new Error("active gate; runtime preparation withheld");
             for (const [command, args] of [
-                ["npm", ["run", "build", "--silent"]],
+                preparation,
                 [process.execPath, [join(root, "scripts/harness.mjs"), "emit"]],
             ]) {
                 const prepared = run(command, [...args]);
@@ -226,6 +245,7 @@ export function assertHarnessProfile(profile) {
             !capability.evidence.startsWith("docs/intake/"), "public observation reference");
         ensure(capability.available || verificationLine(capability.reason ?? ""), "unavailable capability must explain why");
     }
+    ensure(profile.skills.format === "agent-skills", "declared Agent Skills format");
     ensure(repositoryPath(profile.skills.root) &&
         repositoryPath(profile.settings.path) &&
         repositoryPath(profile.instruction.path), "contained profile paths");
@@ -327,6 +347,11 @@ export function lowerToHarness(program, feedback, envelope, profile) {
             verificationLine(role.description) &&
             role.procedure.length > 0 &&
             role.intents.length > 0, "role contract");
+        if (profile.skills.available)
+            ensure(/^dotln-[a-z0-9]+(?:-[a-z0-9]+)*$/.test(`dotln-${role.name}`) &&
+                `dotln-${role.name}`.length <= 64 &&
+                role.description.trim().length > 0 &&
+                [...role.description].length <= 1024, "native Agent Skills frontmatter");
         for (const intent of role.intents) {
             ensure(verificationLine(intent) && !seenIntents.has(intent), "unique exact intent binding");
             seenIntents.add(intent);
@@ -546,8 +571,9 @@ process.stdout.write(JSON.stringify(response)); }`;
             heartbeatHook(event, `../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/presence-heartbeat.js`), [], 1);
         hookPaths.set(event, [...(hookPaths.get(event) ?? []), path]);
     }
-    if (program.worker && profile.harness === "claude-code") {
-        const worker = program.worker;
+    const workers = program.workers ?? (program.worker ? [program.worker] : []);
+    ensure(new Set(workers.map((worker) => worker.name)).size === workers.length, "unique worker names");
+    for (const worker of profile.harness === "claude-code" ? workers : []) {
         ensure(/^[a-z][a-z0-9-]*$/.test(worker.name), "worker name");
         ensure(/^[a-z][a-z0-9.-]*$/.test(worker.model), "worker model");
         ensure(["low", "medium", "high", "xhigh", "max"].includes(worker.effort), "worker effort");
@@ -562,6 +588,12 @@ process.stdout.write(JSON.stringify(response)); }`;
             `<!-- Origin: ${canonicalStringify(origin(program.roles.map((role) => role.facetId)))} -->`,
             "",
             "Perform only the parent's assigned review, refutation or research. The parent owns repository writes; return findings with evidence and improvements, never edit the subject or spawn descendants unless explicitly assigned. Read only the assigned inputs. Preserve the Clean Room floor. Report model and effort only from host readback; a configured pin is not effective-session evidence.",
+            ...(worker.optIn
+                ? [
+                    "",
+                    "Use this worker only when the operator's planning: or resume: dispatch line names Fable (fable or fable 5.1). Record the worker type in the receipt and response.",
+                ]
+                : []),
             "",
         ].join("\n"), program.roles.map((role) => role.facetId), 7);
     }

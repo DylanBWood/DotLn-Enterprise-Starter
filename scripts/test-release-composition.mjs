@@ -83,14 +83,20 @@ console.log(output);
   );
   write(
     `docs/final-reviews/${workOrder}/PR.md`,
-    "One product gate covers the code through publication.\n",
+    `# ${workOrder}\n\nOne product gate covers the code through publication.\n`,
   );
   write(
     `docs/final-reviews/${workOrder}/RELEASE-NOTES.md`,
     "## Release overview\n\nOne gate survives report updates.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nPublication consumes the reviewed product gate.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nA fixture executes all lifecycle commands and one product gate.\n",
   );
   run("git", ["add", "."]);
-  run("git", ["commit", "-m", "fixture product source"]);
+  run("git", [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-m",
+    "fixture product source",
+  ]);
 } else if (action === "lifecycle") {
   const flags = [
     "--harness",
@@ -136,7 +142,13 @@ console.log(output);
   );
   resume("final-review-result", "pass", ...flags);
   run("git", ["add", "."]);
-  run("git", ["commit", "-m", "fixture review and reports after gate"]);
+  run("git", [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-m",
+    "fixture review and reports after gate",
+  ]);
   console.log(
     "activate → implementation-ready → verify → verification-result pass → final-review → npm test → report edits → final-review-result pass",
   );

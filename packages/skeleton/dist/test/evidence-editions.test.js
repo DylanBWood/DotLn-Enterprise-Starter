@@ -209,7 +209,7 @@ test("immutable evidence admits a component-only bump while source, external dep
         writeEvidenceFile(join(root, evidence), "historical raw 0.9.3 evidence\n");
         assert.equal(sameEvidenceSourceContent(root, [evidence], sources), false, "uncommitted evidence cannot serve as its own provenance");
         git("add", ".");
-        git("-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid", "commit", "--quiet", "-m", "file immutable edition");
+        git("-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid", "-c", "maintenance.auto=false", "commit", "--quiet", "-m", "file immutable edition");
         assert.equal(sameEvidenceSourceContent(root, [evidence], sources), true);
         write(source, original.replace("0.9.3", "0.10.0"));
         write(hostSource, host.replace("0.15.12", "0.16.0"));

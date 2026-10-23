@@ -20,8 +20,9 @@ import { replayConsoleResults } from "@dotln/skeleton/dist/src/console-loopback.
 import { permissionEffect } from "@dotln/skeleton/dist/src/harness-host.js";
 import { harnessAuthorization } from "@dotln/skeleton/dist/src/reactor.js";
 import { decodeResidentConfiguration, } from "@dotln/skeleton/dist/src/resident-state.js";
-import { invokeConsoleCommand, readConsoleContract, } from "../src/console-client.js";
+import { invokeConsoleCommand, readConsoleContract, readRuntimeStatus, readBoard, } from "../src/console-client.js";
 import { readConsoleConnection } from "../src/console-client-node.js";
+import { schemaMatches } from "./schema.js";
 const root = fileURLToPath(new URL("../../../../", import.meta.url));
 // Every terminal and served run below resolves this repository.
 delete process.env.DOTLN_LAUNCHPAD;
@@ -202,7 +203,9 @@ test("WO-115 the console names terminal commands as typed and strips host-sessio
     const client = (await import(specifier));
     assert.deepEqual(Object.keys(client).sort(), [
         "invokeConsoleCommand",
+        "readBoard",
         "readConsoleContract",
+        "readRuntimeStatus",
     ]);
     assert.doesNotMatch(readFileSync(join(root, "packages/console/dist/src/console-client.js"), "utf8"), /\bfrom\s+["']node:|\bimport\(\s*["']node:|\brequire\(/u);
     // Every ID's fixed terminal text, independent of the console's own mapping.
@@ -951,4 +954,103 @@ test("[document] WO-116 the served audit command returns the terminal's bytes fo
     assert.deepEqual(replayed.incomplete, []);
     assert.equal(replayed.results.filter((result) => result.command === "dotln.audit")
         .length, 11);
+});
+test("[document] WO-225 authenticated projection reads return file bytes without receipts or command-lane waits", async (t) => {
+    const store = temporary("projections");
+    const hanging = temporary("projection-blocker");
+    const resident = await serve(store, bound(root));
+    const { connection } = resident;
+    t.after(async () => {
+        await resident.stop();
+        rmSync(store, { recursive: true, force: true });
+        rmSync(hanging, { recursive: true, force: true });
+    });
+    const before = logOf(store);
+    const schema = JSON.parse(readFileSync(join(root, "packages/console/uifa-board-v1.schema.json"), "utf8"));
+    const status = await readRuntimeStatus(connection);
+    assert.deepEqual(status, JSON.parse(readFileSync(join(store, "runtime-status-v1.json"), "utf8")));
+    const board = await readBoard(connection);
+    assert.ok(schemaMatches(board, schema, schema));
+    const snapshot = join(store, "console/uifa-board-v1.json");
+    assert.deepEqual(board, JSON.parse(readFileSync(snapshot, "utf8")));
+    for (const route of ["/runtime-status-v1", "/uifa-board-v1"]) {
+        const url = `http://127.0.0.1:${connection.port}${route}`;
+        const response = await fetch(url, {
+            headers: {
+                authorization: `Bearer ${connection.token}`,
+                origin: "http://localhost:4200",
+            },
+        });
+        assert.equal(response.status, 200);
+        assert.equal(response.headers.get("access-control-allow-origin"), "http://localhost:4200");
+        assert.match(response.headers.get("content-type"), /^application\/json/u);
+        const file = route === "/uifa-board-v1"
+            ? snapshot
+            : join(store, "runtime-status-v1.json");
+        assert.equal(await response.text(), readFileSync(file, "utf8"));
+        for (const headers of [
+            {},
+            { authorization: `Bearer ${"0".repeat(64)}` },
+            {
+                authorization: `Bearer ${connection.token}`,
+                origin: "https://foreign.invalid",
+            },
+        ]) {
+            const refused = await fetch(url, { headers });
+            assert.equal(refused.status, 403);
+            assert.deepEqual(bytes((await refused.json())), refusalBytes("console caller refused"));
+        }
+        for (const host of [
+            `localhost:${connection.port}`,
+            `127.0.0.1:${connection.port === 1 ? 2 : 1}`,
+        ]) {
+            const refused = await new Promise((done, fail) => {
+                const request = httpRequest({
+                    host: "127.0.0.1",
+                    port: connection.port,
+                    path: route,
+                    headers: { host, authorization: `Bearer ${connection.token}` },
+                }, (response) => {
+                    const chunks = [];
+                    response.on("data", (chunk) => chunks.push(chunk));
+                    response.on("end", () => done({
+                        status: response.statusCode,
+                        body: Buffer.concat(chunks).toString(),
+                    }));
+                });
+                request.on("error", fail);
+                request.end();
+            });
+            assert.equal(refused.status, 403);
+            assert.deepEqual(bytes(JSON.parse(refused.body)), refusalBytes("console caller refused"));
+        }
+        const options = await fetch(url, {
+            method: "OPTIONS",
+            headers: {
+                origin: "http://localhost:4200",
+                "access-control-request-headers": "authorization",
+            },
+        });
+        assert.equal(options.status, 204);
+    }
+    assert.equal(logOf(store), before, "projection reads and refusals append no events");
+    const wrong = { ...connection, token: "0".repeat(64) };
+    await assert.rejects(readRuntimeStatus(wrong), /refused \(403\)/u);
+    await assert.rejects(readBoard(wrong), /refused \(403\)/u);
+    assert.equal(spawnSync("mkfifo", [join(hanging, "runtime-status-v1.json")]).status, 0);
+    const blocker = new AbortController();
+    const count = invokedCount(store);
+    const running = (await invoke(connection, "console.status", ["--store", hanging, "--json"], blocker.signal));
+    await untilStarted(store, count);
+    const during = logOf(store);
+    try {
+        const signal = AbortSignal.timeout(5000);
+        await readRuntimeStatus(connection, signal);
+        await readBoard(connection, signal);
+        assert.equal(logOf(store), during, "reads neither queue nor append receipts");
+    }
+    finally {
+        blocker.abort();
+        await running.text().catch(() => undefined);
+    }
 });

@@ -469,7 +469,7 @@ test("WO-075 criterion 1: the exported runtime is byte-identical to a rebuild at
     assert.ok(listed.has(file.path), `${file.path} is a pinned runtime file`);
   // The rebuild: a clone at the commit, the same install, the same build.
   const clone = join(scratch, "rebuild");
-  git(scratch, ["clone", "-q", source, clone]);
+  git(scratch, ["-c", "maintenance.auto=false", "clone", "-q", source, clone]);
   git(clone, ["checkout", "-q", commit]);
   assert.ok(!existsSync(join(clone, "packages/kernel/dist")));
   linkInstall(clone);
@@ -1148,7 +1148,13 @@ test("WO-074 criteria 1, 2 and 5: without package source the export activates it
   );
   configureRepository(kit);
   git(kit, ["add", "."]);
-  git(kit, ["commit", "-qm", "exported launchpad"]);
+  git(kit, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "exported launchpad",
+  ]);
   assert.equal(
     git(kit, ["ls-files", "--", ".runtime", "node_modules"]).stdout,
     "",
@@ -1204,7 +1210,13 @@ test("WO-074 criteria 1, 2 and 5: without package source the export activates it
     "# WO-001 handoff (fixture)\n\n**Criterion 1:** unmet — fixture.\n**Criterion 2:** unmet — fixture.\n**Criterion 3:** unmet — fixture.\n**Criterion 4:** unmet — fixture.\n**Criterion 5:** unmet — fixture.\n\nself-review: found 0; fixed 0; recorded 0\n",
   );
   git(kit, ["add", "."]);
-  git(kit, ["commit", "-qm", "fixture handoff"]);
+  git(kit, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "fixture handoff",
+  ]);
   const ready = ok(
     resume([
       "implementation-ready",
@@ -1384,16 +1396,27 @@ test("WO-074 criterion 3: the local-terms check runs over every exported text an
       /^local-terms list: unavailable; no text was checked against a local-terms list$/mu,
     );
     assert.doesNotMatch(absent.stdout, /texts checked/u);
-    // Empty: the list is present but holds no term.
+    // Empty: a present list with no term is present with a count of zero
+    // (WO-227); the export proceeds and the summary prints no count.
     writeFileSync(termsPath, "# only a comment\n\n");
     const emptyTarget = join(scratch, "kit-empty-list");
-    const empty = runExport(emptyTarget);
-    assert.equal(empty.status, 1);
+    const empty = ok(runExport(emptyTarget), "export with an empty list");
     assert.match(
-      empty.stderr,
-      /local-terms list is present but empty or malformed/u,
+      empty.stdout,
+      /^local-terms list: present \(\d+ texts checked\)$/mu,
     );
-    assert.ok(!existsSync(emptyTarget), "a refused export writes nothing");
+    assert.ok(existsSync(emptyTarget), "an empty list refuses nothing");
+    // Malformed: a mode marker with no term refuses naming the line, before
+    // any write.
+    writeFileSync(termsPath, "refuse:\n");
+    const malformedTarget = join(scratch, "kit-malformed-list");
+    const malformed = runExport(malformedTarget);
+    assert.equal(malformed.status, 1);
+    assert.match(
+      malformed.stderr,
+      /local-terms list line 1: a mode marker with no term/u,
+    );
+    assert.ok(!existsSync(malformedTarget), "a refused export writes nothing");
     // A match: refused by file and line, the term never printed.
     writeFileSync(termsPath, "attestations\n");
     const matchTarget = join(scratch, "kit-match");
@@ -1593,11 +1616,38 @@ test("describeTag names original objects: a replacement ref cannot redirect the 
     return result.stdout.trim();
   };
   run(["init", "-q", "-b", "main"]);
-  run([...identity, "commit", "-q", "--allow-empty", "-m", "one"]);
+  run([
+    ...identity,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-q",
+    "--allow-empty",
+    "-m",
+    "one",
+  ]);
   run([...identity, "tag", "-a", "-m", "v1.0.0", "v1.0.0"]);
-  run([...identity, "commit", "-q", "--allow-empty", "-m", "two"]);
+  run([
+    ...identity,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-q",
+    "--allow-empty",
+    "-m",
+    "two",
+  ]);
   const two = run(["rev-parse", "HEAD"]);
-  run([...identity, "commit", "-q", "--allow-empty", "-m", "three"]);
+  run([
+    ...identity,
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-q",
+    "--allow-empty",
+    "-m",
+    "three",
+  ]);
   run([...identity, "tag", "-a", "-m", "v2.0.0", "v2.0.0"]);
   const three = run(["rev-parse", "HEAD"]);
   run(["replace", two, three]);
@@ -1761,7 +1811,13 @@ test("WO-075 design: a TypeScript module under a runtime package's sources trave
     `export const plantedTerm = "${synthetic.trim()}";\n`,
   );
   git(source, ["add", module]);
-  git(source, ["commit", "-qm", "plant a compiled module"]);
+  git(source, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "plant a compiled module",
+  ]);
   try {
     const target = join(scratch, "kit-compiled-plant");
     const refused = runExport(target);
@@ -1821,7 +1877,14 @@ test("WO-075 design: a host Git configuration that would ignore a kit file refus
 test("WO-075 design: a fresh clone of the committed export lacks the ignored snapshot, its hooks report snapshot-missing and delegate to host permissions, and one emit restores the check", () => {
   const committed = commitExport(join(scratch, "kit-committed"));
   const clone = join(scratch, "kit-clone");
-  git(scratch, ["clone", "-q", committed, clone]);
+  git(scratch, [
+    "-c",
+    "maintenance.auto=false",
+    "clone",
+    "-q",
+    committed,
+    clone,
+  ]);
   const snapshot =
     harnessManifestOf(clone).profiles[0].profile.runtime.snapshot;
   assert.ok(!existsSync(join(clone, snapshot)));
@@ -1875,7 +1938,13 @@ test("WO-075 design: a fresh clone of the committed export lacks the ignored sna
   // the documented update branch supplies that index in its reviewed commit.
   ok(git(clone, ["rm", "docs/lineage/README.md"]), "remove the later seed");
   ok(
-    git(clone, ["commit", "-qm", "test: model an older export"]),
+    git(clone, [
+      "-c",
+      "maintenance.auto=false",
+      "commit",
+      "-qm",
+      "test: model an older export",
+    ]),
     "record the older seed set",
   );
   const bootstrap = ok(
@@ -1913,6 +1982,290 @@ test("WO-075 design: a fresh clone of the committed export lacks the ignored sna
   assert.doesNotMatch(again.stdout, /snapshot-missing/u);
 });
 
+test("WO-226 a fast-forwarded export restores its selected runtime for recovery, harness entry and finish", () => {
+  const destination = commitExport(join(scratch, "runtime-update"));
+  const upstream = join(scratch, "runtime-update.git");
+  const subject = join(scratch, "runtime-update-wo999");
+  git(scratch, ["init", "--bare", "-q", "-b", "main", upstream]);
+  git(destination, ["remote", "add", "origin", upstream]);
+  git(destination, ["push", "-q", "origin", "main"]);
+  git(destination, ["worktree", "add", "-q", "-b", "wo-999", subject]);
+  const priorSnapshot =
+    harnessManifestOf(destination).profiles[0].profile.runtime.snapshot;
+  const hostPath = "packages/skeleton/src/harness-host.ts";
+  const originalHost = readFileSync(join(source, hostPath), "utf8");
+  try {
+    write(
+      hostPath,
+      originalHost + "\nexport const fixtureUpdateMarker = true;\n",
+    );
+    git(source, ["add", hostPath]);
+    git(source, [
+      "-c",
+      "commit.gpgsign=false",
+      "commit",
+      "-qm",
+      "Fixture changed runtime pins",
+    ]);
+    ok(
+      run(process.execPath, [
+        join(source, "scripts/launchpad.mjs"),
+        "export",
+        "--update",
+        subject,
+      ]),
+      "update the instance branch",
+    );
+    mkdirSync(join(subject, "docs/work-orders"), { recursive: true });
+    mkdirSync(join(subject, "docs/control/orders"), { recursive: true });
+    writeFileSync(
+      join(subject, "docs/work-orders/WO-999-fixture.md"),
+      "# WO-999 fixture\n\n**Model:** fixture\n**Effort:** xhigh\n",
+    );
+    const events = [
+      {
+        type: "WorkOrderActivated",
+        workOrderPath: "docs/work-orders/WO-999-fixture.md",
+      },
+      { type: "ImplementationReady" },
+      { type: "VerificationRequested", verificationId: "VER-001" },
+      {
+        type: "VerificationCompleted",
+        verificationId: "VER-001",
+        verdict: "pass",
+      },
+      { type: "FinalReviewRequested", finalReviewId: "FINAL-001" },
+      {
+        type: "FinalReviewCompleted",
+        finalReviewId: "FINAL-001",
+        verdict: "pass",
+      },
+    ].map((event) => ({
+      schemaVersion: 1,
+      recordedAt: "2026-10-21T00:00:00.000Z",
+      workOrderId: "WO-999",
+      ...event,
+    }));
+    writeFileSync(
+      join(subject, "docs/control/orders/WO-999.jsonl"),
+      events.map((event) => JSON.stringify(event)).join("\n") + "\n",
+    );
+    ok(
+      run(process.execPath, ["scripts/resume.mjs", "next"], { cwd: subject }),
+      "project the closed synthetic order before merge",
+    );
+    git(subject, ["add", "."]);
+    git(subject, [
+      "-c",
+      "commit.gpgsign=false",
+      "commit",
+      "-qm",
+      "Fixture merged update and closed order",
+    ]);
+    git(subject, ["push", "-q", "origin", "HEAD:main"]);
+    git(destination, ["fetch", "origin", "main"]);
+    git(destination, ["merge", "--ff-only", "origin/main"]);
+    const snapshot =
+      harnessManifestOf(destination).profiles[0].profile.runtime.snapshot;
+    assert.notEqual(snapshot, priorSnapshot);
+    assert.equal(existsSync(join(destination, snapshot)), false);
+    const hookPath = join(destination, ".claude/hooks/session.mjs");
+    const hook = readFileSync(hookPath, "utf8");
+    assert.match(hook, /preparation,/);
+    const controlHook = join(
+      destination,
+      ".claude/hooks/fixture-build-control.mjs",
+    );
+    // A kit's ordinary build is now a no-op. Force the source-build path to
+    // keep this control about an unavailable source build, not hook ownership.
+    const sourceBuild = [
+      process.execPath,
+      [
+        "--input-type=module",
+        "--eval",
+        "import { atomicBuild } from './scripts/build.mjs'; atomicBuild();",
+      ],
+    ];
+    writeFileSync(
+      controlHook,
+      hook.replace("preparation,", `${JSON.stringify(sourceBuild)},`),
+    );
+    const input = {
+      cwd: destination,
+      session_id: "export-update-recovery",
+      hook_event_name: "UserPromptSubmit",
+      prompt: "resume: release close",
+    };
+    const hookOptions = {
+      cwd: destination,
+      input: JSON.stringify(input),
+      env: { ...env, CLAUDE_PID: String(process.pid), COPILOT_PROJECT_DIR: "" },
+    };
+    const controlResult = ok(
+      run(process.execPath, [controlHook], hookOptions),
+      "source-build control",
+    );
+    assert.match(
+      controlResult.stdout,
+      /Release-close preparation withheld.*atomicBuild.*tsconfig\.json/s,
+    );
+    assert.equal(existsSync(join(destination, snapshot)), false);
+    rmSync(controlHook);
+    const recovered = ok(
+      run(process.execPath, [hookPath], hookOptions),
+      "export release-close recovery",
+    );
+    assert.match(recovered.stdout, /Dispatch recorded by the harness/);
+    assert.doesNotMatch(recovered.stdout + recovered.stderr, /npm run build/);
+    assert.equal(existsSync(join(destination, snapshot)), true);
+    const codexEnv = { ...env, CODEX_THREAD_ID: "export-update-recovery" };
+    ok(
+      run(process.execPath, ["scripts/resume.mjs", "release-close"], {
+        cwd: destination,
+        env: codexEnv,
+      }),
+      "reserve the synthetic Codex release-close writer",
+    );
+    assert.equal(
+      existsSync(join(destination, "docs/control/local/harness/writer")),
+      true,
+    );
+    const host = join(
+      destination,
+      "packages/skeleton/dist/src/harness-host.js",
+    );
+    const hostBytes = readFileSync(host);
+    rmSync(host);
+    try {
+      const reservation = run(
+        process.execPath,
+        ["scripts/resume.mjs", "release-close"],
+        { cwd: destination, env: codexEnv },
+      );
+      assert.equal(reservation.status, 1);
+      assert.match(
+        reservation.stderr,
+        /writer reservation unavailable.*node scripts\/bootstrap\.mjs/,
+      );
+      const entryAdvisory = ok(
+        run(process.execPath, ["scripts/resume.mjs", "next"], {
+          cwd: destination,
+          env: codexEnv,
+        }),
+        "closed-phase session-entry advisory",
+      );
+      assert.match(
+        entryAdvisory.stderr,
+        /session entry unavailable.*node scripts\/bootstrap\.mjs/,
+      );
+      const close = run(
+        process.execPath,
+        ["scripts/release.mjs", "close", "WO-999", "--publish"],
+        { cwd: destination, env: codexEnv },
+      );
+      assert.equal(close.status, 1);
+      assert.match(
+        close.stderr,
+        /Release-close runtime is not built.*node scripts\/bootstrap\.mjs/,
+      );
+      for (const result of [reservation, entryAdvisory, close])
+        assert.doesNotMatch(result.stdout + result.stderr, /npm run build/);
+    } finally {
+      writeFileSync(host, hostBytes);
+    }
+    ok(
+      run(
+        process.execPath,
+        [
+          "--input-type=module",
+          "-e",
+          "import {releaseHarnessWriter} from './packages/skeleton/dist/src/harness-host.js'; releaseHarnessWriter(process.cwd(), {session_id:'export-update-recovery'});",
+        ],
+        { cwd: destination },
+      ),
+      "release synthetic session writer",
+    );
+    rmSync(join(destination, snapshot), { recursive: true });
+    const entry = ok(
+      run("npm", ["run", "harness", "--", "check"], { cwd: destination }),
+      "export harness entry",
+    );
+    assert.match(entry.stdout, /carried-runtime restore/);
+    assert.doesNotMatch(entry.stdout + entry.stderr, /npm run build/);
+    assert.equal(existsSync(join(destination, snapshot)), true);
+    rmSync(join(destination, snapshot), { recursive: true });
+    const finished = ok(
+      run(process.execPath, ["scripts/worktree.mjs", "finish", "WO-999"], {
+        cwd: destination,
+      }),
+      "finish the export's merged worktree",
+    );
+    assert.match(finished.stdout, /carried-runtime restore/);
+    assert.doesNotMatch(finished.stdout + finished.stderr, /npm run build/);
+    assert.equal(existsSync(subject), false);
+    assert.equal(existsSync(join(destination, snapshot)), true);
+    ok(harness(destination, "check"), "restored export remains current");
+    const buildAdvice = files(destination)
+      .filter(
+        (path) =>
+          path.startsWith("scripts/") &&
+          !/^scripts\/(?:test-|fixtures\/)/u.test(path) &&
+          /\.(?:mjs|md)$/u.test(path),
+      )
+      .flatMap((path) =>
+        readFileSync(join(destination, path), "utf8")
+          .split("\n")
+          .filter((line) => line.includes("npm run build"))
+          .map((line) => ({ path, line })),
+      );
+    assert.deepEqual([...new Set(buildAdvice.map((row) => row.path))].sort(), [
+      "scripts/kit/README.client.md",
+      "scripts/lib/harness-runtime.mjs",
+      "scripts/release.mjs",
+      "scripts/resume.mjs",
+    ]);
+    for (const row of buildAdvice.filter(
+      (row) =>
+        ![
+          "scripts/kit/README.client.md",
+          "scripts/lib/harness-runtime.mjs",
+        ].includes(row.path),
+    ))
+      assert.match(
+        row.line,
+        /isKit(?:Root|Worktree).*node scripts\/bootstrap\.mjs.*npm run build/,
+      );
+    assert.match(
+      readFileSync(join(destination, "scripts/kit/README.client.md"), "utf8"),
+      /npm run build[\s\S]*carried runtime is the build; nothing to compile[\s\S]*writes nothing/u,
+    );
+    assert.match(
+      readFileSync(
+        join(destination, "scripts/lib/harness-runtime.mjs"),
+        "utf8",
+      ),
+      /else \{\s*write\(`Refreshing pinned runtime \(\$\{cause\}\); npm run build/,
+    );
+    for (const path of files(destination).filter((path) =>
+      /^\.(?:claude|codex)\/hooks\/.*\.mjs$/u.test(path),
+    ))
+      assert.doesNotMatch(
+        readFileSync(join(destination, path), "utf8"),
+        /run npm run build/,
+      );
+  } finally {
+    write(hostPath, originalHost);
+    git(source, ["add", hostPath]);
+    git(source, [
+      "-c",
+      "commit.gpgsign=false",
+      "commit",
+      "-qm",
+      "Restore fixture runtime source",
+    ]);
+  }
+});
+
 test("WO-074 design: a kit file absent at the commit refuses by name, and a destination inside a Git work tree becomes its own repository", () => {
   const inside = join(source, "nested-export");
   const nested = ok(runExport(inside), "export inside a work tree");
@@ -1931,7 +2284,13 @@ test("WO-074 design: a kit file absent at the commit refuses by name, and a dest
     "--cached",
     "scripts/kit/pending-license.template.md",
   ]);
-  git(source, ["commit", "-qm", "drop a template"]);
+  git(source, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "drop a template",
+  ]);
   try {
     const target = join(scratch, "kit-absent");
     const refused = runExport(target);
@@ -1951,3 +2310,50 @@ test("WO-074 design: a kit file absent at the commit refuses by name, and a dest
 // copy and leaves the receipts it writes under the copy's evidence root; the
 // update case after it commits its own revisions on top and reads none of
 // them.
+
+test("WO-225 kit carries the console schemas and npm console uses the carried build without writes", () => {
+  const listed = new Set(manifestOf(kit).files.map((file) => file.path));
+  for (const file of [
+    "uifa-board-v1.schema.json",
+    "runtime-status-v1.schema.json",
+  ])
+    assert.ok(
+      listed.has(`packages/console/${file}`),
+      `missing contract ${file}`,
+    );
+  const before = git(kit, [
+    "status",
+    "--porcelain=v1",
+    "--untracked-files=all",
+  ]).stdout;
+  const tree = treeSnapshot(kit);
+  const built = ok(run("npm", ["run", "build"], { cwd: kit }), "kit build");
+  assert.match(
+    built.stdout,
+    /carried runtime is the build; nothing to compile/u,
+  );
+  assert.equal(
+    git(kit, ["status", "--porcelain=v1", "--untracked-files=all"]).stdout,
+    before,
+  );
+  assert.deepEqual(treeSnapshot(kit), tree, "no-op build writes no file");
+  ok(
+    run(
+      process.execPath,
+      [
+        "--test",
+        "--test-name-pattern=WO-225 carried board schema|WO-114 shared schema",
+        "packages/console/dist/test/board.test.js",
+        "packages/console/dist/test/runtime-status.test.js",
+      ],
+      { cwd: kit },
+    ),
+    "carried schema tests",
+  );
+  const console = ok(
+    run("npm", ["run", "console", "--", "board", "--json"], { cwd: kit }),
+    "kit npm console",
+  );
+  const json = console.stdout.slice(console.stdout.indexOf("{\n"));
+  assert.equal(JSON.parse(json).viewModelVersion, "uifa-board-v1");
+});

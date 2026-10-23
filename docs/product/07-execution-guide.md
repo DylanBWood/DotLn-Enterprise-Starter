@@ -1132,6 +1132,12 @@ and non-authoritative suggestions, goes through blinded refutation, and stops at
 operator disposition without planning or fixing; the Repo Gardener is the
 walking skeleton's founding identity, not a session.
 
+The prompt hook reads a dispatch from the first non-blank content line,
+skipping one leading triple-backtick fence and surrounding blank lines. It
+records that line's zero-based `prefixLine`, prefix, class and resolved role;
+a prefix on a later content line is not a dispatch. Quoted examples remain
+prose, and one message records at most one prefix (WO-226).
+
 **`planning: entropy reducer`.** This exact phrase makes the pass's subject an
 Entropy Reducer review rather than the register's existing rows. The pass opens
 with `npm run entropy -- subject`, which names one of three things: a review to
@@ -1205,6 +1211,23 @@ Preconditions and inputs:
    ([2026-09-27 pass](../planning/onesie-twosie-followup-drain-2026-09-27.md#13-the-operators-answer-decisions-made-under-delegation)). 
 4. `ideation:` entries in the same dispatch run the complete ideation pipeline
    first; their synthesis is planning input.
+5. An instance's observations and requests arrive as the pasted block its
+   own planning pass writes for core (its §Requests to core), one block per
+   instance pass that has items, until WO-193 carries them as filed requests
+   (operator question, 2026-10-21: the cadence is the instance's, and a pass
+   with nothing to ask sends nothing). The pass reads each item against the
+   record it names, files, declines or defers it with its reopening
+   condition, and answers in a paste-ready block the instance's next pass
+   reads; an item is evidence the operator carried, never operator direction
+   (the 2026-10-20 and 2026-10-21 passes). When the pass files an order for an item,
+   its answer says whether the item blocks the instance's next order, so
+   the instance waits for the carrying release, or is a convenience with a
+   working route today, so the instance continues; a release's Read before
+   upgrading says what an instance must read, and nothing else obliges an
+   instance to take it (operator question, 2026-10-22).
+   When dispatching with a pasted block, put the dispatch on its first
+   content line; one opening fence and blank lines are admitted, while a
+   later quoted dispatch does not select a role.
 
 **`planning: refute` and `planning: refute full`.** These exact phrases load
 the dedicated refuter skill in either harness. The parent runs
@@ -1215,14 +1238,19 @@ spawns one fresh background worker without inherited conversation, supplying
 only that prompt and the shared goal card. In Codex this uses `spawn_agent`
 with `fork_turns: none`; in Claude it uses the generated `dotln-worker`
 type pinned to `claude-opus-5-5` at `xhigh`, without a model override
-(§Model-specific notes). The worker
+(or `dotln-worker-fable` only on the operator's dispatch, §Model-specific
+notes). The worker
 judges the supplied prompt directly, returns its frozen JSON and a truthful
 single-line statement of at most 4000 characters, and makes no repository or
 Git writes. The parent remains the sole writer and can finish independent
 closeout work while waiting without changing the frozen subject. Save the
 worker's judgment and statement in ignored local files,
 then run `npm run plan -- receipt <result.json> --statement <statement.txt>`
-with any required `--dispositions <file>`. The helper validates, screens,
+with any required `--dispositions <file>` and `--worker-type
+dotln-worker-fable` when that type ran (the default is `dotln-worker`);
+Codex uses `--worker-type codex-spawn-agent`.
+The response and receipt record the worker type as the parent's launch
+attestation, separately from unavailable effective model/effort. The helper validates, screens,
 files and commits the immutable pair with a plain subject and runs the plan
 check. No ad hoc receipt code is needed.
 
@@ -1813,8 +1841,33 @@ proven, the next `v*` tag above the tags the merged base reaches (none means
 `v0.1.0`; a tag an earlier attempt of the same close published is reused
 with that attempt's recorded commit, even if the base later advances) is
 created as an annotated tag on the merged base through the
-isolated lane and the target's GitHub Release is created from the order's
-title and objective. The registration's optional `release.displayName` uses the launchpad name
+isolated lane and the target's GitHub Release is created from the body the
+order names (WO-227): `**Target release notes:** reviewed` renders the order's
+five-section `RELEASE-NOTES.md` at the merged revision, the order title once
+under the overview, links to the records the kit moved into the target
+written absolute to the target at the tagged commit, other relative links
+as their text and the close line last, and refuses before any tag push when
+the file is absent or invalid; `objective`, or no header, keeps the title,
+objective and close line byte for byte. The tag message and the body pass
+the outward lint as a target's text: launchpad identifiers refuse outside
+the kit's frame (the order title, the close line and the address, tagged
+commit and record path the renderer itself writes for a moved record, whose
+words are not reviewed either; a target URL, query or fragment the notes'
+author writes is judged like the rest of the notes, whatever its commit or
+bytes, though a fragment may name the closing order's own identifiers; a
+match is exempt only when it lies wholly inside the frame, so a listed term
+running from a written record path into the author's fragment is reviewed),
+review words and review-mode private terms wait for `--confirm-terms
+sha256:<digest of the body>` on the close, and the registered display name
+reads as a name for the public review words (the private list is never
+masked). The body's source, digest and confirmation are bound in the close
+record: an attempt that pushed the tag and still owes the Release republishes
+the bytes it bound or refuses on changed notes, and a completed Release,
+legacy body or reviewed, stays current on a recheck by its recorded bytes.
+Repeated rechecks retain the source, digest and confirmation of the actual
+published body; later notes never replace that binding. A legacy Release
+without a body binding acquires one from its admitted existing body.
+The registration's optional `release.displayName` uses the launchpad name
 shape and 64-character limit, defaults to the registration id, and makes the
 Release title and tag message's first line `<displayName> <tag>`; the order title
 and close line follow. Existing Releases keep their titles. `--dry-run` previews
@@ -1935,7 +1988,15 @@ order; core names no draft step and no actor, the instance's order does
 the emitted hook admits only the node spelling of the controlled publish
 helper at the phases the lifecycle makes them legal, under main's
 committed registration, authority profile, operator grant and clone map, with
-host deny rules still applying. Raw Git, gh and npm receive no automatic
+host deny rules still applying. The comparison with both checkouts projects
+the configured roots and the selected registration's `baseBranch`,
+`authorityProfile` and `release`; gate commands and other operational fields
+may differ. A differing publication field is named, while the grants file
+still requires byte equality with main's committed file. A recognizable
+node publish or release-close helper hidden by a pipe, redirect or prefix
+gets a `registeredTargetAdmission` row with `kind: "near-miss"` and its
+`syntax`, plus an advisory to run the plain spelling; it gets no permission
+decision. Raw Git, gh and npm receive no automatic
 registered-target admission; `worktree start` prints the Codex `--add-dir` and Copilot
 `--allow-tool` lines; and a registration's `hostRules: "literal"` writes that
 order's exact rules to the main checkout's untracked local settings and
@@ -2197,7 +2258,8 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   publication, bookkeeping and installed-harness artifacts (a gate compiles a
   stale runtime itself). The executor and every repair start one complete
   run, `npm test -- --review`, in the background and never under the bounded
-  probe wrapper; it leads with failed and changed suites. After it passes
+  probe wrapper; it leads with failed and newly changed suites, while older
+  branch changes may follow exclusive work. After it passes
   they write the report with its evidence, run `npm run test:docs` once
   after the last document edit, and record. Verification consumes the
   executor's complete row at the current identity and uses focused probes.
@@ -2259,8 +2321,13 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   a gate row. Every gate shares the host registry's weighted lanes: the first
   acquirer records the lesser of eight and half the logical processors, at
   least one, and later acquirers inherit that capacity. Nested gates
-  suballocate the parent reservation validated at gate entry and waits name
-  the holders. The structural host check refuses a per-lane budget below the
+  suballocate the parent reservation validated at gate entry. Waits label
+  each holder as this checkout, another checkout or checkout unknown, without
+  exposing a checkout path. The gate row and summary report the union of lane
+  waiting intervals separately from work; relation-specific unions can overlap.
+  `node scripts/harness.mjs lanes` reads capacity and live holders without
+  taking the lock or reclaiming records. The structural host check refuses
+  a per-lane budget below the
   largest measured task RSS of the baseline passing runs. A wait-notification failure rejects acquisition after cancelling and
   draining its lock helper; it leaves no reservation or heartbeat behind.
   Swap growth triggers a footprint census relative to the last such
@@ -2289,14 +2356,60 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   or an unwrapped bare tree with such an edge missing, can still escape polling.
   WO-185 records this limit; supervision is not absolute containment. Test
   commands attribute incidents to disposable fixture repositories. A guard
-  that loses its `guard.json` record while it still holds `guard.flock` makes
-  each later registration start another waiter that fails after five
-  seconds, so the bounded wrapper and every gate fail on the host; stop the
-  stale guard and the waiters queued behind it, and the next registration
-  starts a fresh guard (WO-118 D011; the repair is FUP-e18e6a5422109bfb)
-  [2026-10-13 pass].
+  that loses its `guard.json` record while still holding `guard.flock`
+  republishes its own identity on the next census. A registration reuses that
+  owner and retires any startup child that was never adopted, including on
+  timeout; it does not leave a waiter behind. This recovery preserves the
+  live guard's observation history (WO-217).
 
 - **Outward artifacts (WO-063).** The [pure lint and stdin CLI](../evidence/WO-063/implementation.md) check conventional commit subjects, PR titles and branch names plus the configured public vocabulary and redacted local-term check, report absent local coverage as `unavailable`, and leave publication integration to WO-064.
+  What the lint was for, in the operator's correction of 2026-10-21 (the
+  planning dispatch's sibling capture, SHA-256 in the planning document §1):
+  three things, and no fourth. Launchpad identifiers (work-order numbers,
+  decision, follow-up, verification and review ids) stay out of comments,
+  commits and pull requests that leave the launchpad; the private
+  local-terms list (`docs/control/local/terms.txt`, ignored, refused by file
+  and line without printing the term, rule `vocabulary.local`) applies to
+  commit messages and pull-request text and not only to committed prose,
+  which is the gap WO-063's observed gap named; and DotLn-specific terms
+  that are not publicly known words in the target's context are a reviewer's
+  judgment, because they are still ordinary English words. WO-063 built the
+  third as a token ban: `terms` in `docs/control/outward-vocabulary.json`
+  refuses every outward artifact of a target publication that contains a
+  listed word (rule `vocabulary.launchpad`), which the operator's instance
+  met as a refusal of its own fixture name and its target's subject matter.
+  That reading was never the intent, and the 2026-10-21 pass records it as
+  a misreading, not a rule. The same holds for a private term that is also
+  an ordinary word (the operator's second correction of the same day): it
+  is refused as the private system's name, never as the word. The public
+  list is a review list (`reviewTerms`; the older `terms` key is read as
+  the same list for one kit release): a target publish names the words it
+  found with their lines and the part of the composed body they sit in,
+  reviewed prose, Change table or target checks, and refuses until the
+  reviewer confirms them with `--confirm-terms sha256:<digest of the
+  composed body>`, never on the word alone. Each private term has a mode,
+  `refuse:` or review by default; a review-mode match is confirmed the same
+  way and a refuse-mode match refuses as before, while in committed text
+  every listed term still refuses. Launchpad identifiers (`WO-NNN`,
+  `WO-NNN-DNNN`, `FUP-<16 hex>`, `VER-NNN`, `FINAL-NNN`, `REVIEW-NNN`,
+  `WS-NNN`) refuse in a target's branch, commits, title and body under
+  `identifier.launchpad`; the kit's own frame, the records it moves into the
+  target and a Release's order title and close line, is exempt from that
+  rule alone. Either list may be empty. A Change-table row of a path the
+  target's base already held is the target's vocabulary and is not reported.
+  An exemption covers only a match lying wholly inside its frame part or
+  row; a match that runs out of it into authored or added text is reported.
+  Private findings retain the complete contributing line range without the
+  term or its columns. Every row in that range keeps its path and other
+  matched text redacted in diagnostics; the rule, starting line, section and
+  private mode still locate the review item.
+  The confirmation (digest, match count, actor attestation) is recorded in
+  the publication log and the session journal, so nothing leaves without a
+  reader having seen the flagged lines (WO-227). The
+  publication helpers read the vocabulary and the grant from `main`'s
+  committed bytes, so a change reaches `main` through a documents pull
+  request before the publish that needs it, never by editing `main`'s
+  working tree, which the next `worktree finish` refuses.
 
 - **Compose adjacent repair with decision evidence.** The executor/fixer
   equips [Adjacent Repair and Decision
@@ -2479,9 +2592,11 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   draft text is filed only with explicit direction and recorded provenance. Both
   use the locked Clean Room floor, and anything that smells proprietary is
   flagged rather than incorporated.
-- **Projection boundary.** Internal vocabulary (gems, masks, DotLn taxonomy)
-  stays out of artifacts consumed outside the system (PRs to other repos,
-  generated reports for third parties).
+- **Projection boundary.** Launchpad identifiers and private terms stay out
+  of artifacts consumed outside the system (PRs to other repos, generated
+  reports for third parties); whether a DotLn term reads as jargon in a
+  target's context is the reviewer's judgment, never a ban on the English
+  word [operator correction, 2026-10-21; the Outward artifacts bullet].
 - **PR titles carry a relevant gitmoji shortcode.** Choose deliberately from
   the [full gitmoji catalog](https://gitmoji.dev/) for the current change's main
   purpose. Use its more specific choices where they fit; explore beyond the
@@ -2518,6 +2633,18 @@ usefulness [[operator direction, 2026-10-05](../evidence/WO-187/decisions.md#wo-
   measured from the corrected instance. This binds every authored series:
   titles, commit subjects, PR bodies, release notes, verification and
   final-review reports, checklists, receipts, and replies to the operator.
+  The same holds for shape [operator correction, 2026-10-21]: an artifact in
+  a series takes its structure from a written standard, a template the
+  tooling seeds or a check that judges the structure, and the previous
+  instance is additional context, never the source; where no standard states
+  a shape, the shape is ad hoc and no later instance is faulted for differing
+  from the last; a drifted predecessor is corrected at its source, the
+  template or the check, not imitated. The pull-request body is the recorded
+  case: `release prepare` seeds `PR.md` with the meter block, the balanced
+  example shows prose first and the block last, and the reviewed series
+  flipped to prose appended under the block between PR #223 and PR #225 on
+  2026-10-19 with no rule changing, then repeated it twice (the 2026-10-21
+  pass; WO-227 makes the seed a template and the shape a check).
 - **A question is not a waiver.** An operator's question, confusion, or
   complaint about cost or time changes no obligation [operator correction,
   2026-09-07]. Answer it in plain terms, then continue the work under the
@@ -3004,7 +3131,11 @@ Every selection begins with six structural tasks, in order: `format`,
 check machinery inputs and declared copied-fixture closures. Generated
 checks retain their own short deadlines and name all stale artifacts in the
 row; `npm run sync` regenerates them in dependency order and changes nothing
-on a second current run. A selection first compiles a stale runtime with
+on a second current run. Only a recognized stale report authorizes a writer;
+crashes, timeouts, unreadable inputs and unrelated failures refuse regeneration.
+Sibling pages and tag observations, and a missing work-order tag snapshot,
+are regenerated through their declared index writers.
+A selection first compiles a stale runtime with
 the build, whose output lies outside the code identity, so an ordinary
 package edit reaches the suites; a stale installed harness is reported and
 never installed by a gate, since live hooks change only through the explicit
@@ -3012,6 +3143,10 @@ never installed by a gate, since live hooks change only through the explicit
 generated artifacts, publication and bookkeeping being inputs of the
 complete and document selections, and its structural row is partial: it
 never stands in for a complete or document selection's structural pass.
+In an export, `launchpad update --finish` fetches and fast-forwards clean
+main before bootstrap, and release-close recovery, `worktree finish` and
+`npm run harness` restore the verified carried runtime instead of building
+omitted sources; bootstrap is the named manual recovery command (WO-226).
 Sync refuses a role oracle without its authorizing
 update, a feedback edition whose judged sources require a live episode,
 and manual baseline fingerprints. Host admission refuses measured warning
@@ -3066,24 +3201,70 @@ new identity; report and generated-document edits do not. Target orders
 retain their repository's declared target gate and the launchpad document
 gate.
 
-Scheduling orders the queue by priority: changed suites lead, exclusive
-suites follow, then the rest. It stops starting tasks after the first
+Scheduling adds priority leads to each task's declared priority: unresolved
+failures receive 3000, sources changed since the last product gate receive
+2000, and older branch changes receive 100. Failed and newly changed suites
+lead; the smaller branch lead lets unchanged exclusive work precede shared
+branch work, while preserving branch work's priority over ordinary unchanged
+shared work. The scheduler stops starting tasks after the first
 failure, lets running tasks finish, and records the first failure and unrun
 tasks. `--keep-going`
 continues independent work without bypassing failed prerequisites. A stop
 request or SIGINT, SIGTERM or SIGHUP records only tasks already finished,
 with `stopped: true`; a stop before any completion records nothing. A stopped
 row supplies no passing claim. An execution finishing after its row was
-recorded also supplies no pass. Launchpad's export/verify, update/refresh and
-seeds/staging files run two at a time, each with its own 900-second deadline.
+recorded also supplies no pass. Launchpad declares its files in
+update/refresh, export/verify and seeds/staging order, at most two at a time,
+each with its own 900-second deadline and two host slots. Measured light
+files can still run first beside an exclusive task. Declaring the longer
+update file first aims to reduce the tail when only one heavy file fits;
+the required tasks, assertions and admission limits are unchanged.
 
 The host-lane registry records the first acquirer's capacity, the lesser of
 eight and half the logical processors, at least one; later clones inherit
-it. A task's budget is the gate share divided by that capacity, and the host
+it. WAIT lines label each holder's relation to this checkout; the summary and
+recorded `hostLaneWait` report the union of wait intervals, with overlapping
+relation-specific unions. Compact relation changes retain attribution beyond
+the 32-entry detailed diagnostic cap. Unknown includes lock waiting and time
+before the first capacity observation; legacy rows have only their retained
+history. `node scripts/harness.mjs lanes` reads live
+holders and recorded capacity without taking the lock or changing records;
+its snapshot can be transient. The slow document condition shows wall-clock
+and execution-only medians, marks contended samples and judges execution cost
+on the latter (WO-229 D001); failed samples remain unavailable.
+
+At the measured eight-slot capacity, structural host requests are `format` 3,
+`configuration-root` 2, `registrations` 2, `declarations` 4, `generated` 2,
+`host` 2, `kit-verify` 2.
+These requests are capped by the available local reservation on smaller hosts;
+the local serial structural phase keeps every local lane. The
+[measurement and sizing decision](../evidence/WO-229/decisions.md#wo-229-d002)
+retains CPU, RSS and wall observations. The operator-authorized declarations
+exception in [D022](../evidence/WO-229/decisions.md#wo-229-d022--authorize-declarations-at-its-measured-four-slot-need)
+uses its measured four-slot need, including CPU headroom and the memory screen;
+other tasks retain the strict half-capacity criterion. The staggered sibling
+fixture bounds document waiting below the complete gate's longest task and
+asserts further complete-gate admissions after the last document admission. Admission still has no
+fairness guarantee. A task's memory budget is the gate share divided by that
+capacity, and the host
 structural task compares it with the maximum task RSS in the three baseline
-passing rows. The three exclusive suites reserve every scheduler lane but
-at most two. Only shared tasks whose latest baseline sample is below 60
-seconds and 512 MiB RSS may use those spare lanes. The exclusive task's
+passing rows. A refusal names `memory.gateShare` and the minimum share that
+would admit that observed peak at the recorded capacity; it also says when
+that value exceeds `memory.hostShare`. The operator can increase the gate
+share only within the host share, or use a host with enough memory. The screen
+retains its observed-peak limit; it does not assert a future worst case.
+
+Session registrations and unwrapped bare work use the per-lane task budget,
+not the whole gate share. They represent one task without a measured parallel
+gate reservation; granting each a full gate share would multiply permitted
+memory outside admission. The bare-group limit is the least live registered
+task limit, capped at the default physical-memory task share.
+
+The three exclusive suites keep a full host reservation and lend nested
+leases to their own task and up to two local light peers. Another gate cannot
+fill the reserved overlap with heavy work. Only shared tasks whose every
+held baseline sample is below 60 seconds and 512 MiB RSS may use those spare
+lanes. The exclusive task's
 shared deadline declaration has at most three concurrent tasks and a factor
 twice that declaration, up to six; nested gates remain inside its inherited
 reservation. Target-worktree's
@@ -3159,6 +3340,18 @@ Report the host's readback or that it reports none; a root's own selection
 does not decide the worker's. A script that regenerates a dated record keeps the
 model that record names and says so beside it; the attestation records what
 ran.
+
+The opt-in Claude type `.claude/agents/dotln-worker-fable.md` selects
+`claude-fable-5-1` at `xhigh` only when the operator's `planning:` or
+`resume:` dispatch line names `fable` or `fable 5.1`. Use that type without
+a per-call model override. `dotln-worker` remains the default and the Codex
+pin above is unchanged. The parent records the type that ran in its response
+and the direct refutation receipt's `workerType`, passing `--worker-type
+dotln-worker-fable` to `plan receipt` for the opt-in; an omitted option
+records `dotln-worker`; Codex passes `--worker-type codex-spawn-agent`
+to record its actual launcher. This field attests to the launch type, never to
+effective model or effort. Older receipts lacking it retain their original
+bytes and do not acquire invented readback (WO-226).
 
 - Required attestation fields, `unknown`, Codex thread readback, the
   `--account-label` grammar, the Codex 0.154.0 effort probes and the WO-126

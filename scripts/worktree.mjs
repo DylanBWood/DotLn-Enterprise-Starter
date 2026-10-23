@@ -5,6 +5,7 @@ import {
   readPendingReceipts,
 } from "./lib/siblings.mjs";
 import { refreshHarnessRuntime } from "./lib/harness-runtime.mjs";
+import { isKitRoot } from "../packages/skeleton/src/runtime-inputs.mjs";
 import { checksPath } from "./lib/gate-evidence.mjs";
 import {
   CONFIG_FILENAME,
@@ -27,11 +28,13 @@ import { createHash } from "node:crypto";
 import {
   absoluteBodyLinks,
   assertGitHubBodyProfile,
+  assertPullRequestBodyShape,
   withTemporaryBody,
 } from "./lib/github-body.mjs";
 import {
   parseReleaseNotes,
   releaseNotesPathFor,
+  targetReleaseNotesSource,
 } from "./lib/release-notes.mjs";
 import {
   ensureGh,
@@ -79,6 +82,7 @@ import {
 } from "./lib/worktree-material.mjs";
 import { scratchMaterial } from "./lib/intake-reconciliation.mjs";
 import { parseRepositoryDeclaration } from "./lib/work-order-repository.mjs";
+import { takeConfirmTerms } from "./lib/confirm-terms.mjs";
 import { umbrellaRecord } from "./lib/dependencies.mjs";
 import {
   recordRepositoryClone,
@@ -96,6 +100,32 @@ import {
   validateOrderHostRules,
 } from "./lib/target-worktrees.mjs";
 
+/** The order's reviewed release notes at HEAD: present, a contained regular
+ * file, parsed as the five-section edition and laid out for the forge. */
+const requireReleaseNotes = (subject, workOrderId) => {
+  const releaseNotesPath = releaseNotesPathFor(workOrderId, subject);
+  const releaseNotesFile = resolve(subject, releaseNotesPath);
+  if (!existsSync(releaseNotesFile))
+    throw new Error(`${releaseNotesPath}: release-notes file is missing`);
+  if (!lstatSync(releaseNotesFile).isFile())
+    throw new Error(
+      `${releaseNotesPath}: release-notes path is not a regular file`,
+    );
+  if (
+    !realpathSync(releaseNotesFile).startsWith(`${realpathSync(subject)}${sep}`)
+  )
+    throw new Error(
+      `${releaseNotesPath}: release-notes file escapes its repository`,
+    );
+  const releaseNotes = readTrackedTextAtHead(
+    subject,
+    releaseNotesPath,
+    releaseNotesPath,
+  );
+  parseReleaseNotes(releaseNotes, releaseNotesPath);
+  assertGitHubBodyProfile(releaseNotes, releaseNotesPath);
+  return releaseNotes;
+};
 // Scratch repositories leave once every preserved byte is proven and just
 // before the worktree itself; each removal is printed as it lands, with its
 // head commit and whether a remote held it, for the close record.
@@ -548,6 +578,13 @@ const hostLaunchLines = (mainPath, entry, repository) => {
 
 // A retained start receipt owns only the exact pair it preflighted. Retrying
 // resumes preparation; it never adopts a different directory or resets a branch.
+const signoffAdvisory = (root) => {
+  if (!loadConfig(root).contributions?.operatorAuthor)
+    process.stdout.write(
+      "Advisory: every commit on this branch needs a Signed-off-by trailer matching its author (DCO 1.1), or declare that identity as contributions.operatorAuthor in dotln.config.json through a reviewed change.\n",
+    );
+};
+
 const startTargetWorktree = async (mainPath, entry) => {
   const {
     target,
@@ -599,6 +636,7 @@ const startTargetWorktree = async (mainPath, entry) => {
       validateOrderHostRules(mainPath, workOrderId, { creating: true });
     ensureWorktree(clone, target, baseCommit);
     ensureWorktree(mainPath, launchpad, launchpadBase);
+    signoffAdvisory(launchpad);
     const source = readFileSync(
       workOrderAuthorityPath(launchpad, workOrderId, workOrderPath),
       "utf8",
@@ -867,6 +905,11 @@ const main = async () => {
   } else if (!/^WO-[0-9]{3}$/.test(workOrderId ?? "")) {
     throw new Error("work order id must look like WO-003");
   }
+  const confirmTerms =
+    action === "publish" &&
+    ["--target", "--target-worktree"].includes(actionArgs[0])
+      ? takeConfirmTerms(actionArgs)
+      : undefined;
   if (action === "publish") {
     if (actionArgs[0] === "--target") {
       if (
@@ -876,7 +919,7 @@ const main = async () => {
           actionArgs[2] !== "--require-deliverable-ready")
       )
         throw new Error(
-          "usage: worktree publish WO-NNN --target <target-publish-request.json> [--require-deliverable-ready]",
+          "usage: worktree publish WO-NNN --target <target-publish-request.json> [--require-deliverable-ready] [--confirm-terms sha256:<digest>]",
         );
     } else if (actionArgs[0] === "--target-worktree") {
       // `--draft`, the opt-in form at verified, comes right after
@@ -893,7 +936,7 @@ const main = async () => {
         pairs.some((value, index) => index % 2 === 1 && !value)
       )
         throw new Error(
-          'usage: worktree publish WO-NNN --target-worktree [--draft] --branch <type>/<slug> --title "<title>" --body-file <contained reviewed path>',
+          'usage: worktree publish WO-NNN --target-worktree [--draft] --branch <type>/<slug> --title "<title>" --body-file <contained reviewed path> [--confirm-terms sha256:<digest>]',
         );
     } else if (
       actionArgs.length !== 4 ||
@@ -1019,10 +1062,7 @@ const main = async () => {
       return;
     }
     runGit(mainPath, ["worktree", "add", target, "-b", branch, "origin/main"]);
-    if (!loadConfig(target).contributions?.operatorAuthor)
-      process.stdout.write(
-        "Advisory: every commit on this branch needs a Signed-off-by trailer matching its author (DCO 1.1), or declare that identity as contributions.operatorAuthor in dotln.config.json through a reviewed change.\n",
-      );
+    signoffAdvisory(target);
     const base = runGit(target, ["rev-parse", "HEAD"]);
     const authorityHash = createHash("sha256")
       .update(readFileSync(join(target, workOrderPath)))
@@ -1064,6 +1104,7 @@ const main = async () => {
       requireDeliverableReady: actionArgs.includes(
         "--require-deliverable-ready",
       ),
+      confirmTerms,
     });
   } else if (action === "publish" && actionArgs[0] === "--target-worktree") {
     const item = parseWorktrees(repoRoot).find(
@@ -1118,6 +1159,7 @@ const main = async () => {
       branch: flag("--branch"),
       title: flag("--title"),
       body,
+      confirmTerms,
     });
   } else if (action === "publish") {
     const item = parseWorktrees(repoRoot).find(
@@ -1160,6 +1202,7 @@ const main = async () => {
     const bodyRelativePath = relative(subject, bodyPath);
     const body = readTrackedTextAtHead(subject, bodyRelativePath, bodyFile);
     assertGitHubBodyProfile(body, bodyFile);
+    assertPullRequestBodyShape(body, bodyFile);
     const { hasAiAttribution } =
       await import("../packages/compiler/src/attribution.mjs");
     if (hasAiAttribution(title) || hasAiAttribution(body))
@@ -1198,34 +1241,25 @@ const main = async () => {
         throw new Error(
           `records branch adds moved target records: ${copies.join(", ")}`,
         );
+      // An order whose Release carries the reviewed notes has them reviewed
+      // here, beside the body, before the close reads them.
+      if (
+        targetReleaseNotesSource(
+          readTrackedTextAtHead(
+            subject,
+            state.workOrderPath,
+            state.workOrderPath,
+          ),
+          state.workOrderPath,
+        ) === "reviewed"
+      )
+        requireReleaseNotes(subject, workOrderId);
       gateBlock = reviewedLaunchpadIdentity(subject, workOrderId).body;
       process.stdout.write(
         `${workOrderId}: target order records no release; records live in ${state.targetRecords.repositoryId} at ${state.targetRecords.commit}.\n`,
       );
     } else {
-      const releaseNotesPath = releaseNotesPathFor(workOrderId, subject);
-      const releaseNotesFile = resolve(subject, releaseNotesPath);
-      if (!existsSync(releaseNotesFile))
-        throw new Error(`${releaseNotesPath}: release-notes file is missing`);
-      if (!lstatSync(releaseNotesFile).isFile())
-        throw new Error(
-          `${releaseNotesPath}: release-notes path is not a regular file`,
-        );
-      if (
-        !realpathSync(releaseNotesFile).startsWith(
-          `${realpathSync(subject)}${sep}`,
-        )
-      )
-        throw new Error(
-          `${releaseNotesPath}: release-notes file escapes its repository`,
-        );
-      const releaseNotes = readTrackedTextAtHead(
-        subject,
-        releaseNotesPath,
-        releaseNotesPath,
-      );
-      parseReleaseNotes(releaseNotes, releaseNotesPath);
-      assertGitHubBodyProfile(releaseNotes, releaseNotesPath);
+      requireReleaseNotes(subject, workOrderId);
       gateBlock = productGateBody(
         reviewedProductGate(subject, workOrderId, "HEAD", {
           liveInstance: true,
@@ -1267,6 +1301,7 @@ const main = async () => {
       revision: runGit(subject, ["rev-parse", "HEAD"]),
     });
     assertGitHubBodyProfile(publishedBody, bodyFile, { links: true });
+    assertPullRequestBodyShape(publishedBody, bodyFile, { published: true });
     const opened = withTemporaryBody(publishedBody, (committedBodyPath) => {
       runGit(subject, ["push", "--no-follow-tags", "-u", "origin", branch]);
       return executeGh(subject, [
@@ -1367,16 +1402,21 @@ const main = async () => {
     );
     if (integrated.phase !== "closed")
       throw new Error(`${workOrderId} is not closed in merged control state`);
-    refreshHarnessRuntime(mainPath, () => {
-      const built = spawnSync("npm", ["run", "build"], {
-        cwd: mainPath,
-        stdio: "inherit",
-      });
-      if (built.status !== 0)
-        throw new Error(
-          "Pinned runtime build failed; worktree preserved; run node scripts/bootstrap.mjs",
-        );
-    });
+    refreshHarnessRuntime(
+      mainPath,
+      isKitRoot(mainPath)
+        ? undefined
+        : () => {
+            const built = spawnSync("npm", ["run", "build"], {
+              cwd: mainPath,
+              stdio: "inherit",
+            });
+            if (built.status !== 0)
+              throw new Error(
+                "Pinned runtime build failed; worktree preserved; run node scripts/bootstrap.mjs",
+              );
+          },
+    );
     const { readGateChecks, recordGateChecks } =
       await import("./lib/gate-evidence.mjs");
     writerTeardown.withWriterReservationLock(subject, () => {
@@ -1399,7 +1439,8 @@ const main = async () => {
       );
       process.stdout.write(renderIntakeReconciliation(reconciliation));
       const checks = readGateChecks(subject);
-      if (checks.length) recordGateChecks(mainPath, checks);
+      if (checks.length)
+        recordGateChecks(mainPath, checks, { sourceRoot: subject });
       ensureNoIgnoredMaterial(subject, reconciliation);
       verifyPreservedMaterial(subject, mainPath, reconciliation);
       refuseSubmoduleWorktree(subject);
@@ -1465,7 +1506,7 @@ const main = async () => {
     );
   } else {
     throw new Error(
-      "usage: worktree clone <repository-or-export-sibling-id> <absolute-path> | worktree start WO-NNN <work-order-path> | worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue] | worktree publish WO-NNN --title <title> --body-file <path> | worktree publish WO-NNN --target <request.json> [--require-deliverable-ready] | worktree publish WO-NNN --target-worktree --branch <type>/<slug> --title <title> --body-file <path> | worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO] | worktree resolve-pr --request <review-loop-request.json> | worktree finish WO-NNN [--dry-run] | worktree settle WO-NNN [--dry-run]",
+      "usage: worktree clone <repository-or-export-sibling-id> <absolute-path> | worktree start WO-NNN <work-order-path> | worktree integrate WO-NNN [--intake-backup <archive.zip>] [--continue] | worktree publish WO-NNN --title <title> --body-file <path> | worktree publish WO-NNN --target <request.json> [--require-deliverable-ready] [--confirm-terms sha256:<digest>] | worktree publish WO-NNN --target-worktree [--draft] --branch <type>/<slug> --title <title> --body-file <path> [--confirm-terms sha256:<digest>] | worktree observe-pr --store <episode-store> --number <N> [--repository HOST/OWNER/REPO] | worktree resolve-pr --request <review-loop-request.json> | worktree finish WO-NNN [--dry-run] | worktree settle WO-NNN [--dry-run]",
     );
   }
 };
