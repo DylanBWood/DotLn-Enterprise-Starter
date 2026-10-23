@@ -120,10 +120,20 @@ operator sandbox settings.
    workspace links) to install it again. Until then each hook reports
    `snapshot-missing` once per session and host permissions alone decide.
 4. Register the private local-terms list at `docs/control/local/terms.txt`,
-   one term per line; the directory is ignored by Git. `npm run terms -- check
-   <paths>` prints `local-terms list: present` or `unavailable`, and refuses on
-   a match by file and line without printing the term. Target publication also
-   needs the instance's own `docs/control/outward-vocabulary.json` and an
+   one term per line as `[refuse: | review: ]term`; the directory is ignored
+   by Git. A `refuse:` term refuses every outward artifact that carries it;
+   an unmarked or `review:` term is a review item of a target publication,
+   read and confirmed by the reviewer; only those two words before a colon
+   are markers, so a term holding a colon stays a term, and a marker with no
+   term after it refuses naming the line. A present list with no terms is
+   `present` with a count of zero and refuses nothing; an absent list is
+   `unavailable` and refuses publication. `npm run terms -- check <paths>`
+   prints `local-terms list: present` or `unavailable`, and in committed text
+   refuses a match of either mode by file, line and mode without printing the
+   term. Target publication also needs the instance's own
+   `docs/control/outward-vocabulary.json`, whose `reviewTerms` (an array of
+   words, possibly empty; the older `terms` key is read as the same list for
+   one kit release, with an advisory) are review items too, and an
    operator grant naming the registered repository in
    `packages/skeleton/loadouts/grants.json`; the kit carries neither an
    instance vocabulary nor such a grant. An instance order's executor commits
@@ -144,9 +154,24 @@ operator sandbox settings.
    among them) that an instance order never names, and the publication
    commands apply the instance vocabulary and the local-terms list to the
    outward body themselves.
+   The publish applies three checks to the branch, the commits, the title and
+   the composed body (the reviewed prose, the generated Change table and the
+   target checks): launchpad identifiers (`WO-NNN`, `WO-NNN-DNNN`, `FUP-<16
+   hex>`, `VER-NNN`, `FINAL-NNN`, `REVIEW-NNN`, `WS-NNN`) and `refuse:` terms
+   refuse, naming the line, the part of the body and, in a Change row, the
+   added path; review words and review-mode terms are listed the same way and
+   the publish refuses until the reviewer, having read them, passes
+   `--confirm-terms sha256:<digest>` with the digest the refusal printed; a
+   Change row of a path the target's base already held is not reported. The
+   path and other matched text on every row of a private match stay redacted
+   in diagnostics. A match spanning rows retains its full line range and
+   cannot use an existing-path exemption for only its starting row. Diagnostics
+   still name the rule, starting line, section and private mode. The
+   confirmation is recorded in the publication log and the session journal.
    The session form is `node scripts/worktree.mjs publish
    WO-NNN --target-worktree --branch <type>/<slug> --title <title> --body-file
-   <committed-reviewed-body-path>` from the launchpad root. The hook withholds
+   <committed-reviewed-body-path> [--confirm-terms sha256:<digest>]` from the
+   launchpad root. The hook withholds
    the `npm run worktree -- publish` form, naming the admitted node spelling.
    Its opt-in `--draft` form at `verified`
    pushes the target's working tree under a draft pull request that the final
@@ -160,7 +185,10 @@ operator sandbox settings.
    `hostRules: "literal"` writes that order's exact rules to the main
    checkout's untracked `.claude/settings.local.json` and `.codex/rules/`
    until release close removes them (`node scripts/harness.mjs check` names a
-   stale one). Declare the class's or registration's `disposable` paths for the
+   stale one). While the host's auto-mode classifier remains unqualified,
+   use the registration's `hostRules: "literal"` route; it writes these
+   order-specific local rules at start and removes them at release close.
+   Declare the class's or registration's `disposable` paths for the
    regenerable build output the close deletes, never moves to scratch, and
    `baseDisposablePolicy: "judge-only"` when the base checkout must retain that
    output while keeping its material checks (the default is `"delete"`). Use
@@ -400,6 +428,10 @@ missing or nonregular compiled file by path before the selected suites. Other
 kit-file changes produce one advisory line. Run
 `node scripts/launchpad.mjs verify` directly for the manifest check.
 
+A long gate wall time with short task durations can be host-lane waiting:
+the summary attributes its wait by checkout relation, and
+`node scripts/harness.mjs lanes` reads the live holders and recorded capacity.
+
 The instance coordinates work in registered sibling repositories. Its
 ordinary `npm test` and review check the installed DotLn runtime; they do
 not test a sibling's implementation. `node scripts/target-gate.mjs WO-NNN
@@ -485,9 +517,15 @@ is derived from core's WO-052 verification report and does not travel.
 
 Lifecycle commands run on the carried runtime, including Codex dispatches
 that reserve a writer. `node scripts/harness.mjs check` and `emit` verify and
-regenerate the bundle. `npm run build` and the build-first `npm run harness`
-need the omitted TypeScript source. Open the shipped console without building:
-`node packages/console/dist/src/cli.js live --store .runtime/resident`.
+regenerate the bundle. `npm run harness -- check` restores the carried runtime
+before checking it. `npm run build` in a kit reports
+`carried runtime is the build; nothing to compile` and writes nothing.
+The build-first `npm run console`, `npm run dotln` and `npm run skeleton`
+commands therefore run the carried runtime. Open the shipped console with
+`npm run console -- live --store .runtime/resident` or read its board with
+`npm run console -- board --json`. The kit carries both contracts at
+`packages/console/uifa-board-v1.schema.json` and
+`packages/console/runtime-status-v1.schema.json`.
 The status view labels resident-owned continuation steps as logical
 `vertical-host` episodes and displays intent decision holds. Those rows do not
 claim a native model launch; the child stores retain native-worker evidence.
@@ -647,6 +685,10 @@ git worktree remove .runtime/upstream-preview
 ```
 
 Set `remote.upstream.tagOpt` once so later ordinary fetches also omit tags.
+An explicit `git fetch upstream --tags` overrides `remote.upstream.tagOpt
+--no-tags`; fetch plain unless you intend to bring in all starter tags. To
+select one starter tag without adding it to the instance's tags, use the
+ref-specific example below.
 Starter tags identify the starter's export, not this instance's release baseline;
 the local release commands exclude annotated tags with the starter's recorded
 message. To preview a named starter release, fetch it into a non-tag ref and
@@ -695,9 +737,11 @@ missing from an older export. It pushes the
 branch to `origin` and opens a pull request against `main`, which the operator
 reviews and merges with a merge commit, so `main` keeps the starter's history
 and the next update does not apply this one again. The session then switches
-back to `main`, fetches `origin`, fast-forwards it to `origin/main` and runs
-`node scripts/bootstrap.mjs`; main stays clean and ready for the next
-worktree.
+back to clean `main` and runs `node scripts/launchpad.mjs update --finish`.
+That command fetches `origin`, checks the fast-forward before changing the
+checkout, advances `main` to `origin/main` and runs bootstrap; main stays
+ready for the next worktree. It refuses a dirty tree, a non-fast-forward or
+a checkout other than `main`, naming the fact.
 Bootstrap prepares local dependencies and harness files without generating
 the tracked lineage index on main. A `.runtime/upstream-preview` left by an interrupted
 preview holds only a detached checkout: the session removes it with `git

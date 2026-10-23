@@ -4,8 +4,14 @@ import type { AuthorityEnvelope, AuthorityGrant, CompiledProgram } from "./types
  * Observation failures show the message; they never alter a permission decision.
  */
 export declare function showHarnessAdvisory(sessionId: string | undefined, event: string, cause: string, claimMarker: (key: string) => boolean): boolean;
-/** A dispatch may lead a longer message, separated from its direction by a
- * newline or semicolon. Quoted phrases and word continuations are prose. */
+/** Read only the first content line, allowing blanks and one opening paste
+ * fence. A later quoted dispatch never becomes the operator's instruction. */
+export declare function harnessPromptLine(prompt: string | undefined): {
+    text: string;
+    index: number;
+};
+/** A dispatch may lead following direction after a semicolon or newline.
+ * The worker opt-in is a selection, not part of the lifecycle action. */
 export declare function harnessPromptIntent(prompt: string | undefined): string;
 export type HarnessEvent = "PreToolUse" | "PostToolUse" | "Stop" | "UserPromptSubmit";
 export interface HarnessObservation {
@@ -26,6 +32,7 @@ export interface HarnessProfile {
     };
     readonly skills: HarnessObservation & {
         readonly root: string;
+        readonly format: "agent-skills";
     };
     readonly settings: HarnessObservation & {
         readonly path: string;
@@ -97,6 +104,12 @@ export type HarnessFacet = {
     readonly roleNames: readonly string[];
     readonly roleName?: never;
 }));
+export interface HarnessWorker {
+    readonly name: string;
+    readonly model: string;
+    readonly effort: "low" | "medium" | "high" | "xhigh" | "max";
+    readonly optIn?: boolean;
+}
 /** Separate target input. It never extends or changes the loadout-v1 preimage. */
 export interface HarnessProgram {
     readonly contractVersion: "harness-v1";
@@ -104,11 +117,9 @@ export interface HarnessProgram {
     readonly roles: readonly HarnessRole[];
     readonly facets: readonly HarnessFacet[];
     readonly correctionToken: string | null;
-    readonly worker?: {
-        readonly name: string;
-        readonly model: string;
-        readonly effort: "low" | "medium" | "high" | "xhigh" | "max";
-    };
+    /** Compatibility for programs declaring one default worker. */
+    readonly worker?: HarnessWorker;
+    readonly workers?: readonly HarnessWorker[];
 }
 export interface HarnessOrigin {
     readonly ids: readonly string[];

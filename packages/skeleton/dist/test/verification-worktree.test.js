@@ -253,7 +253,7 @@ test("WO-054 host test confinement denies outside reads, writes and network and 
     writeFileSync(sentinel, "private fixture");
     writeFileSync(join(repo, "check.cjs"), `const fs=require('node:fs'); const assert=require('node:assert/strict'); for(const op of [()=>fs.readFileSync(${JSON.stringify(sentinel)}),()=>fs.writeFileSync(${JSON.stringify(outside)},'x')]) {assert.throws(op,e=>e.code==='EPERM')} assert.equal(fs.existsSync('own-cache'),false);fs.writeFileSync('own-cache','allowed'); const s=require('node:net').connect(9,'127.0.0.1');s.on('error',e=>process.exit(e.code==='EPERM'?0:8));`);
     fixtureGit(repo, "add", ".");
-    fixtureGit(repo, "commit", "-m", "Confinement fixture");
+    fixtureGit(repo, "-c", "maintenance.auto=false", "commit", "-m", "Confinement fixture");
     const commit = fixtureGit(repo, "rev-parse", "HEAD");
     const criterion = {
         ...snapshotCriteria[0],
@@ -290,7 +290,7 @@ test("WO-054 unavailable commands never pass and a named test cannot rewrite its
     fixtureGit(repo, "init", "--initial-branch=main");
     writeFileSync(join(repo, "change.cjs"), "require('node:fs').writeFileSync('change.cjs','changed input');\n");
     fixtureGit(repo, "add", ".");
-    fixtureGit(repo, "commit", "-m", "Unavailable and mutation fixture");
+    fixtureGit(repo, "-c", "maintenance.auto=false", "commit", "-m", "Unavailable and mutation fixture");
     const commit = fixtureGit(repo, "rev-parse", "HEAD");
     const criterion = {
         ...snapshotCriteria[0],

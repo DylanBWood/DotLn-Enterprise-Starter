@@ -1,5 +1,5 @@
 import { canonicalStringify, compileEditableView, compileFeedbackUnits, compileLoadout, defineLoadout, feedbackMaturity, functionTableFromLoadout, renderCompiledDiff, statechartJsonFromLoadout, } from "@dotln/compiler";
-import { array, at, id, known, number, object, string, unknown, } from "./values.js";
+import { array, at, id, known, number, object, readFailureReason, string, unknown, } from "./values.js";
 export const INSPECTION_EXPIRES_AT = 86_400_000;
 export function exportedLoadouts(exports, ref, environment, onError = () => { }) {
     const rows = [];
@@ -15,7 +15,7 @@ export function exportedLoadouts(exports, ref, environment, onError = () => { })
                     : item;
         }
         catch (error) {
-            onError(`${ref}#${name}`, error instanceof Error ? error.message : String(error));
+            onError(`${ref}#${name}`, readFailureReason(error));
             continue;
         }
         if (at(value, "schemaVersion") !== 1 ||

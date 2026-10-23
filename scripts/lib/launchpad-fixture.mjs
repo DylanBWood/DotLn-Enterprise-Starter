@@ -123,7 +123,13 @@ const commitExport = (destination) => {
   ok(runExport(destination), `export ${destination}`);
   configureRepository(destination);
   git(destination, ["add", "."]);
-  git(destination, ["commit", "-qm", "exported launchpad"]);
+  git(destination, [
+    "-c",
+    "maintenance.auto=false",
+    "commit",
+    "-qm",
+    "exported launchpad",
+  ]);
   return destination;
 };
 // The command line under test, run from the committed copy's own scripts.
@@ -238,6 +244,8 @@ for (const path of [
   "package.json",
   "package-lock.json",
   ...TEST_SUPPORT_FILES,
+  "packages/console/uifa-board-v1.schema.json",
+  "packages/console/runtime-status-v1.schema.json",
   "tsconfig.json",
   "LICENSE",
   "LICENSE-docs",
@@ -285,6 +293,8 @@ for (const kind of ["intake", "settings", "beacon", "controlBeacon", "store"]) {
   git(source, ["add", "-f", "--", planted[kind]]);
 }
 git(source, [
+  "-c",
+  "maintenance.auto=false",
   "commit",
   "-qm",
   "bounded copy of the work tree with planted instance material",

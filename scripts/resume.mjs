@@ -21,6 +21,7 @@ import {
   reportHarnessRuntime,
   currentHarnessSessionReport,
   observedFactsReport,
+  isKitRoot,
 } from "./lib/harness-runtime.mjs";
 import {
   mainWorktree,
@@ -171,10 +172,24 @@ const append = (event, segment) => {
   };
   validateRecordedAt(record, "at append");
   mkdirSync(dirname(logPath), { recursive: true });
-  writeFileSync(logPath, `${JSON.stringify(record)}\n`, {
-    flag: "a",
-    mode: 0o644,
-  });
+  const line = JSON.stringify(record);
+  try {
+    writeFileSync(logPath, `${line}\n`, {
+      flag: "a",
+      mode: 0o644,
+    });
+  } catch (error) {
+    // A write can commit its bytes before reporting a close/fsync failure.
+    // Such a dispatch owns its writer; unreadable evidence cannot justify
+    // releasing it either. Only an observed absent event permits release.
+    try {
+      if (readFileSync(logPath, "utf8").split("\n").includes(line))
+        releaseRefusedDispatch = undefined;
+    } catch (observation) {
+      if (observation.code !== "ENOENT") releaseRefusedDispatch = undefined;
+    }
+    throw error;
+  }
   return record;
 };
 
@@ -1263,7 +1278,7 @@ const run = async (argv) => {
     if (!thread) return;
     if (!existsSync(harnessHostPath)) {
       throw new Error(
-        "Codex writer reservation unavailable; harness runtime is not built. Run npm run build before retrying this dispatch.",
+        `Codex writer reservation unavailable; harness runtime is not built. Run ${isKitRoot(repoRoot) ? "node scripts/bootstrap.mjs" : "npm run build"} before retrying this dispatch.`,
       );
     }
     const {
@@ -2112,14 +2127,17 @@ const run = async (argv) => {
           gateCodeIdentity,
           gateInstanceInputDigest,
           instanceDigestMismatch,
+          gateCheckStands,
         } = await import("./lib/gate-evidence.mjs");
         const { validProductGate } = await import("./lib/control.mjs");
-        const row = readGateChecks(repoRoot)
+        const gateRows = readGateChecks(repoRoot);
+        const row = gateRows
           .filter(
             (candidate) =>
               candidate.checkId === "npm test" &&
               candidate.evidenceRef === fields.productGate &&
-              validProductGate(candidate, fields.productGate),
+              validProductGate(candidate, fields.productGate) &&
+              gateCheckStands(candidate, gateRows, repoRoot),
           )
           .at(-1);
         if (!row)
@@ -2423,7 +2441,7 @@ const run = async (argv) => {
         }
       } else {
         process.stderr.write(
-          "DotLn advisory: Codex session entry unavailable; harness runtime is not built. Run npm run build before the next dispatch; process cost remains unknown; cause no-session.\n",
+          `DotLn advisory: Codex session entry unavailable; harness runtime is not built. Run ${isKitRoot(repoRoot) ? "node scripts/bootstrap.mjs" : "npm run build"} before the next dispatch; process cost remains unknown; cause no-session.\n`,
         );
       }
     }

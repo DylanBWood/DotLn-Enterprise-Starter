@@ -100,9 +100,24 @@ export declare function beginGateRun(root: string, command: string, { kind }?: {
 export type GateDiagnostic = {
     exitCode: number;
     executed: boolean;
+    name?: string;
+    durationMs?: number;
+    finishedAt?: string;
+    reused?: boolean;
+    sourceRow?: {
+        location?: string;
+        task?: string;
+        codeIdentity?: string;
+    };
+    failureKind?: string;
+    timedOut?: boolean;
+    stopped?: boolean;
+    partial?: unknown;
+    excludedSuites?: unknown;
     output?: string;
     outputRef?: string;
     cases?: GateDiagnostic[];
+    taskTimeline?: GateDiagnostic[];
 };
 export type SharedRefs = {
     originMain: string;
@@ -122,6 +137,14 @@ export type GateCheck = GateDiagnostic & {
     durationMs: number;
     evidenceRef: string;
     recordedAt: string;
+    requiredSuites?: string[];
+    identityUnchanged?: boolean;
+    buildOutputUnchanged?: boolean;
+    buildOutputAttested?: boolean;
+    memory?: {
+        failure?: unknown;
+    };
+    abandonedRoots?: unknown[];
     sharedRefs?: {
         start: SharedRefs;
         end: SharedRefs;
@@ -136,8 +159,10 @@ export type GateCheck = GateDiagnostic & {
  * @param {string} root @returns {SharedRefs} */
 export declare function readSharedRefs(root: string): SharedRefs;
 /** Exact candidate Git tree identity, including uncommitted and untracked files.
- * Ignored host evidence stays outside the tree. No evidence or control paths are
- * excluded specially. Git filters are applied by hash-object; this never writes
+ * Ignored host evidence stays outside the tree. A re-included untracked intake
+ * directory is private source material, not a candidate Git entry; tracked
+ * intake files and ordinary untracked source still participate. Git filters
+ * are applied by hash-object; this never writes
  * the shared object database or the user's index.
  * @param {string} root
  */
@@ -166,14 +191,17 @@ export declare function gateCodeIdentity(root: string, revision?: string): strin
 export declare const gateCacheRows = 256;
 /** @param {string} root @param {string} [treeHash] @returns {GateCheck[]} */
 export declare function readGateChecks(root: string, treeHash?: string): GateCheck[];
-/** @param {string} root @param {GateCheck[]} additions */
-export declare function recordGateChecks(root: string, additions: GateCheck[]): void;
+/** @param {string} root @param {GateCheck[]} additions
+ * @param {{sourceRoot?: string}} [options] */
+export declare function recordGateChecks(root: string, additions: GateCheck[], { sourceRoot }?: {
+    sourceRoot?: string;
+}): void;
 /** A row that left suites out is a partial result under any identity, never a
  * complete check (WO-140).
  * Any other shape of either field is read as partial, never as complete.
- * @param {GateCheck & {partial?: unknown, excludedSuites?: unknown}} row
+ * @param {{partial?: unknown, excludedSuites?: unknown}} row
  */
-export declare const partialGateCheck: (row: GateCheck & {
+export declare const partialGateCheck: (row: {
     partial?: unknown;
     excludedSuites?: unknown;
 }) => boolean;
@@ -185,7 +213,41 @@ export declare const partialGateCheck: (row: GateCheck & {
 export declare const instanceDigestMismatch: (row: {
     instanceInputDigest?: string;
 }, current: string | undefined) => "different" | "missing" | null;
-/** A failed attempt does not erase a later or earlier successful run at identical bytes.
+/** Row integrity applies to executions under every check, including runs
+ * that supply no pass to the product gate.
+ * @param {GateCheck} row */
+export declare const intactGateExecutionRow: (row: GateCheck) => boolean;
+/** @param {GateDiagnostic} result */
+export declare const passingGateResult: (result: GateDiagnostic) => boolean;
+/** Declared suites need a named execution or carried result in the row.
+ * A legacy row without a declaration covers only an empty claim.
+ * @param {GateCheck} row */
+export declare function missingGateSuites(row: GateCheck): string[];
+/** The execution of `name` that finished last among these rows. A result
+ * carried from another row and a task that never started are not executions:
+ * they neither supply a pass nor displace one. A run recorded under another
+ * check answers no claim and supplies nothing. When the task's latest run
+ * there did not pass, and no gate execution finished after it, that failure
+ * is the task's latest run; when it passed, the latest gate execution
+ * decides as if the other runs had not happened. Overlapping gates are
+ * ordered by when the task finished, then by when its row was recorded.
+ * `citesMain` reports a carried result this worktree took from main.
+ * @param {GateCheck[]} rows @param {GateCheck[]} other
+ * @param {string} name @param {string|undefined} identity */
+export declare function latestGateExecution(rows: GateCheck[], other: GateCheck[], name: string, identity: string | undefined): {
+    row?: GateCheck;
+    result?: GateDiagnostic | undefined;
+    at?: number;
+    citesMain: boolean;
+};
+/** A complete row stands on the same execution decision used by the runner.
+ * A carried main result is revalidated against main only when local history
+ * supplies no execution of that task.
+ * @param {GateCheck} candidate @param {GateCheck[]} rows @param {string} [root]
+ */
+export declare function gateCheckStands(candidate: GateCheck, rows: GateCheck[], root?: string): boolean;
+/** Generic tree checks retain successful evidence; product checks also
+ * reject complete rows displaced by a task's later failing execution.
  * @param {string} root @param {string} checkId @param {string} treeHash
  */
 export declare const findGateCheck: (root: string, checkId: string, treeHash: string) => GateCheck | undefined;

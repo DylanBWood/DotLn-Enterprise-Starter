@@ -9,7 +9,7 @@ import { basename, dirname, isAbsolute, join, relative, resolve, sep, } from "no
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { text as streamText } from "node:stream/consumers";
 import { TARGET_PUBLICATION_EFFECTS, targetPublicationRefusal, } from "./target-publication-policy.js";
-import { applyFeedbackCorrection, compileFeedbackUnits, COMPILER_PACKAGE_VERSION, fnv1a64, canonicalStringify, showHarnessAdvisory, harnessPromptIntent, assertOutsideWriteGrants, outsideWriteEffect, } from "@dotln/compiler";
+import { applyFeedbackCorrection, compileFeedbackUnits, COMPILER_PACKAGE_VERSION, fnv1a64, canonicalStringify, showHarnessAdvisory, harnessPromptIntent, harnessPromptLine, assertOutsideWriteGrants, outsideWriteEffect, } from "@dotln/compiler";
 import { harnessAuthorization } from "./reactor.js";
 import { personalFeedback } from "./loadouts/feedback.js";
 import { HarnessCommandRefused, LIVE_GATE_READ_LIST, harnessToolEffects, invocationEffects, liveGateReads, patchWriteTargets, shellRedirectTargets, shellWritePaths, shellWriteTargets, commitMessageInputs, shellDiagnostics, shellInvocations, shellGuidance, } from "./harness-command.js";
@@ -740,7 +740,8 @@ export function recordOperatorMessage(root, input, source = harnessInputHarness(
         !input.session_id)
         return;
     const session = readJson(statePath(root, input), initialSession(), true);
-    const prefix = Object.keys(operatorPrefixes).find((prefix) => input.prompt.trimStart().startsWith(prefix)) ?? null;
+    const firstLine = harnessPromptLine(input.prompt);
+    const prefix = Object.keys(operatorPrefixes).find((prefix) => firstLine.text.startsWith(prefix)) ?? null;
     const route = source === "codex-dispatch-phrase"
         ? {
             route: "unknown",
@@ -758,6 +759,7 @@ export function recordOperatorMessage(root, input, source = harnessInputHarness(
             : source,
         ...route,
         prefix,
+        prefixLine: prefix ? firstLine.index : null,
         class: prefix ? operatorPrefixes[prefix] : "unclassified",
         digest: textDigest(input.prompt),
         bytes: Buffer.byteLength(input.prompt),
@@ -824,11 +826,21 @@ function releaseCloseAdmission(root, input, session) {
         // Classify only the diagnostic. The exact admission grammar above stays
         // authoritative; quoted path characters are not shell operators.
         const unquoted = suffix.replace(/'(?:[^']|'\\'')*'|"(?:\\.|[^"\\])*"|\\[\s\S]/gu, "");
+        // Consume only complete canonical publish material arguments before
+        // classifying the remainder. A later extra flag is not a quoting error.
+        const remainder = suffix.startsWith(" --publish")
+            ? suffix
+                .slice(" --publish".length)
+                .replace(/^(?: --material '(?:[^'\r\n\u0000]|'\\'')+=(?:disposable|preserve)')+/u, "")
+            : suffix;
         const mismatch = /[;&|<>\r\n]/u.test(unquoted)
             ? "shell operator or redirect"
-            : /(?:^|\s)--material(?:\s|$)/u.test(suffix)
-                ? "non-canonical material flag quoting or value"
-                : "extra or non-canonical words or whitespace after the helper";
+            : suffix.startsWith(" --dry-run") &&
+                /(?:^|\s)--material(?:\s|$)/u.test(suffix)
+                ? "material arguments require --publish"
+                : /(?:^|\s)--material(?:\s|$)/u.test(remainder)
+                    ? "non-canonical material flag quoting or value"
+                    : "extra or non-canonical words or whitespace after the helper";
         return missing(`byte-exact helper spelling missing (${mismatch}); expected ${helper} --publish OR ${helper} --dry-run; material arguments use --publish --material '<path>=disposable|preserve'`);
     }
     try {
@@ -868,7 +880,7 @@ function releaseCloseAdmission(root, input, session) {
 }
 /** Split one plain command into words: single and double quotes group, no
  * expansion, operator or redirect is admitted, and anything else is `null`. */
-function plainShellWords(command) {
+function plainShellWords(command, limit = Infinity) {
     const words = [];
     let current = "";
     let quoted = false;
@@ -890,6 +902,8 @@ function plainShellWords(command) {
         if (char === " " || char === "\t") {
             if (current || quoted)
                 words.push(current);
+            if (words.length === limit)
+                return words;
             current = "";
             quoted = false;
             index += 1;
@@ -903,6 +917,44 @@ function plainShellWords(command) {
     if (current || quoted)
         words.push(current);
     return words.length && !words[0].includes("=") ? words : null;
+}
+/** Diagnose a recognizable helper without interpreting or admitting its shell.
+ * Only this advisory strips prefixes; the permission parsers never do. */
+function registeredTargetNearMiss(root, input) {
+    if (input.tool_name !== "Bash" ||
+        typeof input.tool_input?.command !== "string")
+        return null;
+    const command = input.tool_input.command.trimStart();
+    let helper = command;
+    helper = helper
+        .replace(/^![ \t]*/u, "")
+        .replace(/^cd[ \t]+(?:'[^']*'|"[^"]*"|[^ \t;&|<>]+)[ \t]*&&[ \t]*/u, "")
+        .replace(/^env[ \t]+/u, "")
+        .replace(/^(?:[A-Za-z_][A-Za-z0-9_]*=(?:'[^']*'|"[^"]*"|[^ \t;&|<>]+)[ \t]+)+/u, "");
+    const prefixed = helper !== command;
+    if (!prefixed && plainShellWords(command))
+        return null;
+    const words = plainShellWords(helper, 3);
+    if (!words || !["node", process.execPath].includes(words[0] ?? ""))
+        return null;
+    const script = words[1] && resolve(root, words[1]);
+    if (!((script === join(root, "scripts/worktree.mjs") && words[2] === "publish") ||
+        (script === join(root, "scripts/release.mjs") && words[2] === "close")))
+        return null;
+    const unquoted = helper.replace(/'(?:[^']|'\\'')*'|"(?:\\.|[^"\\])*"|\\[\s\S]/gu, "");
+    const syntax = prefixed
+        ? "prefix"
+        : /\|/u.test(unquoted)
+            ? "pipe"
+            : /[<>]/u.test(unquoted)
+                ? "redirect"
+                : null;
+    if (!syntax)
+        return null;
+    return {
+        journal: { kind: "near-miss", syntax },
+        advisory: `Registered-target admission not judged: shell syntax (${syntax}) hides the helper; run the plain spelling; host permissions decide.`,
+    };
 }
 const BRANCH_NAME = /^[A-Za-z0-9][A-Za-z0-9._/-]*$/;
 const COMMIT_SHA = /^[0-9a-f]{40}$/;
@@ -1107,6 +1159,25 @@ function emittedDenyMatches(root, command, words) {
             : spelling === body);
     });
 }
+function publicationView(configuration, repositoryId) {
+    const fields = {};
+    if (configuration.roots !== undefined &&
+        (!configuration.roots ||
+            typeof configuration.roots !== "object" ||
+            Array.isArray(configuration.roots)))
+        throw new Error("publication authority dotln.config.json roots must be an object");
+    for (const [name, value] of Object.entries(configuration.roots ?? {}))
+        fields[`roots.${name}`] = value;
+    if (repositoryId) {
+        const registration = configuration.repositories?.[repositoryId];
+        for (const name of ["baseBranch", "authorityProfile", "release"])
+            fields[`repositories.${repositoryId}.${name}`] = {
+                present: Object.hasOwn(registration ?? {}, name),
+                value: registration?.[name] ?? null,
+            };
+    }
+    return fields;
+}
 function registeredTargetAdmission(root, input, session) {
     if (input.tool_name !== "Bash")
         return null;
@@ -1141,18 +1212,38 @@ function registeredTargetAdmission(root, input, session) {
             ?.replace(/^worktree /, "");
         if (!main)
             return withheld("main's checkout is unavailable");
-        const committed = (file) => {
+        const committed = (file, compareBytes = true) => {
             const bytes = git(main, ["--no-replace-objects", "show", `HEAD:${file}`]);
             for (const checkout of [main, root]) {
                 const path = contained(checkout, file);
-                if (!lstatSync(path).isFile() || readFileSync(path, "utf8") !== bytes)
+                if (!lstatSync(path).isFile() ||
+                    (compareBytes && readFileSync(path, "utf8") !== bytes))
                     throw new Error(`publication authority differs from main's committed ${file}`);
             }
             if (!/^100(?:644|755) blob /u.test(git(main, ["--no-replace-objects", "ls-tree", "HEAD", "--", file])))
                 throw new Error(`publication authority is not a committed regular file: ${file}`);
             return bytes;
         };
-        const configuration = JSON.parse(committed("dotln.config.json"));
+        const configuration = JSON.parse(committed("dotln.config.json", false));
+        const workingConfigurations = [main, root].map((checkout) => JSON.parse(readFileSync(contained(checkout, "dotln.config.json"), "utf8")));
+        const comparePublication = (repositoryId) => {
+            const expected = publicationView(configuration, repositoryId);
+            for (const working of workingConfigurations) {
+                const actual = publicationView(working, repositoryId);
+                for (const field of [
+                    ...new Set([...Object.keys(expected), ...Object.keys(actual)]),
+                ].sort()) {
+                    if (Object.hasOwn(expected, field) !== Object.hasOwn(actual, field) ||
+                        canonicalStringify(expected[field] ?? null) !==
+                            canonicalStringify(actual[field] ?? null))
+                        throw new Error(`publication authority differs from main's committed dotln.config.json at ${field}`);
+                }
+            }
+        };
+        // Judge roots before using one to locate the registry, then the single
+        // registration that registry binds. Other operational settings are not
+        // publication authority; grants below still require identical bytes.
+        comparePublication();
         const controlRoot = configuration.roots?.control ??
             `${configuration.roots?.docs ?? "docs"}/control`;
         const localFile = (checkout, file) => contained(checkout, `${controlRoot}/local/${file}`);
@@ -1162,6 +1253,7 @@ function registeredTargetAdmission(root, input, session) {
         if (entries.length !== 1)
             return withheld(`no single recorded target worktree for ${order} in main's registry`);
         const entry = entries[0];
+        comparePublication(entry.repositoryId);
         const rootEntries = Object.values(readJson(localFile(root, registryName), {})).filter((row) => row?.workOrderId === order);
         if (rootEntries.length !== 1 ||
             canonicalStringify(rootEntries[0]) !== canonicalStringify(entry))
@@ -2763,12 +2855,14 @@ function runHarnessEvidenceChecks(root, stopRequested = () => false, pendingVerd
     // is neither a pass nor a recorded failure. The nested runner may have
     // recorded its completed tasks as a stopped row, which supplies no pass;
     // the message names that row when it exists.
-    const honourStop = (checkId) => {
+    const honourStop = (checkId, startedAt) => {
         if (!stopRequested())
             return;
         const stopped = [...readGateChecks(root, treeHash)]
             .reverse()
             .find((row) => row.checkId === checkId &&
+            startedAt !== undefined &&
+            Date.parse(row.recordedAt) >= startedAt &&
             row.stopped === true);
         throw new Error(`Gate stopped by request during ${checkId}; ${stopped ? `the runner recorded its completed tasks as a stopped row (${stopped.evidenceRef}), which supplies no pass` : "no check recorded"}`);
     };
@@ -2804,7 +2898,7 @@ function runHarnessEvidenceChecks(root, stopRequested = () => false, pendingVerd
         });
         process.stdout.write(run.stdout ?? "");
         process.stderr.write(run.stderr ?? "");
-        honourStop(checkId);
+        honourStop(checkId, started);
         const durationMs = Date.now() - started;
         if (run.error)
             process.stderr.write(`Suite ${checkId} failed after ${durationMs} ms: ${run.error.message}\n`);
@@ -3221,7 +3315,7 @@ export function permissionEffect(input, root, tools = harnessToolEffects, outsid
  */
 const stopReentry = (input) => input.hook_event_name === "Stop" && input.stop_hook_active === true;
 const protocolAdvisory = (reason) => ({
-    systemMessage: `DotLn advisory: ${reason.replace(/\s+/g, " ")}; host permissions decide.`,
+    systemMessage: `DotLn advisory: ${reason.replace(/\s+/g, " ").replace(/(?:; )?host permissions decide\.$/u, "")}; host permissions decide.`,
 });
 // Preserve budget provenance without adding fields to the host protocol.
 // Classification messages can also mention subagents; wording is not origin.
@@ -4202,6 +4296,14 @@ async function evaluateExistingHarnessHook(config, input, root, boundary, outsid
         }
         if (scopeResult)
             return protocolAdvisory(scopeResult.reason);
+        const nearMiss = registeredTargetNearMiss(root, input);
+        if (nearMiss) {
+            record(root, input, {
+                registeredTargetAdmission: nearMiss.journal,
+                advisory: nearMiss.advisory,
+            });
+            return protocolAdvisory(nearMiss.advisory);
+        }
         const close = releaseCloseAdmission(root, input, session);
         if (close) {
             if (close.advisory) {

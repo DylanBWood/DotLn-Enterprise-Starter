@@ -1,4 +1,5 @@
 import { spawnGit, runGit } from "./git.mjs";
+import { createHash } from "node:crypto";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -257,7 +258,7 @@ function withPublishLane(run) {
 }
 /** Fetch through a host-owned lane, then import its bundle without consulting
  * the clone's transport configuration or moving any branch in the clone. */
-export function fetchRemoteBranch(repo, url, branch) {
+export function fetchRemoteBranch(repo, url, branch, { beforeImport } = {}) {
   return withPublishLane((inLane) => {
     inLane([
       "fetch",
@@ -267,6 +268,9 @@ export function fetchRemoteBranch(repo, url, branch) {
       `refs/heads/${branch}:refs/heads/fetched`,
     ]);
     const commit = inLane(["rev-parse", "refs/heads/fetched^{commit}"]);
+    // A caller can judge the fetched history before any object or reference
+    // is written to its checkout. The lane is removed on refusal as well.
+    beforeImport?.(inLane, commit);
     const scratch = mkdtempSync(join(tmpdir(), "dotln-target-fetch-"));
     try {
       const bundle = join(scratch, "fetched.bundle");
@@ -320,14 +324,25 @@ export function parsePullRequestUrl(stdout, forge) {
   return Number(url[4]);
 }
 /** The repository's GitHub Release for `tag`: current when one exists with
- * this title and body, created otherwise, refused when it differs. */
+ * this title and body, created otherwise, refused when it differs. A Release
+ * published under an earlier title or body shape stays current through
+ * `admittedTitles`, `admittedBodies` and `admittedBodyDigests` (sha256:<hex>
+ * of bodies an earlier attempt bound); a published Release is never edited.
+ * `bindBody` receives the admitted existing bytes or the bytes about to be
+ * created, so a caller's retry record binds the actual publication. */
 export function ensureRelease(
   cwd,
   repository,
   tag,
   title,
   body,
-  { matchTitle = true, admittedTitles = [title] } = {},
+  {
+    matchTitle = true,
+    admittedTitles = [title],
+    admittedBodies = [body],
+    admittedBodyDigests = [],
+    bindBody = () => {},
+  } = {},
 ) {
   const viewed = executeGh(cwd, [
     "release",
@@ -355,11 +370,17 @@ export function ensureRelease(
       );
     if (
       (matchTitle && !admittedTitles.includes(release.name)) ||
-      release.body !== body
+      !(
+        admittedBodies.includes(release.body) ||
+        admittedBodyDigests.includes(
+          `sha256:${createHash("sha256").update(release.body).digest("hex")}`,
+        )
+      )
     )
       throw publishRefusal(
         `${tag} GitHub Release on ${repository.selector} differs from the expected ${matchTitle ? "title and body" : "body"}`,
       );
+    bindBody(release.body);
     return "existing";
   }
   if (!/\brelease not found\b/iu.test(`${viewed.stderr}${viewed.stdout}`))
@@ -372,6 +393,7 @@ export function ensureRelease(
   );
   try {
     writeFileSync(notes, body);
+    bindBody(body);
     const created = executeGh(cwd, [
       "release",
       "create",

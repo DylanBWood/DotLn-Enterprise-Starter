@@ -1,4 +1,5 @@
 import * as gitCommands from "./lib/git.mjs";
+import { copyFixtureFiles } from "./lib/fixture-inputs.mjs";
 const { runGit, shellQuote } = gitCommands;
 // The compatibility spelling lets the new behavioral fixtures execute against
 // the named prior revision, where the exported builder does not exist yet.
@@ -308,6 +309,8 @@ function fixture() {
       "user.email=fixture@example.invalid",
       "-c",
       "commit.gpgsign=false",
+      "-c",
+      "maintenance.auto=false",
       "commit",
       "-m",
       "Create fixture",
@@ -340,12 +343,13 @@ test("generated JavaScript harness surfaces agree with the repository format pol
 test("foreground CLI dispatch binds the actual roleless hook session and preserves observations", async () => {
   const root = fixture();
   try {
-    for (const path of [
-      "scripts/resume.mjs",
-      "scripts/work-orders.mjs",
-      "scripts/lib",
-      "packages/skeleton/src",
-    ])
+    copyFixtureFiles(
+      sourceRoot,
+      root,
+      "scripts/test-control-copy-sites.fixture-inputs.json",
+      "harness completion ownership",
+    );
+    for (const path of ["scripts/lib", "packages/skeleton/src"])
       cpSync(join(sourceRoot, path), join(root, path), { recursive: true });
     rmSync(join(root, "docs/control/orders/WO-999.jsonl"));
     write(
@@ -796,12 +800,13 @@ test("foreground CLI dispatch binds the actual roleless hook session and preserv
 test("WO-139 Codex executor and fix completion automatically release after the final index", async () => {
   const root = fixture();
   try {
-    for (const path of [
-      "scripts/resume.mjs",
-      "scripts/work-orders.mjs",
-      "scripts/lib",
-      "packages/skeleton/src",
-    ])
+    copyFixtureFiles(
+      sourceRoot,
+      root,
+      "scripts/test-control-copy-sites.fixture-inputs.json",
+      "harness completion ownership",
+    );
+    for (const path of ["scripts/lib", "packages/skeleton/src"])
       cpSync(join(sourceRoot, path), join(root, path), { recursive: true });
     rmSync(join(root, "docs/control/orders/WO-999.jsonl"));
     write(
@@ -981,7 +986,50 @@ test("WO-139 Codex executor and fix completion automatically release after the f
       "a post-append projection failure cannot strand the writer",
     );
     rmSync(join(root, "docs/work-orders/README.md.tmp"));
-    pass("verify");
+    write(
+      root,
+      "append-failure.mjs",
+      `
+import fs from 'node:fs';
+import { syncBuiltinESMExports } from 'node:module';
+const write = fs.writeFileSync;
+fs.writeFileSync = function(file, bytes, options) {
+  const result = write.call(this, file, bytes, options);
+  if (String(file).endsWith('/WO-999.jsonl') && String(bytes).includes('VerificationRequested'))
+    throw new Error('fixture append committed then failed');
+  return result;
+};
+syncBuiltinESMExports();
+`,
+    );
+    const appendedThenFailed = spawnSync(
+      process.execPath,
+      [
+        "--import",
+        join(root, "append-failure.mjs"),
+        "scripts/resume.mjs",
+        "verify",
+      ],
+      {
+        cwd: root,
+        encoding: "utf8",
+        env: { ...process.env, CODEX_THREAD_ID: sessionId },
+      },
+    );
+    assert.notEqual(appendedThenFailed.status, 0);
+    assert.match(
+      appendedThenFailed.stderr,
+      /fixture append committed then failed/,
+    );
+    assert.equal(
+      JSON.parse(pass("status", "--json").stdout).phase,
+      "verifying",
+    );
+    assert.equal(
+      harnessWriterView(root).reserved,
+      true,
+      "a committed dispatch retains its writer even if append reports failure",
+    );
     assert.equal(harnessWriterView(root).reserved, true);
     write(
       root,
@@ -1020,6 +1068,8 @@ test("WO-139 Codex executor and fix completion automatically release after the f
         "user.email=fixture@example.invalid",
         "-c",
         "commit.gpgsign=false",
+        "-c",
+        "maintenance.auto=false",
         "commit",
         "-m",
         "Closed fixture",
@@ -1938,6 +1988,125 @@ test("WO-178 Stop names only journaled dispatches without terminal observations"
   }
 });
 
+test("WO-226 pasted prefixes select one role and retain the first content line", () => {
+  const root = fixture();
+  try {
+    for (const [prompt, prefix, role, prefixLine, classification] of [
+      [
+        "\n```text\n\nplanning: fixture\n```",
+        "planning:",
+        "planner",
+        3,
+        "direction",
+      ],
+      [
+        "\n\nresume: next\nLater direction",
+        "resume:",
+        "executor",
+        2,
+        "direction",
+      ],
+      ["planning: refute fable 5.1", "planning:", "refuter", 0, "direction"],
+      ["Example follows\nresume: next", null, "unknown", null, "unclassified"],
+      ["No dispatch", null, "unknown", null, "unclassified"],
+      ["```\n```\nplanning: fixture", null, "unknown", null, "unclassified"],
+    ]) {
+      const session_id = `prefix-${sha256(prompt).slice(0, 12)}`;
+      invoke(
+        root,
+        "session",
+        input(root, "UserPromptSubmit", { prompt, session_id }),
+      );
+      const rows = wo178Rows(root, session_id).filter(
+        (row) => row.typedEvent === "OperatorMessageObserved",
+      );
+      assert.equal(rows.length, 1, prompt);
+      assert.deepEqual(
+        {
+          prefix: rows[0].prefix,
+          role: rows[0].role,
+          prefixLine: rows[0].prefixLine,
+          class: rows[0].class,
+        },
+        { prefix, role, prefixLine, class: classification },
+      );
+      releaseHarnessWriter(root, input(root, "Stop", { session_id }));
+    }
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
+test("WO-226 helper shell syntax is journaled as a near miss without a decision", () => {
+  const root = fixture();
+  try {
+    const helpers = [
+      `node ${join(root, "scripts/worktree.mjs")} publish WO-999 --target-worktree --draft --branch feat/x --title 'pipe | literal' --body-file b.md`,
+      releaseCloseCommand(root, "WO-999"),
+    ];
+    for (const helper of helpers) {
+      for (const [command, syntax] of [
+        [helper + " | cat", "pipe"],
+        [helper + " > captured.log", "redirect"],
+        ["MODE=fixture " + helper, "prefix"],
+        [`cd ${shellQuote(root)} && ${helper}`, "prefix"],
+      ]) {
+        const response = invoke(
+          root,
+          "permissions",
+          input(root, "PreToolUse", {
+            tool_name: "Bash",
+            tool_input: { command },
+          }),
+        );
+        assert.equal(
+          response.hookSpecificOutput?.permissionDecision,
+          undefined,
+        );
+        const row = wo178Rows(root).findLast(
+          (row) => row.registeredTargetAdmission,
+        );
+        assert.deepEqual(row.registeredTargetAdmission, {
+          kind: "near-miss",
+          syntax,
+        });
+        assert.match(
+          row.advisory,
+          /Registered-target admission not judged: shell syntax .*run the plain spelling; host permissions decide/,
+        );
+        if (response.systemMessage)
+          assert.match(response.systemMessage, /not judged/);
+      }
+    }
+    for (const command of [
+      "git push origin main | cat",
+      "gh pr create > captured.log",
+      "npm run worktree -- publish WO-999 | cat",
+      helpers[0],
+      "echo 'node scripts/worktree.mjs publish WO-999' | cat",
+    ]) {
+      const before = wo178Rows(root).length;
+      invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          tool_name: "Bash",
+          tool_input: { command },
+        }),
+      );
+      assert.equal(
+        wo178Rows(root)
+          .slice(before)
+          .some((row) => row.registeredTargetAdmission?.kind === "near-miss"),
+        false,
+        command,
+      );
+    }
+  } finally {
+    removeFixture(root, { recursive: true, force: true });
+  }
+});
+
 test("WO-178 exact close helper admission requires the recorded dispatch, main and legal order", () => {
   const root = fixture();
   try {
@@ -1999,8 +2168,16 @@ test("WO-178 exact close helper admission requires the recorded dispatch, main a
         command,
       );
     for (const [suffix, mismatch] of [
-      ["--publish > close.log", "shell operator or redirect"],
-      ["--publish | cat", "shell operator or redirect"],
+      [
+        "--publish --material 'fixture=preserve' --force",
+        "words or whitespace after the helper",
+      ],
+      [
+        "--dry-run --material 'fixture=preserve'",
+        "material arguments require --publish",
+      ],
+      ["--publish > close.log", "shell syntax (redirect)"],
+      ["--publish | cat", "shell syntax (pipe)"],
       ["--publish --force", "words or whitespace after the helper"],
       [
         '--publish --material "fixture=preserve"',
@@ -2028,6 +2205,11 @@ test("WO-178 exact close helper admission requires the recorded dispatch, main a
         }),
       );
       assert.notEqual(response.hookSpecificOutput?.permissionDecision, "allow");
+      if (response.systemMessage)
+        assert.equal(
+          response.systemMessage.match(/host permissions decide/g)?.length,
+          1,
+        );
       // Repeated text is displayed once per session; every occurrence is
       // journaled, including a later command with the same mismatch class.
       const advisory = journalRows(root, {
@@ -2036,8 +2218,12 @@ test("WO-178 exact close helper admission requires the recorded dispatch, main a
         phase: "closed",
       }).at(-1).advisory;
       assert.ok(advisory.includes(mismatch), advisory);
-      assert.ok(advisory.includes(`${helper} --publish`));
-      assert.ok(advisory.includes(`${helper} --dry-run`));
+      if (mismatch.startsWith("shell syntax"))
+        assert.ok(advisory.includes("run the plain spelling"));
+      else {
+        assert.ok(advisory.includes(`${helper} --publish`));
+        assert.ok(advisory.includes(`${helper} --dry-run`));
+      }
     }
     assert.notEqual(
       permission(`${helper} --publish`, { session_id: "no-recorded-dispatch" })
@@ -2093,7 +2279,11 @@ test("WO-221 registered-target admission admits only the bound publication helpe
   ];
   const commitAll = (cwd, message) => {
     runGit(cwd, ["add", "."], fixtureGitOptions);
-    runGit(cwd, [...identity, "commit", "-qm", message], fixtureGitOptions);
+    runGit(
+      cwd,
+      [...identity, "-c", "maintenance.auto=false", "commit", "-qm", message],
+      fixtureGitOptions,
+    );
   };
   try {
     // Main's committed registration, first without the operator grant; the
@@ -2140,7 +2330,11 @@ test("WO-221 registered-target admission admits only the bound publication helpe
       fixtureGitOptions,
     );
     const clone = join(base, "clone");
-    runGit(base, ["clone", "-q", origin, clone], fixtureGitOptions);
+    runGit(
+      base,
+      ["-c", "maintenance.auto=false", "clone", "-q", origin, clone],
+      fixtureGitOptions,
+    );
     write(clone, "source.txt", "base\n");
     commitAll(clone, "Target base");
     runGit(clone, ["push", "-q", "origin", "main"], fixtureGitOptions);
@@ -2282,6 +2476,60 @@ test("WO-221 registered-target admission admits only the bound publication helpe
       join(mainCheckout, "dotln.config.json"),
       "utf8",
     );
+    for (const checkout of [root, mainCheckout]) {
+      const operational = JSON.parse(configBytes);
+      operational.repositories.target.gate = { command: "npm test" };
+      write(checkout, "dotln.config.json", json(operational));
+      allowed(helper);
+      for (const [field, mutate] of [
+        [
+          "repositories.target.baseBranch",
+          (value) => {
+            value.repositories.target.baseBranch = "other";
+          },
+        ],
+        [
+          "repositories.target.authorityProfile",
+          (value) => {
+            value.repositories.target.authorityProfile.expiresAt = 0;
+          },
+        ],
+        [
+          "repositories.target.release",
+          (value) => {
+            value.repositories.target.release = { policy: "declared" };
+          },
+        ],
+        [
+          "roots.docs",
+          (value) => {
+            value.roots = { docs: "records" };
+          },
+        ],
+      ]) {
+        const changed = structuredClone(operational);
+        mutate(changed);
+        write(checkout, "dotln.config.json", json(changed));
+        withheld(helper);
+        const row = wo178Rows(root).findLast((row) =>
+          row.advisory?.includes("Registered-target admission withheld"),
+        );
+        assert.ok(row.advisory.includes(field), row.advisory);
+      }
+      write(checkout, "dotln.config.json", configBytes);
+      const grantsPath = "packages/skeleton/loadouts/grants.json";
+      const grantsBytes = readFileSync(join(checkout, grantsPath), "utf8");
+      write(checkout, grantsPath, grantsBytes + "\n");
+      withheld(helper);
+      assert.match(
+        wo178Rows(root).findLast((row) =>
+          row.advisory?.includes("Registered-target admission withheld"),
+        ).advisory,
+        /grants\.json/,
+      );
+      write(checkout, grantsPath, grantsBytes);
+      allowed(helper);
+    }
     for (const mutate of [
       (profile) => {
         profile.expiresAt = 0;
@@ -2803,11 +3051,15 @@ test("WO-146 three contributors share unique outputs while workers remain explic
     ["claude-code", "codex-cli"],
   );
   const workers = structuredClone(targetWorkerProfiles);
-  for (const profile of workers) delete profile.runtime.skeletonVersion;
+  for (const profile of workers) {
+    assert.equal(profile.skills.format, "agent-skills");
+    delete profile.runtime.skeletonVersion;
+    delete profile.skills.format;
+  }
   assert.equal(
     createHash("sha256").update(JSON.stringify(workers)).digest("hex"),
     "9f41bb7cb0176f0b8e73bd9fe760ef628259e69b4ebdbb28fa0a621bd4dba6fb",
-    "pre-profile worker bytes, excluding only the operator-authorized release-version field",
+    "pre-profile worker bytes, excluding release labels and the explicitly asserted native skill format",
   );
   const installation = harnessInstallation();
   assert.equal(
@@ -3115,7 +3367,7 @@ test("WO-139 cap-module-only changes refresh the runtime and snapshot damage is 
       readFileSync(join(root, previous.snapshot, modulePath), "utf8"),
       original,
     );
-    assert.equal(checkHarness(root, options).files, 34);
+    assert.equal(checkHarness(root, options).files, 35);
     assert.match(
       invoke(root, "finish", input(root, "Stop")).systemMessage,
       /^Subagents: 0\/21/,
@@ -5288,7 +5540,10 @@ test("WO-039 local terms are unavailable honestly or refuse without echoing the 
     assert.throws(
       () => termsCheck(root, ["public.md"]),
       (error) => {
-        assert.match(error.message, /"file":"public.md","line":2,"count":1/);
+        assert.match(
+          error.message,
+          /"file":"public.md","line":2,"endLine":2,"count":1/,
+        );
         assert.doesNotMatch(error.message, /synthetic|forbidden/i);
         return true;
       },
@@ -5366,9 +5621,11 @@ test("WO-039 control observation uses the canonical read-only lifecycle command"
   cpSync(join(sourceRoot, "scripts/lib"), join(root, "scripts/lib"), {
     recursive: true,
   });
-  cpSync(
-    join(sourceRoot, "scripts/resume.mjs"),
-    join(root, "scripts/resume.mjs"),
+  copyFixtureFiles(
+    sourceRoot,
+    root,
+    "scripts/test-control-copy-sites.fixture-inputs.json",
+    "harness control observation",
   );
   for (const name of ["compiler", "kernel", "skeleton"])
     cpSync(
@@ -5494,19 +5751,24 @@ test("WO-187 harness check covers the spawned-worker model and effort pins", () 
   const root = fixture();
   try {
     emitHarness(root);
-    const agent = join(root, ".claude/agents/dotln-worker.md");
-    const original = readFileSync(agent, "utf8");
-    checkHarness(root);
-    for (const [before, after] of [
-      ["model: claude-opus-5-5", "model: inherit"],
-      ["effort: xhigh", "effort: low"],
+    for (const [name, model] of [
+      ["dotln-worker", "claude-opus-5-5"],
+      ["dotln-worker-fable", "claude-fable-5-1"],
     ]) {
-      writeFileSync(agent, original.replace(before, after));
-      assert.throws(
-        () => checkHarness(root),
-        /harness drift: \.claude\/agents\/dotln-worker\.md/,
-      );
-      writeFileSync(agent, original);
+      const agent = join(root, `.claude/agents/${name}.md`);
+      const original = readFileSync(agent, "utf8");
+      checkHarness(root);
+      for (const [before, after] of [
+        [`model: ${model}`, "model: inherit"],
+        ["effort: xhigh", "effort: low"],
+      ]) {
+        writeFileSync(agent, original.replace(before, after));
+        assert.throws(
+          () => checkHarness(root),
+          /harness drift: \.claude\/agents\/dotln-worker(?:-fable)?\.md/,
+        );
+        writeFileSync(agent, original);
+      }
     }
     checkHarness(root);
   } finally {
@@ -5997,6 +6259,8 @@ test("WO-039 completion tracks outputs across commits and auxiliary prompts reta
         "user.email=fixture@example.invalid",
         "-c",
         "commit.gpgsign=false",
+        "-c",
+        "maintenance.auto=false",
         "commit",
         "-m",
         "Commit already reviewed fixture outputs",
@@ -7861,6 +8125,8 @@ test("WO-158 operator override: off appends OperatorOverrideRecorded with the op
         "user.email=fixture@example.invalid",
         "-c",
         "commit.gpgsign=false",
+        "-c",
+        "maintenance.auto=false",
         "commit",
         "-qm",
         "Real lifecycle",
@@ -8013,6 +8279,8 @@ test("WO-158 VER-001 F3: two override exits in one second keep two captures, eac
         "user.email=fixture@example.invalid",
         "-c",
         "commit.gpgsign=false",
+        "-c",
+        "maintenance.auto=false",
         "commit",
         "-qm",
         "Real lifecycle",
@@ -8144,6 +8412,8 @@ test("WO-168 an override exit prints ahead of an input refusal, and an appended 
         "user.email=fixture@example.invalid",
         "-c",
         "commit.gpgsign=false",
+        "-c",
+        "maintenance.auto=false",
         "commit",
         "-qm",
         "Real lifecycle",
@@ -10805,6 +11075,8 @@ test("WO-142 D1 publication proof binds the origin repository despite ambient GH
         "user.name=Fixture",
         "-c",
         "user.email=fixture@example.invalid",
+        "-c",
+        "maintenance.auto=false",
         "commit",
         "--allow-empty",
         "-qm",
@@ -12902,7 +13174,11 @@ test("WO-160 prune removes a sole published stash with recovery bytes and permit
     write(root, ".gitignore", "docs/control/local/\n");
     write(root, "tracked.txt", "base\n");
     runGit(root, ["add", "."], fixtureGitOptions);
-    runGit(root, ["commit", "-qm", "base"], fixtureGitOptions);
+    runGit(
+      root,
+      ["-c", "maintenance.auto=false", "commit", "-qm", "base"],
+      fixtureGitOptions,
+    );
     write(root, "tracked.txt", "preserved\n");
     runGit(
       root,
@@ -12983,7 +13259,11 @@ test("WO-160 prune inventories only published integration stashes and resolves s
     write(root, ".gitignore", "docs/control/local/\n");
     write(root, "tracked.txt", "base\n");
     runGit(root, ["add", "."], fixtureGitOptions);
-    runGit(root, ["commit", "-qm", "base"], fixtureGitOptions);
+    runGit(
+      root,
+      ["-c", "maintenance.auto=false", "commit", "-qm", "base"],
+      fixtureGitOptions,
+    );
     const stash = (name, bytes) => {
       write(root, "tracked.txt", bytes);
       runGit(root, ["add", "tracked.txt"], fixtureGitOptions);
@@ -13120,7 +13400,11 @@ test("WO-160 prune removes packed stash refs without resurrecting entries", () =
     write(root, ".gitignore", "docs/control/local/\n");
     write(root, "tracked.txt", "base\n");
     runGit(root, ["add", "."], fixtureGitOptions);
-    runGit(root, ["commit", "-qm", "base"], fixtureGitOptions);
+    runGit(
+      root,
+      ["-c", "maintenance.auto=false", "commit", "-qm", "base"],
+      fixtureGitOptions,
+    );
     const stash = (name, contents) => {
       write(root, "tracked.txt", contents);
       runGit(root, ["stash", "push", "-m", name], fixtureGitOptions);
@@ -13213,7 +13497,11 @@ test("WO-160 prune rewrites an expired reflog prefix like Git stash drop", () =>
     write(root, ".gitignore", "docs/control/local/\n");
     write(root, "tracked.txt", "base\n");
     runGit(root, ["add", "."], fixtureGitOptions);
-    runGit(root, ["commit", "-qm", "base"], fixtureGitOptions);
+    runGit(
+      root,
+      ["-c", "maintenance.auto=false", "commit", "-qm", "base"],
+      fixtureGitOptions,
+    );
     for (const name of ["WO-901 integrate 2030-01-01", "ordinary saved work"]) {
       write(root, "tracked.txt", `${name}\n`);
       runGit(root, ["stash", "push", "-m", name], fixtureGitOptions);
@@ -13264,7 +13552,11 @@ test("WO-160 non-top prune retains stashes during concurrent pack-refs pruning",
     write(root, ".gitignore", "docs/control/local/\n");
     write(root, "tracked.txt", "base\n");
     runGit(root, ["add", "."], fixtureGitOptions);
-    runGit(root, ["commit", "-qm", "base"], fixtureGitOptions);
+    runGit(
+      root,
+      ["-c", "maintenance.auto=false", "commit", "-qm", "base"],
+      fixtureGitOptions,
+    );
     const stashes = [];
     for (const name of [
       "WO-901 integrate 2030-01-01",
@@ -13378,7 +13670,11 @@ const pruneApplyFixture = (prefix) => {
   write(root, ".gitignore", "docs/control/local/\n");
   write(root, "tracked.txt", "base\n");
   runGit(root, ["add", "."], fixtureGitOptions);
-  runGit(root, ["commit", "-qm", "base"], fixtureGitOptions);
+  runGit(
+    root,
+    ["-c", "maintenance.auto=false", "commit", "-qm", "base"],
+    fixtureGitOptions,
+  );
   const lanes = ["WO-901", "WO-902", "WO-903", "WO-904"];
   for (const order of lanes)
     write(
@@ -13766,7 +14062,11 @@ test("WO-171 a lane holding a usage copy is retained until a committed snapshot 
     );
     write(root, ".gitignore", "docs/control/local/\n");
     runGit(root, ["add", "."], fixtureGitOptions);
-    runGit(root, ["commit", "-qm", "base"], fixtureGitOptions);
+    runGit(
+      root,
+      ["-c", "maintenance.auto=false", "commit", "-qm", "base"],
+      fixtureGitOptions,
+    );
     const usage =
       [
         {
@@ -13806,7 +14106,11 @@ test("WO-171 a lane holding a usage copy is retained until a committed snapshot 
       );
     const commit = (path, message) => {
       runGit(root, ["add", path], fixtureGitOptions);
-      runGit(root, ["commit", "-qm", message], fixtureGitOptions);
+      runGit(
+        root,
+        ["-c", "maintenance.auto=false", "commit", "-qm", message],
+        fixtureGitOptions,
+      );
     };
     assert.deepEqual(reasons(), {
       "WO-911": "usage has no committed snapshot",
@@ -13918,7 +14222,11 @@ test("WO-171 a collision-preserved usage copy keeps its lane until the snapshot 
       );
       write(root, ".gitignore", "docs/control/local/\n");
       runGit(root, ["add", "."], fixtureGitOptions);
-      runGit(root, ["commit", "-qm", "base"], fixtureGitOptions);
+      runGit(
+        root,
+        ["-c", "maintenance.auto=false", "commit", "-qm", "base"],
+        fixtureGitOptions,
+      );
     }
     const lane = (order) => `docs/control/local/retained/${order}`;
     const usage = (label) =>
@@ -13986,7 +14294,13 @@ test("WO-171 a collision-preserved usage copy keeps its lane until the snapshot 
       runGit(main, ["add", path], fixtureGitOptions);
       runGit(
         main,
-        ["commit", "-qm", `${order} meter snapshot`],
+        [
+          "-c",
+          "maintenance.auto=false",
+          "commit",
+          "-qm",
+          `${order} meter snapshot`,
+        ],
         fixtureGitOptions,
       );
     };
