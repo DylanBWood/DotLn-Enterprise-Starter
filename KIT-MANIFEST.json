@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "commit": "62fa26761eba698ee0f8dcf59116bc571de3042c",
-  "tag": "v0.92.0",
+  "commit": "c670e6288ecb221ef2416cef06f920006866bc5d",
+  "tag": "v0.93.0",
   "files": [
     {
       "path": ".agents/skills/dotln-executor/SKILL.md",
@@ -161,7 +161,7 @@
     },
     {
       "path": "UPSTREAM.md",
-      "sha256": "f88e77d6b6ea552dee02e3d77e8fe6cd17606efc9644ca59801ffb6eceb96b04"
+      "sha256": "56b71a46d6779f42b6b130ae1c1df2164e5087ba99cc5bb77a592ccaa3624389"
     },
     {
       "path": "corpus/fixtures/ids/command-id-vectors.jsonl",
@@ -205,7 +205,7 @@
     },
     {
       "path": "docs/product/07-execution-guide.md",
-      "sha256": "1e23f7540892a2a9c63ae030ea2f895f7c0bae0e20cefc7bb6e53ccd5a47fe99"
+      "sha256": "825b22a2887e8eeab1a4892359e8a33eed038f3db6462cadde5540f982bec355"
     },
     {
       "path": "docs/product/08-publication-compiler.md",
@@ -2921,7 +2921,7 @@
     },
     {
       "path": "scripts/harness.mjs",
-      "sha256": "54148532a48be22eaab918dd4b982c72616cc2dd0ef0f9c73fabf3df140fb924"
+      "sha256": "6a53d72f833d50d2d1bfb04edc0cfac28ca67c9a8db17523c5fb41d4af4e30d9"
     },
     {
       "path": "scripts/host-guard.mjs",
@@ -2941,7 +2941,7 @@
     },
     {
       "path": "scripts/kit/README.client.md",
-      "sha256": "07f501ad9627344c1663d4ac7909632abf0d8f80e8efe863cb7c355a422bb43b"
+      "sha256": "37cd34af664da8e2750cf42dcc6966e189c0f846b36ea27c541d3955a1454618"
     },
     {
       "path": "scripts/kit/budgets.template.json",
@@ -3129,7 +3129,7 @@
     },
     {
       "path": "scripts/lib/gate-reuse.mjs",
-      "sha256": "823954a1eabf3c3bff6f5455cf6ef00996f946891659cbe6453b1f2dc516bf02"
+      "sha256": "25227edc3b5a6b3209712addc44697b4a03ddb25ab62d79c2a8fd2245f32eea7"
     },
     {
       "path": "scripts/lib/gate-scheduling-baseline.json",
@@ -3137,7 +3137,7 @@
     },
     {
       "path": "scripts/lib/gate-timeline.mjs",
-      "sha256": "f30015e7e0d2a6c42d3c37aa51569bd6ff672488268d261019693c8ac2960071"
+      "sha256": "b6c86c54a1da8734847f35e721014d33757917ff400bd798e875f31d747357c5"
     },
     {
       "path": "scripts/lib/generated-artifacts.mjs",
@@ -3197,7 +3197,7 @@
     },
     {
       "path": "scripts/lib/host-lanes.mjs",
-      "sha256": "b6b3d5a99d31d3172d53fe212952770ebe469ab8c5513bb25b3bfcf3f67bbd13"
+      "sha256": "e1eca946b2d90f6efc7568e2ded1f76cdc92be4c7d86999d97feed329692f476"
     },
     {
       "path": "scripts/lib/host-lock.c",
@@ -3273,7 +3273,7 @@
     },
     {
       "path": "scripts/lib/planning-conditions.mjs",
-      "sha256": "492b6f001c9b3ef7ee80ea810e3440246f63788ca635c7302a9482f748e5fc08"
+      "sha256": "f67138f3f09ca307a1a133d0fd9065af779c1f2fda529632b4475224b200124b"
     },
     {
       "path": "scripts/lib/planning-followups.mjs",
@@ -3470,6 +3470,10 @@
     {
       "path": "scripts/measure-gates.mjs",
       "sha256": "cc827465f95075219a74e42e3ae5d4b2a3bc4eeea20925c15fdb1208e1ba5602"
+    },
+    {
+      "path": "scripts/measure-lanes.mjs",
+      "sha256": "5bcec9cfff8039928682316c825510002d071f6eaac8f1173739557963214a86"
     },
     {
       "path": "scripts/meta.mjs",
@@ -3713,7 +3717,7 @@
     },
     {
       "path": "scripts/test-gate-followups.mjs",
-      "sha256": "00172e98f688245d8fd0837ad517896ff3f742443b622e81f28760ca7e346b6f"
+      "sha256": "4b93a8d326fa8f4121c6b1366e11871bf89c2cf0afe31ee43130995a27b69d26"
     },
     {
       "path": "scripts/test-github-body.mjs",
@@ -3793,7 +3797,7 @@
     },
     {
       "path": "scripts/test-plan-refutation.mjs",
-      "sha256": "623fc54c33810fafd4abd56c74edd369c4ae4a055f59bc37dd2bd7b664e4e7ed"
+      "sha256": "f7c50ee7c6a3995b1026b496eb796aa157eaf98b7b08cba7f31e0140b0ac368a"
     },
     {
       "path": "scripts/test-portfolio.mjs",
@@ -3845,7 +3849,7 @@
     },
     {
       "path": "scripts/test-runner.mjs",
-      "sha256": "bd6287d9ec9030a3594a6c9491442b40200b57d9fafc2d96c7aec91ee3f4d897"
+      "sha256": "647f24b50b9d036807c1ca5740b40af35d28be695f9beb0a50adf2137e42dbdb"
     },
     {
       "path": "scripts/test-runner.test.fixture-inputs.json",
