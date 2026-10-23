@@ -403,7 +403,59 @@ the order.
 
 ### 9.2 Known issues from this pass's receipt, by order
 
-Recorded after the refutation (§14).
+The refutation (§14) returned `aligned-with-findings` with ten known
+issues on WO-007 and no hold; WO-008 is carried by hash. WO-007 is frozen
+at the judged subject, and it cannot be verified before the starter carries
+core's plan-gate fix (D2), so the pass that takes that update amends
+WO-007 for these ten and pays its refutation then; they are listed here so
+nothing is re-derived. An executor who activates WO-007 before that
+amendment meets each inside the order's authority and records it in the
+decisions file.
+
+WO-007, amendments for the next pass:
+
+- **(a) Criterion 5 and the worker file.** The Angular builder copies
+  `public/` into every configuration's output, so the production bundle
+  check must also assert that `dist/apps/dotln/browser/mockServiceWorker.js`
+  is absent (the production configuration excludes the worker asset, or
+  the worker lives outside `public/`).
+- **(b) Criteria 5 and 6 need a third build configuration.** Production
+  ships with mocks and overrides off; the e2e target serves a named
+  `mocked` configuration (production optimization, `environment.mocks`
+  and `featureFlagOverrides` on, its own environment file), recorded in
+  the decisions file, and the published artifact stays the production
+  configuration.
+- **(c) Criterion 2 and the hygiene check's scope.** The check reads every
+  non-spec `*.ts` under `libs` and `apps` that calls `dispatch(`,
+  `injectDispatch(` or `Dispatcher`, not only stores and facades; the
+  interceptor's and `ErrorHandler`'s dispatches to app-tier events are
+  flows rule 16 admits (data-access to app).
+- **(d) Criterion 1 and the `event(` creator.** The grep also refuses the
+  standalone `event(` creator outside `libs/shared/events`.
+- **(e) Criterion 7's Node grep.** Scoped to browser-side sources
+  (excluding `*.config.ts` and the e2e project) and widened to bare
+  specifiers (`fs`, `path`, `os`, `child_process`) and dynamic
+  `import('node:`.
+- **(f) Persisted state's failure behavior and the storage binding.** A
+  throwing or blocked storage, a non-JSON value or an unknown panel id
+  degrade to the in-memory default panel, each with a spec; the real
+  `localStorage` is bound through a token in `data-access`, never under
+  `apps/dotln/src`, so WO-008's criterion 1 grep stays clean.
+- **(g) The worker start.** Awaited with a timeout; a rejected import or
+  start falls through to bootstrap with one logged line, and a test with
+  the worker file removed shows the shell and the unavailable state.
+- **(h) The token's scope and its source.** The interceptor matches the
+  console origin by parsed URL (origin and path prefix with a trailing
+  slash), with specs for a non-console URL and a prefix-sharing origin;
+  `console.token` is `null` in every environment file and no primer
+  variable bakes a token into the bundle; the token's arrival is the
+  live-view member's (C5).
+- **(i) Criterion 9's waiver path.** The pass that takes the update
+  decides, before activation, whether the fix shipped; a waiver is a
+  recorded operator decision, never a carried default.
+- **(j) The cross-checkout clause.** Browser storage is per origin, so the
+  objective reads "across reloads on the same origin"; the cross-checkout
+  persistence is the live-view member's host-owned store question.
 
 ## Candidates not filed, with their reopening conditions (section 10)
 
@@ -552,4 +604,52 @@ recorded here when they ran: `npm run meta`, `npm run plan -- followups
 D2's defect until core ships the fix), `npm run test:docs` (expected 12
 passed, 2 failed, the two plan tasks).
 
-Results are appended below after each step runs.
+Results at the subject commit `186ceb6` (cost table) over `4d7493c` (the
+subject): `npm run meta` no budget breach (operator directions 4, up 3,
+the operator's four messages of this session); `followups --sync` minted
+five rows (§10's C1 to C5) and `--apply` took nineteen dispositions in
+one batch from a contained ignored file (register revision `786352ff…`;
+23 pending rows); `work-orders index --check` PASS (both pages current)
+after the sequence's two entries were separated so they read serial, not
+as a lane pair; `lineage index` regenerated and current; `docs-check`
+PASS (1 product document; 10 declared historical link occurrences, 1
+declared home-path line; the three pre-existing advisories on filed
+records); `publication:check` reporting no editions declared; `plan
+check` failing on D2's defect. The document gate before the receipt: 12
+passed, 2 failed (`plan` and `plan-refutation-current`, the defect),
+15.95 s of wall-clock, 14 fresh tasks, 0.1 s of lane wait behind checkout
+unknown.
+
+Refutation: one fresh `dotln-worker` (the default type; the dispatch line
+named no Fable worker; the host read back `claude-opus-5-5` to the worker
+and no effort) on the canonical prompt from `npm run plan -- refute` at
+base `186ceb6`, default pass scope (WO-007 plus the sequence; WO-008
+carried by hash), dispatched at 16:07:27Z. The worker returned its
+judgment and statement in its final message, as briefed; the parent saved
+them as ignored local files and filed the receipt. Receipt
+[`2026-10-23-planning-668813faab47b0ee-007`](refutations/2026-10-23-planning-668813faab47b0ee-007.md),
+verdict `aligned-with-findings`, 0 holds, 10 known issues (§9.2),
+dispatch-to-file 542,888 ms (9.0 minutes; the worker's own run 370,441 ms,
+114,448 tokens, 16 tool uses). The worker's statement names what it read:
+the whole prompt; WO-007 in full and four passages of WO-008; read-only
+Git listings; no planning document, sequence file, cost table, receipt,
+intake, operator record, ledger or decisions record; no kit, npm, network,
+model or agent command; no write. Two of its shell attempts were refused
+by the harness's active-gate hook and did not run. The judged, committed
+and workspace subjects agree (`sha256:403f4b67…`). The receipt helper
+committed the receipt pair (`1f05479`) and then exited 1 at the plan gate
+on D2's defect, as §4 predicted; the receipt is filed and the gate state is
+the kit's, not the pass's. After the receipt and the known-issues record,
+the document gate at the handoff identity is recorded in the pull request.
+
+Process cost at handoff (`node scripts/harness.mjs usage <session>`,
+source `claude-transcript-message-usage`, scope `dispatch`, observed
+2026-10-23T16:15:35Z): 21,236,125 total tokens (2,238 input, 20,566,974
+cached input, 472,819 cache-write, 194,094 output; reasoning tokens and
+cost unknown, the counters unavailable); 165 steps, 161 commands; 1 of 20
+subagent admissions used, exact-observed, none unresolved. The fan-out
+matched the plan stated in §1: one refuter, no research workers, no
+descendants. The outcome matched the aim as read at entry: the update
+first and merged, the pass on the new kit, WO-007 ready on its base, the
+mining run paused with its reversal condition, and the blocking defect
+named to core with its fix.
