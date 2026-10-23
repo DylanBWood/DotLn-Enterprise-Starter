@@ -1,7 +1,7 @@
 import { observedExecFileSync as execFileSync } from "@dotln/skeleton/dist/src/gate-deadlines.mjs";
 import { deadlineLimit } from "@dotln/skeleton/dist/src/gate-deadlines.mjs";
-import { lstatSync, readFileSync, readdirSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { lstatSync, readFileSync, readdirSync, realpathSync } from "node:fs";
+import { join, resolve, sep } from "node:path";
 import { pathToFileURL } from "node:url";
 import { seiriEnvironment } from "@dotln/compiler";
 import { decodeLog } from "@dotln/kernel";
@@ -11,19 +11,44 @@ import { currentEvidence } from "@dotln/skeleton/dist/src/evidence-editions.mjs"
 import { editionBodies, resolveEditionLog, } from "@dotln/skeleton/dist/src/feedback-selfhost.js";
 import { feedbackEditionLog } from "@dotln/skeleton/dist/src/feedback-edition-log.js";
 import { exportedLoadouts } from "./builds.js";
-import { array, available, object, string, unavailable } from "./values.js";
+import { array, available, object, readFailureReason, string, unavailable, } from "./values.js";
 function attempt(ref, read) {
     try {
         return available(ref, read());
     }
     catch (error) {
-        return unavailable(ref, `Source could not be read or its declared format was refused: ${error instanceof Error ? error.message : String(error)}`);
+        return unavailable(ref, readFailureReason(error));
     }
 }
-function readFile(path) {
-    if (!lstatSync(path).isFile() || lstatSync(path).isSymbolicLink())
-        throw new Error("expected regular file");
+const contained = (path, root) => realpathSync(path).startsWith(`${realpathSync(root)}${sep}`);
+function readFile(path, root) {
+    if (!lstatSync(path).isFile() || (root && !contained(path, root)))
+        throw Object.assign(new Error("expected contained regular file"), {
+            code: "ENOTFILE",
+        });
     return readFileSync(path, "utf8");
+}
+/** File-host adapter for the launchpad's control roots. The lifecycle CLI
+ * still owns configuration validation and folding; no script module is
+ * imported into the console package. */
+function controlRoots(root) {
+    const config = join(root, "dotln.config.json");
+    const declared = lstatSync(config, { throwIfNoEntry: false })
+        ? object(JSON.parse(readFile(config, root)))
+        : { version: 1 };
+    if (declared["version"] !== 1)
+        throw new Error("invalid configuration");
+    const roots = declared["roots"] === undefined ? {} : object(declared["roots"]);
+    const docs = roots["docs"] ?? "docs";
+    const control = roots["control"] ?? `${String(docs)}/control`;
+    const orders = roots["orders"] ?? `${String(control)}/orders`;
+    for (const value of [docs, control, orders])
+        if (typeof value !== "string" ||
+            value.includes("\\") ||
+            value.includes("\0") ||
+            value.split("/").some((part) => !part || part === "." || part === ".."))
+            throw new Error("invalid control root");
+    return { legacy: `${String(control)}/resume.jsonl`, orders: String(orders) };
 }
 /** A recorded stream by value. A schema 2 feedback edition commits its
  * verifier stream by reference (WO-154), which projections cannot read; it
@@ -67,16 +92,27 @@ export async function collectSources(root, requestedStores = []) {
     });
     const text = (ref) => attempt(ref, () => readFile(join(root, ref)));
     const controlLog = attempt("control:canonical-segments", () => {
+        const paths = controlRoots(root);
+        const directory = lstatSync(join(root, paths.orders), {
+            throwIfNoEntry: false,
+        });
+        if (directory &&
+            (!directory.isDirectory() || !contained(join(root, paths.orders), root)))
+            throw Object.assign(new Error("expected contained control directory"), {
+                code: "ENOTFILE",
+            });
         const refs = [
-            "docs/control/resume.jsonl",
-            ...readdirSync(join(root, "docs/control/orders"))
+            ...(lstatSync(join(root, paths.legacy), { throwIfNoEntry: false })
+                ? [paths.legacy]
+                : []),
+            ...(directory ? readdirSync(join(root, paths.orders)) : [])
                 .filter((name) => /^WO-\d{3}\.jsonl$/u.test(name))
                 .sort()
-                .map((name) => `docs/control/orders/${name}`),
+                .map((name) => `${paths.orders}/${name}`),
         ];
         return refs.map((ref) => ({
             ref,
-            value: lines(readFile(join(root, ref))),
+            value: lines(readFile(join(root, ref), root)),
         }));
     });
     const orderIds = () => {
@@ -111,7 +147,7 @@ export async function collectSources(root, requestedStores = []) {
     const graphs = [];
     const loadoutFailures = [];
     let loadouts;
-    let feedbackUnits = unavailable("packages/skeleton/src/loadouts/feedback.ts", "Feedback exports could not be loaded");
+    let feedbackUnits = unavailable("packages/skeleton/src/loadouts/feedback.ts", "not found");
     try {
         const environment = seiriEnvironment();
         const modules = [
@@ -130,8 +166,8 @@ export async function collectSources(root, requestedStores = []) {
         }
         loadouts = available("skeleton:loadout-exports", graphs);
     }
-    catch {
-        loadouts = unavailable("skeleton:loadout-exports", "Saved loadout exports could not be inspected");
+    catch (error) {
+        loadouts = unavailable("skeleton:loadout-exports", readFailureReason(error));
     }
     const feedback = attempt("docs/evidence/current.json#feedback", () => currentEvidence(root, "feedback"));
     const selfhostStores = ["audit", "verifier"].map((role) => {

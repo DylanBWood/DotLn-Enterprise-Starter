@@ -215,6 +215,7 @@ export class ConsoleLoopback {
     store;
     root;
     now;
+    readBoard;
     server;
     token = randomBytes(32).toString("hex");
     directory;
@@ -225,10 +226,11 @@ export class ConsoleLoopback {
     envelope;
     closing = false;
     closed;
-    constructor(store, root, now = Date.now) {
+    constructor(store, root, now = Date.now, readBoard) {
         this.store = store;
         this.root = root;
         this.now = now;
+        this.readBoard = readBoard;
         this.directory = consoleDirectory(store.store.directory);
         this.descriptor = join(this.directory, CONSOLE_CONNECTION_FILE);
         this.server = createServer((request, response) => {
@@ -341,7 +343,7 @@ export class ConsoleLoopback {
         const localOrigin = typeof origin === "string" &&
             /^https?:\/\/(?:127\.0\.0\.1|localhost)(?::[0-9]{1,5})?$/u.test(origin);
         if (request.socket.remoteAddress !== "127.0.0.1" ||
-            !/^127\.0\.0\.1:[0-9]{1,5}$/u.test(request.headers.host ?? "") ||
+            request.headers.host !== `127.0.0.1:${this.connection?.port}` ||
             (origin !== undefined && !localOrigin)) {
             send(response, 403, consoleRefusal("", "console caller refused"));
             return null;
@@ -363,6 +365,33 @@ export class ConsoleLoopback {
         }
         if (request.method === "GET" && request.url === "/console-commands-v1") {
             send(response, 200, { version: 1, commands: CONSOLE_COMMANDS_V1 });
+            return null;
+        }
+        if (request.method === "GET" &&
+            ["/runtime-status-v1", "/uifa-board-v1"].includes(request.url ?? "")) {
+            try {
+                if (this.closing)
+                    throw new Error("resident is stopping");
+                let bytes;
+                if (request.url === "/uifa-board-v1") {
+                    if (!this.readBoard)
+                        throw new Error("board reader unavailable");
+                    bytes = await this.readBoard();
+                }
+                else {
+                    const file = join(this.store.store.directory, "runtime-status-v1.json");
+                    if (!lstatSync(file).isFile())
+                        throw new Error("status unavailable");
+                    bytes = readFileSync(file);
+                }
+                if (!response.destroyed) {
+                    response.writeHead(200, JSON_HEADERS);
+                    response.end(bytes);
+                }
+            }
+            catch {
+                send(response, 503, consoleRefusal("", "console projection unavailable"));
+            }
             return null;
         }
         if (request.method !== "POST" ||

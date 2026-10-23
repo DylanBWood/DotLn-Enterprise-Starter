@@ -84,3 +84,15 @@ export async function readConsoleContract(connection, signal) {
         throw new Error(`console contract refused (${response.status})`);
     return response.json();
 }
+async function readProjection(connection, name, signal) {
+    const response = await transport(endpoint(connection, `/${name}`), {
+        headers: { authorization: `Bearer ${connection.token}` },
+        ...(signal ? { signal } : {}),
+    }, name);
+    if (!response.ok)
+        throw new Error(`console ${name} refused (${response.status})`);
+    return response.json();
+}
+/** Read-only projections; the consumer applies the kit's versioned schema. */
+export const readRuntimeStatus = (connection, signal) => readProjection(connection, "runtime-status-v1", signal);
+export const readBoard = (connection, signal) => readProjection(connection, "uifa-board-v1", signal);
