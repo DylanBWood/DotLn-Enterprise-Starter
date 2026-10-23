@@ -183,7 +183,20 @@ in one short question rather than guessing in either direction.
   as Launchpad v0.3.3, then opened the UI planning pass; that pass set
   WO-006's base, vendor, feature and release header. The operator merges
   the pass and starts WO-006's worktree (UI planning pass of 2026-10-21,
-  D1 to D4 and D10).
+  D1 to D4 and D10). On 2026-10-21 the operator merged #19, took WO-006
+  through its cycle (DotLn-Angular #4, this launchpad's #20) and closed it
+  as `DotLn Angular v0.1.0`. On 2026-10-23 the operator opened a standard
+  pass with the latest upstream and ordered the update first, so that any
+  fix would reach the planning branch: the pass opened update pull request
+  #21 (starter v0.93.0), the operator merged it, the session finished it on
+  `main` and only then opened the planning branch (planning pass of
+  2026-10-23, D1; capture SHA-256
+  `701262d85556f1445fc09c579379c0fc6a3133b08c41537d34b9474d1dca9d23`).
+  That pass found the launchpad's plan gate red on every branch since
+  WO-006's records moved into the target (a kit reader defect, asked of
+  core as a blocking item), so WO-007 can be activated but cannot pass
+  verification until the starter carries the fix or the operator waives
+  the gate clause of its last criterion (planning pass of 2026-10-23, D2).
 - Upstream updates: the operator asks for the outcome, the fork updated to
   the latest starter, and leaves the pull-request mechanics to the pass
   (refreshing an open update pull request or replacing it), which records
@@ -193,6 +206,11 @@ in one short question rather than guessing in either direction.
   the update pull request and the planning pull request (either order
   unless the handoff says otherwise), fast-forwards `main`, runs
   `node scripts/bootstrap.mjs`, and starts the self order's worktree.
+  Since starter v0.90.0 the session finishes a merged update itself with
+  `node scripts/launchpad.mjs update --finish` on clean `main` (fetch,
+  fast-forward check, fast-forward, bootstrap), as the 2026-10-23 pass did
+  after #21; the operator merges, the session finishes (planning pass of
+  2026-10-23, D1).
 - Lifecycle steps the operator runs: for every order, on the platform and
   in this fork, the operator starts the worktree themselves with
   `npm run worktree -- start WO-NNN <order path>` from `main`; opens a
@@ -225,7 +243,43 @@ in one short question rather than guessing in either direction.
   this fork use those names; the purpose record's sentence stands until the
   operator changes it (UI planning pass of 2026-10-21, D7).
 - Harness: Claude Code at the operator's chosen effort; spawned workers at the
-  kit's pinned model and effort.
+  kit's pinned model and effort. Since starter v0.90.0 a `planning:` or
+  `resume:` dispatch line that names `fable` or `fable 5.1` runs the kit's
+  workers as `dotln-worker-fable` (claude-fable-5-1, xhigh), and a line
+  that does not runs the default `dotln-worker` (claude-opus-5-5, xhigh);
+  the receipt records the worker type. The 2026-10-23 dispatch did not
+  name it (planning pass of 2026-10-23, D14).
+- Speed and efficiency: no dedicated leanness passes; speed and efficiency
+  are first-party in every decision and never the goal; throughput first,
+  in the sense of the Theory of Constraints (the operator's direction of
+  2026-10-21 during WO-006's final review, capture SHA-256
+  `7149ef8857a4609e5575991e431a772c085245da12f6b5898ed9183cf223d1c3`;
+  WO-006-D023; recorded by the planning pass of 2026-10-23, D11).
+- The operator's own research runs: the operator runs research passes of
+  their own in the platform (on 2026-10-22, an intake mining run over the
+  platform's private intake, the works they reference and a forward design
+  for DotLn and for DotLn-Angular). Such a run is unofficial derived
+  research with no authority; the platform's planning pass consumes it
+  first, through the operator's own dispatch, and this fork's pass takes
+  the routed fork blocks through core's answer block afterwards. On
+  2026-10-23 the operator proposed pausing this fork's take-in of that run
+  and the pass agreed, reading only the run's entry and dispatch files
+  (planning pass of 2026-10-23, D8; capture SHA-256
+  `701262d85556f1445fc09c579379c0fc6a3133b08c41537d34b9474d1dca9d23`).
+- Where a target order's records live: a target order's decisions,
+  verification and final review live once, in the target under
+  `docs/dotln/`, moved there by `target-records`; the launchpad keeps the
+  binding (commit, path, digest) in the order's control segment and
+  declares the historical links in its doc baseline. The operator asked on
+  2026-10-23 whether that is an issue (same capture); it is not: one copy,
+  bound, is the design, and a kit reader that still wants the launchpad
+  file is core's defect to fix (planning pass of 2026-10-23, D2).
+- Outward words: DotLn-Angular may say launchpad, gem and mask (core's
+  ruling of 2026-10-21 on the operator's correction); this launchpad's
+  review list is empty since the 2026-10-23 pass, and the private
+  local-terms list is the operator's to mark before WO-007's first publish
+  (`refuse:` for a term that must keep refusing; an unmarked term is a
+  review item since starter v0.91.0) (planning pass of 2026-10-23, D5).
 - No direct quotes: the operator's messages are never quoted in a committed
   file of this fork or of DotLn-Angular; passes and roles paraphrase and
   cite the ignored capture's digest, and a verbatim text is filed only from

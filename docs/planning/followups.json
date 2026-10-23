@@ -242,6 +242,14 @@
           "reopenWhen": "A kit update changes the prompt hook's phrase matching, or the operator asks the fork to carry a local patch.",
           "targets": [],
           "at": "2026-10-18T00:39:44.044Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Observed on 2026-10-23: the prompt hook dispatched planning: from the first content line of a message that continued for several lines and carried a pasted block, resolving the planner role (starter v0.90.0, core WO-226 D010; the 2026-10-23 planning document (docs/planning/standard-pass-v0-93-0-2026-10-23.md) D13).",
+          "reopenWhen": "A planning: or resume: line on the first content line of a longer message fails to dispatch its role.",
+          "targets": [],
+          "at": "2026-10-23T16:06:06.754Z"
         }
       ]
     },
@@ -628,6 +636,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-21T16:41:40.598Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "The same observation as FUP-98c85b750cb36bd4: a trust entry installed at registration is judged after WO-007 draft publish shows whether a hook allow prevails over the host classifier (the 2026-10-23 planning document (docs/planning/standard-pass-v0-93-0-2026-10-23.md) D6).",
+          "reopenWhen": "WO-007 draft publish, admitted by the hook, is denied by the host auto-mode classifier; then the literal host-rules self order carries the registration route and this row is reread against it.",
+          "targets": [],
+          "at": "2026-10-23T16:06:06.728Z"
         }
       ]
     },
@@ -668,6 +684,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-21T16:41:40.602Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-006 draft publish observed a withheld admission and a piped spelling, never a hook allow meeting the classifier; WO-007 draft publish under starter v0.90.0 admission is that observation, with the operator ! run as the named fallback (the 2026-10-23 planning document (docs/planning/standard-pass-v0-93-0-2026-10-23.md) D6; C2 of that document).",
+          "reopenWhen": "WO-007 draft publish, admitted by the hook under starter v0.90.0 publication-field comparison, is denied by the host auto-mode classifier; then the next pass files the literal host-rules self order before WO-008.",
+          "targets": [],
+          "at": "2026-10-23T16:06:06.724Z"
         }
       ]
     },
@@ -1321,6 +1345,14 @@
           "reopenWhen": "npm run plan -- conditions --slow on main after update pull request #16 merges reports the document-gate median above 30 s, or WO-012's step 4 records a document gate above 60 s on main (then a self order or a request to core asks whether the lane rule serializes the document gate's fixture tasks on this host).",
           "targets": [],
           "at": "2026-10-21T02:23:19.892Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Core answered (its A2 and B10 of 2026-10-21): the wall-clock was lane wait behind another checkout gate in the per-user registry, not the fork own cost; starter v0.93.0 (core WO-229) labels holders and reports the wait apart from the work; this pass gates ran 15.72 s and 16.64 s wall with 0.1 s of wait (the 2026-10-23 planning document (docs/planning/standard-pass-v0-93-0-2026-10-23.md) D12).",
+          "reopenWhen": "The document gate execution-only median (npm run plan -- conditions --slow) exceeds 30 s once the probe runs again after core fixes the plan gate moved-record reader (C4 of 2026-10-23).",
+          "targets": [],
+          "at": "2026-10-23T16:06:06.750Z"
         }
       ]
     },
@@ -1417,6 +1449,14 @@
           "reopenWhen": "A resident writes the status file for this launchpad, or core serves it to a browser host; then a WS-001 member reads it as WO-007 reads the board.",
           "targets": [],
           "at": "2026-10-21T04:49:30.225Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The contract landed: starter v0.93.0 (core WO-225) serves runtime-status-v1 and the board snapshot on the resident loopback to a local origin with a bearer token; WO-007 mocks that route shape so the live member changes configuration and the token arrival; the screen itself is the operator pairwise judgment over the UX ideation candidates (the 2026-10-23 planning document (docs/planning/standard-pass-v0-93-0-2026-10-23.md) D7, C5).",
+          "reopenWhen": "WO-007 is merged and the operator chooses the live view candidate from the UX ideation (C3 and C5 of 2026-10-23); then a WS-001 member is filed with the token arrival and a resident for this launchpad as its first design.",
+          "targets": [],
+          "at": "2026-10-23T16:06:06.737Z"
         }
       ]
     },
@@ -1473,6 +1513,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-21T16:41:40.606Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Core fork-notes pass of 2026-10-21 (its §4.2 item 1) declined the framework decision: the framework is the fork choice for its shell and core keeps the contract as the boundary; WO-006 readings stay the fork evidence, refined by FUP-7bbf34bdd0925297 (the 2026-10-23 planning document (docs/planning/standard-pass-v0-93-0-2026-10-23.md) D9).",
+          "reopenWhen": "A second UI host asks core for a framework-level contract.",
+          "targets": [],
+          "at": "2026-10-23T16:06:06.733Z"
         }
       ]
     },
@@ -1497,6 +1545,14 @@
           "reopenWhen": "Core reads an export's control segments into the board's Work panel or publishes a work view model.",
           "targets": [],
           "at": "2026-10-21T04:49:30.245Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The Work panel orders section reads an export per-order segments since starter v0.93.0 (nine rows observed on 2026-10-23), so the data exists; the view is the operator judgment over the UX ideation candidates (the 2026-10-23 planning document (docs/planning/standard-pass-v0-93-0-2026-10-23.md) D7).",
+          "reopenWhen": "The operator chooses the readable work view candidate from the UX ideation (C3 of 2026-10-23).",
+          "targets": [],
+          "at": "2026-10-23T16:06:06.741Z"
         }
       ]
     },
@@ -1521,6 +1577,14 @@
           "reopenWhen": "Core serves the contract to a browser host and WO-008's session model exists.",
           "targets": [],
           "at": "2026-10-21T04:49:30.228Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The loopback serves console-commands-v1 and its invoke route to a local origin since starter v0.93.0; the surface waits for WO-008 session model and the operator candidate, and every command stays under the hooked permission layer (WS-001 I2; the 2026-10-23 planning document (docs/planning/standard-pass-v0-93-0-2026-10-23.md) D7).",
+          "reopenWhen": "WO-008 is merged and the operator chooses the command surface candidate from the UX ideation (C3 of 2026-10-23).",
+          "targets": [],
+          "at": "2026-10-23T16:06:06.745Z"
         }
       ]
     },
@@ -1610,6 +1674,16 @@
           "reopenWhen": "A change touches the board link mapper, or a copied board anchor opens the root instead of the board.",
           "targets": [],
           "at": "2026-10-21T16:41:40.565Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "duplicate",
+          "reason": "The skip link half was repaired by WO-006-D024 in the final review; the anchor remainder is FUP-e9c71a41e7c1eb8b, allocated to WO-007 (the 2026-10-23 planning document (docs/planning/standard-pass-v0-93-0-2026-10-23.md) §8).",
+          "reopenWhen": "FUP-e9c71a41e7c1eb8b reopens.",
+          "targets": [
+            "FUP-e9c71a41e7c1eb8b"
+          ],
+          "at": "2026-10-23T16:06:06.762Z"
         }
       ]
     },
@@ -1713,6 +1787,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-21T16:41:40.590Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Starter v0.90.0 (core WO-226 D008 and D009) compares only the registration publication fields and the grants file with main, and names a helper hidden by shell syntax with a near-miss advisory; the role text and WO-007 step 15 say the helper runs as a plain command (the 2026-10-23 planning document (docs/planning/standard-pass-v0-93-0-2026-10-23.md) D3). The classifier observation is FUP-98c85b750cb36bd4.",
+          "reopenWhen": "Core changes the registered-target admission comparison or the plain-word parser again.",
+          "targets": [],
+          "at": "2026-10-23T16:06:06.720Z"
         }
       ]
     },
@@ -1758,6 +1840,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-21T16:41:40.594Z"
+        },
+        {
+          "sourceRevision": 4,
+          "status": "settled",
+          "reason": "Starter v0.91.0 (core WO-227) made the outward list a review list and admits an empty one; the 2026-10-23 planning document (docs/planning/standard-pass-v0-93-0-2026-10-23.md) D5 sets reviewTerms to an empty list and drops the placeholder, so the fixture keeps its name and launchpad is an ordinary word in DotLn-Angular.",
+          "reopenWhen": "A target publish names a word the operator wants reviewed, or core changes the review list semantics.",
+          "targets": [],
+          "at": "2026-10-23T16:06:06.716Z"
         }
       ]
     },
@@ -1789,6 +1879,14 @@
           "reopenWhen": "The next planning pass that edits WS-001 or the target's conventions, or the first order that touches the house library's templates.",
           "targets": [],
           "at": "2026-10-21T16:41:40.615Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-006-D021 settled by the 2026-10-23 planning document (docs/planning/standard-pass-v0-93-0-2026-10-23.md) D9 and D3: (a) one projected element per line and (b) the 40-line section threshold are WS-001 rule 12; (d) the scripts reference is WO-007 step 11 and criterion 8; (c) the granularity and shared-Sass pass and (e) the blank-line autofix are candidate C1 of that document.",
+          "reopenWhen": "The operator names another section threshold, or the first order after WO-007 that touches the house library templates (C1 of 2026-10-23).",
+          "targets": [],
+          "at": "2026-10-23T16:06:06.706Z"
         }
       ]
     },
@@ -1813,6 +1911,14 @@
           "reopenWhen": null,
           "targets": [],
           "at": "2026-10-21T16:41:40.619Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-006-D022 split by the 2026-10-23 planning document (docs/planning/standard-pass-v0-93-0-2026-10-23.md) D3, D8 and D9: the persistence and isolation requirements are WO-007 (withPersistedState, the isolation criterion) and WS-001 operating rules I1 to I3; the UX ideation waits for the platform planning pass that consumes the operator 2026-10-22 intake mining run, the operator own research for this design.",
+          "reopenWhen": "The platform planning pass that consumes the 2026-10-22 intake mining run merges and its answer block carries the routed fork blocks; then the fork next pass runs the UX ideation with the operator pairwise test (C3 of 2026-10-23).",
+          "targets": [],
+          "at": "2026-10-23T16:06:06.711Z"
         }
       ]
     },
@@ -1837,6 +1943,136 @@
           "reopenWhen": "A change touches the board link mapper, or a copied board anchor opens the root instead of the board.",
           "targets": [],
           "at": "2026-10-21T16:41:40.572Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "Allocated to WO-007 by the 2026-10-23 planning document (docs/planning/standard-pass-v0-93-0-2026-10-23.md) D3: the link mapper renders router fragment links through buildRoute and NavigationStore (step 6) and criterion 6 opens a copied board anchor directly.",
+          "reopenWhen": "WO-007 final review finds a copied board anchor opening the root instead of the board, or WO-007 is withdrawn.",
+          "targets": [
+            "WO-007"
+          ],
+          "at": "2026-10-23T16:06:06.758Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e8877398fdfcbc7a",
+      "key": "candidate:docs/planning/standard-pass-v0-93-0-2026-10-23.md#candidates-not-filed-with-their-reopening-conditions-section-10::8e5ea521f652104b69cf8bafbe1ca45eeff0fa1b393a04f9af1b0827b3cf8b49",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ceed2492e7dd5709b012aaa60be2ccc61648d58d5760a54dda070663dfb2f4aa",
+          "ref": "docs/planning/standard-pass-v0-93-0-2026-10-23.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C1 The house library's granularity, shared-Sass and blank-lines pass: components as building blocks, shared Sass where three components repeat a rule, about a fifth more blank lines where they help a…",
+          "summary": "- **C1 The house library's granularity, shared-Sass and blank-lines pass: components as building blocks, shared Sass where three components repeat a rule, about a fifth more blank lines where they help a reader through an autofixing rule, and the hugging layout reformatted where it is met (WO-006-D021 (c) and (e)).** Reopen when the first order after WO-007 touches the house library's templates, or the operator directs the pass; then it is filed as one order on `libs/shared/ui`.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C1 of the 2026-10-23 planning document (docs/planning/standard-pass-v0-93-0-2026-10-23.md): a pass over the house library templates (granularity, shared Sass, the blank-line autofix, the hugging layout reformatted) is its own order, not WO-007 outcome (D9).",
+          "reopenWhen": "The first order after WO-007 touches the house library templates, or the operator directs the pass; then it is filed as one order on libs/shared/ui.",
+          "targets": [],
+          "at": "2026-10-23T16:06:06.766Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a67e7d4b53614f6c",
+      "key": "candidate:docs/planning/standard-pass-v0-93-0-2026-10-23.md#candidates-not-filed-with-their-reopening-conditions-section-10::9a4453ec1eb3c035606aacc7a339f2340e563ba176a41ab0d0e251de401ec5d3",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "46fbe4710b70badbe522bce2a64acb2e8eab86f2bdb54b15b5a9a9a44e1032b2",
+          "ref": "docs/planning/standard-pass-v0-93-0-2026-10-23.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C5 The live-view member's first design: a resident for this launchpad and how its loopback token reaches the browser (a connect screen, a primer, or a host-written file), with GET /runtime-status-v1…",
+          "summary": "- **C5 The live-view member's first design: a resident for this launchpad and how its loopback token reaches the browser (a connect screen, a primer, or a host-written file), with `GET /runtime-status-v1` beside the board (D7).** Reopen when C3's candidate for the live view is chosen and WO-007 is merged.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C5 of the 2026-10-23 planning document (docs/planning/standard-pass-v0-93-0-2026-10-23.md): the live-view member first design waits on the operator screen choice and WO-007 (D7).",
+          "reopenWhen": "C3 candidate for the live view is chosen and WO-007 is merged.",
+          "targets": [],
+          "at": "2026-10-23T16:06:06.783Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3ffd3702c8425fd4",
+      "key": "candidate:docs/planning/standard-pass-v0-93-0-2026-10-23.md#candidates-not-filed-with-their-reopening-conditions-section-10::acba335347d7c32d8647932ce93b60e69c622e777aa013a3747ef1d35fffd4d5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6773a0d63f277d533f6a413094dbbc31870d84a5b9f52a11a5a31ba2d745d4ce",
+          "ref": "docs/planning/standard-pass-v0-93-0-2026-10-23.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C3 The UX ideation over the console: two or three candidate screens built from the operator's tasks, each saying what it lets the operator do and what it shows on demand, judged pairwise by the…",
+          "summary": "- **C3 The UX ideation over the console: two or three candidate screens built from the operator's tasks, each saying what it lets the operator do and what it shows on demand, judged pairwise by the operator (WO-006-D022; D8).** Reopen when the platform's planning pass that consumes the 2026-10-22 intake mining run merges and its answer block carries the routed fork blocks; then the fork's next pass runs it with research workers over the platform's records and those blocks.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C3 of the 2026-10-23 planning document (docs/planning/standard-pass-v0-93-0-2026-10-23.md): the UX ideation runs after the platform pass routes the operator own research (D8).",
+          "reopenWhen": "The platform planning pass that consumes the 2026-10-22 intake mining run merges and its answer block carries the routed fork blocks; then the fork next pass runs the ideation with research workers over the platform records and those blocks.",
+          "targets": [],
+          "at": "2026-10-23T16:06:06.774Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1508c6254455ccf3",
+      "key": "candidate:docs/planning/standard-pass-v0-93-0-2026-10-23.md#candidates-not-filed-with-their-reopening-conditions-section-10::d052b5291aaf785b9525b136b1179fc6ebfedf3a9e5ebcb1e5efab254a8e0cf1",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "51a4f56459777c6d47fff71e828f1e030c7cec38cd9b702e8a7beae5626697fa",
+          "ref": "docs/planning/standard-pass-v0-93-0-2026-10-23.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C2 The literal host-rules self order: hostRules: \"literal\" on the dotln-angular registration so worktree start writes WO-NNN's exact publish rules into the launchpad's local host settings and the…",
+          "summary": "- **C2 The literal host-rules self order: `hostRules: \"literal\"` on the `dotln-angular` registration so `worktree start` writes WO-NNN's exact publish rules into the launchpad's local host settings and the close removes them (D6).** Reopen when WO-007's draft publish, admitted by the hook, is denied by the host's classifier; then the next pass files it before WO-008.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C2 of the 2026-10-23 planning document (docs/planning/standard-pass-v0-93-0-2026-10-23.md): not filed before the observation it would answer (D6).",
+          "reopenWhen": "WO-007 draft publish, admitted by the hook, is denied by the host auto-mode classifier; then the next pass files it before WO-008.",
+          "targets": [],
+          "at": "2026-10-23T16:06:06.770Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ac2bff24bf9b8bae",
+      "key": "candidate:docs/planning/standard-pass-v0-93-0-2026-10-23.md#candidates-not-filed-with-their-reopening-conditions-section-10::e4cf0c72a7d7c1eedc0a2bcc014af77a434c62a428f4148893b31ecae9070c76",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d1571570ee34f8c7d7d7b43dca8cc65b96daad06af886b2d474a266027f69a6a",
+          "ref": "docs/planning/standard-pass-v0-93-0-2026-10-23.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C4 Taking the starter release that carries core's fix for the plan gate's moved-record reader (D2).",
+          "summary": "- **C4 Taking the starter release that carries core's fix for the plan gate's moved-record reader (D2).** Reopen when core's release notes name the fix; then a pass, or the operator's `planning: bring in latest upstream`, takes it before WO-007's verification, or the operator waives the gate clause of WO-007's criterion 9 instead.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C4 of the 2026-10-23 planning document (docs/planning/standard-pass-v0-93-0-2026-10-23.md): the fix is core (its §11 item 1, blocking); the fork takes the carrying release (D2).",
+          "reopenWhen": "Core release notes name the fix for the plan gate moved-record reader; then a pass or the operator planning: bring in latest upstream takes it before WO-007 verification, or the operator waives the gate clause of WO-007 criterion 9.",
+          "targets": [],
+          "at": "2026-10-23T16:06:06.779Z"
         }
       ]
     }

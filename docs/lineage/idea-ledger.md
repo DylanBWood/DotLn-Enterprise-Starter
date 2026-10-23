@@ -4,6 +4,22 @@ Statuses: `adopted`, `preserved`, `raw`, `superseded`, `transformed`, `rejected`
 
 Insert this instance's dated sessions below, newest first.
 
+## 2026-10-23 — planning pass: the standard pass on starter v0.93.0 (the update first, WO-007's base, the plan gate's moved-record reader, the mining run paused) (operator dispatch of 2026-10-23)
+
+Dispatch: a `planning:` request for a standard pass with the latest
+upstream, carrying a premade prompt the operator wrote for the platform's
+planning session (the 2026-10-22 intake mining run) with the proposal to
+pause that take-in here if the pass agreed, followed by the direction to
+take the update first so the planning branch sits on the new kit, a
+question on where a target order's records live, and the merge of #21,
+captured verbatim in ignored intake
+(`docs/intake/notes/planning-2026-10-23.md`, SHA-256
+`701262d85556f1445fc09c579379c0fc6a3133b08c41537d34b9474d1dca9d23`). The
+record is [the planning document](../planning/standard-pass-v0-93-0-2026-10-23.md);
+this heading registers the pass for the plan tooling. No idea is ledgered:
+the pass was not an ideation dispatch, and the operator's research run
+stays the platform pass's to route first.
+
 ## 2026-10-21 — planning pass: the UI (WO-006's base, the house component library, the actor board as the first screen) (operator dispatch of 2026-10-21)
 
 Dispatch: a `planning:` request for the UI planning pass, followed by eight

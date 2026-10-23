@@ -32,8 +32,8 @@ the last member's pull request.
 | WO-011 | self          | this launchpad's `main` after update #8    | declares the class's disposable output and the tag guard the v0.85.0 close needs; the target release waited on the kit's display name |
 | WO-005 | dotln-angular | `651d76ff68e9b3a38fe770226deb634bca28b54c` | foundation libraries: core, utils, i18n, the test-kit convention; base set 2026-10-18 |
 | WO-012 | self          | this launchpad's `main` after update #16 | declares the target release policy and the name `DotLn Angular`, the judge-only base checkout and the operator's commit identity that starter v0.87.0 admits (taken inside v0.88.0), and the operator grant naming `release.close`; closed 2026-10-21 as Launchpad v0.3.3 |
-| WO-006 | dotln-angular | `5102783f5cf575a6b487e75ed9bb0c064d6dbd9c` | the component taxonomy, the house `ui` library with Angular Aria and the CDK behind wrappers, the shell layout, the `board` feature rendering the actor board from a recorded fixture; base set 2026-10-21 |
-| WO-007 | dotln-angular | provisional; set when WO-006 merges        | events, signal stores, call state, data access, the board over HTTP answered by MSW, navigation and flags |
+| WO-006 | dotln-angular | `5102783f5cf575a6b487e75ed9bb0c064d6dbd9c` | the component taxonomy, the house `ui` library with Angular Aria and the CDK behind wrappers, the shell layout, the `board` feature rendering the actor board from a recorded fixture; base set 2026-10-21; merged as #4 and closed as `DotLn Angular v0.1.0` on 2026-10-21 |
+| WO-007 | dotln-angular | `90fa6e8d879cb499107ff79d1051c200d17c1cbc` | events, signal stores, call state, data access, the board over HTTP in the platform's loopback shape answered by MSW, persisted UI state, navigation and flags; base set 2026-10-23 |
 | WO-008 | dotln-angular | provisional; set when WO-007 merges        | authentication and permissions, legitimate from the Angular side                     |
 
 Proposed later members, not yet filed (§The console below and the planning
@@ -87,6 +87,10 @@ to `5102783f` (WO-005's merge commit, DotLn-Angular pull request #3) and its
 typed hard edge on WO-012 added by the UI planning pass of 2026-10-21; the
 same pass added the `Target release classification` header to WO-006,
 WO-007 and WO-008 (minor: the first three `DotLn Angular` releases).
+WO-007's base was set to `90fa6e8d` (WO-006's merge commit, DotLn-Angular
+pull request #4, closed as `DotLn Angular v0.1.0`) by the standard pass of
+2026-10-23, which also gave WO-007 and WO-008 the `Target release notes:
+reviewed` header starter v0.91.0 reads at the close.
 
 ## House rules
 
@@ -173,6 +177,15 @@ an order's recorded decision, never silently.
     (`shared`, `app`, `dotln`, `dotln-angular`, `<feature>`); the operator
     settles the scheme after seeing implementations. ECMAScript `#private`
     over TypeScript `private`; `readonly` wherever a member is not reassigned.
+    An inline template lays out one projected element per line, never the
+    hugging form Prettier wrote before WO-006-D004 turned embedded
+    formatting off. A template or style section stays inline while it is at
+    most 40 lines; above that it moves to its own file, and one file stays
+    the default for a component whose sections fit (the operator's notes of
+    2026-10-21 on draft #4, WO-006-D021 (a) and (b); settled by the planning
+    pass of 2026-10-23, D9). The house library's granularity and shared-Sass
+    pass and the blank-line autofix rule are a recorded candidate (that
+    pass's §10, C1).
 13. **Lint and TypeScript.** ESLint flat config with angular-eslint, Prettier,
     `.editorconfig`. `no-unused-vars` warns, with an underscore prefix as the
     opt-out. TypeScript hacks and disabled lint or compiler settings are for
@@ -352,10 +365,14 @@ its idea ledger's adopted entries of 2026-09-06 and 2026-10-13).
 panels in the document's order (Actors, Builds, Mechanisms, Work,
 Blueprint), each naming the UIFA roles it serves and the question it
 answers, with sections, rows and evidence-linked cells. WO-006 renders a
-recorded, scrubbed board of this launchpad; WO-007 loads one through HTTP
-answered by MSW; a live board waits on a browser-reachable host the
-platform has not built (the fork's request of 2026-10-21). The data path
-is written in the target's `docs/dev-reference/architecture/console.md`.
+recorded, scrubbed board of this launchpad, shipped as `DotLn Angular
+v0.1.0` on 2026-10-21 (pull request #4); WO-007 loads one through HTTP in
+the shape the platform's resident serves (`GET /uifa-board-v1` with a
+bearer token), answered by MSW; a live board waits on the live-view member,
+because the resident's loopback serves the board and the status to a local
+origin since starter v0.93.0 (core WO-225, the fork's request of
+2026-10-21). The data path is written in the target's
+`docs/dev-reference/architecture/console.md`.
 
 **Host rules** (from the platform's contract; each enforced by a spec or a
 lint in WO-006):
@@ -392,22 +409,53 @@ intake, read 2026-10-21):
   dense tables; no fixed page width (the operator reads on an ultrawide
   display); the true value or `unknown`, never an invented number.
 
+**Operating rules** (from the platform's product 04 §Later console hosts,
+written by core's pass of 2026-10-21 from the operator's direction, and
+from WO-006-D022; each enforced by WO-007 and the members after it):
+
+- **I1 Persistence.** State the operator makes while using the console
+  (the selected panel, filters, notes, layouts, drafts, the comparisons
+  themselves) persists in a store the app owns, apart from control
+  records, whether the app runs from a worktree or from `main`; WO-007
+  starts it in browser storage.
+- **I2 Isolation.** Using the console never writes a control record, moves
+  a lifecycle phase or disturbs a worktree or a gate; the parity contract's
+  command route is the only admitted path for an effect, under the same
+  hooked permission layer a terminal has; the app writes only through
+  browser storage and HTTP.
+- **I3 Versioned contracts.** A running shell reads the projections of the
+  checkout it points at, and the board, the status file, the parity
+  contract and the loopback read routes stay versioned so a newer shell
+  keeps reading an older instance (H1 applies to each).
+
+**The method** for the screens after the board: pairwise comparison of
+candidate screens the operator judges, saying which of two works worse
+(the platform's Eye Dr test, adopted by core's pass of 2026-10-21), each
+candidate answering how someone would use it so that their changes flow
+back into the platform and improve it. The candidates come from a UX
+ideation this fork runs after the platform's planning pass consumes the
+operator's research run of 2026-10-22 (the planning document of
+2026-10-23, §6 D8), with research workers over the platform's records and
+the routed fork blocks of that run.
+
 **The road after WO-008**, each a later member with its reopening
 condition (the planning document of 2026-10-21 §10 carries the NoOp
 records):
 
 | Facet | What the operator sees or does | Platform contract it needs | Reopens when |
 | --- | --- | --- | --- |
-| Live view | actors, live episodes, presence, holds, budget and every open order's phase; the check-in on running sessions | `runtime-status-v1` as a file or its loopback equivalent | a resident writes the status file for this launchpad, or core serves it to a browser host |
-| Command surface | the resume phrases, `away` and `back`, intent declaration, the audit read, from the console | `console-commands-v1` over the loopback, through a browser bridge | core serves the contract to a browser host (the fork's request of 2026-10-21) |
+| Live view | actors, live episodes, presence, holds, budget and every open order's phase; the check-in on running sessions | `runtime-status-v1` and `uifa-board-v1` over the resident's loopback read routes, served to a local origin with the bearer token since starter v0.93.0 (core WO-225) | WO-007 is merged and the operator chooses the live view's candidate from the UX ideation; the token's arrival and a resident for this launchpad are its first design questions |
+| Command surface | the resume phrases, `away` and `back`, intent declaration, the audit read, from the console | `console-commands-v1` over the loopback, served to a local origin since starter v0.93.0 | WO-008's session model exists and the operator chooses its candidate; every command stays under the hooked permission layer (I2) |
 | Pattern workshop | drop a book-derived support on an actor, see the compiled diff and the effect before confirming; saved builds; the RPG and emoji skins | equip preview and saved-build selection in the contract; the compiled-diff command | core adds those commands (its roadmap's pattern workshop rung) |
 | Arrival screen | what changed since the last visit, what is in progress, what needs a decision, what can continue under existing authority | the audit projection and the status file | the live view exists |
 | Counterfactuals and QA | compare configurations, event paths and costs; the tester's mechanisms and acceptance matrices beyond the board's rows | the platform's counterfactual and acceptance records | core publishes them as view models |
-| Readable work view | future orders only, in sequence, with purpose and dependencies; releases and what each contained; costs per actor | the board's Work panel (its `orders` section is unavailable in an exported instance today) | core reads an export's control segments |
+| Readable work view | future orders only, in sequence, with purpose and dependencies; releases and what each contained; costs per actor | the board's Work panel (its `orders` section reads an export's per-order segments since starter v0.93.0; nine rows observed on 2026-10-23) | the operator chooses its candidate from the UX ideation |
 
-The console framework decision core deferred is answered by WO-006's
-evidence (bundle bytes, type cost, maintenance, interoperability), which
-the fork sends back through the requests-to-core prompt.
+Core declined the console framework decision on 2026-10-21: the framework
+is the fork's choice for its shell, and core keeps the contract as the
+boundary. WO-006's bundle readings are the fork's own evidence, refined by
+WO-006-D014's per-package attribution when a change to the providers or
+the initial bundle reopens it.
 
 ## Delivery states
 
@@ -418,9 +466,9 @@ the fork sends back through the requests-to-core prompt.
 | WO-011 | merged   | merged as #12 and released as Launchpad v0.3.2 on 2026-10-20; [configuration, tag guard and gate evidence](../evidence/WO-011/README.md) (`docs/evidence/WO-011/`) |
 | WO-005 | merged   | merged in DotLn-Angular as #3 and its records as #13 on 2026-10-20; the first draft-at-verified publish and the first target close; [evidence](../evidence/WO-005/README.md) |
 | WO-012 | merged   | merged as #18 and released as Launchpad v0.3.3 on 2026-10-21; declares `DotLn Angular` releases, grants `release.close`, retains judged base output and names the operator's public commit identity; [configuration, grant and gate evidence](../evidence/WO-012/README.md) (`docs/evidence/WO-012/`) |
-| WO-006 | proposed | filed by the 2026-10-18 planning pass; its base (`5102783f`), the house component library over Angular Aria and the CDK, the actor board as its feature, the release header and the typed edge on WO-012 were set by the UI planning pass of 2026-10-21 |
-| WO-007 | proposed | filed by the 2026-10-18 planning pass; re-targeted to the board and given its release header by the UI planning pass of 2026-10-21 |
-| WO-008 | proposed | filed by the 2026-10-18 planning pass; given its release header by the UI planning pass of 2026-10-21 |
+| WO-006 | merged   | merged in DotLn-Angular as #4 on 2026-10-21 and closed the same day as `DotLn Angular v0.1.0`, the target's first release; its records as #20 in this launchpad; [evidence](../evidence/WO-006/README.md) |
+| WO-007 | proposed | filed by the 2026-10-18 planning pass; re-targeted to the board and given its release header by the UI planning pass of 2026-10-21; its base, the receipt-006 amendments, the loopback route shape, persisted UI state and the v0.91.0 publication rules set by the standard pass of 2026-10-23 |
+| WO-008 | proposed | filed by the 2026-10-18 planning pass; given its release header by the UI planning pass of 2026-10-21 and the v0.91.0 publication rules by the standard pass of 2026-10-23; its base is provisional until WO-007 merges |
 
 <!-- dotln-workstream:start -->
 { "id": "WS-001", "members": [{ "workOrderId": "WO-003", "repositoryId": "self" }, { "workOrderId": "WO-004", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-011", "repositoryId": "self" }, { "workOrderId": "WO-005", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-012", "repositoryId": "self" }, { "workOrderId": "WO-006", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-007", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-008", "repositoryId": "dotln-angular" }], "edges": [{ "from": "WO-003", "to": "WO-004", "relation": "hard" }, { "from": "WO-004", "to": "WO-005", "relation": "hard" }, { "from": "WO-011", "to": "WO-005", "relation": "hard" }, { "from": "WO-005", "to": "WO-006", "relation": "hard" }, { "from": "WO-012", "to": "WO-006", "relation": "hard" }, { "from": "WO-006", "to": "WO-007", "relation": "hard" }, { "from": "WO-007", "to": "WO-008", "relation": "hard" }] }

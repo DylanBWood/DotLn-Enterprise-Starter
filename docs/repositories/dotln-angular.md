@@ -11,7 +11,13 @@ Aria 22.2.3, the CDK 22.2.3, Storybook 10.6.3, axe-core for Playwright 4.14.0,
 Ajv 8.20.0 and the Inter variable font 5.3.0 added by WO-006. The declared
 review gate, with the catalog and visual commands below, passed at that commit
 with no tracked-byte mutation; the order's evidence records the preflight and
-gate results.
+gate results. WO-006 merged as pull request #4
+(`90fa6e8d879cb499107ff79d1051c200d17c1cbc`, 2026-10-21T21:11Z) and closed
+at that commit as `DotLn Angular v0.1.0` (Release published
+2026-10-21T21:14:44Z); its decisions, verification and final review live
+once, under `docs/dotln/` in this repository, bound from the launchpad's
+control segment. WO-007's base is that merge commit (planning pass of
+2026-10-23).
 
 The launchpad that registers a repository owns its profile; this file is
 repo-native convention authority for sessions acting in
@@ -85,7 +91,8 @@ the recorded fixture. No environment file, API or account is required. Playwrigh
 heading, document title and absence of page errors. WO-005 adds `.env.example`,
 `npm run env:prime` and the `local` serve configuration for public local
 settings. Default development still requires no environment file or API.
-MSW belongs to a later workstream member.
+MSW arrives with WO-007, which also mocks the platform's loopback route
+shape (`GET /uifa-board-v1`).
 
 ## Branch and pull-request policy
 
@@ -124,6 +131,23 @@ forms legal; raw `git`, `gh` and `npm` forms, the
 registered-target admission and are left to host permissions. WO-006's draft
 and final publishes use the node spelling. The release-close policy below
 records the declared roots.
+Starter v0.90.0 and v0.91.0 (taken by #21 on 2026-10-23) change what the
+publish judges: the registered-target admission compares only the
+registration's publication fields (`baseBranch`, `authorityProfile`,
+`release`, the roots) and the grants file with main's committed bytes, so
+an order that edits its own gate command still publishes; a helper hidden
+by a pipe, a redirect, a `cd` or a variable prefix gets a near-miss
+advisory and no admission; launchpad identifiers (`WO-NNN`, `WO-NNN-DNNN`,
+`FUP-<16 hex>`, `VER-NNN`, `FINAL-NNN`, `REVIEW-NNN`, `WS-NNN`) refuse in
+the branch, the commits, the title and the composed body, so an order's
+commits name their change and not the order; the launchpad's
+`docs/control/outward-vocabulary.json` lists `reviewTerms`, empty since the
+planning pass of 2026-10-23, so `launchpad`, `gem` and `mask` are ordinary
+words in this repository; and each private local-terms line carries a
+`refuse:` or `review:` mode, a review item refusing the publish until the
+reviewer confirms the printed digest with `--confirm-terms sha256:<digest>`.
+WO-006's publishes of 2026-10-21 ran under the earlier rules and are
+recorded in its host-qualification record.
 Rules in force, read back on 2026-10-20: the active `main` ruleset targets
 the default branch with no bypass actors. Its `pull_request` rule accepts
 merge commits only, `required_status_checks` requires the `checks` run from
@@ -147,7 +171,13 @@ registration allows `release.close`, and the existing operator grant
 The release-close route is authorized to tag and publish the Release under
 the operator's direction of 2026-10-19; merging, repository settings and
 package publication remain with the operator. The close reads this
-launchpad's merged `main` registration and grant.
+launchpad's merged `main` registration and grant. The first close ran on
+2026-10-21 for WO-006: tag `v0.1.0`, Release `DotLn Angular v0.1.0`, the
+worktree and branch removed, the retained record under the launchpad's
+ignored control directory. From WO-007 on, `**Target release notes:**
+reviewed` on the order makes the Release body the order's reviewed
+`RELEASE-NOTES.md` at the merged revision (starter v0.91.0), linted as a
+target's text.
 
 Before any `dotln-angular` order starts, its authority must carry exactly
 one `**Target release classification:**` header naming `patch`, `minor` or
@@ -299,3 +329,19 @@ Stores, MSW handlers, interceptors and guards remain later workstream members.
   log, and the pin is reported stale by `resume: status`, never a live
   dependency. The exact schema SHA-256 is
   `7d20e785c718b4b601f45a9c351461955666ea16d49f17ae6d8fde0676629cd3`.
+  Since starter v0.93.0 the launchpad carries the same schema as a kit
+  file, `packages/console/uifa-board-v1.schema.json`, byte-identical to
+  that digest, beside `packages/console/runtime-status-v1.schema.json`
+  (SHA-256 `600bb73ab38b663a8356f305e6080729689b71f99bdd32665f634d7537b29bed`),
+  so the pin's provenance is a kit file from WO-007 on; the target's
+  committed copy stays, because this repository never depends on the
+  launchpad.
+- `DylanBWood/DotLn@c670e6288ecb221ef2416cef06f920006866bc5d packages/skeleton/src/console-loopback.ts`
+  (core WO-225, starter v0.93.0) — the resident's loopback serves
+  `GET /uifa-board-v1` and `GET /runtime-status-v1` to a caller on
+  `127.0.0.1` with the bound port in `Host`, a local `Origin` or none, and
+  `Authorization: Bearer <token>` from the resident's
+  `console-loopback-v1.json` descriptor; `503` in the console refusal shape
+  when a projection is unavailable. WO-007's `BoardApi` and handlers take
+  this shape, so the live-view member changes configuration and the
+  token's arrival, not the data path.
