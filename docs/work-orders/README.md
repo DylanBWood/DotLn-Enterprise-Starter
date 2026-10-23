@@ -4,7 +4,6 @@
 
 ## Proposed order
 
-- [x] [WO-006] — Component taxonomy, shell layout and the home feature · **final-reviewed**
 - [ ] [WO-007] — Events, signal stores, data access and MSW · **queued**
 - [ ] [WO-008] — Authentication and permissions · **queued**
 
@@ -26,20 +25,20 @@ None.
 
 ### WO-007
 
-[WO-007 — Events, stores and data access for DotLn-Angular: the tiered event groups in &#96;events&#96;, NgRx SignalStore with the Events plugin, call state and the trinity through &#96;data-access&#96;, &#96;BoardStore&#96; behind &#96;BoardFacade&#96; loading the actor board over HTTP, the app-tier stores for feature flags, navigation with canonical routes and errors in &#96;state&#96;, HTTP interceptors for base URL, timeouts and errors, MSW in development and in tests, and the action-hygiene check](WO-007-events-stores-data-access.md)
+[WO-007 — Events, stores and data access for DotLn-Angular: the tiered event groups in &#96;events&#96;, NgRx SignalStore with the Events plugin, call state and the trinity through &#96;data-access&#96;, &#96;BoardStore&#96; behind &#96;BoardFacade&#96; loading the actor board over HTTP in the platform's loopback shape answered by MSW, the board's UI state persisted in browser storage, the app-tier stores for feature flags, navigation with canonical routes and errors in &#96;state&#96;, HTTP interceptors for base URL, timeouts and errors, MSW in development and in tests, and the action-hygiene check](WO-007-events-stores-data-access.md)
 
 - State: draft.
-- Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
+- Repository: dotln-angular @ 90fa6e8d879cb499107ff79d1051c200d17c1cbc.
 - Application target: unassigned.
 - Dependencies: typed; dependency-ready.
-- References: WO-006: hard (met) — the facade and container this order connects to stores; the base line is set to its merge commit before activation.
+- References: WO-006: hard (met) — the facade and container this order connects to stores; the base line names its merge commit.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
 - Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh; reviewer xhigh.
 - Track: delivery
-- Cost: adds &#96;libs/shared/events&#96;, &#96;libs/shared/data-access&#96;, &#96;libs/shared/state&#96;, &#96;libs/features/board-data-access&#96;, the MSW worker and handlers, the interceptors, the hygiene check script, about 70 source files; adds &#96;@ngrx/signals&#96;, &#96;@angular-architects/ngrx-toolkit&#96; (or a house &#96;withCallState&#96;), &#96;msw&#96; pinned to 3.x (&#96;~3.0.3&#96; or the current 3.x at activation, recorded) to the workspace. Removes &#96;BoardFacade&#96;'s recorded-fixture provider (&#96;BoardFixtureToken&#96;); the fixture itself stays as the handler's response and the specs' input. Wall-clock: about 6 to 8 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 house rules 8, 11, 16, the NgRx Events plugin and toolkit declarations, the MSW browser and Node guides, this order, about 150 KB. Commands added in the target: &#96;npm run lint:hygiene&#96;, &#96;npm run msw:init&#96;. Tokens: unknown until run. Steps: 15. Re-mints: none.
+- Cost: adds &#96;libs/shared/events&#96;, &#96;libs/shared/data-access&#96;, &#96;libs/shared/state&#96;, &#96;libs/features/board-data-access&#96;, the MSW worker and handlers, the interceptors, the persisted-state store feature, the shell's notices container, the hygiene check script and the scripts reference, about 75 source files; adds &#96;@ngrx/signals&#96;, &#96;@angular-architects/ngrx-toolkit&#96; (or house &#96;withCallState&#96; and &#96;withPersistedState&#96; features), &#96;msw&#96; pinned to 3.x (&#96;~3.0.3&#96; or the current 3.x at activation, recorded) to the workspace. Removes &#96;BoardFacade&#96;'s recorded-fixture provider (&#96;BoardFixtureToken&#96;); the fixture itself stays as the handler's response and the specs' input. Wall-clock: about 7 to 9 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 house rules 8, 11, 12, 16 and §The console, the NgRx Events plugin and toolkit declarations, the MSW browser and Node guides, this order, about 160 KB. Commands added in the target: &#96;npm run lint:hygiene&#96;, &#96;npm run msw:init&#96;. Tokens: unknown until run. Steps: 17. Re-mints: none. Refutations paid: two (receipt 006 of 2026-10-21 on the provisional text; the 2026-10-23 pass's receipt on this text).
 - Authority: [docs/work-orders/WO-007-events-stores-data-access.md](WO-007-events-stores-data-access.md)
 
 ### WO-008
@@ -60,6 +59,5 @@ None.
 - Cost: adds &#96;libs/shared/auth&#96; with its kit, the mocked identity provider handlers and signing key for development, the &#96;authHttpEvents&#96; and &#96;sessionEvents&#96; groups, guards, the permission directive, the &#96;/login&#96; and &#96;/denied&#96; routes, about 60 source files; adds one OpenID Connect client library and &#96;jose&#96; (development signing in the mock) to the workspace. Removes nothing. Wall-clock: about 8 to 12 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 house rule 17, the events and state documents, the client library's documentation, this order, about 160 KB. Commands added in the target: none. Tokens: unknown until run. Steps: 15. Re-mints: none.
 - Authority: [docs/work-orders/WO-008-authentication-and-permissions.md](WO-008-authentication-and-permissions.md)
 
-[WO-006]: WO-006-component-taxonomy-shell-home.md
 [WO-007]: WO-007-events-stores-data-access.md
 [WO-008]: WO-008-authentication-and-permissions.md

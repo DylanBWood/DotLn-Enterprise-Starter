@@ -7,6 +7,7 @@
 **Release classification:** none; a target order records no launchpad release.
 **Repository:** dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4
 **Target release classification:** minor
+**Target release notes:** reviewed
 **Cost:** adds `libs/shared/auth` with its kit, the mocked identity provider
 handlers and signing key for development, the `authHttpEvents` and
 `sessionEvents` groups, guards, the permission directive, the `/login` and
@@ -37,7 +38,10 @@ MSW this order extends; the base above is provisional and is set to WO-007's
 merge commit by the planning pass that follows it). Amended by the 2026-10-21
 UI planning pass ([planning document](../planning/ui-planning-2026-10-21.md)
 §6 D1 and D4): the release header, the node-spelled draft publish and the
-board's path enum.
+board's path enum. Amended by the 2026-10-23 standard pass
+([planning document](../planning/standard-pass-v0-93-0-2026-10-23.md) §6
+D4): the publication rules of starter v0.91.0, the reviewed release notes
+and the plan-gate carry-in; the base stays provisional until WO-007 merges.
 **Workstream:** WS-001
 
 <!-- dotln-dependencies:start -->
@@ -187,16 +191,29 @@ provider; the matrix tests; the two documents; `docs/evidence/WO-008/`.
 13. Launchpad write-back: `docs/repositories/dotln-angular.md` Demonstrated
     architecture gains the guard, interceptor and store paths; WS-001's
     delivery states updated by the final review. Check: `npm run test:docs`.
-14. Commit; `implementation-ready`; handoff per §Discipline. After the
-    session that records `verification-result pass` has done so, that
-    session runs, from the launchpad root,
+14. Commit with messages that carry no launchpad identifier (`WO-008`,
+    `FUP-…`, `VER-…`), because starter v0.91.0 refuses them in a target's
+    branch, commits, title and body; `implementation-ready`; handoff per
+    §Discipline. After the session that records `verification-result pass`
+    has done so, that session runs, from the launchpad root, as a plain
+    command with no pipe, redirect, directory change or variable prefix,
     `node scripts/worktree.mjs publish WO-008 --target-worktree --draft --branch feat/authentication-and-permissions --title "feat: add authentication and permissions" --body-file <reviewed path>`
     (the node spelling is the only form the kit admits for a registered
     target since starter v0.87.0), which commits from the tree without
-    moving `HEAD`, pushes the branch and opens the draft pull request.
+    moving `HEAD`, pushes the branch and opens the draft pull request. A
+    `vocabulary.review` refusal prints the composed body's digest: the
+    session reads the flagged lines and re-runs the same command with
+    `--confirm-terms sha256:<digest>`; a `refuse:` private term or a
+    launchpad identifier is repaired, never confirmed. The session records
+    the hook's admission row and the host's decision in
+    `docs/evidence/WO-008/host-qualification.md`; if the host's classifier
+    denies the admitted call, the operator's `!`-prefixed run of the same
+    command is the recorded fallback.
 15. At final review: read the draft's threads and workflow runs into
-    `docs/evidence/WO-008/preview-pr.json` and route each item,
-    `target-records`, then the same publish command without `--draft`, which
+    `docs/evidence/WO-008/preview-pr.json` and route each item, write
+    `docs/final-reviews/WO-008/RELEASE-NOTES.md` (the five sections the
+    kit renders on the target Release), `target-records`, then the same
+    publish command without `--draft`, which
     force-pushes with lease against the recorded draft head and reuses the
     branch and the pull request. No work-in-progress commit, no force-push
     by hand, no manual close.
@@ -254,7 +271,12 @@ then the target gate plain and review once each.
 `docs/evidence/WO-008/README.md`.
 
 **Known issues and carry-ins:** the base line is provisional until the pass
-after WO-007 sets it; the client library is chosen at step 2 with a recorded
+after WO-007 sets it; the launchpad's document gate fails its `plan` and
+`plan-refutation-current` tasks on every branch until the starter carries
+core's fix for the plan gate's moved-record reader (the fork's request of
+2026-10-23), so criterion 7's `npm run test:docs` clause cannot pass before
+that release reaches this fork, or the operator waives the clause through
+`npm run resume -- waive` with the reason recorded; the client library is chosen at step 2 with a recorded
 decision; signature verification is the API's duty and is stated, not
 implemented, on the client; a real provider is a later member. This order
 activates only on a launchpad whose starter carries core WO-221's `--draft`
@@ -264,7 +286,8 @@ runs are a final-review obligation read from
 planning document §6 D5 and D7). The `Target release classification`
 header was added by the UI planning pass of 2026-10-21 under WO-012's
 declared policy (`DotLn Angular` releases; minor, a feature release); the
-pass that sets the base confirms it.
+pass that sets the base confirms it. `Target release notes: reviewed` was
+added by the 2026-10-23 pass under starter v0.91.0.
 
 **Non-goals:** a real identity provider or API; a backend-for-frontend;
 multi-factor flows; user management screens; social login.
