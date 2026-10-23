@@ -44,6 +44,40 @@
       "reason": "missing file",
       "count": 1,
       "note": "WO-012 was renamed WO-012-starter-v0.88.0-registration.md when the 2026-10-21 planning pass amended it for starter v0.88.0 (docs/planning/latest-upstream-fixes-2026-10-21.md §6 D2 and §14); the 2026-10-20 planning document keeps its original link to the order as it was filed."
+    },
+    {
+      "file": "docs/evidence/WO-006/README.md",
+      "href": "decisions.md",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-006's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-006/ by target-records (TargetRecordsCommitted, 2026-10-21); the launchpad record keeps its original link; declared on the starter v0.93.0 update branch of 2026-10-23, which found the failure inherited from the #20 merge (main at 8ba47c1 fails docs-check on the same line with the v0.88.0 runtime), and recorded by the 2026-10-23 planning pass."
+    },
+    {
+      "file": "docs/evidence/WO-006/host-qualification.md",
+      "href": "decisions.md#wo-006-d018",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-006's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-006/ by target-records (TargetRecordsCommitted, 2026-10-21); the launchpad record keeps its original link; declared on the starter v0.93.0 update branch of 2026-10-23, which found the failure inherited from the #20 merge (main at 8ba47c1 fails docs-check on the same line with the v0.88.0 runtime), and recorded by the 2026-10-23 planning pass."
+    },
+    {
+      "file": "docs/evidence/WO-006/host-qualification.md",
+      "href": "decisions.md#wo-006-d019",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-006's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-006/ by target-records (TargetRecordsCommitted, 2026-10-21); the launchpad record keeps its original link; declared on the starter v0.93.0 update branch of 2026-10-23, which found the failure inherited from the #20 merge (main at 8ba47c1 fails docs-check on the same line with the v0.88.0 runtime), and recorded by the 2026-10-23 planning pass."
+    },
+    {
+      "file": "docs/final-reviews/WO-006/RECORDS-PR.md",
+      "href": "../../evidence/WO-006/decisions.md",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-006's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-006/ by target-records (TargetRecordsCommitted, 2026-10-21); the launchpad record keeps its original link; declared on the starter v0.93.0 update branch of 2026-10-23, which found the failure inherited from the #20 merge (main at 8ba47c1 fails docs-check on the same line with the v0.88.0 runtime), and recorded by the 2026-10-23 planning pass."
     }
-  ]
+  ],
+  "homePaths": {
+    "docs/evidence/WO-006/host-qualification.md": [
+      "01c044a929279c1e5493f86a5904cff831f86c3b93c2e2e4dd31988bf155902d"
+    ]
+  },
+  "homePathsNote": "Line fingerprints of record lines that carry an absolute home path, declared historical: WO-006's host-qualification record line 147 quotes the operator-run publish command of 2026-10-21 with its worktree path, filed by the final review (#20); declared on the starter v0.93.0 update branch of 2026-10-23 (the line fails docs-check on main at 8ba47c1 with the v0.88.0 runtime) and recorded by the 2026-10-23 planning pass."
 }
