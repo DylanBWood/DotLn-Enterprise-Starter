@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { SOURCE_BUNDLE_HASH_DOMAIN, SOURCE_SECRET_SHAPES, SOURCE_URL_FORMS, decodeSourceBundle, resolveSourceSpan, screenSourceBundle, sourceBundleHash, } from "../src/index.js";
+import { SOURCE_BUNDLE_HASH_DOMAIN, SOURCE_SECRET_SHAPES, SOURCE_URL_FORMS, SOURCE_URL_CREDENTIAL_SHAPES, decodeSourceBundle, resolveSourceSpan, screenSourceBundle, sourceBundleHash, } from "../src/index.js";
 const readJson = async (path) => JSON.parse(await readFile(new URL(path, import.meta.url), "utf8"));
 const fixture = await readJson("../../fixtures/wo060-source-bundles.json");
 const oracleUrl = new URL("../../../../corpus/harness/id-corpus-lib.mjs", import.meta.url);
@@ -271,6 +271,7 @@ test("WO-060 positive decoding refuses every other malformed field with its path
 test("WO-060 criterion 2: each declared secret shape and URL form refuses with the span, and the same bundle without it decodes", () => {
     assert.deepEqual(fixture.screened.map((entry) => entry.case).sort(), [
         ...SOURCE_SECRET_SHAPES.map((shape) => shape.shapeId),
+        ...SOURCE_URL_CREDENTIAL_SHAPES.map((shape) => shape.shapeId),
         ...SOURCE_URL_FORMS.map((form) => form.formId),
     ].sort(), "one fixture per declared shape and form");
     for (const entry of fixture.screened) {
@@ -318,8 +319,8 @@ test("WO-060 criterion 2: an empty allowlist refuses every declared URL form", (
         assert.ok(findings.every((finding) => finding.kind === "url-form"));
     }
 });
-test("WO-060 criterion 2: three secret-like strings outside the declared shapes decode, and the module names them as the screen's limit", async () => {
-    assert.equal(fixture.limits.strings.length, 3);
+test("an unprefixed hexadecimal token remains outside the declared credential shapes", async () => {
+    assert.equal(fixture.limits.strings.length, 1);
     const result = decoded(fixture.limits.bundle);
     assert.equal(result.hash, fixture.limits.hash);
     for (const value of fixture.limits.strings)
@@ -327,11 +328,7 @@ test("WO-060 criterion 2: three secret-like strings outside the declared shapes 
     const source = await readFile(new URL("../../src/source-bundle.ts", import.meta.url), "utf8");
     const documentation = source.slice(0, source.indexOf("export "));
     assert.match(documentation, /screen is a declared filter, not a detector of every secret/u);
-    for (const limit of [
-        /an unprefixed 40-hex token/u,
-        /a JWT without the Bearer word/u,
-        /a password in the userinfo of a URL whose host is allowed/u,
-    ])
+    for (const limit of [/an unprefixed 40-hex token/u])
         assert.match(documentation.replace(/\s*\n\s*\*?\s*/gu, " "), limit);
 });
 /** Every span a fixture holds, with the bundle it addresses. */
@@ -377,7 +374,7 @@ test("WO-060 criterion 3: every span in every fixture resolves to bytes inside i
         assert.equal(resolveSourceSpan(bundle, span), value, name);
         count++;
     }
-    assert.equal(count, 64, "spans in the fixtures");
+    assert.equal(count, 70, "spans in the fixtures");
     for (const { bundle } of fixture.valid)
         for (const image of bundle.images) {
             const text = resolveSourceSpan(decoded(bundle).bundle, image.referencedBy);
@@ -407,7 +404,7 @@ test("WO-060 the screen reads a declared URL form's host the way a judge would t
         ["https://evil.example", true],
         ["https://github.com@evil.example", true],
         ["https://user@name@github.com/", false],
-        ["https://github.com:443@evil.example/", true],
+        ["https://github.com:443@evil.example/", true, "443"],
         ["https://evil.example\\@github.com", true],
         ["https://evil.example#@github.com", true],
         ["https://evil.example?@github.com", true],
@@ -435,15 +432,19 @@ test("WO-060 the screen reads a declared URL form's host the way a judge would t
         ['"www.evil.example"', false],
         ["the www. prefix", false],
     ];
-    for (const [text, refuses] of cases) {
+    for (const [text, refuses, password] of cases) {
         const result = decodeSourceBundle(withText(text), {
             allowedHosts: ["github.com", "docs.github.com"],
         });
         assert.equal(!result.ok, refuses, text);
         if (!result.ok) {
             const findings = screened(result);
-            assert.equal(findings.length, 1, text);
-            assert.equal(findings[0].kind, "url-form", text);
+            assert.deepEqual(findings.map((finding) => finding.kind).sort(), password === undefined ? ["url-form"] : ["url-credential", "url-form"], text);
+            if (password !== undefined) {
+                const credential = findings.find((finding) => finding.kind === "url-credential");
+                assert.equal(credential.id, "url-userinfo-password");
+                assert.equal(resolveSourceSpan(withText(text), credential.span), password);
+            }
         }
     }
     // An authority read by the scheme form is not read again as www.
@@ -585,4 +586,51 @@ test("WO-060 decoding is deterministic, reads no clock or randomness and screens
         decodeSourceBundle(withText(text), { allowedHosts: [] });
         assert.ok(performance.now() - started < 5000, unit);
     }
+});
+test("URL userinfo passwords refuse independently of the host, with only credential byte spans", () => {
+    for (const [url, password] of [
+        ["https://name:synthetic-secret@github.com/path", "synthetic-secret"],
+        ["https://:synthetic-secret@github.com/", "synthetic-secret"],
+        ["https://name:part:tail@github.com/", "part:tail"],
+        ["https://name:synthetic%40secret@github.com/", "synthetic%40secret"],
+        ["www.name:synthetic-secret@github.com/", "synthetic-secret"],
+    ]) {
+        const text = `🙂 ${url}`;
+        const findings = screened(decodeSourceBundle(withText(text), { allowedHosts: ["github.com"] }));
+        assert.equal(findings.length, 1, url);
+        assert.equal(findings[0].kind, "url-credential");
+        assert.equal(findings[0].id, "url-userinfo-password");
+        assert.equal(resolveSourceSpan(withText(text), findings[0].span), password);
+        assert.ok(!JSON.stringify(findings).includes(password));
+    }
+    for (const url of [
+        "https://name@github.com/",
+        "https://name:@github.com/",
+        "https://name%3Aonly@github.com/",
+        "https://github.com/path:name@later",
+    ])
+        decoded(withText(url), ["github.com"]);
+    assert.deepEqual(screened(decodeSourceBundle(withText("https://name:synthetic-secret@evil.example/"), { allowedHosts: ["github.com"] }))
+        .map((row) => row.kind)
+        .sort(), ["url-credential", "url-form"]);
+});
+test("compact JWT shape screens signed and unsecured segments while leaving incomplete forms outside its declared set", () => {
+    for (const token of [
+        "eyJhbGciOiJub25lIn0.eyJzdWIiOiJzeW50aGV0aWMifQ.",
+        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzeW50aGV0aWMifQ.c3ludGhldGljLXNpZw",
+    ]) {
+        const text = `🙂 ${token}`;
+        const findings = screened(decodeSourceBundle(withText(text), { allowedHosts: [] }));
+        assert.equal(findings.length, 1);
+        assert.equal(findings[0].id, "jwt-credential");
+        assert.equal(resolveSourceSpan(withText(text), findings[0].span), token);
+        assert.ok(!JSON.stringify(findings).includes(token));
+    }
+    for (const token of [
+        "eyJheader.payload",
+        "header.payload.signature",
+        "eyJheader..signature",
+        "eyJheader.payload.signature.extra",
+    ])
+        decoded(withText(token));
 });

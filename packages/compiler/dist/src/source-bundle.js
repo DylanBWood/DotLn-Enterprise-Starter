@@ -1,6 +1,6 @@
 import { canonicalStringify, compareText, fnv1a64 } from "./normalize.js";
 /*
- * SourceBundle v1 (WO-060): the immutable input of the `SourceAdapter` port
+ * SourceBundle v1: the immutable input of the `SourceAdapter` port
  * (product 03 §Ports), one tracked-work artifact's sections, discussion, image
  * references and revisions, positively decoded.
  *
@@ -12,8 +12,8 @@ import { canonicalStringify, compareText, fnv1a64 } from "./normalize.js";
  * The screen is a declared filter, not a detector of every secret: it refuses
  * the shapes in SOURCE_SECRET_SHAPES and each SOURCE_URL_FORMS reference whose
  * host is not on the allowlist supplied at decode time, and any other string
- * passes, such as an unprefixed 40-hex token, a JWT without the Bearer word or
- * a password in the userinfo of a URL whose host is allowed.
+ * passes, such as an unprefixed 40-hex token. A JWT shape and a password in a
+ * declared URL authority are refused even when its host is allowed.
  */
 export const SOURCE_BUNDLE_HASH_DOMAIN = "dotln:source-bundle:v1";
 export const SOURCE_ROLES = ["reporter", "reviewer", "automation"];
@@ -50,6 +50,13 @@ export const SOURCE_SECRET_SHAPES = freeze([
         flags: "iu",
         reference: "RFC 6750 §2.1 (b64token and the Bearer credentials); RFC 9110 §11.1 (the scheme name is case-insensitive)",
     },
+    {
+        shapeId: "jwt-credential",
+        description: "A compact JWT token of three base64url segments whose first begins eyJ, bounded by characters outside base64url and a dot; the signature may be empty for an unsecured JWT.",
+        pattern: String.raw `(?<![A-Za-z0-9_.-])eyJ[A-Za-z0-9_-]*\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]*(?![A-Za-z0-9_.-])`,
+        flags: "u",
+        reference: "RFC 7519 §3 (compact JWT) and §6 (unsecured JWT); RFC 7515 §2 (base64url)",
+    },
     githubToken("github-personal-access-token", "ghp_", "personal access token (classic)"),
     {
         shapeId: "github-fine-grained-personal-access-token",
@@ -80,6 +87,14 @@ export const SOURCE_URL_FORMS = freeze([
         formId: "www-autolink",
         description: "www. in any case, then a letter, digit, _ or -, at the start of a string or after whitespace, *, _, ~ or (, and outside an authority already read. Its host is read as an authority from the first w.",
         reference: "GitHub Flavored Markdown Spec §6.9, Autolinks (extension): extended www autolink",
+    },
+]);
+/** Credential shapes read by the URL authority parser, independently of hosts. */
+export const SOURCE_URL_CREDENTIAL_SHAPES = freeze([
+    {
+        shapeId: "url-userinfo-password",
+        description: "Non-empty data after the first colon and before the last @ of a declared URL authority.",
+        reference: "RFC 3986 §3.2.1 (userinfo)",
     },
 ]);
 const shapeMatchers = SOURCE_SECRET_SHAPES.map((shape) => ({
@@ -375,16 +390,31 @@ const readAuthority = (value, from) => {
     while (end > from && TRAILING.has(value[end - 1]))
         end--;
     const authority = value.slice(from, end);
-    const hostPort = authority.slice(authority.lastIndexOf("@") + 1);
+    const userinfoEnd = authority.lastIndexOf("@");
+    const passwordColon = authority
+        .slice(0, Math.max(0, userinfoEnd))
+        .indexOf(":");
+    const hostPort = authority.slice(userinfoEnd + 1);
     const port = /:\d*$/u.exec(hostPort);
     return {
         end,
         host: lowerAscii(port ? hostPort.slice(0, port.index) : hostPort),
+        password: passwordColon >= 0 && passwordColon + 1 < userinfoEnd
+            ? { start: from + passwordColon + 1, end: from + userinfoEnd }
+            : null,
     };
 };
 const urlMatches = (value, allowed) => {
     const found = [];
     const read = [];
+    const credential = (authority) => {
+        if (authority.password)
+            found.push({
+                kind: "url-credential",
+                id: SOURCE_URL_CREDENTIAL_SHAPES[0].shapeId,
+                ...authority.password,
+            });
+    };
     for (let at = value.indexOf("://"); at !== -1; at = value.indexOf("://", at + 3)) {
         let start = at;
         while (start > 0 && /[A-Za-z0-9+.-]/u.test(value[start - 1]))
@@ -400,6 +430,7 @@ const urlMatches = (value, allowed) => {
         if (authority.end === from)
             continue;
         read.push([from, authority.end]);
+        credential(authority);
         if (!allowed.has(authority.host))
             found.push({
                 kind: "url-form",
@@ -423,6 +454,7 @@ const urlMatches = (value, allowed) => {
             continue;
         const authority = readAuthority(value, start);
         covered = authority.end;
+        credential(authority);
         if (!allowed.has(authority.host))
             found.push({
                 kind: "url-form",

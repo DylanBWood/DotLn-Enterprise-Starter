@@ -41,8 +41,8 @@ test("WO-133 every generated role preserves supplied actor values and checks edi
 });
 test("WO-179 and WO-195 emitted roles carry their assigned corrections across support settings", () => {
     const sharedRules = [
-        "Resolve routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority; ask if an answer changes scope or authority.",
-        "Before acting on an operator message, state its aim in one line and act on that reading; ask one focused question if that reading is doubtful.",
+        "Resolve routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority. Every phase owns decisions, including no-op or deferred outcomes and blockers: record evidence, tradeoffs and reopening conditions in the ADR or decision record; do not ask the operator to arbitrate implementation or change criteria. Preserve scope and authority, and record the safe default for any expressly permitted operator-only packet without demanding a response.",
+        "Before acting on an operator message, state its aim in one line and act on the evidence-backed reading; record any consequential assumption and its reopening condition.",
         "Claims of cause, blockers, unreachable services or completion name their supporting command and output; partial searches name their boundary.",
         "Request needed authority here through the host permission flow; give the operator a command to run in your place only when the order or role names that fallback.",
         "Operator commands must be copy-paste runnable with real paths and no placeholders; questions plainly state what they decide and why.",
@@ -77,6 +77,7 @@ test("WO-179 and WO-195 emitted roles carry their assigned corrections across su
                 const subject = `${profile.profileId} ${role.path} economy=${economy}`;
                 for (const rule of sharedRules)
                     assert.equal(role.contents.split(rule).length - 1, 1, `${subject}: assigned rule ${rule}`);
+                assert.doesNotMatch(role.contents, /ask if an answer changes scope or authority|ask one focused question if that reading is doubtful/, `${subject}: replaced arbitration wording stays absent`);
                 if (role.path.endsWith("dotln-release-close/SKILL.md")) {
                     assert.match(role.contents, /Run the printed helper command exactly as printed, with no redirect, prefix, cd or pipe/, subject);
                     assert.match(role.contents, /The close is done when the tag and Release exist, git worktree list shows no worktree for the order, its directory is gone, git branch --list wo-NNN is empty and no starter-refresh blocker remains/, subject);
@@ -433,4 +434,24 @@ test("execution roles open with an ordered handoff and keep shared rules below i
     assert.match(verifier, /your own probes and the executor's two worker reports/);
     assert.match(verifier, /Spawn a worker only to reproduce one named claim/);
     assert.match(verifier, /breaks no criterion and no behavior `main` had is a follow-up, never blocking/);
+});
+test("review roles carry their repair authority, defensive judgment and durable output duties", () => {
+    const roles = contributorProgram().roles;
+    const verifier = roles
+        .find((role) => role.name === "verifier")
+        .procedure.join("\n");
+    const reviewer = roles
+        .find((role) => role.name === "reviewer")
+        .procedure.join("\n");
+    assert.match(verifier, /Route a blocking design defect.*repair rule.*without asking the operator/);
+    assert.match(reviewer, /Read: `docs\/product\/07-execution-guide\.md#Verification review and attack`/);
+    for (const text of [verifier, reviewer]) {
+        assert.match(text, /Judge confinement and security-boundary findings against the recorded rule/);
+        assert.match(text, /After one provider safeguard refusal, change approach/);
+        assert.match(text, /After two consecutive provider safeguard refusals, stop retrying/);
+        assert.match(text, /Every phase owns decisions.*ADR or decision record/);
+    }
+    assert.match(verifier, /Before emitting audit or repository output, select verdict-relevant fields and budget the aggregate read/);
+    assert.match(verifier, /nested gate logs and truncated batches/);
+    assert.match(verifier, /acknowledging a process failure, name its durable record and disposition in the same response/);
 });
