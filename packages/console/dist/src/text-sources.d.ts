@@ -18,6 +18,9 @@ export declare const INDEX_PAGE_TITLES: {
     readonly history: "# Work-order history";
 };
 export declare function parseWorkOrderIndex(text: string, title?: string): readonly TextRow[];
+/** Workstream cells come from the index's committed JSON observation, never
+ * from prose or a live target checkout. Older indexes have no groups. */
+export declare function parseWorkstreams(text: string): readonly TextRow[];
 export declare function parseReleases(text: string): readonly TextRow[];
 export declare function parseConstellation(text: string): readonly TextRow[];
 export declare function parsePendingRungs(text: string): readonly TextRow[];
