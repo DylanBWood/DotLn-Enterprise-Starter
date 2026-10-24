@@ -63,6 +63,13 @@ export interface ReplayResult<S extends JsonValue> {
 export declare function defaultEnvironmentProjection(state: JsonValue): Omit<KernelEnv, "now" | "predicates">;
 export declare function replay<S extends JsonValue>(initial: S, events: readonly Event[], reactor: Reactor<S>, predicates: PredicateRegistry, projectEnvironment?: (state: S, event: Event) => Omit<KernelEnv, "now" | "predicates">): ReplayResult<S>;
 export declare const emptyOutbox: () => OutboxState;
+export declare class CommandAdmissionError extends Error {
+    readonly field: string;
+    readonly trace: DecisionTrace;
+    constructor(field: string);
+}
+/** New commands require structure; replay keeps the historical ID-only rule. */
+export declare function assertCommand(command: unknown): asserts command is Command;
 export declare function persistCommand(state: OutboxState, command: Command): OutboxState;
 export declare const pendingCommands: (state: OutboxState) => readonly Command[];
 export declare function replayOutbox(events: readonly Event[]): OutboxState;

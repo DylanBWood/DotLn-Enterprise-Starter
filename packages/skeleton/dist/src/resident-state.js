@@ -733,6 +733,13 @@ export function foldResidentEvent(previous, event, predicates) {
             !state.policy.phases.some((p) => p.phaseId === payload["phaseId"]))
             throw new Error("resident NoOp needs a reason and phase");
         state.lastNoOp = payload["reason"];
+        // Derive the identity from the recorded clock and presence history, so
+        // older logs and restarted hosts deduplicate the same refusal equally.
+        state.lastNoOpKey = JSON.stringify([
+            payload["reason"],
+            payload["phaseId"],
+            machine.generation,
+        ]);
     }
     state.machine = machine.snapshot();
     return state;

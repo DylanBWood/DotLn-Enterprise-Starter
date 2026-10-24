@@ -51,6 +51,7 @@ export interface ResidentState {
     episodeGenerations: Record<string, number>;
     revokedBy: Event[];
     lastNoOp: string | null;
+    lastNoOpKey?: string;
     lastHumanAt: number | null;
     actors: Record<string, {
         lastHeartbeatAt: number;

@@ -221,6 +221,8 @@ const KNOWN_SURFACE = [
     "replay",
     "emptyOutbox",
     "persistCommand",
+    "assertCommand",
+    "CommandAdmissionError",
     "pendingCommands",
     "replayOutbox",
     "applyCommandResult",
