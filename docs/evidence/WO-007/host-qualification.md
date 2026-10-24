@@ -64,3 +64,56 @@ from local implementation or gate success.
   readback was denied. Final review disposes of the rows.
 - No private journal contents are copied here: only row kinds, timestamps,
   the typed event, the rule name and the admission kind.
+
+## Final publish (FINAL-001 session, 2026-10-24)
+
+- Host: Claude Code 2.1.310 with auto mode on; model `claude-fable-5-1`,
+  effort `max` from `CLAUDE_EFFORT`. The publish ran after
+  `final-review-result pass` recorded FINAL-001, `target-records` committed
+  the records in the target (`4304a9d573527911d24dafe43bff319d461302e3`
+  over the reviewed commit `db4d648df5a6f1e46c6c5002ae0ebc0d4ff73954`) and
+  the instance records were committed on `wo-007`.
+- Helper command line as run, verbatim, from the launchpad root, with no
+  pipe, redirect, directory change or variable prefix:
+  `node scripts/worktree.mjs publish WO-007 --target-worktree --branch feat/events-and-state --title "feat: add events, signal stores, data access and MSW" --body-file docs/final-reviews/WO-007/PR.md`
+- Before the run: this worktree's `dotln.config.json`,
+  `docs/control/outward-vocabulary.json` and `scripts/worktree.mjs` were
+  unchanged from `main` (the integration moved no launchpad code byte), and
+  the reviewed body, the title and the branch each passed
+  `node scripts/outward-lint.mjs <kind> --target`. The body carries an
+  identifier-free level-one heading, which the launchpad's stored-body check
+  requires and the target lint admits.
+- Journal: at 2026-10-24T16:17:04.905Z and 16:17:04.975Z the generic effect
+  rows were allowed. At 16:17:05.332Z the hook recorded a
+  `registeredTargetAdmission` row of kind `helper` for this order and
+  `dotln-angular`. The PostToolUse rows at 16:17:12.235Z are allowed. No
+  `PermissionDenied` row exists for this call.
+- Host decision: allowed without a prompt. No one was asked, and no one
+  answered. No `vocabulary.review` refusal, so `--confirm-terms` was not
+  needed; no host denial, so the operator's `!`-prefixed fallback was not
+  used.
+- Helper output: "Pushed feat/events-and-state at
+  4304a9d573527911d24dafe43bff319d461302e3 over draft
+  db4d648df5a6f1e46c6c5002ae0ebc0d4ff73954 and marked pull request #5 on
+  github.com/DylanBWood/DotLn-Angular ready."
+- Readback through `gh pr view 5` at 16:17:32Z (allowed, unlike the
+  verified-phase session's readback): https://github.com/DylanBWood/DotLn-Angular/pull/5
+  is `OPEN`, `isDraft: false`, head `feat/events-and-state` at
+  `4304a9d573527911d24dafe43bff319d461302e3`, base `main` at
+  `90fa6e8d879cb499107ff79d1051c200d17c1cbc`, mergeable, with the reviewed
+  title. The CI run 40110850560 and the title run 40110850555 started at
+  16:17:12Z at that head; the title run completed with success and the CI
+  run was in progress at the readback. Target `HEAD` is the records commit,
+  and the target working tree is clean.
+- Trust entries by pattern: the project `.claude/settings.json` has no allow
+  entries matching `worktree`, `publish`, `git push` or `gh pr`; `hostRules`
+  is absent from the `dotln-angular` registration.
+- Interventions: none. Status records no correction, waiver or override for
+  WO-007. The three draft-publish follow-up rows (`FUP-1508c6254455ccf3`,
+  `FUP-2479f6d32b2396a8`, `FUP-98c85b750cb36bd4`) are deferred in
+  WO-007-D020 (moved to the target as
+  `dotln-angular@4304a9d573527911d24dafe43bff319d461302e3:docs/dotln/evidence/WO-007/decisions.md#wo-007-d020`)
+  with the draft-publish observation; this final publish adds a second
+  admitted-and-allowed observation and no denial.
+- No private journal contents are copied here: only row kinds, timestamps
+  and the admission kind.
