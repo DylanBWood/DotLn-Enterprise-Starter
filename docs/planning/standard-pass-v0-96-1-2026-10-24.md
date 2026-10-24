@@ -314,8 +314,12 @@ where the decision is to act, and the observation that reopens it.
   (FUP-2811605b8e865d2d), the index on the update branch and on this branch.
   Rejected: a separate `main` checkout for the refresh (the pass's writer is
   this checkout, and regenerating before the first commit gives the same
-  reading). Reopen: core fixes the refresh, or a reader of the board or the
-  index acts on the mark; candidate C3 carries it.
+  reading). After the subject commit, `npm run meta -- --plan-cost`
+  regenerated the index at the branch's new head and the three members read
+  `diverged` again; the pass restored the pre-commit record, which
+  `index --check` and `npm run sync` accept as current, so what merges to
+  `main` reads `current`. Reopen: core fixes the refresh, or a reader of
+  the board or the index acts on the mark; candidate C3 carries it.
 
 ## 7. Core's answers of 2026-10-24 (second pass), read against v0.96.1
 
@@ -374,9 +378,65 @@ the final-review row).
 
 ### 9.1 Known issues from this pass's receipt, by order
 
-Filled after the refutation (§14): the receipt's known issues on the six
-amended orders, which the frozen subject carries on its catalog rows until a
-later pass amends the orders, and the two on WO-013 that go to its fix.
+The refutation (§14) returned `aligned-with-findings` with seventeen known
+issues and no hold; WO-013 and WO-014 are carried by hash (WO-014's
+amendments touched its design, fan-out rule and known issues, none of them
+judged fields). The five judged orders are frozen at the judged subject, so
+the pass that follows WO-013's merge amends them for these and pays its
+refutation then; they are listed here so nothing is re-derived, and an
+executor who activates an order before that amendment meets each inside the
+order's authority and records it in the decisions file. The receipt's
+reopening observations are on the receipt.
+
+- **WO-015.** (a) Criterion 2's literal canvas-tag grep misses a canvas
+  made through `document.createElement('canvas')`, `Renderer2`,
+  `OffscreenCanvas` or a second `getContext` call outside the wrapper; the
+  next amendment adds those forms to the grep. (b) Criterion 4's first-scene
+  list is set by the executor's own decisions file, so a list too small to
+  carry flock, arrive, wedge, line and column would pass; the amendment names
+  those five as the floor. (c) Criterion 1 asserts a refused step carries a
+  reason, not that the frame hash and the clock are unchanged after it. (d)
+  No criterion covers a stored `dotln-angular.scene` value that no longer
+  parses; falling back to the idle field is the old behavior.
+- **WO-016.** (a) The slot labels (harness, model, effort) have no field in
+  the six-field allow-list unless `actor` is a composite the reader parses;
+  `actor` is also the one field that could carry a personal account name
+  copied from the platform's records, which the no-absolute-path check does
+  not cover, so the reducer's scrub screens it. (b) Slot semantics: the
+  Objective names four role slots plus the operator figure, criterion 7
+  counts five slots, and `role-mechanisms.json` lists no repairer; the
+  repairer slot is the executor role at `resume: fix`, and the card says so.
+  (c) The sink's configured destination and what a drop does when the sink
+  is set but down (apply and persist in the browser, one toast) are not
+  pinned by a criterion.
+- **WO-008.** (a) Criterion 1's storage grep over `apps/dotln/src` meets any
+  storage helper WO-015 or WO-016 places there first; the grep is scoped to
+  `libs/shared/auth/src` plus the app's own files, or the earlier orders keep
+  storage inside their libraries. (b) Guarding every `BasePaths` member
+  retrofits a session onto the scene, machinery and tools e2e specs, which
+  the Cost line does not name, and WO-018's e2e names no sign-in. (c) A
+  production build carries no provider, so every guarded sub-app refuses
+  until the operator supplies one; `jose` belongs in `devDependencies`,
+  which the order does not say. (d) The Cost line lacks the `Refutations
+  paid` entry the other orders carry (two: receipts 001 and this pass's).
+- **WO-017.** (a) Readiness is not defined in the criteria; if it is the
+  hand-back's arrival, a zero-duration variant dominates all three figures
+  (candidate C4 carries the operator's fourth result). (b) `twin:check` fails
+  on an absent base commit in a fresh or shallow clone, an environment gap
+  read as a gate failure; and the never-delete rule grows the twin chunk
+  without bound while Git keeps the history anyway. (c) WO-015's scene
+  clock, WO-016's replay clock and WO-017's scheduler are three time
+  abstractions with no shared tick contract required.
+- **WO-018.** (a) `check-map.mjs` is invoked directly and is not a declared
+  gate command, so a later map edit could pass the gate; the amendment wires
+  it into `check:fixtures` as the catalog and record checks are. (b) Whether
+  the run's nineteen toy titles count as prose from the run is undecided;
+  the decisions file records that an id and a short title are not. (c) The
+  six toy-source tool sets rest on public knowledge of mostly copyrighted
+  works with no text to run the overlap check against; each definition
+  names its public source in the decisions file. (d) A worker's statement
+  that no quarantine file was read is self-attested; the fan-out record
+  names the harness read observation where one exists.
 
 ## Candidates not filed, with their reopening conditions (section 10)
 
@@ -536,4 +596,45 @@ before the receipt only because the new dated heading needs one
 gate before the receipt was not run, so the refuter's reads met no live
 gate; `npm run test:docs` after the receipt is recorded below.
 
-REFUTATION_RESULTS
+Commits: the subject `d759232` (fifteen files: the six orders, the sequence,
+WS-001, the profile, the operator record, the ledger and its index, the
+register, the index pages and this document), the cost table `a3ea7be`, the
+receipt `8e0ac1f`, then the known-issues commit that carries this section.
+
+Refutation: one fresh `dotln-worker` (the default type; the dispatch line
+named no Fable worker), spawned in the background with only the canonical
+prompt the helper printed (`npm run plan -- refute`, pass scope, 79,605
+bytes: the identity, mask and lens, the work order, the compiled subject,
+the output instructions, the result schema and the worker instructions), its
+schema and the instruction to return the frozen JSON and a one-line
+statement. It read that one file and nothing else, judged WO-015, WO-016,
+WO-008, WO-017 and WO-018 (the five orders whose judged fields changed;
+WO-013 and WO-014 carried by hash), and returned `aligned-with-findings`
+on every order and for the plan, with seventeen known issues (§9.1) and no
+hold: no supplied observation shows a failure and the subject supplies no
+vision passage id. Worker time 586 s, 158,558 worker tokens, 5 tool uses.
+The receipt helper refused the first filing because the statement named the
+absolute scratch path; the same worker replaced the two paths with `<tmp>/`
+placeholders in 25 s without touching `result.json` (its SHA-256 `f2e3e470…`
+unchanged before and after), and the second filing succeeded. Receipt
+`2026-10-24-planning-d693ddbce103291d-009` (`docs/planning/refutations/`),
+worker type `dotln-worker`, scope `pass`, 919,352 ms from dispatch to file
+(15.3 minutes, the repair included), judged subject `sha256:8a2ffd23…`
+equal to the committed and workspace subjects; the gate after it: 9
+receipts, 9 passes, no advisory. Dispositions: none needed (no hold); the
+seventeen known issues are on the receipt and in §9.1 for the next pass.
+
+Session cost at the handoff (`node scripts/harness.mjs usage`, source
+`claude-transcript-message-usage`, scope `dispatch`): 15,811,964 total
+tokens (15,199,226 cached input, 435,212 cache-write input, 1,646 input,
+175,880 output; reasoning output and USD cost unavailable) over 142 steps and
+119 commands at 22:27Z, before the document suite and the pull request; one
+subagent of the cap of 20, 19 remaining. The update's wall-clock from the
+dispatch at 21:29Z to the finished `main` at about 21:47Z was 18 minutes,
+seven of them the operator's merge; the planning branch opened at 21:47Z.
+
+`npm run test:docs` after the receipt, on the tree that carries this
+section: 14 passed, 0 failed, 17.36 s of wall-clock, 14 fresh tasks, 0.2 s
+of lane wait behind checkout unknown; `plan` and `plan-refutation-current`
+PASS on receipt 009. The run at the final commit is reported in the pull
+request.
