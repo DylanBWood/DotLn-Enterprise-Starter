@@ -1,3 +1,4 @@
+import { assertCommand } from "./core.js";
 const requiredFields = [
     "schemaVersion",
     "eventId",
@@ -86,6 +87,12 @@ export function tryDecodeLog(log) {
     return { ok: true, value: events };
 }
 export function appendEvent(log, event) {
+    if (event.type === "CommandPersisted") {
+        const payload = event.payload;
+        assertCommand(payload !== null && typeof payload === "object" && !Array.isArray(payload)
+            ? payload["command"]
+            : undefined);
+    }
     const eventId = `evt_${decodeLog(log).length + 1}`;
     const assigned = { ...event, eventId };
     const line = `${JSON.stringify(assigned)}\n`;
@@ -93,8 +100,15 @@ export function appendEvent(log, event) {
     // decoder used by readers; a malformed draft must never create a bad log.
     const appended = `${log}${line}`;
     const decoded = decodeLog(appended);
+    const persisted = decoded[decoded.length - 1];
+    if (persisted.type === "CommandPersisted") {
+        const payload = persisted.payload;
+        assertCommand(payload !== null && typeof payload === "object" && !Array.isArray(payload)
+            ? payload["command"]
+            : undefined);
+    }
     // Live consumers receive the same JSON value that replay will read.
-    return { log: appended, event: decoded[decoded.length - 1] };
+    return { log: appended, event: persisted };
 }
 export function decodeLog(log) {
     const result = tryDecodeLog(log);

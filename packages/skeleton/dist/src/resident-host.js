@@ -7,7 +7,7 @@ import { canonicalStringify } from "@dotln/compiler";
 import { actorCatalog, } from "./actor-catalog.js";
 import { assertActorResult, scriptResultVerified, } from "./actor-contract.js";
 import { actorFailure } from "./cli-actor.js";
-import { portfolioAdapter } from "./portfolio-actor.js";
+import { portfolioAdapter, PORTFOLIO_UNBOUND, } from "./portfolio-actor.js";
 import { decodeResidentConfiguration, isMissionActor, portfolioSelection, residentEpisodeId, residentMachine, residentRefusal, } from "./resident-state.js";
 import { ResidentStore } from "./resident-store.js";
 import { ConsoleLoopback, consoleDirectory } from "./console-loopback.js";
@@ -248,7 +248,12 @@ export class ResidentHost {
             if (!phase)
                 return null;
             const noOp = (type, reason) => {
-                if (state.lastNoOp !== reason)
+                const key = JSON.stringify([
+                    reason,
+                    phase.phaseId,
+                    machine.generation,
+                ]);
+                if (state.lastNoOp !== reason || state.lastNoOpKey !== key)
                     tx.append(type, { reason, phaseId: phase.phaseId });
                 return null;
             };
@@ -259,7 +264,10 @@ export class ResidentHost {
             const spec = state.configuration.actors[phase.phaseId];
             const adapter = this.catalog[spec.kind];
             const unavailable = adapter.available(spec);
-            if (unavailable)
+            const intentOnly = this.options.vertical &&
+                spec.kind === "portfolio" &&
+                unavailable === PORTFOLIO_UNBOUND;
+            if (unavailable && !intentOnly)
                 return noOp("ActorUnavailable", unavailable);
             const capabilities = this.options.capabilities?.() ?? [
                 "actor.script",
@@ -269,6 +277,10 @@ export class ResidentHost {
             const missing = phase.requiredCapabilities.filter((capability) => !capabilities.includes(capability));
             if (missing.length)
                 return noOp("ActorUnavailable", `runtime capability unavailable: ${missing.join(", ")}`);
+            // An idle intent scheduler does not attempt unbound legacy hosts, but
+            // missing runtime capabilities above must remain visible.
+            if (intentOnly)
+                return null;
             const refusal = residentRefusal(state, machine);
             if (refusal)
                 return noOp("ScriptEpisodeRefused", refusal);

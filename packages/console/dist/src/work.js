@@ -1,5 +1,5 @@
 import { array, fact, id, known, object, string, unknown, } from "./values.js";
-import { INDEX_PAGE_TITLES, markdownLinks, parseConstellation, parseReleases, parseWorkOrderIndex, plainText, } from "./text-sources.js";
+import { INDEX_PAGE_TITLES, markdownLinks, parseConstellation, parseReleases, parseWorkOrderIndex, parseWorkstreams, plainText, } from "./text-sources.js";
 /** The generated index's two pages (WO-190), each its own section. */
 const INDEX_PAGES = {
     index: {
@@ -162,5 +162,16 @@ export function projectWork(ctx, sources) {
             }),
         ];
     });
-    return [status, constellation, releases, index, history, usage];
+    const workstreams = ctx.section("workstreams", "Workstreams", sources.workOrderIndex, INDEX_PAGES.index.ref, (text, ref) => parseWorkstreams(text).map((row) => {
+        const detail = indexed.get(row.values["workOrder"]);
+        return {
+            id: id("workstream-member", row.key),
+            title: row.key,
+            cells: Object.entries(row.values).map(([key, value]) => known(key, key, value, ctx.ref(ref, `workstreams:${row.key}`))),
+            links: detail
+                ? [{ label: "Work-order evidence", target: detail.id }]
+                : [],
+        };
+    }));
+    return [status, constellation, releases, index, history, usage, workstreams];
 }

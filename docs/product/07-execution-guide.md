@@ -464,7 +464,11 @@ withholds the `npm run worktree -- publish` form with an advisory naming
 it, WO-218 D062); it never merges either. An instance order may name an actor and the phrase for the opt-in
 `--draft` form at `verified`, which pushes the target worktree's working tree
 to that branch under a draft pull request the closed-phase publish reuses;
-core declares no draft step and no actor (WO-221). Release close of a target
+core declares no draft step and no actor (WO-221). Its Change table describes
+the subject against its merge base with the target's base branch fetched at
+publish, retaining the activation base when it is not an ancestor of that
+merge base and naming it beside the described base when the two differ.
+Release close of a target
 order fetches the target's base branch and
 fast-forwards the clone's base branch before it judges containment. Release
 close may create and push only the validated annotated tag, create the
@@ -759,6 +763,11 @@ list), and generated work-order index project the same pair. The configured
 worktree parent and every other physical path stay out of those records. An
 unknown id, missing base, malformed object id or malformed registered profile
 refuses before the activation event.
+An optional leading `**Workstream:** WS-NNN` field groups the order under a
+matching document in the configured `workstreams` root; the index validates
+its JSON membership block and records target facts for the board, with
+`track: separate` members outside the serial queue and `self` for an absent
+Repository field ([convention](../workstreams/README.md)).
 
 The host compiles a registered profile through the existing monotone authority
 floor. Profile denials and its expiry, resource, evidence and revocation
@@ -1243,6 +1252,13 @@ Preconditions and inputs:
    When dispatching with a pasted block, put the dispatch on its first
    content line; one opening fence and blank lines are admitted, while a
    later quoted dispatch does not select a role.
+6. GitHub issues on this repository are the external idea intake (operator
+   direction, 2026-10-24): the operator or an autonomous agent files an idea
+   as an issue, and the pass lists the open issues (`gh issue list`), reads
+   each against the record it names and files, declines or defers it with
+   its reopening condition, as it does a fork item; the idea ledger is
+   drained into the operator's instance's UI, where an idea lives first as a
+   toy, and is not fed new entries by this route.
 
 **`planning: refute` and `planning: refute full`.** These exact phrases load
 the dedicated refuter skill in either harness. The parent runs
@@ -1994,7 +2010,13 @@ messages, titles, bodies and replies; event payload references remain intact.
 
 For a session order, `worktree publish WO-NNN --target-worktree --branch
 <type>/<slug> --title <title> --body-file <path>` reads a committed contained
-regular body file from the clean order launchpad. Its opt-in `--draft` form
+regular body file from the clean order launchpad. Both session forms use
+the same publication base: the subject's merge
+base with the fetched target base branch when it descends from the activation
+base, otherwise the activation base; the Change table, existing-path exemptions
+and no-change check use that described base, and the closing sentence also
+names the activation base when different, without rebinding any record.
+Its opt-in `--draft` form
 is legal at `verified` with a passing verification: it reads the body's
 working bytes, writes a commit object from the target worktree's working tree
 through a temporary index (HEAD and the index unchanged), pushes it to the
