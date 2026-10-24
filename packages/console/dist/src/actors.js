@@ -301,16 +301,69 @@ const operatorRequests = new Set([
     "FinalReviewRequested",
     "RepairRequested",
 ]);
+// Canonical segments retain their original bytes. Corrections change only the
+// target completion's displayed actor, never the correction recorder or a verdict.
+function correctedControlActorEvents(events) {
+    const projected = [...events];
+    const activations = new Map();
+    const completions = new Set([
+        "ImplementationReady",
+        "VerificationCompleted",
+        "RepairCompleted",
+        "FinalReviewCompleted",
+    ]);
+    for (const [index, event] of events.entries()) {
+        if (event["type"] === "WorkOrderActivated")
+            activations.set(event["workOrderId"], index);
+        if (event["type"] !== "RecordCorrected")
+            continue;
+        const subject = optionalObject(event["subject"]), ordinal = subject["ordinal"];
+        if (typeof ordinal !== "number" ||
+            !Number.isSafeInteger(ordinal) ||
+            ordinal < 1 ||
+            ordinal > index)
+            continue;
+        const target = projected[ordinal - 1];
+        if (!target ||
+            target["workOrderId"] !== event["workOrderId"] ||
+            !completions.has(string(target["type"])) ||
+            target["type"] !== subject["type"] ||
+            ordinal - 1 < (activations.get(event["workOrderId"]) ?? 0))
+            continue;
+        const original = optionalObject(target["actor"]), fields = optionalObject(event["fields"]);
+        if (!Object.keys(original).length)
+            continue;
+        const keys = ["model", "effort", "source", "harnessVersion"].filter((key) => typeof fields[key] === "string");
+        if (!keys.length)
+            continue;
+        const actor = {
+            ...original,
+            correctedBy: [...array(original["correctedBy"] ?? []), index + 1],
+        };
+        for (const key of keys)
+            actor[key] = fields[key];
+        if (keys.includes("effort")) {
+            delete actor["raw"];
+            delete actor["mode"];
+        }
+        projected[ordinal - 1] = { ...target, actor };
+    }
+    return projected;
+}
 export function projectControlActors(ctx, sources) {
     return ctx.section("control-actors", "People and recorded workflow actors", sources.controlLog, "control:canonical-segments", (documents) => {
         const rows = [];
         const requests = new Map();
         for (const doc of documents)
-            for (const [index, item] of array(doc.value).entries()) {
+            for (const [index, item] of correctedControlActorEvents(array(doc.value).map(object)).entries()) {
                 const event = object(item);
                 const action = string(event["type"]), order = string(event["workOrderId"]);
-                const evidence = ctx.ref(doc.ref, `append:${index + 1} (${action}, ${order})`);
                 const actor = optionalObject(event["actor"]);
+                const correctedBy = array(actor["correctedBy"] ?? []).filter((ordinal) => typeof ordinal === "number" && Number.isSafeInteger(ordinal));
+                const evidence = [
+                    ...ctx.ref(doc.ref, `append:${index + 1} (${action}, ${order})`),
+                    ...correctedBy.flatMap((ordinal) => ctx.ref(doc.ref, `append:${ordinal} (RecordCorrected)`)),
+                ];
                 if (Object.keys(actor).length)
                     rows.push({
                         id: id("control-actor", `${doc.ref}:${index + 1}`),
@@ -337,6 +390,11 @@ export function projectControlActors(ctx, sources) {
                                 effort: "Recorded effort",
                                 source: "How the selection was recorded",
                             }[key], actor[key], evidence)),
+                            ...(correctedBy.length
+                                ? [
+                                    known("correctedBy", "Actor corrected by ordinal", correctedBy, evidence),
+                                ]
+                                : []),
                             fact("report", "Evidence report", event["reportPath"], evidence),
                             unknown("phase", "Episode phase", evidence, "A completed workflow action is not a live session observation"),
                         ],
