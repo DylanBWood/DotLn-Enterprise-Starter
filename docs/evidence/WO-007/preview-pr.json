@@ -1,0 +1,88 @@
+{
+  "capturedAt": "2026-10-24T16:04:27Z",
+  "pullRequest": {
+    "baseRefName": "main",
+    "createdAt": "2026-10-24T15:10:09Z",
+    "headRefName": "feat/events-and-state",
+    "headRefOid": "db4d648df5a6f1e46c6c5002ae0ebc0d4ff73954",
+    "isDraft": true,
+    "mergeable": "MERGEABLE",
+    "number": 5,
+    "state": "OPEN",
+    "title": ":sparkles: feat: add events, signal stores, data access and MSW",
+    "updatedAt": "2026-10-24T15:10:25Z",
+    "url": "https://github.com/DylanBWood/DotLn-Angular/pull/5"
+  },
+  "draft": {
+    "headSha": "db4d648df5a6f1e46c6c5002ae0ebc0d4ff73954",
+    "verifiedTree": "ca510cfc8945adc92afafa19280c2ee7c16fd7bb",
+    "publishedBy": "the VER-002 session (Claude Code 2.1.310, claude-opus-5-5, xhigh), running the order's step 15 helper command verbatim after verification-result pass; the hook recorded the registered-target admission and the host allowed the call without a prompt (host-qualification.md)",
+    "readBy": "the final-review session, 2026-10-24, through gh pr view, the REST comment and review endpoints, a GraphQL thread count and gh run list, before and after the operator's read"
+  },
+  "workflowRuns": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-24T15:10:12Z",
+      "databaseId": 40105739056,
+      "event": "pull_request",
+      "headSha": "db4d648df5a6f1e46c6c5002ae0ebc0d4ff73954",
+      "name": "Pull request title",
+      "status": "completed",
+      "jobs": [
+        "title (completed 15:10:28Z, success)"
+      ],
+      "url": "https://github.com/DylanBWood/DotLn-Angular/actions/runs/40105739056",
+      "workflowName": "Pull request title"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-24T15:10:12Z",
+      "databaseId": 40105739115,
+      "event": "pull_request",
+      "headSha": "db4d648df5a6f1e46c6c5002ae0ebc0d4ff73954",
+      "name": "CI",
+      "status": "completed",
+      "jobs": [
+        "checks (completed 15:15:15Z, success)",
+        "visual (macos; completed 15:12:13Z, success)"
+      ],
+      "url": "https://github.com/DylanBWood/DotLn-Angular/actions/runs/40105739115",
+      "workflowName": "CI"
+    }
+  ],
+  "reviewThreads": [],
+  "reviews": [],
+  "issueComments": [],
+  "automatedReview": "none ran on this pull request: the repository's recent run list shows only the CI and Pull request title workflows for feat/events-and-state (and for the earlier branches), and the GraphQL read counts zero review threads, zero reviews and zero comments. Whether an automated reviewer runs is a repository setting the operator owns; recorded as an observation, not a finding of this order (as WO-006's preview recorded for #4).",
+  "operatorItems": {
+    "source": "the operator's dispatch message of 2026-10-24 that opened this review carried two notes marked non-blocking: one on withCommand's flattening strategy and one approving the draft as read; paraphrased and routed in WO-007-D018",
+    "capture": "docs/intake/notes/wo007-final-review-pr-notes-2026-10-24.md",
+    "captureSha256": "823ec0b3b56427006c94e47f237b1b952f3e3bbf9060b4d39da477daf6347c66",
+    "count": 2
+  },
+  "routing": [
+    {
+      "item": "operator:1",
+      "subject": "withCommand switches to the newest trigger (switchMap) and may later need an option for another flattening strategy; no change is needed until a command needs one",
+      "route": "follow-up",
+      "class": "new-scope",
+      "target": "WO-007-D018",
+      "reason": "The order's Design names withCommand without a strategy option and no criterion names one; the only consumer is the board's load, whose newest-wins semantics fit; the operator says nothing changes until a command needs it, so the option is boarded for the first order whose command does."
+    },
+    {
+      "item": "operator:2",
+      "subject": "the operator's read of the draft is approving, with the one note above",
+      "route": "operator",
+      "class": "new-scope",
+      "target": "WO-007-D018",
+      "reason": "The operator read of the code the operator record asks for before an order is called final-reviewed; the direction this review follows: the criteria hold, no target byte changes, and the known follow-ups are boarded rather than widened into the order."
+    }
+  ],
+  "finalReviewRepairs": [],
+  "finalReviewBoarding": [
+    {
+      "decision": "WO-007-D019",
+      "summary": "the five observations VER-001 proposed and VER-002 carried (the navigation store's single route, the persisted default written at creation, the two dismissal paths, devtools decided at runtime, the toast without a story or axe check) and VER-002's unused error-handler kit, boarded as follow-ups for the first order that touches each surface"
+    }
+  ]
+}

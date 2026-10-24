@@ -644,6 +644,14 @@
           "reopenWhen": "WO-007 draft publish, admitted by the hook, is denied by the host auto-mode classifier; then the literal host-rules self order carries the registration route and this row is reread against it.",
           "targets": [],
           "at": "2026-10-23T16:06:06.728Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-007's verified-phase draft publish ran the node-spelled helper as a plain command: the hook recorded the registered-target admission and Claude Code's auto-mode classifier allowed the call without a prompt, so the condition this row waits for, a hook-admitted publish denied by the classifier, did not occur; only a following read-only GitHub readback was denied (WO-007 host-qualification.md). The final publish's outcome is appended to the same record after it runs (WO-007-D020).",
+          "reopenWhen": "A later hook-admitted target publish is denied by the host auto-mode classifier, or the next planning pass rules on the literal host-rules fallback with WO-007's two publish observations in hand.",
+          "targets": [],
+          "at": "2026-10-24T16:06:27.911Z"
         }
       ]
     },
@@ -692,6 +700,14 @@
           "reopenWhen": "WO-007 draft publish, admitted by the hook under starter v0.90.0 publication-field comparison, is denied by the host auto-mode classifier; then the next pass files the literal host-rules self order before WO-008.",
           "targets": [],
           "at": "2026-10-23T16:06:06.724Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-007's verified-phase draft publish ran the node-spelled helper as a plain command: the hook recorded the registered-target admission and Claude Code's auto-mode classifier allowed the call without a prompt, so the condition this row waits for, a hook-admitted publish denied by the classifier, did not occur; only a following read-only GitHub readback was denied (WO-007 host-qualification.md). The final publish's outcome is appended to the same record after it runs (WO-007-D020).",
+          "reopenWhen": "A later hook-admitted target publish is denied by the host auto-mode classifier, or the next planning pass rules on the literal host-rules fallback with WO-007's two publish observations in hand.",
+          "targets": [],
+          "at": "2026-10-24T16:06:27.917Z"
         }
       ]
     },
@@ -2141,6 +2157,14 @@
           "reopenWhen": "WO-007 draft publish, admitted by the hook, is denied by the host auto-mode classifier; then the next pass files it before WO-008.",
           "targets": [],
           "at": "2026-10-23T16:06:06.770Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-007's verified-phase draft publish ran the node-spelled helper as a plain command: the hook recorded the registered-target admission and Claude Code's auto-mode classifier allowed the call without a prompt, so the condition this row waits for, a hook-admitted publish denied by the classifier, did not occur; only a following read-only GitHub readback was denied (WO-007 host-qualification.md). The final publish's outcome is appended to the same record after it runs (WO-007-D020).",
+          "reopenWhen": "A later hook-admitted target publish is denied by the host auto-mode classifier, or the next planning pass rules on the literal host-rules fallback with WO-007's two publish observations in hand.",
+          "targets": [],
+          "at": "2026-10-24T16:06:27.904Z"
         }
       ]
     },
@@ -2365,6 +2389,150 @@
           "reopenWhen": "The operator asks for it.",
           "targets": [],
           "at": "2026-10-24T05:40:28.135Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e68c57560698ecdb",
+      "key": "decision:docs/evidence/WO-007/decisions.md#wo-007-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cd547477aa09d288d08524513e0060e3986cb232eab01ac475883417e2496158",
+          "ref": "docs/evidence/WO-007/decisions.md#wo-007-d008",
+          "title": "WO-007-D008: Make DotlnErrorHandler report each error it receives to the console with the original error (for example by delegating to Angular's default ErrorHandler) and keep dispatching…",
+          "summary": "{ \"id\": \"WO-007-D008\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify; VER-001 attack on the application ErrorHandler\", \"decision\": \"Route as blocking and fail VER-001. DotlnErrorHandler, which provideDotlnState() registers as the application ErrorHandler, discards the error it receives: it reports nothing to the console and stores only a generic AppError, so an uncaught error's message and stack reach no surface. Main reported every such error to the console through Angular's default ErrorHandler. Rule a repair must hold: the application ErrorHandler reports each error it receives to the console with the original error value, as Angular's default handler does, and still dispatches errorE",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Original-value ErrorHandler reporting and event/store delivery pass for four thrown-value forms and in a served production browser; D012 and README repair evidence.",
+          "reopenWhen": "The repaired source or its demonstrated invariant changes.",
+          "targets": [],
+          "at": "2026-10-24T14:33:26.816Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f7b74cdf0c6278bf",
+      "key": "decision:docs/evidence/WO-007/decisions.md#wo-007-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c51ed9efb26b0e9fe54cb867a587d8f274b70f551876ca1cda7c4211df59b13f",
+          "ref": "docs/evidence/WO-007/decisions.md#wo-007-d009",
+          "title": "WO-007-D009: Make the unhandled-request spec fail when the Node setup's strategy is 'bypass' or absent, for example by sending the unmatched request to an address a live in-test server answers, or by…",
+          "summary": "{ \"id\": \"WO-007-D009\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify; VER-001 attack on the unhandled-request proof\", \"decision\": \"Record as a follow-up. The data-access spec 'fails an unhandled request instead of contacting a real service' passes with onUnhandledFrame set to 'bypass' and with no option, because its unmatched request goes to http://localhost/api/no-handler, where nothing listens, and ECONNREFUSED satisfies the same assertion. Criterion 4 holds: the spec issues an unmatched request and asserts the failure, and an independent probe shows that the installed 'error' option refuses an unmatched request a live server would answer. The state rules and the events-and-state docum",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "The live-server test passes with error and fails with bypass and absent strategy; both reference documents updated; D013 and README comparison.",
+          "reopenWhen": "The repaired source or its demonstrated invariant changes.",
+          "targets": [],
+          "at": "2026-10-24T14:33:26.821Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-771de887c34450f7",
+      "key": "decision:docs/evidence/WO-007/decisions.md#wo-007-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "26342d5ba6fd613bdfc5cc26271582417e33d5ba57b3193c04815073eee4bbd8",
+          "ref": "docs/evidence/WO-007/decisions.md#wo-007-d010",
+          "title": "WO-007-D010: Give errorEvents.unhandled its own notice text, or carry the event's source on the stored error, so the shell names a request failure only for errorEvents.httpFailed.",
+          "summary": "{ \"id\": \"WO-007-D010\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify; VER-001 review of the shell notice text\", \"decision\": \"Record as a follow-up. ShellNotices renders every ErrorStore entry with shell.requestFailed, so an uncaught application error forwarded as errorEvents.unhandled appears as 'A request failed (unknown).' Main had no notice, so no behavior regresses, and no criterion names the text. Rule a repair must hold: the notice names a request failure only for an HTTP failure.\", \"evidence\": [ \"libs/dotln/shell/src/lib/containers/shell-notices/shell-notices.ts passes every latest error to 'shell.requestFailed' with its kind; apps/dotln/public/i18n/en.json defines it as 'A reques",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "ErrorNotice retains event source; same-kind unknown origins, dismissal and production notice behavior pass; D014.",
+          "reopenWhen": "The repaired source or its demonstrated invariant changes.",
+          "targets": [],
+          "at": "2026-10-24T14:33:26.826Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a8081dab218b7415",
+      "key": "decision:docs/evidence/WO-007/decisions.md#wo-007-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "646da52013118c4ba8fda11f8ac21ef5691ac6e03893b0b45d2602766c212248",
+          "ref": "docs/evidence/WO-007/decisions.md#wo-007-d011",
+          "title": "WO-007-D011: Record the schema pin's provenance (the kit file at starter v0.94.0 and its SHA-256) as a decision in docs/evidence/WO-007/decisions.md, as execution step 12 directs.",
+          "summary": "{ \"id\": \"WO-007-D011\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify; VER-001 check of execution step 12\", \"decision\": \"Record as a follow-up. Step 12 directs the decisions file to record that the kit ships uifa-board-v1.schema.json at starter v0.94.0 with the SHA-256 the target's copy carries; the evidence README records it, and this file did not. The fact holds. Rule a repair must hold: the decisions file records the schema pin's provenance as step 12 directs.\", \"evidence\": [ \"VER-001 read SHA-256 7d20e785c718b4b601f45a9c351461955666ea16d49f17ae6d8fde0676629cd3 for the launchpad kit file packages/console/uifa-board-v1.schema.json, for the target's moved copy libs/features/board-data-ac",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "D015 records starter v0.94.0, the kit path and matched target schema SHA-256 as required.",
+          "reopenWhen": "The repaired source or its demonstrated invariant changes.",
+          "targets": [],
+          "at": "2026-10-24T14:33:26.831Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d74b21ad02cb68f8",
+      "key": "decision:docs/evidence/WO-007/decisions.md#wo-007-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4f9e7a81cb21035a11ff01358ab119cc1ae38b0960c56387b3e0f8630d41b2af",
+          "ref": "docs/evidence/WO-007/decisions.md#wo-007-d018",
+          "title": "WO-007-D018: Add a flattening-strategy option to withCommand (switch by default; concat, merge or exhaust on request), with a spec per strategy, in the first order whose command must not cancel the…",
+          "summary": "{ \"id\": \"WO-007-D018\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: final review; the operator's two non-blocking notes in the dispatch of 2026-10-24, paraphrased from the ignored capture (SHA-256 823ec0b3b56427006c94e47f237b1b952f3e3bbf9060b4d39da477daf6347c66)\", \"decision\": \"Route the operator's two notes without widening the order. First: the house withCommand feature switches to the newest trigger, so a repeated trigger cancels the call in flight and a cancelled call emits no failure; the operator notes that a later command may need another strategy as an option, and says no change is needed until one does. Boarded as a follow-up for the first order whose command needs a strategy other tha",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Boarded by WO-007's final review from the operator's note of 2026-10-24: the house withCommand switches to the newest trigger and its only consumer is the board's load; no command needs another strategy yet (WO-007-D018).",
+          "reopenWhen": "An order declares a command whose trigger must not cancel the call in flight, or the operator asks for the option.",
+          "targets": [],
+          "at": "2026-10-24T16:06:27.924Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d1253c8eb7d324d7",
+      "key": "decision:docs/evidence/WO-007/decisions.md#wo-007-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "59e46d6d0888843308a10124f0e2df37da74763de7455bfa19318148a9460ffa",
+          "ref": "docs/evidence/WO-007/decisions.md#wo-007-d019",
+          "title": "WO-007-D019: In the first order that touches each surface: (a) map RouteId to a path in NavigationStore when a second route lands; (b) write persisted state on change only, or record the initial…",
+          "summary": "{ \"id\": \"WO-007-D019\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: final review; the defects met in the verified subject that verification observed and did not board\", \"decision\": \"Board as follow-ups, without fixing them in this review, the five observations VER-001 proposed and VER-002 carried, each disclosed to the reader under the draft body's known follow-ups, and the one note VER-002 added: (a) NavigationStore builds the board route for every navigate payload and ignores payload.route, correct while RouteId has the one member; (b) withPersistedState writes the default selection when the store is created, before any change, because the toolkit's sync strategy watches state from the start",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Boarded by WO-007's final review: six maintainability and coverage observations from the verification sequence, none breaking a criterion or behavior main had, left for the first order that touches each surface rather than fixed after the operator read the draft (WO-007-D019).",
+          "reopenWhen": "An order touches libs/shared/state, the persisted-state feature, the shell notices container, the board store's devtools condition or the ui catalog, or adds a second RouteId; WO-013 is the first expected.",
+          "targets": [],
+          "at": "2026-10-24T16:06:27.930Z"
         }
       ]
     }
