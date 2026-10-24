@@ -450,9 +450,85 @@ origin".
 
 ### 9.2 Known issues from this pass's receipt, by order
 
-Recorded after the refutation in §14; an issue the receipt names on an order
-goes on that order's row in the generated index until a later pass amends
-the order.
+The refutation (§14) returned `aligned-with-findings` with twenty-four known
+issues and no hold; WO-008 is carried by hash. The seven judged orders are
+frozen at the judged subject, so the pass that follows WO-007's merge (the
+pass that sets WO-013's base) amends them for these and pays its refutation
+then; they are listed here so nothing is re-derived, and an executor who
+activates an order before that amendment meets each inside the order's
+authority and records it in the decisions file. The receipt's reopening
+observations are on the receipt.
+
+- **WO-007.** (a) In production the board shows the unavailable state until
+  the mining store's API exists (candidate C1), while the bundled sub-apps
+  work; the pass that files C1 decides whether the production build falls
+  back to the recorded board meanwhile, and the operator plays on the
+  `mocked` configuration until then. (b) Criterion 2 should require the
+  hygiene exception count to be 0, as the design says. (c) Steps 15 to 17
+  carry three intervention paths (the terms re-run, the operator's `!`
+  fallback, the product-gate correction) that every later member copies;
+  core's candidate for the final-review row would remove the third. (d)
+  Five amending passes and three refutations before activation: no further
+  pass amends WO-007's text before it activates.
+- **WO-013.** (a) The dependency on WO-007 is merge ordering, not a
+  functional need (the menu template injects nothing and the arriving pages
+  have no store); the reason line should say so, and a lane pair with WO-007
+  stays open to a later pass. (b) "Sub-app" names both a menu group and a
+  feature library; the twin sits under the Machinery group; the convention
+  documents should define the two words apart.
+- **WO-014.** (a) The catalog is bundled JSON while the board is HTTP: two
+  data paths until C1 states the rule. (b) Twelve workers sit at the cap
+  with no slack for the reruns step 7 requires; a rerun is a resumed
+  worker or the cap is read as twelve plus reruns, decided before the
+  first spawn. (c) Criterion 3's three-typed-tools-per-work quota can be
+  met by force-fitting a transform; the checkers' observability question is
+  the counter-pressure.
+- **WO-015.** (a) A typed tool whose transform kind the engine does not
+  interpret (nine of fourteen kinds) needs a visible refusal with its
+  reason on Apply. (b) `SceneClock`'s virtual driver says it is shared
+  with WO-016's replay, which lands later; WO-016 lifts the virtual driver
+  into `libs/shared/replay` or WO-015 ships it there first. (c) The
+  observed gap lists fifteen first-scene ids and the rail says ten; the rail
+  selects by the catalog's first-scene set, named by id in the decisions
+  file at activation, since the map lines may move.
+- **WO-016.** (a) Only `addWait` changes the use case's beats; the other
+  mechanism changes redraw the agent's card; the facade spec and criterion
+  7 should name what each change shows in the use case, and the caption
+  should say when the beats are unchanged. (b) Criterion 3 hard-codes
+  starter v0.94.0 and the stamp counts 19 and 13; the executor reads the
+  counts from the launchpad's role files at activation and records the
+  starter it read. (c) "Scene" is overloaded across the records fold, the
+  scene engine and the catalog's scene types; a rename of the records types
+  (`ConcertScene` to `OrderStrip`) is the cheapest fix.
+- **WO-017.** (a) A variant with every duration at zero scores best on all
+  three result figures, so results alone cannot tell a faithful twin from a
+  trivial one; the pass that amends it adds the figure the operator wants
+  for that (the recorded lane as a reference, never a score, is the
+  operator's rule; the open question is which result penalizes firing
+  before the operator would have read). (b) `BasePaths.Twin` needs a
+  `routePermissions` entry and a signed-in e2e path under WO-008's guards.
+  (c) `twin:check` must fail, not pass vacuously, when the base commit is
+  absent.
+- **WO-018.** (a) The map rows carry the fields WO-014's allow-list refuses,
+  in the directory WO-014's check scans: the map files need their own
+  directory and schema under `check-map.mjs`, outside `check-catalog`'s
+  scope, by a recorded decision. (b) The toy-source tools (`map: null`)
+  fail `tool-v0`'s required `map` and the row-count rule: the schema takes
+  a `provenance` discriminator and the count rule applies to mapped works
+  only. (c) Criterion 3 of WO-014 and criterion 4 of WO-015 say "six
+  works"; WO-018 regenerates `catalog-summary.json` and the scene rail's
+  assertion reads the works from the summary. (d) "Never a passage" gets a
+  mechanical word-run overlap check against the recorded text. (e) Twelve
+  workers at the cap with no slack for the mapper's rewrite, as WO-014.
+- **The record-path advisory (all orders).** After the receipt, `plan check`
+  prints eleven advisories: the kit's own launchpad evidence paths in
+  WO-007, WO-008, WO-014 and WO-018, and three fixture names that carry a
+  platform order id (`segments/WO-221.json`, `segments/WO-226.json`,
+  `wo-221-derived-v0.json`) in WO-016 and WO-017. The fixture names are
+  the question for core (§11 item 1): if the target's outward lint reads a
+  committed file name as an identifier, the executor names the fixtures
+  `order-221` and `order-226` by a recorded decision and the criteria that
+  name them are amended by the next pass.
 
 ### 9.3 The six orders at a glance
 
@@ -532,7 +608,7 @@ it rests on.
 ```text
 planning: observations and requests from the DotLn-Enterprise-Starter fork (dylanwoodconsulting) recorded in its planning pass of 2026-10-24 on starter v0.94.0 (docs/planning/mining-run-orders-2026-10-24.md §4, §6, §7 and §11), answering your pass of 2026-10-24 (intake-mining-run-routing-2026-10-24.md §9 and §10, read from your local planning branch at f33cad53 and acd1c94f because GitHub had no such commit at 04:54Z on 2026-10-24; confirm the branch merged). Read each against the record it names; file, decline or defer each with its reopening condition.
 
-1. Question: at v0.94.0, npm run plan -- check prints six advisories that WO-007 and WO-008 name launchpad record paths carrying their order id (docs/evidence/WO-NNN/host-qualification.md, preview-pr.json, docs/final-reviews/WO-NNN/RELEASE-NOTES.md) in their execution plans, with the advice to rename the file before a draft publish meets it. Those are the kit's own evidence paths the launchpad roles write; the target publish refuses launchpad identifiers in the target's branch, commits, title and body (WO-227), none of which carries a launchpad path unless the body file names one. Is the advisory meant for target-side paths only, or should a target order's launchpad evidence files be named without the order id? The fork keeps the kit's paths, tells its executors not to name them in the body file, and carries this as candidate C7 until you answer.
+1. Question: at v0.94.0, npm run plan -- check prints eleven advisories on the fork's eight open orders: the kit's own launchpad evidence paths (docs/evidence/WO-NNN/host-qualification.md, preview-pr.json, fan-out.md, docs/final-reviews/WO-NNN/RELEASE-NOTES.md) named in execution plans, and three fixture file names in the target that carry a platform order id (segments/WO-221.json, segments/WO-226.json, wo-221-derived-v0.json, the scrubbed copies of your public segments), each with the advice to rename the file before a draft publish meets it. The target publish refuses launchpad identifiers in the target's branch, commits, title and body (WO-227). Two questions: is the advisory meant for target-side paths only, or should a target order's launchpad evidence files be named without the order id; and does the outward lint read a committed file name such as WO-221.json as an identifier, or only the branch, the messages, the title and the body? The fork keeps the kit's paths, tells its executors not to name them in the body file, and carries this as candidate C7 until you answer.
 
 2. Confirmations in the field at v0.94.0: the update took 118 replaced, 4 added, 0 removed, 0 refused, 873 unchanged kit files with no conflict and no re-emit drift; npm test 7 passed; npm run test:docs 14 passed with plan and plan-refutation-current green for the first time since the fork's WO-006 records moved (your item 1, WO-219-D061, confirmed); plan check on main reads the 2026-10-23 receipt's subject intact; launchpad verify 995 files at 49d8c4c3; update --finish advanced main and bootstrapped (your WO-226 route, second use).
 
@@ -601,11 +677,13 @@ restated by the operator: the update first and merged, the pass on the new
 kit, core's answers read, the six orders cut and sequenced, nothing
 re-researched.
 
-Cost: no research workers; one refuter (§14); the preview 0.2 s; the four
-gates of the update about 31 s of task time; the plan-start, failures and
-conditions reads under 2 s; the re-derivation scripts under 1 s;
-`npm run meta -- --plan-cost` records the table after the subject commit;
-the handoff reading of process cost is in §14 and the pull request. Document
+Cost: no research workers; one refuter (§14: 765 s of worker time, 248,577
+worker tokens, 18 tool uses; 17.4 minutes from dispatch to the filed
+receipt); the preview 0.2 s; the four gates of the update about 31 s of task
+time; the plan-start, failures and conditions reads under 2 s; the
+re-derivation scripts under 1 s; `npm run meta -- --plan-cost` recorded the
+table after the subject commit; the handoff reading of process cost is in
+§14 and the pull request. Document
 ceilings: `docs/product/purpose.md` is restated; its ceiling is set in
 `docs/control/doc-ceilings.json` at the measured non-exempt bytes plus one
 tenth, citing this document (§14 records the figure); the kit's product
@@ -619,5 +697,54 @@ recorded here when they ran: `npm run meta`, `npm run plan -- followups
 `node scripts/lineage.mjs index`, `node scripts/docs-check.mjs`,
 `npm run publication:check`, `npm run plan -- check`, `npm run test:docs`.
 
-Results: recorded after the run (this section is completed before the
-handoff; see the pull request for the document gate at the handoff identity).
+Results at the subject commit `ae935a9` (cost table) over `1e88694` (the
+subject): `npm run meta` no budget breach (operator directions 4, up 3);
+`followups --sync` minted eight rows (§10's C1 to C8, revision
+`8d84796d…`) and `--apply` took twenty dispositions in one batch from a
+contained ignored file (the twelve of §8 and the eight deferrals; register
+revision `ff3e299d…`; 31 pending rows); `work-orders index --check` PASS
+(both pages current) after the eight-entry sequence; `lineage index`
+regenerated and current; `docs-check` PASS (1 product document at 2,095
+non-exempt bytes under the new 2,305 ceiling; 10 declared historical link
+occurrences, 1 declared home-path line; one pre-existing advisory on a filed
+record; one advisory on this document's quoted operator words repaired by
+paraphrase before the commit); `publication:check` reporting no editions
+declared; `plan check` failing before the receipt only because the new dated
+heading needed one, and passing after it with eleven record-path advisories
+(§9.2). The document gate before the receipt was not run, so the refuter's
+reads met no live gate; after the receipt `npm run test:docs` is 14 passed,
+0 failed, 16.19 s of wall-clock, 14 fresh tasks, 0.1 s of lane wait behind
+checkout unknown.
+
+Refutation: one fresh `dotln-worker` (the default type; the dispatch line
+named no Fable worker; the host read back `claude-opus-5-5` to the worker
+and no effort) on the canonical prompt from `npm run plan -- refute` at base
+`ae935a9`, default pass scope (WO-007 and WO-013 to WO-018 plus the
+sequence; WO-008 carried by hash), dispatched at 05:42:42Z. The worker
+returned its judgment and statement in its final message, as briefed; the
+parent saved them as ignored local files and filed the receipt. Receipt
+[`2026-10-24-planning-45059c186a40389b-008`](refutations/2026-10-24-planning-45059c186a40389b-008.md),
+verdict `aligned-with-findings`, 0 holds, 24 known issues (§9.2),
+dispatch-to-file 1,044,393 ms (17.4 minutes; the worker's own run 765,053 ms,
+248,577 tokens, 18 tool uses). The worker's statement names what it read: the
+whole prompt; the sequence; WO-013 to WO-018 in full; WO-007 in full through
+the host's saved copy of a `cat` output outside the repository, which it
+disclosed; four passages of WO-008; the six role skills' first lines for
+the stamp counts; `UPSTREAM.md`'s tag; read-only Git listings; no planning
+document, receipt, intake, operator record, ledger, decisions record,
+workstream file or other order; no kit, npm, network, model or agent
+command; no write; no hook refusal. The judged, committed and workspace
+subjects agree (`sha256:6e10fe61…` at `ae935a9`). The receipt helper
+committed the receipt pair (`377f397`) and ran the plan gate green.
+
+Process cost at handoff (`node scripts/harness.mjs usage <session>`,
+source `claude-transcript-message-usage`, scope `dispatch`, observed
+2026-10-24T05:59:22Z): 14,397,508 total tokens (1,078 input, 13,526,641
+cached input, 599,319 cache-write, 270,470 output; reasoning tokens and
+cost unknown, the counters unavailable); 116 steps, 110 commands; 1 of 20
+subagent admissions used, exact-observed, none unresolved. The fan-out
+matched the plan stated in §1: one refuter, no research workers, no
+descendants. The outcome matched the aim as read at entry and restated by
+the operator: the update first and merged, the pass on the new kit, core's
+answers read, the six orders cut from the operator's own designs with
+nothing re-researched, the sequence placed, the holds honored.
