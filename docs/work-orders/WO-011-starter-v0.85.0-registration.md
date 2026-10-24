@@ -34,6 +34,7 @@ merged into `main` is the precondition of step 1; it is a pull request, not
 an order, so no typed edge names it. Sequenced after WO-010 and before
 WO-005, which carries a typed hard edge on this order (planning document §6
 D2 and D9).
+**Workstream:** WS-001
 
 <!-- dotln-dependencies:start -->
 []

@@ -64,6 +64,7 @@ request, not an order, so no typed edge names it. Sequenced before WO-006,
 whose base-setting pass adds a typed hard edge on this order (the 2026-10-20
 planning document §6 D7): a target close reads the release policy, the base
 policy and the grant from this repository's `main`.
+**Workstream:** WS-001
 
 <!-- dotln-dependencies:start -->
 []
