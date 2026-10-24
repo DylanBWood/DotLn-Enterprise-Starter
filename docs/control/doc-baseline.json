@@ -72,6 +72,34 @@
       "reason": "missing file",
       "count": 1,
       "note": "WO-006's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-006/ by target-records (TargetRecordsCommitted, 2026-10-21); the launchpad record keeps its original link; declared on the starter v0.93.0 update branch of 2026-10-23, which found the failure inherited from the #20 merge (main at 8ba47c1 fails docs-check on the same line with the v0.88.0 runtime), and recorded by the 2026-10-23 planning pass."
+    },
+    {
+      "file": "docs/evidence/WO-007/README.md",
+      "href": "decisions.md#wo-007-d012",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-007's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-007/ by target-records (TargetRecordsCommitted, 2026-10-24); the launchpad record keeps its original link; declared by WO-007's final review (FINAL-001, 2026-10-24) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-007/handoff.md",
+      "href": "../../verifications/WO-007/VER-001.md",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-007's VER-001.md moved into DotLn-Angular's docs/dotln/verifications/WO-007/ by target-records (TargetRecordsCommitted, 2026-10-24); the launchpad record keeps its original link; declared by WO-007's final review (FINAL-001, 2026-10-24) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-007/handoff.md",
+      "href": "decisions.md#wo-007-d012",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-007's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-007/ by target-records (TargetRecordsCommitted, 2026-10-24); the launchpad record keeps its original link; declared by WO-007's final review (FINAL-001, 2026-10-24) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/final-reviews/WO-007/RECORDS-PR.md",
+      "href": "../../evidence/WO-007/decisions.md",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-007's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-007/ by target-records (TargetRecordsCommitted, 2026-10-24); the launchpad record keeps its original link; declared by WO-007's final review (FINAL-001, 2026-10-24) before the records publish, so the records branch and main stay green."
     }
   ],
   "homePaths": {
