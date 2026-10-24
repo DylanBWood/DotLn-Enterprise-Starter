@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-007] — Events, signal stores, data access and MSW · **queued**
+- [x] [WO-007] — Events, signal stores, data access and MSW · **final-reviewed**
 - [ ] [WO-013] — The sub-app shell and menu · **queued**
 - [ ] [WO-014] — The toolbox catalog pipeline · **queued**
 - [ ] [WO-015] — The soldier scene · **queued**
@@ -29,24 +29,6 @@ None.
 
 ## Open
 
-### WO-007
-
-[WO-007 — Events, stores and data access for DotLn-Angular: the tiered event groups in &#96;events&#96;, NgRx SignalStore with the Events plugin, call state and the trinity through &#96;data-access&#96;, &#96;BoardStore&#96; behind &#96;BoardFacade&#96; loading the actor board over HTTP from the app's own API in the &#96;uifa-board-v1&#96; shape answered by MSW, the board's UI state persisted in browser storage, the app-tier stores for feature flags, navigation with canonical routes and errors in &#96;state&#96;, HTTP interceptors for base URL, timeouts and errors, MSW in development and in tests, and the action-hygiene check](WO-007-events-stores-data-access.md)
-
-- State: draft.
-- Repository: dotln-angular @ 90fa6e8d879cb499107ff79d1051c200d17c1cbc.
-- Application target: malformed.
-- Dependencies: typed; dependency-ready.
-- References: WO-006: hard (met) — the facade and container this order connects to stores; the base line names its merge commit.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh; reviewer xhigh.
-- Track: delivery
-- Cost: adds &#96;libs/shared/events&#96;, &#96;libs/shared/data-access&#96;, &#96;libs/shared/state&#96;, &#96;libs/features/board-data-access&#96;, the MSW worker and handlers, the interceptors, the persisted-state store feature and its storage token, the &#96;mocked&#96; build configuration, the shell's notices container, the hygiene check script and the scripts reference, about 75 source files; adds &#96;@ngrx/signals&#96;, &#96;@angular-architects/ngrx-toolkit&#96; (or house &#96;withCallState&#96; and &#96;withPersistedState&#96; features), &#96;msw&#96; pinned to 3.x (&#96;~3.0.3&#96; or the current 3.x at activation, recorded) to the workspace. Removes &#96;BoardFacade&#96;'s recorded-fixture provider (&#96;BoardFixtureToken&#96;); the fixture itself stays as the handler's response and the specs' input. Wall-clock: about 7 to 9 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 house rules 8, 11, 12, 16 and §The app and its sub-apps, the NgRx Events plugin and toolkit declarations, the MSW browser and Node guides, this order, about 160 KB. Commands added in the target: &#96;npm run lint:hygiene&#96;, &#96;npm run msw:init&#96;. Tokens: unknown until run. Steps: 17. Re-mints: none. Refutations paid: three (receipt 006 of 2026-10-21 on the provisional text; the 2026-10-23 pass's receipt; the 2026-10-24 pass's receipt on this text).
-- Authority: [docs/work-orders/WO-007-events-stores-data-access.md](WO-007-events-stores-data-access.md)
-
 ### WO-013
 
 [WO-013 — The one app and its sub-apps: the shell's sub-app menu, the &#96;scene&#96; and &#96;machinery&#96; sub-app routes with their arriving pages, the sub-app grouping convention and the two reference documents that make a sub-app a feature added by convention](WO-013-sub-app-shell-and-menu.md)
@@ -54,8 +36,8 @@ None.
 - State: draft.
 - Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-007.
-- References: WO-007: hard (unmet) — the navigation store, the error surface and the persisted-state feature the shell and the arriving pages compose; the base line is set to its merge commit before activation.
+- Dependencies: typed; dependency-ready.
+- References: WO-007: hard (met) — the navigation store, the error surface and the persisted-state feature the shell and the arriving pages compose; the base line is set to its merge commit before activation.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -126,8 +108,8 @@ None.
 - State: draft.
 - Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-007.
-- References: WO-007: hard (unmet) — the events, interceptors, stores and MSW wiring this order extends; the base line is set to the preceding member's merge commit before activation.
+- Dependencies: typed; dependency-ready.
+- References: WO-007: hard (met) — the events, interceptors, stores and MSW wiring this order extends; the base line is set to the preceding member's merge commit before activation.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

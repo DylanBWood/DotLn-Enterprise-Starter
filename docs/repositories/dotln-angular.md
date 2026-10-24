@@ -2,16 +2,19 @@
 
 **Class:** `angular-nx-monorepo`
 **Base branch:** `main`
-**Checked:** `eb7dfdf0f1898e597c865f08c04813000029bb9b` (WO-006's reviewed
-commit of 2026-10-21 over the base `5102783f5cf575a6b487e75ed9bb0c064d6dbd9c`,
-WO-005's merge commit). Node 26.9.0, npm 11.19.1, Nx 23.3.0, Angular 22.2.3,
-TypeScript 6.0.3 and Vitest 4.1.12 were observed, with Transloco 8.4.0, Ramda
-0.32.0, Ramda Adjunct 6.1.0 and AnalogJS 2.9.1 added by WO-005, and Angular
-Aria 22.2.3, the CDK 22.2.3, Storybook 10.6.3, axe-core for Playwright 4.14.0,
-Ajv 8.20.0 and the Inter variable font 5.3.0 added by WO-006. The declared
-review gate, with the catalog and visual commands below, passed at that commit
-with no tracked-byte mutation; the order's evidence records the preflight and
-gate results. WO-006 merged as pull request #4
+**Checked:** `db4d648df5a6f1e46c6c5002ae0ebc0d4ff73954` (WO-007's reviewed
+commit of 2026-10-24, the verified draft commit its final review adopted, over
+the base `90fa6e8d879cb499107ff79d1051c200d17c1cbc`, WO-006's merge commit).
+Node 26.9.0, npm 11.19.1, Nx 23.3.0, Angular 22.2.3, TypeScript 6.0.3 and
+Vitest 5.0.5 (with its UI and coverage packages, aligned from 4.1.12 by WO-007
+for MSW 3) were observed, with Transloco 8.4.0, Ramda 0.32.0, Ramda Adjunct
+6.1.0 and AnalogJS 2.9.1 added by WO-005, Angular Aria 22.2.3, the CDK 22.2.3,
+Storybook 10.6.3, axe-core for Playwright 4.14.0, Ajv 8.20.0 and the Inter
+variable font 5.3.0 added by WO-006, and NgRx Signals 22.0.1, the Angular
+Architects NgRx toolkit 22.0.0 and MSW 3.0.3 added by WO-007. The declared
+review gate, with the catalog and visual commands below, passed at that
+commit's tree with no tracked-byte mutation; the order's evidence records the
+preflight and gate results. WO-006 merged as pull request #4
 (`90fa6e8d879cb499107ff79d1051c200d17c1cbc`, 2026-10-21T21:11Z) and closed
 at that commit as `DotLn Angular v0.1.0` (Release published
 2026-10-21T21:14:44Z); its decisions, verification and final review live
@@ -53,7 +56,7 @@ tracked file fails the gate):
 | test    | `npx nx run-many -t test`                  | plain and review; Vitest, no watch                           |
 | format  | `npx nx format:check`                      | plain and review                                             |
 | build   | `npx nx run-many -t build`                 | review                                                       |
-| e2e     | `npx nx run-many -t e2e`                   | review; production app and Storybook behavior/axe checks; needs Chromium |
+| e2e     | `npx nx run-many -t e2e`                   | review; optimized mocked app and Storybook behavior/axe checks; needs Chromium |
 | visual  | `npx nx e2e-visual dotln-e2e`              | review; tracked macOS pixel baselines, separate macOS CI job |
 
 The target's package scripts `lint`, `test`, `format:check`, `build` and `e2e`
@@ -92,14 +95,15 @@ dev-server rebuild time becomes a concern.
 ## Local application startup
 
 Run `npm ci`, then `npx nx serve dotln` (or `npm start`). Open the address
-Nx prints; the root redirects to `/board` and shows **The actor board** from
-the recorded fixture. No environment file, API or account is required. Playwright starts its own server at
+Nx prints; the root redirects to `/board` and shows **The actor board** through its own mocked HTTP API. No environment file, API or account is required. Playwright starts its own server at
 `http://127.0.0.1:4200`, refuses to reuse an existing process, and checks the
 heading, document title and absence of page errors. WO-005 adds `.env.example`,
 `npm run env:prime` and the `local` serve configuration for public local
 settings. Default development still requires no environment file or API.
-MSW arrives with WO-007, which also mocks the platform's loopback route
-shape (`GET /uifa-board-v1`).
+WO-007 uses MSW 3 in development and the optimized `mocked` configuration,
+serving the unchanged `uifa-board-v1` fixture from the app's own API route.
+Production excludes the worker and fixtures and reports HTTP unavailability
+when its configured API is absent. It does not read the platform's resident.
 
 ## Branch and pull-request policy
 
@@ -223,7 +227,8 @@ output; keeping dependencies and caches avoids the base reinstall required
 by the default `delete` policy.
 
 `.env`, `.env.*` and
-`apps/dotln/src/environments/environment.local.ts` remain undeclared.
+`apps/dotln/src/environments/environment.local.ts` and
+`apps/dotln/src/environments/public-config.local.ts` remain undeclared.
 An undeclared ignored file refuses close in either checkout. A target order
 removes generated local environment files after the checks that create them
 and records the removal; local material in the base checkout remains the
@@ -302,18 +307,24 @@ no host-qualification claim.
 - Mapper: `libs/features/board/src/lib/mappers/cell-value-mapper/cell-value-mapper.ts`.
 - Container: `libs/features/board/src/lib/containers/board-page/board-page.ts`.
 - Facade: `libs/features/board/src/lib/facades/board.facade.ts`.
-- Data path: scrubbed `libs/features/board/src/testing/fixtures/launchpad-board-2026-10-21.json`
-  through `BoardFixtureToken`, facade, container, composites and mappers; WO-007
-  supplies HTTP from the app's own API in the `uifa-board-v1` shape, answered
-  by MSW, and the mining store member supplies the data later; the app reads
-  no platform host (the operator's decision of 2026-10-24).
+- Data path: the app's own `GET <apiBaseUrl>/uifa-board-v1` through
+  `libs/features/board-data-access/src/lib/board-api.ts`, `BoardStore`, facade
+  and container. MSW serves the unchanged fixture from
+  `libs/features/board-data-access/testing/src/lib/board-handlers.ts` in
+  development and tests. Production displays unavailable on HTTP failure.
+- Store: `libs/features/board-data-access/src/lib/board-store.ts`.
+- UI event group: `libs/shared/events/src/lib/ui/board-page-events.ts`.
+- Interceptors: `libs/shared/data-access/src/lib/interceptors.ts`.
+- Persistence: `libs/shared/data-access/src/lib/with-persisted-state.ts`, with
+  the browser binding in `storage-token.ts` beside it.
+- App stores: `libs/shared/state/src/lib/`; shell notices:
+  `libs/dotln/shell/src/lib/containers/shell-notices/shell-notices.ts`.
 - Role and convention checks: `eslint.config.mjs`, `tools/check-taxonomy-fixtures.mjs`,
   `tools/scripts/check-component-order.mjs` and `tools/scripts/check-shared-types.mjs`.
 - Component catalog: `.storybook/`, component-local stories, and
   `docs/dev-reference/workspace/storybook.md`.
 
-Stores, MSW handlers, interceptors and guards remain later workstream members
-(WO-007, WO-008); the sub-app menu, the catalog, the scene engine, the
+WO-007 adds stores, MSW handlers and interceptors; guards remain WO-008; the sub-app menu, the catalog, the scene engine, the
 records and replay libraries, the twin model and the toy shelf are WO-013 to
 WO-018's.
 
@@ -324,8 +335,11 @@ WO-018's.
   invocation).
 - `angular/angular@v22.2.3 adev/src/content/best-practices` — the style
   guide and performance guidance house rule 1 defers to.
-- `ngrx/platform` — not installed in WO-004; record the selected version when
-  later members add SignalStore and the Events plugin.
+- `ngrx/platform@22.0.1` (`@ngrx/signals` with the Events plugin) and
+  `angular-architects/ngrx-toolkit@22.0.0` (`withCallState`, `withStorageSync`,
+  `withDevtools`), installed by WO-007 (WO-007-D002), with MSW 3.0.3 answering
+  the app's own API in development and tests; the versions were read from the
+  installed declarations and the planning pass's research (2026-10-18, §4).
 - `angular/components@v22.2.3 src/aria` and `src/cdk` — the behavior
   libraries WO-006 wraps (Angular Aria, stable since v22 and MIT; the CDK's
   overlay, a11y and dialog entry points); no vendor component library is
@@ -356,6 +370,5 @@ WO-018's.
   `127.0.0.1` with the bound port in `Host`, a local `Origin` or none, and
   `Authorization: Bearer <token>` from the resident's
   `console-loopback-v1.json` descriptor; `503` in the console refusal shape
-  when a projection is unavailable. WO-007's `BoardApi` and handlers take
-  this shape, so the live-view member changes configuration and the
-  token's arrival, not the data path.
+  when a projection is unavailable. WO-007 retains only this response shape for the app's own API. The
+  resident and its token are not a data source for this app.

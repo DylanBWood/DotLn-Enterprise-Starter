@@ -1,25 +1,25 @@
 # Current control state
 
-## WO-006
+## WO-007
 
-- Work order: WO-006
-- Work-order path: docs/work-orders/WO-006-component-taxonomy-shell-home.md
-- Repository: dotln-angular @ 5102783f5cf575a6b487e75ed9bb0c064d6dbd9c
+- Work order: WO-007
+- Work-order path: docs/work-orders/WO-007-events-stores-data-access.md
+- Repository: dotln-angular @ 90fa6e8d879cb499107ff79d1051c200d17c1cbc
 - Phase: closed
-- Latest verification: VER-001
-- Verification path: dotln-angular@5eee5951baed8e6cddf19a6c4050607253b85eb5:docs/dotln/verifications/WO-006/VER-001.md
+- Latest verification: VER-002
+- Verification path: dotln-angular@4304a9d573527911d24dafe43bff319d461302e3:docs/dotln/verifications/WO-007/VER-002.md
 - Latest verdict: pass
 - Final review: FINAL-001
-- Final-review path: dotln-angular@5eee5951baed8e6cddf19a6c4050607253b85eb5:docs/dotln/final-reviews/WO-006/FINAL-001.md
-- Latest attestation: harness claude-code; version 2.1.306; model claude-fable-5-1; effort xhigh; source claude-session-readback; account not-applicable; corrected by ordinal 8
+- Final-review path: dotln-angular@4304a9d573527911d24dafe43bff319d461302e3:docs/dotln/final-reviews/WO-007/FINAL-001.md
+- Latest attestation: harness claude-code; version 2.1.310; model claude-fable-5-1; effort max; source claude-session-readback; account not-applicable
 - Effort drift: max -> xhigh
-- Latest recordedAt: 2026-10-21T16:54:38.423Z
-- Elapsed implementation: 7716614 ms
-- Elapsed verification: 1040185 ms
-- Elapsed finalReview: 1840607 ms
-- Latest checkpoint: a4d9b22d64f0278d80344d3409fe041b8d5eca11 (restore: `git checkout refs/dotln/checkpoint/WO-006/9 -- .`)
+- Latest recordedAt: 2026-10-24T16:16:04.507Z
+- Elapsed implementation: 3565379 ms
+- Elapsed verification: 1489252 ms
+- Elapsed repair: 1897331 ms
+- Elapsed finalReview: 2222089 ms
+- Latest checkpoint: 920ae2c8f974d7bf15a942c3f238bf1c73905760 (restore: `git checkout refs/dotln/checkpoint/WO-007/12 -- .`)
 - Legal next actions: release-close, next, activate
-- Legal off-ramps: correct
-- Corrections: ordinal 8 corrects ordinal 6 (productGate none -> host-gate:62cd24ebc9df0bd488d9d8d5c8206f9b6449d2106fa7b68d995c618d712f5914:npm test)
+- Legal off-ramps: correct, override-record
 
 Generated from the append-only `docs/control/resume.jsonl` and `docs/control/orders/WO-NNN.jsonl` segments; do not edit this projection manually.
