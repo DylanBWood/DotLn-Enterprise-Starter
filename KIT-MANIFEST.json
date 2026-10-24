@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "commit": "5173e80abe6de12230686053be13539a7fb71417",
-  "tag": "v0.96.0",
+  "commit": "5ad686d170c71f432d2fafcb10225f2900630381",
+  "tag": "v0.96.1",
   "files": [
     {
       "path": ".agents/skills/dotln-executor/SKILL.md",
@@ -161,7 +161,7 @@
     },
     {
       "path": "UPSTREAM.md",
-      "sha256": "1e42426df299dee73051920e7e9df09ff8e28390de72b3df6f1f362510ad58dd"
+      "sha256": "a875852ba04bbdd0b5950a8ab8bc97d63a2e5747dcf32ed8b268e2b2d9e53e58"
     },
     {
       "path": "corpus/fixtures/ids/command-id-vectors.jsonl",
@@ -205,7 +205,7 @@
     },
     {
       "path": "docs/product/07-execution-guide.md",
-      "sha256": "51b41c07a4d97dd62a53c7932781950b9212d8f1abb2635c07c713d897884e46"
+      "sha256": "730d5428acee4f7d5c8819072c568775db3b171e32795f0ebe043434b73fd818"
     },
     {
       "path": "docs/product/08-publication-compiler.md",
@@ -2857,7 +2857,7 @@
     },
     {
       "path": "scripts/fixtures/target-worktree-cases.json",
-      "sha256": "8a34610f4fa4f55600e9fad47748d634a26490a0e4f4452c9d35ef84897f9f68"
+      "sha256": "c2e729d8eee650cd25c9c851a96d18ba9e52e14f15ac364e2f5d3df83cd1ea57"
     },
     {
       "path": "scripts/fixtures/vertical/crash.mjs",
@@ -3157,7 +3157,7 @@
     },
     {
       "path": "scripts/lib/github-body.mjs",
-      "sha256": "a3151dc38910466c4ae2c2e9af1b342c3e8f612d2eca0d35d28a29282659409a"
+      "sha256": "5fee54e0161e45423bb5b6cc7c41d1a5b64bb480b5deba28c3cc9c9363cf41b9"
     },
     {
       "path": "scripts/lib/github-repository.mjs",
@@ -3277,7 +3277,7 @@
     },
     {
       "path": "scripts/lib/plan-receipts.mjs",
-      "sha256": "2a981e9c579bec13e3224e2163d027cc16fb518b734b06c897f93c3bcd499e1d"
+      "sha256": "14bdaf0fbe8bd655598292e5335d1409a1384f0f74682e5403f01b25bc16d463"
     },
     {
       "path": "scripts/lib/plan-subject.mjs",
@@ -3397,7 +3397,7 @@
     },
     {
       "path": "scripts/lib/target-publish.mjs",
-      "sha256": "120c8ff6cef7f5d4819315e0163473ed5ac808404713a732b2703ade5986dc33"
+      "sha256": "bc0d00046c34604512854ceffe3681ca3340913b948022d194e87898ddfbe72a"
     },
     {
       "path": "scripts/lib/target-record-reader.mjs",
@@ -3709,7 +3709,7 @@
     },
     {
       "path": "scripts/test-docs-check.mjs",
-      "sha256": "8d2c7b5d112c260dc2525e9834cbb1612fac3df5f50fdd920495ee0b13aa7847"
+      "sha256": "bc172445483f2deffeedb75d3d271814d24a8d915e4e5729a65bf51a3fd8758e"
     },
     {
       "path": "scripts/test-entropy-review.mjs",
@@ -3737,7 +3737,7 @@
     },
     {
       "path": "scripts/test-github-body.mjs",
-      "sha256": "033256bf43b0e5949dd9a0bcaff5c8c6e3f961d9f15d6048b06c438899a5e4e2"
+      "sha256": "03ca8fe3e04335b8f0b95051870af71a2bb1d3b94d4cc1e4e8842dfe9d416aec"
     },
     {
       "path": "scripts/test-harness-probe.mjs",
@@ -3813,7 +3813,7 @@
     },
     {
       "path": "scripts/test-plan-refutation.mjs",
-      "sha256": "be791848212d34b423179e2872f47aa24b313182cd19c4bdc5617025163a23a1"
+      "sha256": "ebe18424f9a3983a34a0cd7f3178d33a77426b05091edd66aff8311778d7e05e"
     },
     {
       "path": "scripts/test-portfolio.mjs",
@@ -3901,7 +3901,7 @@
     },
     {
       "path": "scripts/test-target-worktree-publish.mjs",
-      "sha256": "79033bb408d4af5a8ccc747f85bf011c8b8b2cb1f5a3df76df44736215e027f6"
+      "sha256": "157b20c6fd5f3aeba7e4fa3539dfbd655b39bb17f5531d10d0900dd2e083f875"
     },
     {
       "path": "scripts/test-target-worktree-release.mjs",
@@ -3957,7 +3957,7 @@
     },
     {
       "path": "scripts/test-work-orders.mjs",
-      "sha256": "244d0518c54a3493fd40d562d8bf9e128cc7990380679c751369717001f1d14d"
+      "sha256": "98c9ac88409ec0b675e0dcda501ef50b989fbee2f021d5c1e796e7fab37bd0c2"
     },
     {
       "path": "scripts/test-work-orders.sh",
