@@ -40,12 +40,14 @@ design's fidelity cell (hits against the operator's recorded beats) is not
 built: the operator decided the twin is judged by results, so this order
 replaces that figure with the result fold below. Planner-synthesized by the
 2026-10-24 planning pass ([planning document](../planning/mining-run-orders-2026-10-24.md)
-§4, §6 D9 and §9). Opaque identifier, not a priority.
+§4, §6 D9 and §9). Opaque identifier, not a priority. Amended by the
+2026-10-24 second pass ([planning document](../planning/standard-pass-v0-96-1-2026-10-24.md) §6 D3 and D4): the derived
+fixture's name, the `routePermissions` entry and the signed-in e2e path, the
+registry check's failure on an absent base, the base clause and receipt 008's
+known issues.
 **Depends on:** WO-016 merged (hard: the `records` fixture pack and fold, the
 `replay` clock and the `/machinery` group this lane joins); WO-008 merged
-(hard: the member before this one in the sequence, whose merge commit becomes
-this order's base; the base above is provisional and is set by the planning
-pass that follows WO-008).
+(hard: the member before this one in the sequence; the base above is provisional: since starter v0.96.1 (core WO-230) the target publish describes the change from the merge base of the subject and the target's `main` and names the activation base beside it, so activation on this base publishes right; the planning pass that runs after WO-008 merges may set it to that merge commit, and none is required to (the 2026-10-24 second pass, D4)).
 **Workstream:** WS-001
 
 <!-- dotln-dependencies:start -->
@@ -58,7 +60,7 @@ pass that follows WO-008).
   {
     "workOrderId": "WO-008",
     "relation": "hard",
-    "reason": "the preceding member in the serial chain; its merge commit becomes this order's base before activation"
+    "reason": "the preceding member in the serial chain; the base line is provisional and publishes right under starter v0.96.1's merge-base publish"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -134,19 +136,27 @@ operator has decided: results only, variants kept, nothing held back.
   the fold's fidelity. No hit rate, no tolerance band, no agreement count
   against the operator's beats is computed anywhere in the feature.
 - **The derivation** (`tools/scripts/twin/derive-operator-rows.mjs`,
-  `npm run twin:derive`): reads `segments/WO-221.json`, prints the operator
-  rows (count and kinds), the gaps after each hand-back with the preceding
-  row's type and verdict, the total waiting minutes and the span; writes
-  `wo-221-derived-v0.json` beside the fixtures; the spec asserts the numbers
-  above and that the 87.8-minute gap follows a hand-back with no verdict.
+  `npm run twin:derive`): reads `segments/order-221.json` (WO-016's copy of
+  the platform's WO-221 segment), prints the operator rows (count and kinds),
+  the gaps after each hand-back with the preceding row's type and verdict,
+  the total waiting minutes and the span; writes `order-221-derived-v0.json`
+  beside the fixtures, named by the fixture's name and never by the
+  platform's order id because the target's outward lint refuses a launchpad
+  identifier in any path the pull request lists (core's answer of 2026-10-24,
+  item 1); the spec asserts the numbers above and that the 87.8-minute gap
+  follows a hand-back with no verdict.
 - **The registry check** (`tools/scripts/twin/check-variants.mjs`,
   `npm run twin:check`): every manifest id has its file and every file is in
   the manifest; the manifest at `HEAD` contains every id the manifest at the
   order's base contains (read with `git show <base>:…`); a removed id fails
-  the check. Old versions are kept to play with.
+  the check, and so does an absent or unreadable base commit or base
+  manifest: the check never passes vacuously. Old versions are kept to play
+  with.
 - **Feature** (`libs/features/twin`, `scope:dotln`, `type:feature`,
   `twinRoutes`; `BasePaths.Twin = 'twin'`, listed in the Machinery menu
-  group): `twin-page` (container) over `TwinFacade` (signals for the order,
+  group, with its entry in WO-008's `routePermissions` adjacency list, whose
+  coverage spec requires every `BasePaths` member, and a signed-in e2e path
+  through WO-008's mocked provider): `twin-page` (container) over `TwinFacade` (signals for the order,
   the variant, the flips, the resolution; one `vm` with the beat glyphs, the
   recorded lane, the twin lane, the ghost lane and the result cell);
   composites `marble-lane` (inline SVG marks plus a `<pre translate="no">`
@@ -197,14 +207,15 @@ library with kits; the menu item; the two documents; `docs/evidence/WO-017/`.
    `libs/features/twin-data-access` (`scope:dotln,type:data-access`) with
    logged commands and testing entry points. Check: `npx nx show projects`
    lists the three.
-3. `derive-operator-rows.mjs`, `npm run twin:derive`, `wo-221-derived-v0.json`;
+3. `derive-operator-rows.mjs`, `npm run twin:derive`, `order-221-derived-v0.json`;
    its spec asserts 8 operator rows, the seven gaps, 227.0 waiting minutes,
    the 1,110.3-minute span and that the first gap follows a hand-back with
    no verdict. Check: `npm run test:tooling` exits 0.
 4. The three variants, the registry, the manifest and `check-variants.mjs`
    with `npm run twin:check`; a tooling test removes an id from a copy of
-   the manifest and asserts the check fails. Check: `npm run twin:check`
-   exits 0; `npm run test:tooling` exits 0.
+   the manifest and asserts the check fails, and a second runs the check
+   against an absent base commit and asserts it fails. Check: `npm run
+   twin:check` exits 0; `npm run test:tooling` exits 0.
 5. `results.ts` with marble specs: the baseline replay reproduces the
    recorded close within one virtual second and the operator's 227.0
    waiting minutes; the patience-table variant yields its own three figures;
@@ -223,11 +234,12 @@ library with kits; the menu item; the two documents; `docs/evidence/WO-017/`.
 9. The variant export: the generated TypeScript for a kept flip compiles
    against `TwinVariant` (a spec writes it to a temporary file and type
    checks it). Check: the spec passes.
-10. `BasePaths.Twin`, the lazy route, the Machinery menu item, `twin.*`
-    i18n keys. Check: `npm run i18n:check` exits 0; `npx nx build dotln
-    --configuration=production` exits 0.
-11. e2e `apps/dotln-e2e/src/twin.spec.ts`: two lanes and the result cell with
-    the recorded baseline; the variant picker lists three variants; a flip
+10. `BasePaths.Twin`, its `routePermissions` entry, the lazy route, the
+    Machinery menu item, `twin.*` i18n keys. Check: `npm run i18n:check`
+    exits 0; `npx nx test core` exits 0 with the `routePermissions`
+    coverage spec; `npx nx build dotln --configuration=production` exits 0.
+11. e2e `apps/dotln-e2e/src/twin.spec.ts`: sign in through the mocked
+    provider; two lanes and the result cell with the recorded baseline; the variant picker lists three variants; a flip
     redraws the twin lane and leaves the recorded marks where they were;
     the export dialog shows TypeScript; the chosen variant survives a
     reload; the keyboard path over every flip; axe at the board spec's
@@ -255,7 +267,7 @@ each.
 
 **Acceptance criteria (all required)**
 
-1. `npm run twin:derive` exits 0 and `wo-221-derived-v0.json` records 8
+1. `npm run twin:derive` exits 0 and `order-221-derived-v0.json` records 8
    operator rows, seven gaps of 87.8, 109.9, 1.7, 1.4, 2.1, 18.2 and 5.9
    minutes, a waiting total of 227.0 minutes and a span of 1,110.3 minutes,
    with the first gap's preceding row carrying no verdict (a spec asserts
@@ -270,8 +282,9 @@ each.
    (a spec asserts the field set: virtual close, waiting minutes, early
    fires, each with its baseline).
 4. `variants.json` lists at least three variants with files that exist,
-   `npm run twin:check` exits 0, and a tooling test proves a manifest with a
-   removed id fails the check.
+   `npm run twin:check` exits 0, a tooling test proves a manifest with a
+   removed id fails the check, and a second tooling test proves the check
+   fails, not passes, when the base commit is absent.
 5. `grep -rl "JSON.parse" libs/shared/twin-model/src --include='*.ts' | grep -v spec`
    prints nothing (no interpreted model), and the export spec type-checks a
    generated variant against `TwinVariant`.
@@ -279,8 +292,10 @@ each.
    `dotln-angular.twin` and no other storage, cookie or network write occurs;
    `grep -rlE "from 'node:|from \"node:|require\(" libs/shared/twin-model/src libs/features/twin/src libs/features/twin-data-access/src --include='*.ts' | grep -v spec`
    prints nothing.
-7. `npx nx e2e dotln-e2e` exits 0 and includes: the two lanes and the result
-   cell with the recorded baseline on `/twin`; three variants in the picker;
+7. `npx nx e2e dotln-e2e` exits 0 and includes: a sign-in through WO-008's
+   mocked provider, then the two lanes and the result cell with the recorded
+   baseline on `/twin` (`routePermissions` covers `BasePaths.Twin`, and
+   WO-008's coverage spec passes); three variants in the picker;
    a flip redrawing the twin lane and leaving the recorded marks; the export
    dialog showing TypeScript; the chosen variant present after a reload; the
    keyboard path over every flip; axe at the board spec's threshold; no
@@ -299,14 +314,27 @@ each.
 `docs/evidence/WO-017/README.md` and
 `docs/evidence/WO-017/host-qualification.md`.
 
-**Known issues and carry-ins:** the base line is provisional until the pass
-after WO-008 sets it. Seven gaps in one order are a toy's sample; the result
+**Known issues and carry-ins:** The base line is provisional and publishes right under starter v0.96.1 (the merge-base publish of core WO-230; WO-013's fix dispatch is its first use in this fork); a pass may set it to the predecessor's merge commit. Seven gaps in one order are a toy's sample; the result
 cell prints the figures for this order and claims nothing beyond it; the
 grid over a dozen orders and the operator's own blind replay are later lanes
 (candidate C6). The record has no presence, so a variant that waits for the
 operator's return is shown locked. Report sizes are not in the six-field
 copies, so the size multiplier reads `unknown` until a later copy carries a
-size. The v0.94.0 advisory on launchpad record paths applies as in WO-013.
+size. Starter v0.96.1's plan gate no longer advises on this order's own launchpad record paths (core's answer of 2026-10-24, item 1); they stay as the kit names them and the publish command's body file must not name them. From receipt 008 (the 2026-10-24 pass's refutation),
+carried into this text by the 2026-10-24 second pass: judged by results
+alone, a variant with every patience duration at zero yields the best of the
+three figures (a virtual close of about 883.3 minutes, zero waiting minutes,
+zero early fires) while modelling no one, because the fold replays the
+recorded worker durations after each dispatch and a patience table never
+fires before a hand-back exists. The operator's rule stands, results only and
+never agreement with the recorded beats, so this order adds no fidelity
+figure; the result cell shows such a variant's figures as they are and the
+twin's document states this limit. The operator may name a fourth result that
+a zero-patience twin pays (for instance the cost of a dispatch issued before
+the hand-back's report could have been read); the pass that hears it amends
+the fold, and until then the safe default is the three figures as written.
+`BasePaths.Twin` now carries its `routePermissions` entry and the e2e signs
+in first; `twin:check` fails on an absent base.
 This order activates only on a launchpad whose starter carries core WO-221's
 `--draft` form; the draft pull request and its workflow runs are a
 final-review obligation read from `docs/evidence/WO-017/preview-pr.json`,

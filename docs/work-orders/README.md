@@ -4,7 +4,6 @@
 
 ## Proposed order
 
-- [x] [WO-007] — Events, signal stores, data access and MSW · **final-reviewed**
 - [ ] [WO-013] — The sub-app shell and menu · **queued**
 - [ ] [WO-014] — The toolbox catalog pipeline · **queued**
 - [ ] [WO-015] — The soldier scene · **queued**
@@ -27,11 +26,11 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 
 ### WS-001
 
-- [WO-003] — repository: self; base: 2d15457c1dbfd8f990c656296ee888c11f6954d5; phase: closed; verdict: pass; integration: diverged; stale: yes; observed target: 36b2ae5df06dc023156f8c2328621440ce744ef1.
+- [WO-003] — repository: self; base: ac896264c9dcf8be6934494fdd8fe5eb0bed038f; phase: closed; verdict: pass; integration: current; stale: no; observed target: ac896264c9dcf8be6934494fdd8fe5eb0bed038f.
 - [WO-004] — repository: dotln-angular; base: bc9133e932a00d33c15bc5289d683b8078f51ee4; phase: closed; verdict: pass; integration: behind; stale: yes; observed target: 2ab4f28501628cf95dd0102c42440fd7de9f8055.
-- [WO-011] — repository: self; base: 2d15457c1dbfd8f990c656296ee888c11f6954d5; phase: closed; verdict: pass; integration: diverged; stale: yes; observed target: 36b2ae5df06dc023156f8c2328621440ce744ef1.
+- [WO-011] — repository: self; base: ac896264c9dcf8be6934494fdd8fe5eb0bed038f; phase: closed; verdict: pass; integration: current; stale: no; observed target: ac896264c9dcf8be6934494fdd8fe5eb0bed038f.
 - [WO-005] — repository: dotln-angular; base: 651d76ff68e9b3a38fe770226deb634bca28b54c; phase: closed; verdict: pass; integration: behind; stale: yes; observed target: 2ab4f28501628cf95dd0102c42440fd7de9f8055.
-- [WO-012] — repository: self; base: 2d15457c1dbfd8f990c656296ee888c11f6954d5; phase: closed; verdict: pass; integration: diverged; stale: yes; observed target: 36b2ae5df06dc023156f8c2328621440ce744ef1.
+- [WO-012] — repository: self; base: ac896264c9dcf8be6934494fdd8fe5eb0bed038f; phase: closed; verdict: pass; integration: current; stale: no; observed target: ac896264c9dcf8be6934494fdd8fe5eb0bed038f.
 - [WO-006] — repository: dotln-angular; base: 5102783f5cf575a6b487e75ed9bb0c064d6dbd9c; phase: closed; verdict: pass; integration: behind; stale: yes; observed target: 2ab4f28501628cf95dd0102c42440fd7de9f8055.
 - [WO-007] — repository: dotln-angular; base: 90fa6e8d879cb499107ff79d1051c200d17c1cbc; phase: closed; verdict: pass; integration: behind; stale: yes; observed target: 2ab4f28501628cf95dd0102c42440fd7de9f8055.
 - [WO-013] — repository: dotln-angular; base: bc9133e932a00d33c15bc5289d683b8078f51ee4; phase: draft; verdict: unknown; integration: behind; stale: yes; observed target: 2ab4f28501628cf95dd0102c42440fd7de9f8055.
@@ -42,7 +41,7 @@ Full evidence for the active and sequenced orders follows; the Open cards are in
 - [WO-017] — repository: dotln-angular; base: bc9133e932a00d33c15bc5289d683b8078f51ee4; phase: draft; verdict: unknown; integration: behind; stale: yes; observed target: 2ab4f28501628cf95dd0102c42440fd7de9f8055.
 - [WO-018] — repository: dotln-angular; base: bc9133e932a00d33c15bc5289d683b8078f51ee4; phase: draft; verdict: unknown; integration: behind; stale: yes; observed target: 2ab4f28501628cf95dd0102c42440fd7de9f8055.
 
-<!-- dotln-workstreams: {"workstreams":[{"id":"WS-001","members":[{"workOrderId":"WO-003","repository":"self","base":"2d15457c1dbfd8f990c656296ee888c11f6954d5","phase":"closed","verdict":"pass","integration":"diverged","stale":"yes","targetCommit":"36b2ae5df06dc023156f8c2328621440ce744ef1"},{"workOrderId":"WO-004","repository":"dotln-angular","base":"bc9133e932a00d33c15bc5289d683b8078f51ee4","phase":"closed","verdict":"pass","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"},{"workOrderId":"WO-011","repository":"self","base":"2d15457c1dbfd8f990c656296ee888c11f6954d5","phase":"closed","verdict":"pass","integration":"diverged","stale":"yes","targetCommit":"36b2ae5df06dc023156f8c2328621440ce744ef1"},{"workOrderId":"WO-005","repository":"dotln-angular","base":"651d76ff68e9b3a38fe770226deb634bca28b54c","phase":"closed","verdict":"pass","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"},{"workOrderId":"WO-012","repository":"self","base":"2d15457c1dbfd8f990c656296ee888c11f6954d5","phase":"closed","verdict":"pass","integration":"diverged","stale":"yes","targetCommit":"36b2ae5df06dc023156f8c2328621440ce744ef1"},{"workOrderId":"WO-006","repository":"dotln-angular","base":"5102783f5cf575a6b487e75ed9bb0c064d6dbd9c","phase":"closed","verdict":"pass","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"},{"workOrderId":"WO-007","repository":"dotln-angular","base":"90fa6e8d879cb499107ff79d1051c200d17c1cbc","phase":"closed","verdict":"pass","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"},{"workOrderId":"WO-013","repository":"dotln-angular","base":"bc9133e932a00d33c15bc5289d683b8078f51ee4","phase":"draft","verdict":"unknown","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"},{"workOrderId":"WO-014","repository":"dotln-angular","base":"bc9133e932a00d33c15bc5289d683b8078f51ee4","phase":"draft","verdict":"unknown","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"},{"workOrderId":"WO-015","repository":"dotln-angular","base":"bc9133e932a00d33c15bc5289d683b8078f51ee4","phase":"draft","verdict":"unknown","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"},{"workOrderId":"WO-016","repository":"dotln-angular","base":"bc9133e932a00d33c15bc5289d683b8078f51ee4","phase":"draft","verdict":"unknown","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"},{"workOrderId":"WO-008","repository":"dotln-angular","base":"bc9133e932a00d33c15bc5289d683b8078f51ee4","phase":"draft","verdict":"unknown","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"},{"workOrderId":"WO-017","repository":"dotln-angular","base":"bc9133e932a00d33c15bc5289d683b8078f51ee4","phase":"draft","verdict":"unknown","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"},{"workOrderId":"WO-018","repository":"dotln-angular","base":"bc9133e932a00d33c15bc5289d683b8078f51ee4","phase":"draft","verdict":"unknown","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"}],"edges":[{"from":"WO-003","to":"WO-004","relation":"hard"},{"from":"WO-004","to":"WO-005","relation":"hard"},{"from":"WO-011","to":"WO-005","relation":"hard"},{"from":"WO-005","to":"WO-006","relation":"hard"},{"from":"WO-012","to":"WO-006","relation":"hard"},{"from":"WO-006","to":"WO-007","relation":"hard"},{"from":"WO-007","to":"WO-013","relation":"hard"},{"from":"WO-013","to":"WO-014","relation":"hard"},{"from":"WO-014","to":"WO-015","relation":"hard"},{"from":"WO-013","to":"WO-016","relation":"hard"},{"from":"WO-007","to":"WO-008","relation":"hard"},{"from":"WO-016","to":"WO-017","relation":"hard"},{"from":"WO-008","to":"WO-017","relation":"hard"},{"from":"WO-014","to":"WO-018","relation":"hard"},{"from":"WO-017","to":"WO-018","relation":"hard"}]}]} -->
+<!-- dotln-workstreams: {"workstreams":[{"id":"WS-001","members":[{"workOrderId":"WO-003","repository":"self","base":"ac896264c9dcf8be6934494fdd8fe5eb0bed038f","phase":"closed","verdict":"pass","integration":"current","stale":"no","targetCommit":"ac896264c9dcf8be6934494fdd8fe5eb0bed038f"},{"workOrderId":"WO-004","repository":"dotln-angular","base":"bc9133e932a00d33c15bc5289d683b8078f51ee4","phase":"closed","verdict":"pass","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"},{"workOrderId":"WO-011","repository":"self","base":"ac896264c9dcf8be6934494fdd8fe5eb0bed038f","phase":"closed","verdict":"pass","integration":"current","stale":"no","targetCommit":"ac896264c9dcf8be6934494fdd8fe5eb0bed038f"},{"workOrderId":"WO-005","repository":"dotln-angular","base":"651d76ff68e9b3a38fe770226deb634bca28b54c","phase":"closed","verdict":"pass","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"},{"workOrderId":"WO-012","repository":"self","base":"ac896264c9dcf8be6934494fdd8fe5eb0bed038f","phase":"closed","verdict":"pass","integration":"current","stale":"no","targetCommit":"ac896264c9dcf8be6934494fdd8fe5eb0bed038f"},{"workOrderId":"WO-006","repository":"dotln-angular","base":"5102783f5cf575a6b487e75ed9bb0c064d6dbd9c","phase":"closed","verdict":"pass","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"},{"workOrderId":"WO-007","repository":"dotln-angular","base":"90fa6e8d879cb499107ff79d1051c200d17c1cbc","phase":"closed","verdict":"pass","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"},{"workOrderId":"WO-013","repository":"dotln-angular","base":"bc9133e932a00d33c15bc5289d683b8078f51ee4","phase":"draft","verdict":"unknown","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"},{"workOrderId":"WO-014","repository":"dotln-angular","base":"bc9133e932a00d33c15bc5289d683b8078f51ee4","phase":"draft","verdict":"unknown","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"},{"workOrderId":"WO-015","repository":"dotln-angular","base":"bc9133e932a00d33c15bc5289d683b8078f51ee4","phase":"draft","verdict":"unknown","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"},{"workOrderId":"WO-016","repository":"dotln-angular","base":"bc9133e932a00d33c15bc5289d683b8078f51ee4","phase":"draft","verdict":"unknown","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"},{"workOrderId":"WO-008","repository":"dotln-angular","base":"bc9133e932a00d33c15bc5289d683b8078f51ee4","phase":"draft","verdict":"unknown","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"},{"workOrderId":"WO-017","repository":"dotln-angular","base":"bc9133e932a00d33c15bc5289d683b8078f51ee4","phase":"draft","verdict":"unknown","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"},{"workOrderId":"WO-018","repository":"dotln-angular","base":"bc9133e932a00d33c15bc5289d683b8078f51ee4","phase":"draft","verdict":"unknown","integration":"behind","stale":"yes","targetCommit":"2ab4f28501628cf95dd0102c42440fd7de9f8055"}],"edges":[{"from":"WO-003","to":"WO-004","relation":"hard"},{"from":"WO-004","to":"WO-005","relation":"hard"},{"from":"WO-011","to":"WO-005","relation":"hard"},{"from":"WO-005","to":"WO-006","relation":"hard"},{"from":"WO-012","to":"WO-006","relation":"hard"},{"from":"WO-006","to":"WO-007","relation":"hard"},{"from":"WO-007","to":"WO-013","relation":"hard"},{"from":"WO-013","to":"WO-014","relation":"hard"},{"from":"WO-014","to":"WO-015","relation":"hard"},{"from":"WO-013","to":"WO-016","relation":"hard"},{"from":"WO-007","to":"WO-008","relation":"hard"},{"from":"WO-016","to":"WO-017","relation":"hard"},{"from":"WO-008","to":"WO-017","relation":"hard"},{"from":"WO-014","to":"WO-018","relation":"hard"},{"from":"WO-017","to":"WO-018","relation":"hard"}]}]} -->
 
 ## Active
 
@@ -76,7 +75,7 @@ None.
 - Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
 - Application target: unassigned.
 - Dependencies: typed; blocked on WO-013.
-- References: WO-013: hard (unmet) — the Tools menu group this order fills and the sub-app convention it follows; the base line is set to its merge commit before activation.
+- References: WO-013: hard (unmet) — the Tools menu group this order fills and the sub-app convention it follows; the base line is provisional and publishes right under starter v0.96.1's merge-base publish.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -94,7 +93,7 @@ None.
 - Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
 - Application target: unassigned.
 - Dependencies: typed; blocked on WO-014.
-- References: WO-014: hard (unmet) — the Tool types, the transform enum and the catalog the rail and the engine's interpreter read; the base line is set to its merge commit before activation.
+- References: WO-014: hard (unmet) — the Tool types, the transform enum and the catalog the rail and the engine's interpreter read; the base line is provisional and publishes right under starter v0.96.1's merge-base publish.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -112,7 +111,7 @@ None.
 - Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
 - Application target: unassigned.
 - Dependencies: typed; blocked on WO-013.
-- References: WO-013: hard (unmet) — the machinery route and menu group this order fills; the base line is set to the preceding member's merge commit before activation.
+- References: WO-013: hard (unmet) — the machinery route and menu group this order fills; the base line is provisional and publishes right under starter v0.96.1's merge-base publish.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -130,14 +129,14 @@ None.
 - Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
 - Application target: unassigned.
 - Dependencies: typed; dependency-ready.
-- References: WO-007: hard (met) — the events, interceptors, stores and MSW wiring this order extends; the base line is set to the preceding member's merge commit before activation.
+- References: WO-007: hard (met) — the events, interceptors, stores and MSW wiring this order extends; the base line is provisional and publishes right under starter v0.96.1's merge-base publish.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
 - Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh; reviewer xhigh.
 - Track: delivery
-- Cost: adds &#96;libs/shared/auth&#96; with its kit, the mocked identity provider handlers and signing key for development, the &#96;authHttpEvents&#96; and &#96;sessionEvents&#96; groups, guards, the permission directive, the &#96;/login&#96; and &#96;/denied&#96; routes, about 60 source files; adds one OpenID Connect client library and &#96;jose&#96; (development signing in the mock) to the workspace. Removes nothing. Wall-clock: about 8 to 12 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 house rule 17, the events and state documents, the client library's documentation, this order, about 160 KB. Commands added in the target: none. Tokens: unknown until run. Steps: 15. Re-mints: none.
+- Cost: adds &#96;libs/shared/auth&#96; with its kit, the mocked identity provider handlers (whose development signing key pair is generated when the mock starts and is never committed), the &#96;authHttpEvents&#96; and &#96;sessionEvents&#96; groups, guards, the permission directive, the &#96;/login&#96; and &#96;/denied&#96; routes, about 60 source files; adds one OpenID Connect client library and &#96;jose&#96; (development signing in the mock) to the workspace. Removes nothing. Wall-clock: about 8 to 12 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 house rule 17, the events and state documents, the client library's documentation, this order, about 160 KB. Commands added in the target: none. Tokens: unknown until run. Steps: 15. Re-mints: none.
 - Authority: [docs/work-orders/WO-008-authentication-and-permissions.md](WO-008-authentication-and-permissions.md)
 
 ### WO-017
@@ -148,7 +147,7 @@ None.
 - Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
 - Application target: unassigned.
 - Dependencies: typed; blocked on WO-016, WO-008.
-- References: WO-016: hard (unmet) — the records fixture pack, the concert fold and the replay clock this lane replays; the Machinery menu group it joins; WO-008: hard (unmet) — the preceding member in the serial chain; its merge commit becomes this order's base before activation.
+- References: WO-016: hard (unmet) — the records fixture pack, the concert fold and the replay clock this lane replays; the Machinery menu group it joins; WO-008: hard (unmet) — the preceding member in the serial chain; the base line is provisional and publishes right under starter v0.96.1's merge-base publish.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -166,7 +165,7 @@ None.
 - Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
 - Application target: unassigned.
 - Dependencies: typed; blocked on WO-014, WO-017.
-- References: WO-014: hard (unmet) — the Tool schema, the catalog layout, the allow-list check and the merge script this order's map pass and toy records reuse; WO-017: hard (unmet) — the preceding member in the serial chain; its merge commit becomes this order's base before activation.
+- References: WO-014: hard (unmet) — the Tool schema, the catalog layout, the allow-list check and the merge script this order's map pass and toy records reuse; WO-017: hard (unmet) — the preceding member in the serial chain; the base line is provisional and publishes right under starter v0.96.1's merge-base publish.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

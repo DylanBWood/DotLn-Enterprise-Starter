@@ -20,14 +20,26 @@ at that commit as `DotLn Angular v0.1.0` (Release published
 2026-10-21T21:14:44Z); its decisions, verification and final review live
 once, under `docs/dotln/` in this repository, bound from the launchpad's
 control segment. WO-007's base is that merge commit (planning pass of
-2026-10-23). The 2026-10-24 planning pass restated the app's subject on the
+2026-10-23); WO-007 merged as pull request #5
+(`2ab4f28501628cf95dd0102c42440fd7de9f8055`, 2026-10-24T16:23Z) and closed at
+that commit as `DotLn Angular v0.2.0` (Release published 2026-10-24T16:26Z),
+its records under `docs/dotln/` at `4304a9d5`. WO-013 activated on 2026-10-24
+at the provisional base `bc9133e9`; its verified draft (parent `2ab4f285`, 83
+files) was refused at publish because the kit described the change from the
+activation base (WO-013-D008), and its fix integrates `main` at starter
+v0.96.1, whose publish describes the change from the merge base of the
+subject and this repository's `main` (core WO-230; the 2026-10-24 second
+planning pass, D2). The 2026-10-24 planning pass restated the app's subject on the
 operator's decisions (one app with sub-apps behind a menu, not wired to
 core, its data from public mining into its own store; WS-001 §The app and
 its sub-apps), moved WO-007's board route to the app's own API with
 `uifa-board-v1` kept as the response shape, and filed WO-013 to WO-018
 (the sub-app shell, the toolbox catalog, the soldier scene, the machinery
 view, the digital twin's patience lane, The Art of War map and the toy
-shelf) with provisional bases set as each predecessor merges.
+shelf) with provisional bases; since starter v0.96.1 an order activated on
+its provisional base publishes right, and a pass may set the base to the
+predecessor's merge commit without being required to (the 2026-10-24 second
+planning pass, D4 and D7).
 
 The launchpad that registers a repository owns its profile; this file is
 repo-native convention authority for sessions acting in

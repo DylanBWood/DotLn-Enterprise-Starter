@@ -30,7 +30,7 @@ soldier scene over the catalog, the machinery view over the recorded orders,
 the twin's first lane, the toy shelf, login, permissions and i18n, with the
 component taxonomy demonstrated in every sub-app. The operator judges
 delivery by merging the last member's pull request.
-**Delivery state:** proposed
+**Delivery state:** active (WO-003 to WO-007, WO-011 and WO-012 merged; WO-013 active since 2026-10-24)
 
 ## Member orders
 
@@ -43,13 +43,13 @@ delivery by merging the last member's pull request.
 | WO-012 | self          | this launchpad's `main` after update #16 | declares the target release policy and the name `DotLn Angular`, the judge-only base checkout and the operator's commit identity that starter v0.87.0 admits (taken inside v0.88.0), and the operator grant naming `release.close`; closed 2026-10-21 as Launchpad v0.3.3 |
 | WO-006 | dotln-angular | `5102783f5cf575a6b487e75ed9bb0c064d6dbd9c` | the component taxonomy, the house `ui` library with Angular Aria and the CDK behind wrappers, the shell layout, the `board` feature rendering the actor board from a recorded fixture; base set 2026-10-21; merged as #4 and closed as `DotLn Angular v0.1.0` on 2026-10-21 |
 | WO-007 | dotln-angular | `90fa6e8d879cb499107ff79d1051c200d17c1cbc` | events, signal stores, call state, data access, the board over HTTP from the app's own API in the `uifa-board-v1` shape answered by MSW, persisted UI state, navigation and flags; base set 2026-10-23; amended 2026-10-24 |
-| WO-013 | dotln-angular | provisional; set when WO-007 merges        | the sub-app menu in the shell, the `scene` and `machinery` routes with arriving pages, the sub-app grouping convention |
-| WO-014 | dotln-angular | provisional; set when WO-013 merges        | the toolbox catalog as the app's own data: the `Tool` schema, the run's 3,463 map rows typed by a checkpointed fan-out, the allow-list check, the catalog browser under Tools |
-| WO-015 | dotln-angular | provisional; set when WO-014 merges        | the soldier scene: the pure scene engine, twenty units on a 2D canvas behind a renderer seam, the tool rail, RTS selection, flock, arrive, formation |
-| WO-016 | dotln-angular | provisional; set when WO-015 merges        | the machinery view over scrubbed six-field copies of WO-221 and WO-226, the records and replay libraries, the operator's ideas and the local idea sink |
-| WO-008 | dotln-angular | provisional; set when WO-016 merges        | authentication and permissions, legitimate from the Angular side                     |
-| WO-017 | dotln-angular | provisional; set when WO-008 merges        | the digital twin's first lane: patience over WO-221 on virtual time, judged by results, variants kept as code |
-| WO-018 | dotln-angular | provisional; set when WO-017 merges        | The Art of War mapped into the catalog from its public text, toys designed as records for the six mined sources without one, the toy shelf |
+| WO-013 | dotln-angular | `bc9133e932a00d33c15bc5289d683b8078f51ee4`, activated 2026-10-24 on the provisional base; v0.96.1 publishes from the merge base| the sub-app menu in the shell, the `scene` and `machinery` routes with arriving pages, the sub-app grouping convention |
+| WO-014 | dotln-angular | provisional; publishes right under v0.96.1; a pass may set it when WO-013 merges| the toolbox catalog as the app's own data: the `Tool` schema, the run's 3,463 map rows typed by a checkpointed fan-out, the allow-list check, the catalog browser under Tools |
+| WO-015 | dotln-angular | provisional; publishes right under v0.96.1; a pass may set it when WO-014 merges| the soldier scene: the pure scene engine, twenty units on a 2D canvas behind a renderer seam, the tool rail, RTS selection, flock, arrive, formation |
+| WO-016 | dotln-angular | provisional; publishes right under v0.96.1; a pass may set it when WO-015 merges| the machinery view over scrubbed six-field copies of WO-221 and WO-226, the records and replay libraries, the operator's ideas and the local idea sink |
+| WO-008 | dotln-angular | provisional; publishes right under v0.96.1; a pass may set it when WO-016 merges| authentication and permissions, legitimate from the Angular side                     |
+| WO-017 | dotln-angular | provisional; publishes right under v0.96.1; a pass may set it when WO-008 merges| the digital twin's first lane: patience over WO-221 on virtual time, judged by results, variants kept as code |
+| WO-018 | dotln-angular | provisional; publishes right under v0.96.1; a pass may set it when WO-017 merges| The Art of War mapped into the catalog from its public text, toys designed as records for the six mined sources without one, the toy shelf |
 
 Proposed later members, not yet filed (§The app and its sub-apps below and
 the planning document of 2026-10-24 §10 record each with its reopening
@@ -66,14 +66,20 @@ primer, if WO-005 leaves any of it out.
 
 The members form one serial chain in the sequence's order: WO-007, WO-013,
 WO-014, WO-015, WO-016, WO-008, WO-017, WO-018 (the planning pass of
-2026-10-24, D11): each target order's base is the merge commit of the member
-before it. The kit creates a target worktree at the commit the order's
-`**Repository:**` line names, so a filed successor carries the repository's
-only commit as a provisional base, its first step refuses to activate while
-`origin/main` differs from that line, and the planning pass that follows the
-predecessor's merge sets the line to the merge commit and refutes the changed
-order (default pass scope). A kit route that resolves the base at activation
-is a recorded candidate for upstream. WO-003 must be merged into this
+2026-10-24, D11; WO-007 closed on 2026-10-24 and left the sequence): each
+target order's base is the merge commit of the member before it. The kit
+creates a target worktree at the commit the order's `**Repository:**` line
+names, so a filed successor carries the repository's only commit as a
+provisional base. Since starter v0.96.1 (core WO-230) the target publish
+describes the change from the merge base of the subject and the target's
+`main` and names the activation base beside it, so an order may activate on
+its provisional base and publish right (WO-013 did on 2026-10-24, WO-013-D001;
+its first publish, under v0.94.0, was refused for describing the change from
+that base, WO-013-D008, and its fix integrates v0.96.1), and the planning pass
+that follows the predecessor's merge may set the line to the merge commit
+without being required to (the second planning pass of 2026-10-24, D7). A
+base advance event was declined by core by design; the merge-base publish is
+the route. WO-003 must be merged into this
 launchpad before WO-004 activates, because activation and publication read
 the registration from `main`. WO-011, a self order, precedes WO-005 by a
 typed hard edge: starter v0.85.0's release close deletes the class's declared
@@ -565,14 +571,14 @@ minutes, 227.0 waiting minutes, a span of 1,110.3 minutes.
 | WO-005 | merged   | merged in DotLn-Angular as #3 and its records as #13 on 2026-10-20; the first draft-at-verified publish and the first target close; [evidence](../evidence/WO-005/README.md) |
 | WO-012 | merged   | merged as #18 and released as Launchpad v0.3.3 on 2026-10-21; declares `DotLn Angular` releases, grants `release.close`, retains judged base output and names the operator's public commit identity; [configuration, grant and gate evidence](../evidence/WO-012/README.md) (`docs/evidence/WO-012/`) |
 | WO-006 | merged   | merged in DotLn-Angular as #4 on 2026-10-21 and closed the same day as `DotLn Angular v0.1.0`, the target's first release; its records as #20 in this launchpad; [evidence](../evidence/WO-006/README.md) |
-| WO-007 | proposed | filed by the 2026-10-18 planning pass; re-targeted to the board and given its release header by the UI planning pass of 2026-10-21; its base, the receipt-006 amendments, persisted UI state and the v0.91.0 publication rules set by the standard pass of 2026-10-23; the ten known issues of receipt 007 repaired, the board moved to the app's own API and the plan-gate carry-in closed by the 2026-10-24 pass |
-| WO-013 | proposed | filed by the 2026-10-24 planning pass; base provisional until WO-007 merges |
-| WO-014 | proposed | filed by the 2026-10-24 planning pass; base provisional until WO-013 merges |
-| WO-015 | proposed | filed by the 2026-10-24 planning pass; base provisional until WO-014 merges |
-| WO-016 | proposed | filed by the 2026-10-24 planning pass; base provisional until WO-015 merges |
-| WO-008 | proposed | filed by the 2026-10-18 planning pass; given its release header by the UI planning pass of 2026-10-21 and the v0.91.0 publication rules by the standard pass of 2026-10-23; the carry-in closed and its place after WO-016 set by the 2026-10-24 pass; base provisional until WO-016 merges |
-| WO-017 | proposed | filed by the 2026-10-24 planning pass; base provisional until WO-008 merges |
-| WO-018 | proposed | filed by the 2026-10-24 planning pass; base provisional until WO-017 merges |
+| WO-007 | merged   | merged in DotLn-Angular as #5 (`2ab4f28501628cf95dd0102c42440fd7de9f8055`, 2026-10-24T16:23Z) and closed the same day as `DotLn Angular v0.2.0`; VER-001 failed on an `ErrorHandler` regression the verifier reproduced, the repair passed VER-002 and FINAL-001; its decisions, verification and final review live in the target under `docs/dotln/`, its records as #25 in this launchpad; [evidence](../evidence/WO-007/README.md) |
+| WO-013 | active   | activated 2026-10-24 at the provisional base; VER-001 pass; FINAL-001 fail on the publish blocker (the kit described the change from the activation base, WO-013-D008); needs-fix under D009's route: the fix dispatch integrates `main` at starter v0.96.1, whose publish describes the change from the merge base, then re-verification and final review; the 2026-10-24 second pass left its text unchanged |
+| WO-014 | proposed | filed by the 2026-10-24 planning pass; amended by the 2026-10-24 second pass with receipt 008's known issues; the base is provisional and publishes right under starter v0.96.1 (a pass may set it when WO-013 merges) |
+| WO-015 | proposed | filed by the 2026-10-24 planning pass; amended by the 2026-10-24 second pass with receipt 008's known issues; the base is provisional and publishes right under starter v0.96.1 (a pass may set it when WO-014 merges) |
+| WO-016 | proposed | filed by the 2026-10-24 planning pass; amended by the 2026-10-24 second pass with receipt 008's known issues and the segment fixtures renamed `order-221.json` and `order-226.json`; the base is provisional and publishes right under starter v0.96.1 (a pass may set it when WO-015 merges) |
+| WO-008 | proposed | filed by the 2026-10-18 planning pass; given its release header by the UI planning pass of 2026-10-21 and the v0.91.0 publication rules by the standard pass of 2026-10-23; the carry-in closed and its place after WO-016 set by the 2026-10-24 pass; base provisional until WO-016 merges; amended by the 2026-10-24 second pass with receipt 008's known issues and the v0.96.1 base clause |
+| WO-017 | proposed | filed by the 2026-10-24 planning pass; amended by the 2026-10-24 second pass with receipt 008's known issues and the derived fixture renamed `order-221-derived-v0.json`; the base is provisional and publishes right under starter v0.96.1 (a pass may set it when WO-008 merges) |
+| WO-018 | proposed | filed by the 2026-10-24 planning pass; amended by the 2026-10-24 second pass with receipt 008's known issues; the base is provisional and publishes right under starter v0.96.1 (a pass may set it when WO-017 merges) |
 
 <!-- dotln-workstream:start -->
 { "id": "WS-001", "members": [{ "workOrderId": "WO-003", "repositoryId": "self" }, { "workOrderId": "WO-004", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-011", "repositoryId": "self" }, { "workOrderId": "WO-005", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-012", "repositoryId": "self" }, { "workOrderId": "WO-006", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-007", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-013", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-014", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-015", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-016", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-008", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-017", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-018", "repositoryId": "dotln-angular" }], "edges": [{ "from": "WO-003", "to": "WO-004", "relation": "hard" }, { "from": "WO-004", "to": "WO-005", "relation": "hard" }, { "from": "WO-011", "to": "WO-005", "relation": "hard" }, { "from": "WO-005", "to": "WO-006", "relation": "hard" }, { "from": "WO-012", "to": "WO-006", "relation": "hard" }, { "from": "WO-006", "to": "WO-007", "relation": "hard" }, { "from": "WO-007", "to": "WO-013", "relation": "hard" }, { "from": "WO-013", "to": "WO-014", "relation": "hard" }, { "from": "WO-014", "to": "WO-015", "relation": "hard" }, { "from": "WO-013", "to": "WO-016", "relation": "hard" }, { "from": "WO-007", "to": "WO-008", "relation": "hard" }, { "from": "WO-016", "to": "WO-017", "relation": "hard" }, { "from": "WO-008", "to": "WO-017", "relation": "hard" }, { "from": "WO-014", "to": "WO-018", "relation": "hard" }, { "from": "WO-017", "to": "WO-018", "relation": "hard" }] }

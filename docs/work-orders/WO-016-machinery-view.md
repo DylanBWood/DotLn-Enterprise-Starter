@@ -45,11 +45,12 @@ from the run is copied here beyond ids, short titles and generic terms.
 Planner-synthesized by the 2026-10-24 planning pass
 ([planning document](../planning/mining-run-orders-2026-10-24.md) §4 (the
 re-derived WO-221 and WO-226 tables), §6 D8 and §9). Opaque identifier, not a
-priority.
+priority. Amended by the 2026-10-24 second pass ([planning document](../planning/standard-pass-v0-96-1-2026-10-24.md)
+§6 D3 and D4): the fixture file names, criterion 3's starter and counts, the
+records types' name, the caption rule, the base clause and receipt 008's known
+issues.
 **Depends on:** WO-013 merged (hard: the `/machinery` route and the Machinery
-menu group; the base above is provisional and is set to WO-015's merge commit,
-the member before this one in the sequence, by the planning pass that follows
-it).
+menu group; the base above is provisional: since starter v0.96.1 (core WO-230) the target publish describes the change from the merge base of the subject and the target's `main` and names the activation base beside it, so activation on this base publishes right; the planning pass that runs after WO-015, the member before this one in the sequence, merges may set it to that merge commit, and none is required to (the 2026-10-24 second pass, D4)).
 **Workstream:** WS-001
 
 <!-- dotln-dependencies:start -->
@@ -57,7 +58,7 @@ it).
   {
     "workOrderId": "WO-013",
     "relation": "hard",
-    "reason": "the machinery route and menu group this order fills; the base line is set to the preceding member's merge commit before activation"
+    "reason": "the machinery route and menu group this order fills; the base line is provisional and publishes right under starter v0.96.1's merge-base publish"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -66,7 +67,7 @@ it).
 (house rules 3, 5, 8, 10, 12, 15, 18; §The app and its sub-apps, operating
 rules I1 to I3); `docs/repositories/dotln-angular.md`;
 `docs/operator/README.md`; this launchpad's `.claude/skills/dotln-*/SKILL.md`
-first lines (the Origin stamps, starter v0.94.0) and `CLAUDE.md` §Start here
+first lines (the Origin stamps, at the starter the launchpad carries at activation) and `CLAUDE.md` §Start here
 (the one-line role obligations); the target's `docs/ai-reference/*` and
 `tools/scripts/scrub-board-fixture.mjs` at the base; the platform's public
 `docs/control/orders/WO-221.jsonl` and `WO-226.jsonl` at the commit the
@@ -88,7 +89,9 @@ narrow the knowledge to listed inputs, set the rung, add a wait with its
 cause, replace a prose section with the operator's own words); selecting an
 idea then an agent redraws that agent's card and the use case's beats under
 the idea's caption with the before as a ghost and a band saying presentation
-only, nothing written; a refused drop stays visible with its reason; the
+only, nothing written (the caption names what the change shows in the use
+case and says so when the beats are unchanged); a refused drop stays visible
+with its reason; the
 operator's ideas and applied state persist in browser storage and, when the
 local sink runs, every dropped idea is also appended to the repository's
 ignored intake; nothing else leaves the browser.
@@ -116,8 +119,10 @@ generated cards, ideas saved to ignored intake.
   `ControlEventLite { ordinal, type, recordedAt, workOrderId, actor?: {
   harness, model, effort, mode? }, verdict?: 'pass' | 'fail' }` and nothing
   else, the operator's field list; `SlotId` (`executor`, `verifier`,
-  `repairer`, `reviewer`); `Beat`, `Episode`, `ConcertScene` (beats,
-  episodes, anchor, totals of operator and worker minutes, omissions);
+  `repairer`, `reviewer`); `Beat`, `Episode`, `OrderStrip` (beats,
+  episodes, anchor, totals of operator and worker minutes, omissions; named a
+  strip, not a scene, so that "scene" stays the scene engine's and the
+  catalog's word);
   `MechanismChange` (`removeGem(id)`, `addGem(id)`, `removeSupport(id)`,
   `addSupport(id)`, `narrowKnowledge(inputs)`, `setRung(n)`, `addWait(minutes,
   cause)`, `replaceProse(sectionKey, text)`); `IdeaCard { id, title, by:
@@ -129,7 +134,7 @@ generated cards, ideas saved to ignored intake.
   `@dotln-angular/records` and `/testing`): `scene-reader.ts` (a fixture's
   rows to `ControlEventLite[]`, tolerant of an unknown `type`, which becomes
   an `unknown` beat and is never dropped); `concert-fold.ts` (rows to
-  `ConcertScene`: the slot for a row is a fixed table by `type`, the
+  `OrderStrip`: the slot for a row is a fixed table by `type`, the
   implementation hand-back to the executor, a verification completion to the
   verifier, a repair completion to the repairer, a final-review completion
   to the reviewer, every request and the activation to the operator, else
@@ -138,8 +143,13 @@ generated cards, ideas saved to ignored intake.
   of unknown size); `apply-ideas.ts` (a pure fold of mechanism changes over a
   copy of the scene and the role mechanisms; a change whose `appliesTo`
   excludes the target is refused with the reason); the fixture pack under
-  `/testing` (`segments/WO-221.json`, `segments/WO-226.json`,
-  `role-mechanisms.json`) and `provideRecordsTestKit()`.
+  `/testing` (`segments/order-221.json`, `segments/order-226.json`,
+  `role-mechanisms.json`) and `provideRecordsTestKit()`. The two segment
+  files are named by the platform order's number alone, never `WO-NNN`,
+  because the target's outward lint refuses a launchpad identifier in any
+  path the pull request's Change table lists (core's answer of 2026-10-24,
+  item 1; the 2026-10-24 second pass verified the names against the lint);
+  the platform id stays inside each file as `source.order`.
 - **Replay** (`libs/shared/replay`, `scope:shared`, `type:util`): `replayOn(events,
   scheduler, zero)` emitting each event at its `recordedAt` offset on an
   injected scheduler; `ReplayClock` (position, speed, `jumpTo`) over RxJS
@@ -158,7 +168,10 @@ generated cards, ideas saved to ignored intake.
   `role-mechanisms.json` lists, per role, the ids the launchpad's role skill
   stamps carry and the prose section keys of each skill, with the file name
   and the starter version as its source; copied as data by the executor from
-  the launchpad kit files at activation.
+  the launchpad kit files at activation, which records the starter and the
+  per-role counts it read in the decisions file (at starter v0.96.1 the
+  executor stamp carries 19 ids and each other role 13; a later starter may
+  differ, and the order never hard-codes them).
 - **Feature** (`libs/features/machinery`, replacing the arriving page, with
   `libs/features/machinery-data-access`): `machinery-page` (container) over
   `MachineryFacade` (`vm = computed(() => applyIdeas(fold(segment),
@@ -170,7 +183,10 @@ generated cards, ideas saved to ignored intake.
   mechanisms as a key-value list of gems, supports and prose sections;
   waiting on), `idea-shelf` (the operator's cards; the new-idea form with a
   title, a change kind from a menu, its parameters and the target roles; no
-  generated cards), `use-case-caption`, `sandbox-band`; mappers `declared-line`,
+  generated cards), `use-case-caption` (what the applied change shows in the
+  use case: `addWait` moves the beats after its target by its minutes; every
+  other change redraws the agent's card and the caption says the beats are
+  unchanged), `sandbox-band`; mappers `declared-line`,
   `phase-glyph` (native emoji with a text equivalent), `gap-scale`; a layout.
   `MachineryStore` (SignalStore) holds the applied ideas and the shelf with
   WO-007's `withPersistedState({ key: 'machinery', select })` under
@@ -231,14 +247,16 @@ data-access library; the idea sink and its tooling test; the two documents;
    `check:fixtures`; a tooling test that the reducer drops every field
    outside the list and refuses an absolute path. Check: `npm run
    test:tooling` exits 0.
-4. Produce `segments/WO-221.json` and `segments/WO-226.json` from the
+4. Produce `segments/order-221.json` and `segments/order-226.json` from the
    platform's public segments at a recorded commit; record the commit and
    the row counts (16 and 6) in the decisions file. Check: `npm run
    check:fixtures` exits 0.
 5. `role-mechanisms.json` from the launchpad's six role skill stamps and
-   the worker type at starter v0.94.0 (ids and section keys only), with the
-   file name and starter version per role. Check: a spec asserts 19 executor
-   ids and 13 for each other role.
+   the worker type at the starter the launchpad carries at activation (ids and
+   section keys only), with the file name and starter version per role; the
+   executor records the starter and the per-role counts read in the decisions
+   file and sets the spec's expected counts from them. Check: a spec asserts
+   each role's count in the file equals the expected count the executor set.
 6. `scene-reader.ts`, `concert-fold.ts`, `apply-ideas.ts` with specs: the
    WO-221 fold yields 16 beats, 8 operator beats and the seven gaps of the
    planning document's table within one second; the WO-226 fold yields 6
@@ -258,7 +276,9 @@ data-access library; the idea sink and its tooling test; the two documents;
 10. The idea shelf's new-idea form, select-then-apply, the ghost, the band,
     the caption, the refusal. Check: a facade spec applies `narrowKnowledge`
     to the verifier at beat 4 and the card's mechanism count falls while the
-    ghost keeps the before.
+    ghost keeps the before and the caption says the beats are unchanged; a
+    second spec applies `addWait` and the beats after the target move by its
+    minutes.
 11. The idea sink process, `npm run idea-sink`, `.env.example` lines,
     `.gitignore` entry for `docs/intake/`, `environment.ideaSinkUrl`
     (development string, production `null`), the post on drop with the
@@ -299,13 +319,14 @@ then the target gate plain and review once each.
 
 **Acceptance criteria (all required)**
 
-1. `libs/shared/records/testing/src/fixtures/segments/WO-221.json` and
-   `WO-226.json` validate against `control-event-lite-v0.schema.json` with
+1. `libs/shared/records/testing/src/fixtures/segments/order-221.json` and
+   `order-226.json` validate against `control-event-lite-v0.schema.json` with
    `additionalProperties: false` over the fields `ordinal`, `type`,
    `recordedAt`, `workOrderId`, `actor`, `verdict`, carry a `source.commit`
    and no absolute path (`npm run check:fixtures` exits 0), and
-   `grep -c '"recordedAt"' libs/shared/records/testing/src/fixtures/segments/WO-221.json`
-   prints 16.
+   `grep -c '"recordedAt"' libs/shared/records/testing/src/fixtures/segments/order-221.json`
+   prints 16, and `ls libs/shared/records/testing/src/fixtures/segments | grep -ciE '^wo-'`
+   prints 0.
 2. `npx nx test records` exits 0 with specs asserting: the WO-221 fold has 8
    operator beats and the seven gaps 87.8, 109.9, 1.7, 1.4, 2.1, 18.2 and
    5.9 minutes within one second each, the first following a hand-back with
@@ -313,9 +334,14 @@ then the target gate plain and review once each.
    unknown `type` yields an `unknown` beat; the verifier slot carries one
    ghost after its refill; and `applyIdeas` refuses a card whose `appliesTo`
    excludes the target with a reason while the scene stays unchanged.
-3. `role-mechanisms.json` lists 19 ids for the executor and 13 for each of
-   the planner, refuter, release-close, reviewer and verifier, each role
-   naming its source file and `v0.94.0` (a spec asserts the counts), and
+3. `role-mechanisms.json` lists, for the executor, planner, refuter,
+   release-close, reviewer and verifier, the ids each role's Origin stamp
+   carries at the starter the launchpad carried at activation, each role
+   naming its source file and that starter version (a spec asserts each
+   role's count against the expected counts the executor set from the files
+   read, and the decisions file records the starter and the counts; at
+   starter v0.96.1 they read 19 for the executor and 13 for each other role),
+   and
    `grep -c "/Users/" libs/shared/records/testing/src/fixtures/role-mechanisms.json`
    prints 0.
 4. `grep -rl "generated" libs/features/machinery/src/testing/fixtures`
@@ -335,7 +361,8 @@ then the target gate plain and review once each.
 7. `npx nx e2e dotln-e2e` exits 0 and includes: sixteen beat buttons and
    five slots on `/machinery`; the executor slot filled at the second beat;
    a ghost in the verifier slot after the eighth; an idea created, applied
-   and redrawn with the ghost and the presentation-only band; a refused drop
+   and redrawn with the ghost, the presentation-only band and a caption
+   naming what changed; a refused drop
    visible with its reason; the idea present after a reload; the keyboard
    path across the beats and the shelf; axe at the board spec's threshold;
    no horizontal overflow at 360, 768 and 1440.
@@ -353,15 +380,20 @@ then the target gate plain and review once each.
 `docs/evidence/WO-016/README.md` and
 `docs/evidence/WO-016/host-qualification.md`.
 
-**Known issues and carry-ins:** the base line is provisional until the pass
-after WO-015 sets it. The copies are a stopgap the operator named: when the
+**Known issues and carry-ins:** The base line is provisional and publishes right under starter v0.96.1 (the merge-base publish of core WO-230; WO-013's fix dispatch is its first use in this fork); a pass may set it to the predecessor's merge commit. The copies are a stopgap the operator named: when the
 mining store exists (candidate C1), the fixture pack becomes a route behind
 the same facade or is deleted. The strip's axis is time, never cost, and a
 gap includes idle time; the view labels a long gap as nobody dispatched,
 never as the operator idle, because the record has no presence. The prose
 sections are listed by key; replacing one applies the operator's own words
-to the copy and never to a kit file. The v0.94.0 advisory on launchpad record
-paths applies as in WO-013. This order activates only on a launchpad whose
+to the copy and never to a kit file. Starter v0.96.1's plan gate no longer advises on this order's own launchpad record paths (core's answer of 2026-10-24, item 1); they stay as the kit names them and the publish command's body file must not name them. From receipt 008
+(the 2026-10-24 pass's refutation), carried into this text by the 2026-10-24
+second pass: only `addWait` moves the use case's beats and the caption says
+so for every other change (the Objective, the `use-case-caption` composite
+and step 10); criterion 3 reads the role stamps at activation instead of
+hard-coding a starter and its counts; and the records types are `OrderStrip`,
+not `ConcertScene`, so that "scene" is not overloaded across the fold, the
+scene engine and the catalog. This order activates only on a launchpad whose
 starter carries core WO-221's `--draft` form; the draft pull request and its
 workflow runs are a final-review obligation read from
 `docs/evidence/WO-016/preview-pr.json`, never a criterion. `Target release

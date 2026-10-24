@@ -36,11 +36,14 @@ and §4 (the first buildable slice), §5 (the shared substrate); SHA-256
 from the run is copied here beyond ids, short titles and generic terms.
 Planner-synthesized by the 2026-10-24 planning pass
 ([planning document](../planning/mining-run-orders-2026-10-24.md) §6 D7 and
-§9). Opaque identifier, not a priority.
+§9). Opaque identifier, not a priority. Amended by the 2026-10-24 second pass
+([planning document](../planning/standard-pass-v0-96-1-2026-10-24.md) §6 D4): the interpreter's refusal of an
+uninterpreted kind, the rail's selection by recorded ids and the summary's
+works, the clock's virtual driver as this order's own, the base clause and
+receipt 008's known issues.
 **Depends on:** WO-014 merged (hard: the `Tool` types, the closed transform
 enum, the catalog's typed tools and the first three per work the rail
-lists; the base above is provisional and is set to WO-014's merge commit by
-the planning pass that follows it).
+lists; the base above is provisional: since starter v0.96.1 (core WO-230) the target publish describes the change from the merge base of the subject and the target's `main` and names the activation base beside it, so activation on this base publishes right; the planning pass that runs after WO-014 merges may set it to that merge commit, and none is required to (the 2026-10-24 second pass, D4)).
 **Workstream:** WS-001
 
 <!-- dotln-dependencies:start -->
@@ -48,7 +51,7 @@ the planning pass that follows it).
   {
     "workOrderId": "WO-014",
     "relation": "hard",
-    "reason": "the Tool types, the transform enum and the catalog the rail and the engine's interpreter read; the base line is set to its merge commit before activation"
+    "reason": "the Tool types, the transform enum and the catalog the rail and the engine's interpreter read; the base line is provisional and publishes right under starter v0.96.1's merge-base publish"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -65,9 +68,11 @@ at the base; design B at the sections named above.
 field, each labelled with a lifecycle role; selects units as in a real-time
 strategy game (click, shift-click, marquee, double-click for a squad, Escape
 to clear, and the keyboard through the text layer); picks a tool from a rail
-fed by the catalog (the ten movement and formation tools of the first scene
-plus the catalog's first three tools per work, untyped ones shown as a
-special case with a clarify affordance); reads its five faces and parameters
+fed by the catalog (the first scene's movement and formation tools, the
+typed rows the decisions file names by id at activation, about ten in design
+B's first slice, plus the catalog's first three tools for each work the
+summary lists, untyped ones shown as a special case with a clarify
+affordance); reads its five faces and parameters
 and sees the computed effect as ghost arrows before applying; applies flock,
 arrive and a wedge, line or column formation with slot roles assigned from a
 cost table; watches cohesion radius, collisions, heading variance, time to
@@ -105,7 +110,10 @@ determinism as evidence.
   fixed formation as the contrast; a fixed-step clock (1/60 s simulated per
   tick); `SceneFrame`; the transform interpreter (a `CompositionStep` with a
   `TransformKind` from the catalog becomes a behaviour on the selected
-  units); metrics (cohesion radius, collisions, heading variance, time to
+  units; a step whose kind this engine does not interpret, nine of the
+  fourteen kinds at this order, is refused with a reason naming the kind,
+  and the inspector shows that refusal on Apply instead of applying nothing
+  silently); metrics (cohesion radius, collisions, heading variance, time to
   objective, stalled units, anchor-to-mean distance, slot error, assignment
   cost); frame hash; first divergence between two branches. Its own types
   (`SceneDefinition`, `Unit`, `UnitState`, `SceneFrame`, `CompositionStep`,
@@ -121,8 +129,9 @@ determinism as evidence.
 - **Feature** (`libs/features/scene`, replacing the arriving page): `scene-page`
   (container) over `SceneFacade`; `scene-layout` (slots canvas, rail,
   inspector, metrics, transport; fluid); composites `toolbox-rail` (tools
-  from the catalog: the ten first-scene tools and `firstThree(work)` for
-  each work; filters by work and kind; an untyped tool is a special case
+  from the catalog: the first-scene tools by the ids the decisions file names
+  and `firstThree(work)` for each work `catalog-summary.json` lists; filters
+  by work and kind; an untyped tool is a special case
   with its reason and an Ask button), `unit-inspector` (the five faces, the
   parameters with defaults, the preview rows, Apply, Ask), `metric-strip`
   (label, value, unit; `unknown` admitted), `unit-list` (the text layer: one
@@ -144,8 +153,9 @@ determinism as evidence.
   and whose saved compositions and clarify notes persist through WO-007's
   `withPersistedState({ key: 'scene', select })` under `dotln-angular.scene`;
   JSON export and import. `SceneClock` with three drivers: animation frame,
-  manual `tick(n)` (specs and reduced motion), and RxJS virtual time (shared
-  with WO-016's replay).
+  manual `tick(n)` (specs and reduced motion), and RxJS virtual time (this
+  order's own driver; WO-016's replay clock lands later over a generic
+  `{ recordedAt }` shape and may adopt it, so nothing here waits on it).
 - **Selection** shown twice, as rings on the canvas and as checked rows in
   the text layer; the unit's role label is what a person reads and its id is
   the DOM and test identity.
@@ -207,7 +217,8 @@ four fixtures and their check; the taxonomy sentence; the two documents;
    specs for each known input (arrive stops inside the target radius;
    blending clips; priority is silent with nothing to avoid; the anchor
    stays within a bound of the members' mean; greedy assignment equals the
-   hand-computed table; determinism over 600 frames). Check: `npx nx test
+   hand-computed table; determinism over 600 frames; the interpreter refuses
+   an uninterpreted kind with a reason naming it). Check: `npx nx test
    scene-engine` exits 0.
 4. `SceneRenderer`, `CanvasSceneRenderer`, `TextSceneRenderer`,
    `NullSceneRenderer`; `SceneClock` with the three drivers. Check: `npx nx
@@ -221,8 +232,9 @@ four fixtures and their check; the taxonomy sentence; the two documents;
 7. Composites, the wrapper, mappers, layout, container, facade; stories
    `Twenty`, `ReducedMotion`, `UntypedTool`. Check: `npx nx test scene` exits
    0; `npm run lint:components` exits 0.
-8. The rail reads the catalog (`firstThree` per work and the ten first-scene
-   tools by id); the inspector's preview arrows; equip appends a step. Check:
+8. The rail reads the catalog (`firstThree` for each work the summary lists
+   and the first-scene tools by the ids the decisions file names at
+   activation); the inspector's preview arrows; equip appends a step. Check:
    a facade spec applies flock to twelve units and the cohesion metric falls.
 9. RTS selection on the canvas and the text layer. Check: specs for click,
    shift-click, marquee, double-click, Escape and Space.
@@ -234,7 +246,8 @@ four fixtures and their check; the taxonomy sentence; the two documents;
     exits 0.
 12. e2e `apps/dotln-e2e/src/scene.spec.ts`: twenty rows in the text layer;
     Step advances the frame counter under reduced motion; the rail lists the
-    ten first-scene tools and three per work; a marquee selects at least two
+    first-scene tools the decisions file names and three per work the
+    summary lists; a marquee selects at least two
     units and Escape clears; equip Flock changes the cohesion metric's text;
     a saved composition survives a reload; axe at the board spec's threshold;
     no horizontal overflow at 360, 768 and 1440; the root still redirects to
@@ -267,8 +280,10 @@ review once each.
    over 600 frames, that flock with the separation weight at zero yields
    collisions greater than zero within 600 frames while the default weights
    reach and keep zero after settling, that greedy slot assignment equals
-   the committed hand-computed table, and that the first divergence between
-   a branch before and after an equip is the equip frame plus one.
+   the committed hand-computed table, that the first divergence between a
+   branch before and after an equip is the equip frame plus one, and that
+   the interpreter refuses a step whose kind it does not interpret with a
+   reason naming the kind.
 2. `libs/features/scene/src/lib/wrappers/scene-canvas/` owns the only
    `<canvas>` in the feature (`grep -rl "<canvas" libs/features/scene/src`
    prints exactly that component's file), `SceneRenderer` has `Canvas`,
@@ -279,8 +294,9 @@ review once each.
    `vm` change per driver frame).
 4. `npx nx e2e dotln-e2e` exits 0 and includes: twenty rows in the text
    layer; Step advancing the frame counter under `reducedMotion: 'reduce'`;
-   the rail listing the ten first-scene tools and three tools for each of
-   the six works; a marquee selecting at least two units and Escape clearing
+   the rail listing every first-scene tool the decisions file names and
+   three tools for each work `catalog-summary.json` lists; a marquee
+   selecting at least two units and Escape clearing
    the selection; equip Flock changing the cohesion metric's text; a saved
    composition present after a reload; axe at the board spec's threshold;
    no horizontal overflow at 360, 768 and 1440; the root redirecting to
@@ -306,14 +322,21 @@ review once each.
 `docs/evidence/WO-015/README.md` and
 `docs/evidence/WO-015/host-qualification.md`.
 
-**Known issues and carry-ins:** the base line is provisional until the pass
-after WO-014 sets it. The catalog's first-scene tools are typed by WO-014's
+**Known issues and carry-ins:** The base line is provisional and publishes right under starter v0.96.1 (the merge-base publish of core WO-230; WO-013's fix dispatch is its first use in this fork); a pass may set it to the predecessor's merge commit. The catalog's first-scene tools are typed by WO-014's
 classifiers; if a needed tool arrives `untyped`, this order types it with a
 recorded decision rather than failing on the rail. The Babylon.js painter,
 the second populations (DotLn's agents as units) and the pathfinding, heat
 and commander toys of design B are later members (candidates C2 and C5 of the
-2026-10-24 planning document). The v0.94.0 advisory on launchpad record
-paths applies as in WO-013. This order activates only on a launchpad whose
+2026-10-24 planning document). Starter v0.96.1's plan gate no longer advises on this order's own launchpad record paths (core's answer of 2026-10-24, item 1); they stay as the kit names them and the publish command's body file must not name them. From receipt 008 (the
+2026-10-24 pass's refutation), carried into this text by the 2026-10-24
+second pass: a step whose transform kind the engine does not interpret is
+refused visibly with its reason (the engine, step 3 and criterion 1); the
+virtual-time driver is this order's own and WO-016's replay may adopt it;
+and the rail selects the first-scene tools by the ids the decisions file
+names at activation from the catalog's typed rows (the observed gap lists
+fifteen candidate ids and design B's first slice names ten, and map lines may
+move), with the works read from the summary so a later work changes the
+rail without a text change here. This order activates only on a launchpad whose
 starter carries core WO-221's `--draft` form; the draft pull request and its
 workflow runs are a final-review obligation read from
 `docs/evidence/WO-015/preview-pr.json`, never a criterion. `Target release
