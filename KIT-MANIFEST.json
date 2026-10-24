@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "commit": "5ad686d170c71f432d2fafcb10225f2900630381",
-  "tag": "v0.96.1",
+  "commit": "0027d9c1e574d161b6215d43b80061eccda37340",
+  "tag": "v0.97.0",
   "files": [
     {
       "path": ".agents/skills/dotln-executor/SKILL.md",
@@ -161,7 +161,7 @@
     },
     {
       "path": "UPSTREAM.md",
-      "sha256": "a875852ba04bbdd0b5950a8ab8bc97d63a2e5747dcf32ed8b268e2b2d9e53e58"
+      "sha256": "0f5fabdcfdbde46ccaaf2237b1aeedf9d085f711b2f5e2b73caa7e910a81449f"
     },
     {
       "path": "corpus/fixtures/ids/command-id-vectors.jsonl",
@@ -205,7 +205,7 @@
     },
     {
       "path": "docs/product/07-execution-guide.md",
-      "sha256": "730d5428acee4f7d5c8819072c568775db3b171e32795f0ebe043434b73fd818"
+      "sha256": "c6dfd4e0feb69af6103078ba2efac2c280449306ca37e050686146bee9adcd43"
     },
     {
       "path": "docs/product/08-publication-compiler.md",
@@ -2725,7 +2725,7 @@
     },
     {
       "path": "scripts/entropy.mjs",
-      "sha256": "be04e625bf7ed7e22a7ac8855e1ec9bbe560888cb6d7d40d1302dfe9ef900471"
+      "sha256": "b42eeccebe9ac7fc93cf4f11f17ef86b0a7a16267abeb0016e59ad22b94a36c4"
     },
     {
       "path": "scripts/evidence-mission-check.mjs",
@@ -3089,7 +3089,7 @@
     },
     {
       "path": "scripts/lib/entropy-review.mjs",
-      "sha256": "15da59da395f90c78001a4cb5684090f7469bce67249f501183072950c9b4ec9"
+      "sha256": "67d8835caf3e9606d6cd9c51e84a361a887b9c8ba63a3e6b7d1d823da7ec88ae"
     },
     {
       "path": "scripts/lib/evidence-fixture.fixture-inputs.json",
@@ -3713,7 +3713,7 @@
     },
     {
       "path": "scripts/test-entropy-review.mjs",
-      "sha256": "3382b24c83814166fe8a9dd7d9b6e2de9a72b15217b9cb3b9fd86d4cab80af47"
+      "sha256": "5a61442e2cdac8c0635031c7edf349260d2af1d4accca627348174b4b85996b2"
     },
     {
       "path": "scripts/test-evidence-sources.fixture-inputs.json",
@@ -3765,7 +3765,7 @@
     },
     {
       "path": "scripts/test-launchpad-planning.mjs",
-      "sha256": "06a2ef2d9715d3313b109dfcf53c96bbfb5e4fc57d480c8b20593d84450c14ad"
+      "sha256": "3a2a0f0d93c19a987e5d7fcd230ea8f89f5771cc71fe196acf1e92a10c127649"
     },
     {
       "path": "scripts/test-launchpad-seeds.mjs",
