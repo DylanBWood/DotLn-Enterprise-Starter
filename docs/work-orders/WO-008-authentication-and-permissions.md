@@ -34,14 +34,22 @@ packages. Amended by the 2026-10-18 main-rules planning pass
 §6 D5, D7 and §8.1): the `--draft` route, the final-review obligation and
 the repairs of receipt 001's known issues.
 **Depends on:** WO-007 merged (hard: the event tiers, interceptors, stores and
-MSW this order extends; the base above is provisional and is set to WO-007's
-merge commit by the planning pass that follows it). Amended by the 2026-10-21
+MSW this order extends; the base above is provisional and is set to the merge
+commit of the member before this one in the sequence, WO-016, by the planning
+pass that follows it). Amended by the 2026-10-21
 UI planning pass ([planning document](../planning/ui-planning-2026-10-21.md)
 §6 D1 and D4): the release header, the node-spelled draft publish and the
 board's path enum. Amended by the 2026-10-23 standard pass
 ([planning document](../planning/standard-pass-v0-93-0-2026-10-23.md) §6
 D4): the publication rules of starter v0.91.0, the reviewed release notes
 and the plan-gate carry-in; the base stays provisional until WO-007 merges.
+Amended by the 2026-10-24 standard pass
+([planning document](../planning/mining-run-orders-2026-10-24.md) §6 D4 and
+§9): the plan-gate carry-in closed by starter v0.94.0 (update #23), the
+record-path advisory of that starter, and the order's place in the sequence
+after the first four sub-app orders (WO-013 to WO-016), so its base is set to
+WO-016's merge commit by the planning pass that follows that merge; the
+dependency on WO-007 stands.
 **Workstream:** WS-001
 
 <!-- dotln-dependencies:start -->
@@ -49,7 +57,7 @@ and the plan-gate carry-in; the base stays provisional until WO-007 merges.
   {
     "workOrderId": "WO-007",
     "relation": "hard",
-    "reason": "the events, interceptors, stores and MSW wiring this order extends; the base line is set to its merge commit before activation"
+    "reason": "the events, interceptors, stores and MSW wiring this order extends; the base line is set to the preceding member's merge commit before activation"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -73,7 +81,11 @@ changes configuration and nothing in the Angular code.
 the app has no identity, no tokens, no guards and no permission model;
 `EnvironmentConfig.auth` is typed `unknown` (WO-005). No identity provider
 exists for this project; the operator wants none set up yet and the operator's
-later choice (a hosted provider) must drop in through configuration.
+later choice (a hosted provider) must drop in through configuration. By the
+time this order activates, WO-013 to WO-016 have added the sub-app menu, the
+catalog, the scene and the machinery view, none of which gates a route; the
+first permission-gated surfaces are the ones this order declares in
+`routePermissions`, which covers every `BasePaths` member then present.
 
 **Design:**
 
@@ -109,8 +121,10 @@ later choice (a hosted provider) must drop in through configuration.
   `*dotlnHasPermission` structural directive (a knowing directive in `auth`)
   hides elements; facades expose `can(permission)` for feature-level checks;
   denied navigation dispatches `navigationEvents.navigate({ route: BasePaths.Denied })`.
-- Interceptors (extending WO-007's chain): `authTokenInterceptor` attaches
-  the bearer token to requests whose URL is under `apiBaseUrl` only;
+- Interceptors (extending WO-007's chain of base URL, timeout and error):
+  `authTokenInterceptor` attaches the bearer token to requests whose URL is
+  under `apiBaseUrl` only (the app's own API, mocked until the mining store
+  exists; WO-007 reads no other host);
   `authRefreshInterceptor` implements the single-flight refresh and replay.
 - Mocked provider: MSW handlers under `libs/shared/auth/src/testing/idp/`
   implement discovery (`/.well-known/openid-configuration`), `token` (code
@@ -271,13 +285,18 @@ then the target gate plain and review once each.
 `docs/evidence/WO-008/README.md`.
 
 **Known issues and carry-ins:** the base line is provisional until the pass
-after WO-007 sets it; the launchpad's document gate fails its `plan` and
-`plan-refutation-current` tasks on every branch until the starter carries
-core's fix for the plan gate's moved-record reader (the fork's request of
-2026-10-23), so criterion 7's `npm run test:docs` clause cannot pass before
-that release reaches this fork, or the operator waives the clause through
-`npm run resume -- waive` with the reason recorded; the client library is chosen at step 2 with a recorded
-decision; signature verification is the API's duty and is stated, not
+after WO-016 sets it. Starter v0.94.0 (update #23 of 2026-10-24) carries
+core's fix for the plan gate's moved-record reader, so criterion 7's
+`npm run test:docs` clause is judged as written and no waiver is carried.
+Starter v0.94.0 prints an advisory that this order's execution plan names
+launchpad record paths carrying the order id (`host-qualification.md`,
+`preview-pr.json`, `RELEASE-NOTES.md`); they are the launchpad's own
+evidence paths and are kept, and the publish command's body file must not
+name them (the 2026-10-24 planning document, §11 item 1). WO-007's
+`StorageToken` binds the real `localStorage` inside
+`libs/shared/data-access`, so criterion 1's grep over `libs/shared/auth/src`
+and `apps/dotln/src` stays clean by construction. The client library is
+chosen at step 2 with a recorded decision; signature verification is the API's duty and is stated, not
 implemented, on the client; a real provider is a later member. This order
 activates only on a launchpad whose starter carries core WO-221's `--draft`
 form (WO-005 step 1's route guard); the draft pull request and its workflow

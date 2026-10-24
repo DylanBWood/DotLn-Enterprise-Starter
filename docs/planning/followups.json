@@ -837,6 +837,14 @@
           "reopenWhen": "A starter release carries core's WO-219 (then this instance's work-orders index --check resolves the tokens itself and this row settles), or core declines the check.",
           "targets": [],
           "at": "2026-10-20T20:12:11.741Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "2026-10-24 planning pass (docs/planning/mining-run-orders-2026-10-24.md) §4: starter v0.94.0 (core WO-219) makes npm run work-orders -- index --check resolve each open order's Preflight npm test -- --only tokens against the runner's declared suites, the check this candidate asked for.",
+          "reopenWhen": "The check stops resolving instance Preflight tokens in a later starter.",
+          "targets": [],
+          "at": "2026-10-24T05:40:28.107Z"
         }
       ]
     },
@@ -1401,6 +1409,14 @@
           "reopenWhen": "The live view (C1) exists and the audit projection is served to a browser host.",
           "targets": [],
           "at": "2026-10-21T04:49:30.237Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-24 planning pass (docs/planning/mining-run-orders-2026-10-24.md) §8: the arrival screen waited for the live view, which the operator's decision of 2026-10-24 declines; it waits instead for status in the app's own store.",
+          "reopenWhen": "The mining store (candidate C1 of 2026-10-24) carries status, or the operator asks for the screen over the recorded copies.",
+          "targets": [],
+          "at": "2026-10-24T05:40:28.117Z"
         }
       ]
     },
@@ -1425,6 +1441,16 @@
           "reopenWhen": "Core's contract carries equip preview, the compiled diff and saved-build selection, and the command surface (C2) exists.",
           "targets": [],
           "at": "2026-10-21T04:49:30.232Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "2026-10-24 planning pass (docs/planning/mining-run-orders-2026-10-24.md) D8: the machinery view is the pattern workshop's seeing half under the operator's decision of 2026-10-24: a mechanism change dropped on an agent redraws the example use case with the before as a ghost, scene-only; the compiled diff and the live equip stay core's.",
+          "reopenWhen": "WO-016 merges without the drop, or core ships the equip preview the doing half needs.",
+          "targets": [
+            "WO-016"
+          ],
+          "at": "2026-10-24T05:40:28.098Z"
         }
       ]
     },
@@ -1457,6 +1483,14 @@
           "reopenWhen": "WO-007 is merged and the operator chooses the live view candidate from the UX ideation (C3 and C5 of 2026-10-23); then a WS-001 member is filed with the token arrival and a resident for this launchpad as its first design.",
           "targets": [],
           "at": "2026-10-23T16:06:06.737Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "2026-10-24 planning pass (docs/planning/mining-run-orders-2026-10-24.md) D14: the operator's decision that the app is not wired to core closes the live view over the resident's loopback; the machinery view over the app's own data (WO-016) is the facet that shows agents.",
+          "reopenWhen": "The operator asks for live platform status in the app, which the mining store would have to carry (candidate C1 of 2026-10-24).",
+          "targets": [],
+          "at": "2026-10-24T05:40:28.088Z"
         }
       ]
     },
@@ -1481,6 +1515,14 @@
           "reopenWhen": "Core publishes counterfactual or acceptance records as view models.",
           "targets": [],
           "at": "2026-10-21T04:49:30.241Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-24 planning pass (docs/planning/mining-run-orders-2026-10-24.md) §8: WO-015's trials (two branches from one seed, the first divergence marked) and WO-017's flips (the twin lane redrawn beside a ghost) are the first counterfactuals in the app.",
+          "reopenWhen": "WO-015 and WO-017 merge and the operator asks for comparison views beyond a toy's own.",
+          "targets": [],
+          "at": "2026-10-24T05:40:28.122Z"
         }
       ]
     },
@@ -1553,6 +1595,14 @@
           "reopenWhen": "The operator chooses the readable work view candidate from the UX ideation (C3 of 2026-10-23).",
           "targets": [],
           "at": "2026-10-23T16:06:06.741Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-24 planning pass (docs/planning/mining-run-orders-2026-10-24.md) §8: the readable work view is a facet over the app's own data, not over the platform's Work panel, under the operator's decision that the app is not wired to core.",
+          "reopenWhen": "WO-016 merges and the operator asks for the work view over the app's own data, or the mining store (candidate C1 of 2026-10-24) carries the sequence.",
+          "targets": [],
+          "at": "2026-10-24T05:40:28.112Z"
         }
       ]
     },
@@ -1585,6 +1635,14 @@
           "reopenWhen": "WO-008 is merged and the operator chooses the command surface candidate from the UX ideation (C3 of 2026-10-23).",
           "targets": [],
           "at": "2026-10-23T16:06:06.745Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "2026-10-24 planning pass (docs/planning/mining-run-orders-2026-10-24.md) D14: the operator decided the app writes no control record and performs no effect on the platform; promotion of an idea is a GitHub issue the operator files, so no command surface is a member.",
+          "reopenWhen": "The operator decides the app may issue platform commands.",
+          "targets": [],
+          "at": "2026-10-24T05:40:28.093Z"
         }
       ]
     },
@@ -1617,6 +1675,16 @@
           "reopenWhen": "A second app, foundation change or explicit migration direction makes the app/shared distinction operational.",
           "targets": [],
           "at": "2026-10-21T16:41:40.611Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "2026-10-24 planning pass (docs/planning/mining-run-orders-2026-10-24.md) D5: the operator's decision of 2026-10-24 answers WO-006-D005 (one app with sub-apps behind a menu, the logic in libraries, splitting later cheap); WS-001 rule 22 states the grouping and WO-013 confirms it by the generator log and the two reference documents.",
+          "reopenWhen": "WO-013 merges with a different grouping, or the operator asks for a second app.",
+          "targets": [
+            "WO-013"
+          ],
+          "at": "2026-10-24T05:40:28.103Z"
         }
       ]
     },
@@ -1919,6 +1987,14 @@
           "reopenWhen": "The platform planning pass that consumes the 2026-10-22 intake mining run merges and its answer block carries the routed fork blocks; then the fork next pass runs the UX ideation with the operator pairwise test (C3 of 2026-10-23).",
           "targets": [],
           "at": "2026-10-23T16:06:06.711Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-24 planning pass (docs/planning/mining-run-orders-2026-10-24.md) D2 and D17: the ideation half of WO-006-D022 is settled the same way as C3 of 2026-10-23; the persistence and isolation halves were WO-007 and WS-001 I1 to I3 since the 2026-10-23 pass.",
+          "reopenWhen": "The operator asks for a UX ideation over the app.",
+          "targets": [],
+          "at": "2026-10-24T05:40:28.079Z"
         }
       ]
     },
@@ -2001,6 +2077,14 @@
           "reopenWhen": "C3 candidate for the live view is chosen and WO-007 is merged.",
           "targets": [],
           "at": "2026-10-23T16:06:06.783Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "2026-10-24 planning pass (docs/planning/mining-run-orders-2026-10-24.md) D14: core answered the token question (the shell's local host process reads the owner-only descriptor and hands the connection to the browser), and the operator decided on 2026-10-24 that the app is not wired to core, its data coming from public mining into its own store; no member reads a resident, so the live-view design is declined rather than deferred.",
+          "reopenWhen": "The operator wires the app to a platform resident.",
+          "targets": [],
+          "at": "2026-10-24T05:40:28.083Z"
         }
       ]
     },
@@ -2025,6 +2109,14 @@
           "reopenWhen": "The platform planning pass that consumes the 2026-10-22 intake mining run merges and its answer block carries the routed fork blocks; then the fork next pass runs the ideation with research workers over the platform records and those blocks.",
           "targets": [],
           "at": "2026-10-23T16:06:06.774Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-24 planning pass (docs/planning/mining-run-orders-2026-10-24.md) D2 and D17: the operator's own research run of 2026-10-22 is the research and its design files are the sources of WO-013 to WO-018; the operator directed that the work not be redone, so no UX ideation runs and the toys-first method replaces the pairwise gate (WS-001 §The app and its sub-apps).",
+          "reopenWhen": "The operator asks for a candidate-screen comparison before a sub-app is built.",
+          "targets": [],
+          "at": "2026-10-24T05:40:28.074Z"
         }
       ]
     },
@@ -2073,6 +2165,206 @@
           "reopenWhen": "Core release notes name the fix for the plan gate moved-record reader; then a pass or the operator planning: bring in latest upstream takes it before WO-007 verification, or the operator waives the gate clause of WO-007 criterion 9.",
           "targets": [],
           "at": "2026-10-23T16:06:06.779Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-24 planning pass (docs/planning/mining-run-orders-2026-10-24.md) D1: update pull request #23 took starter v0.94.0, whose WO-219 removed the contained-file check from the plan gate's amendment reader; npm run plan -- check passes on main with the 2026-10-23 receipt's subject intact and npm run test:docs is 14 of 14.",
+          "reopenWhen": "#23 is reverted, or a starter release reintroduces the launchpad-file requirement.",
+          "targets": [],
+          "at": "2026-10-24T05:40:28.068Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b7e52566cc93f953",
+      "key": "candidate:docs/planning/mining-run-orders-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10::1fa803e0f45fb7c9bfed8aeed3839d8eb3a68d888c0ced18f035ba01fb11ff7e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "944cbe6530a291ba20eb3c28dcaf786493db777582eafde8d0ebb740dacc5481",
+          "ref": "docs/planning/mining-run-orders-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C2 The Babylon.js painter behind the scene's renderer seam, with a dependency decision record, a notices entry and a measured lazy chunk (the operator's decision: 2D first, Babylon.js later).",
+          "summary": "- **C2 The Babylon.js painter behind the scene's renderer seam, with a dependency decision record, a notices entry and a measured lazy chunk (the operator's decision: 2D first, Babylon.js later).** Reopen when WO-015 merges and the operator asks.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C2 of the 2026-10-24 planning document (docs/planning/mining-run-orders-2026-10-24.md): the Babylon.js painter behind the scene's renderer seam; the operator decided 2D first.",
+          "reopenWhen": "WO-015 merges and the operator asks for 3D.",
+          "targets": [],
+          "at": "2026-10-24T05:40:28.131Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-29ad29386754569b",
+      "key": "candidate:docs/planning/mining-run-orders-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10::3ffd53b0732e085002ee28cf8a1078019361385ed0684a0ce2047ca424642249",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "51a596f1057e802db21719fd6295ddd2368cb4a5b1c2cbf5e3da5ae5e6565c59",
+          "ref": "docs/planning/mining-run-orders-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C6 The twin's later lanes: the grid over a dozen orders, the operator's own blind replay, the ring over replayed windows, each judged by results under the rule WO-017 sets.",
+          "summary": "- **C6 The twin's later lanes: the grid over a dozen orders, the operator's own blind replay, the ring over replayed windows, each judged by results under the rule WO-017 sets.** Reopen when WO-017 merges and the operator names the lane.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C6 of the 2026-10-24 planning document (docs/planning/mining-run-orders-2026-10-24.md): the twin's later lanes, judged by results under WO-017's rule.",
+          "reopenWhen": "WO-017 merges and the operator names the lane.",
+          "targets": [],
+          "at": "2026-10-24T05:40:28.150Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-49579a767099107f",
+      "key": "candidate:docs/planning/mining-run-orders-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10::566fd302d737f6f3a2388a58425923b7cdeae36ce685ea3a9726bf50f16a3635",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a92d7b28cc59431ba85e65e7b085ff36973e6ae90ee3515b12470f6a03f7afe2",
+          "ref": "docs/planning/mining-run-orders-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C5 The run's remaining toys as later members, each in its design file by id: the blackboard room and the fleet (design A), the commander, the heat map and the toolbox loop (design B), the fidelity…",
+          "summary": "- **C5 The run's remaining toys as later members, each in its design file by id: the blackboard room and the fleet (design A), the commander, the heat map and the toolbox loop (design B), the fidelity grid, the blind replay and the ring (design C), the shelf, the did-not-stick table, the phrase shelf and the ladder replay (design D), the walk, the constraint ribbon, the rope and the return (design E).** Reopen when the operator plays with the first sub-apps and picks the next toy from the shelf (WO-018); then one order per toy or per design's slice, as the operator says.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C5 of the 2026-10-24 planning document (docs/planning/mining-run-orders-2026-10-24.md): the run's remaining toys as later members, each by id in its design file; the operator picks from the toy shelf (WO-018) after playing.",
+          "reopenWhen": "The operator picks the next toy from the shelf after playing with the first sub-apps.",
+          "targets": [],
+          "at": "2026-10-24T05:40:28.145Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f450c7af9ebb5454",
+      "key": "candidate:docs/planning/mining-run-orders-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10::a71cd7609adfca46c6438fe8662dc7eaae4abc972a976d0fe2bd42be0abc9197",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "511b56ca6c706346f7c4e6954066a12f0caef02bbbff4d7433f133c3aede9c18",
+          "ref": "docs/planning/mining-run-orders-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C4 The graduation route from the app: a toy's card exported as the body of a GitHub issue on the platform's repository, filed by the operator from the app or the sink, never as a control record.",
+          "summary": "- **C4 The graduation route from the app: a toy's card exported as the body of a GitHub issue on the platform's repository, filed by the operator from the app or the sink, never as a control record.** Reopen when the operator promotes the first idea; then it is a small utility order under Tools.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C4 of the 2026-10-24 planning document (docs/planning/mining-run-orders-2026-10-24.md): the graduation route from the app to a GitHub issue on the platform's repository; not filed before the first promotion.",
+          "reopenWhen": "The operator promotes the first idea from the app.",
+          "targets": [],
+          "at": "2026-10-24T05:40:28.140Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-48b1009d908e251d",
+      "key": "candidate:docs/planning/mining-run-orders-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10::c3436405257c1553090e59354a543f5e3ca26a2acdbabdc518dd733e21cde933",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "77a56aa6fc76a3d80955612f0f418bdd8a2ff991e9a287c74e7950af21018e98",
+          "ref": "docs/planning/mining-run-orders-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C8 Moving the actor board under the machinery sub-app's routes (/machinery/board) with a redirect from /board, once WO-016 lands /machinery and the operator wants one home for the view of DotLn's…",
+          "summary": "- **C8 Moving the actor board under the machinery sub-app's routes (`/machinery/board`) with a redirect from `/board`, once WO-016 lands `/machinery` and the operator wants one home for the view of DotLn's machinery.** Reopen when WO-016 merges and the operator asks; then a small order or a step of the next machinery member.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C8 of the 2026-10-24 planning document (docs/planning/mining-run-orders-2026-10-24.md): moving the actor board under the machinery sub-app's routes; WO-013 keeps the board at its route and lists it in the Machinery group.",
+          "reopenWhen": "WO-016 merges and the operator wants one home for the view of DotLn's machinery.",
+          "targets": [],
+          "at": "2026-10-24T05:40:28.159Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ffa034330edc5ff0",
+      "key": "candidate:docs/planning/mining-run-orders-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10::e0246af78316343b865a63a55e588cc36373e6482ea743c06297364e1ca2f951",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "20dbfeb4884799d5b8d190609605e65fad4592820f2688492bd9ec6a4fa88bff",
+          "ref": "docs/planning/mining-run-orders-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C7 The v0.94.0 record-path advisory: plan check advises renaming a target order's launchpad evidence paths (host-qualification.md, preview-pr.json, RELEASE-NOTES.md) because they carry the order id;…",
+          "summary": "- **C7 The v0.94.0 record-path advisory: `plan check` advises renaming a target order's launchpad evidence paths (`host-qualification.md`, `preview-pr.json`, `RELEASE-NOTES.md`) because they carry the order id; this pass keeps the kit's own paths and asks core whether the advisory means target-side paths only (§11 item 1).** Reopen when core answers; then the orders' known issues are amended or the files renamed by the executor.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C7 of the 2026-10-24 planning document (docs/planning/mining-run-orders-2026-10-24.md): the v0.94.0 record-path advisory on a target order's launchpad evidence paths, asked of core in §11 item 1; the kit's paths are kept meanwhile.",
+          "reopenWhen": "Core answers the question; then the orders' known issues are amended or the files renamed.",
+          "targets": [],
+          "at": "2026-10-24T05:40:28.155Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-400988852956edcf",
+      "key": "candidate:docs/planning/mining-run-orders-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10::e2f3871d608b2aa240ae734c6c9b991266dade87ab67c16a9b6d38a1830e0354",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "507683286a4114413e71ce581287d4651658d59c272d08302aefe8e1bc383ac9",
+          "ref": "docs/planning/mining-run-orders-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C1 The mining store and the app's own HTTP API: a store the app fills from public sources (the run's maps are not public; the first public source is WO-018's text), served through GET routes the…",
+          "summary": "- **C1 The mining store and the app's own HTTP API: a store the app fills from public sources (the run's maps are not public; the first public source is WO-018's text), served through `GET` routes the catalog loader, the board, the records and the toys read, replacing the committed data files and the stopgap copies of WO-221 and WO-226 (the operator's decision of 2026-10-24).** Reopen when WO-018 merges and the operator names the next public source, or when a stopgap copy limits a toy; then it is filed as one order with the example API member WS-001 proposes.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C1 of the 2026-10-24 planning document (docs/planning/mining-run-orders-2026-10-24.md): the mining store and the app's own HTTP API replace the committed data and the stopgap copies; not filed before the first public source beyond WO-018's text is named.",
+          "reopenWhen": "WO-018 merges and the operator names the next public source, or a stopgap copy limits a toy.",
+          "targets": [],
+          "at": "2026-10-24T05:40:28.126Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c586b038c0bde21b",
+      "key": "candidate:docs/planning/mining-run-orders-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10::e42f3fcc77404440fb6d5129c5b624b365bf39bf2c62790349b466d2abdf09a8",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "32801b2473d342e24c8a15955441029f7b12987ec3653009f08b568386ac60ab",
+          "ref": "docs/planning/mining-run-orders-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C3 manim in the monorepo, as a non-TypeScript library beside the toys (the operator's decision of 2026-10-24).",
+          "summary": "- **C3 manim in the monorepo, as a non-TypeScript library beside the toys (the operator's decision of 2026-10-24).** Reopen on the operator's word.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C3 of the 2026-10-24 planning document (docs/planning/mining-run-orders-2026-10-24.md): manim in the monorepo, on the operator's word.",
+          "reopenWhen": "The operator asks for it.",
+          "targets": [],
+          "at": "2026-10-24T05:40:28.135Z"
         }
       ]
     }

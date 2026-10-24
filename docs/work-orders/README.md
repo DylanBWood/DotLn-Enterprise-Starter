@@ -5,7 +5,13 @@
 ## Proposed order
 
 - [ ] [WO-007] — Events, signal stores, data access and MSW · **queued**
+- [ ] [WO-013] — The sub-app shell and menu · **queued**
+- [ ] [WO-014] — The toolbox catalog pipeline · **queued**
+- [ ] [WO-015] — The soldier scene · **queued**
+- [ ] [WO-016] — The machinery view · **queued**
 - [ ] [WO-008] — Authentication and permissions · **queued**
+- [ ] [WO-017] — The digital twin's patience lane · **queued**
+- [ ] [WO-018] — The Art of War map pass and the toy shelf · **queued**
 
 Order and short labels come from [the proposed sequence](../planning/sequence.md); rows sharing a `pair N` mark are a lane pair, two parallel worktrees, and unmarked rows run one at a time.
 Checks mean passing final review. Settled orders (closed, withdrawn, superseded and historical), this index's sources and limits and its release-tag record are on [the history page](HISTORY.md).
@@ -25,11 +31,11 @@ None.
 
 ### WO-007
 
-[WO-007 — Events, stores and data access for DotLn-Angular: the tiered event groups in &#96;events&#96;, NgRx SignalStore with the Events plugin, call state and the trinity through &#96;data-access&#96;, &#96;BoardStore&#96; behind &#96;BoardFacade&#96; loading the actor board over HTTP in the platform's loopback shape answered by MSW, the board's UI state persisted in browser storage, the app-tier stores for feature flags, navigation with canonical routes and errors in &#96;state&#96;, HTTP interceptors for base URL, timeouts and errors, MSW in development and in tests, and the action-hygiene check](WO-007-events-stores-data-access.md)
+[WO-007 — Events, stores and data access for DotLn-Angular: the tiered event groups in &#96;events&#96;, NgRx SignalStore with the Events plugin, call state and the trinity through &#96;data-access&#96;, &#96;BoardStore&#96; behind &#96;BoardFacade&#96; loading the actor board over HTTP from the app's own API in the &#96;uifa-board-v1&#96; shape answered by MSW, the board's UI state persisted in browser storage, the app-tier stores for feature flags, navigation with canonical routes and errors in &#96;state&#96;, HTTP interceptors for base URL, timeouts and errors, MSW in development and in tests, and the action-hygiene check](WO-007-events-stores-data-access.md)
 
 - State: draft.
 - Repository: dotln-angular @ 90fa6e8d879cb499107ff79d1051c200d17c1cbc.
-- Application target: unassigned.
+- Application target: malformed.
 - Dependencies: typed; dependency-ready.
 - References: WO-006: hard (met) — the facade and container this order connects to stores; the base line names its merge commit.
 - Verification: none recorded.
@@ -38,8 +44,80 @@ None.
 - Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh; reviewer xhigh.
 - Track: delivery
-- Cost: adds &#96;libs/shared/events&#96;, &#96;libs/shared/data-access&#96;, &#96;libs/shared/state&#96;, &#96;libs/features/board-data-access&#96;, the MSW worker and handlers, the interceptors, the persisted-state store feature, the shell's notices container, the hygiene check script and the scripts reference, about 75 source files; adds &#96;@ngrx/signals&#96;, &#96;@angular-architects/ngrx-toolkit&#96; (or house &#96;withCallState&#96; and &#96;withPersistedState&#96; features), &#96;msw&#96; pinned to 3.x (&#96;~3.0.3&#96; or the current 3.x at activation, recorded) to the workspace. Removes &#96;BoardFacade&#96;'s recorded-fixture provider (&#96;BoardFixtureToken&#96;); the fixture itself stays as the handler's response and the specs' input. Wall-clock: about 7 to 9 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 house rules 8, 11, 12, 16 and §The console, the NgRx Events plugin and toolkit declarations, the MSW browser and Node guides, this order, about 160 KB. Commands added in the target: &#96;npm run lint:hygiene&#96;, &#96;npm run msw:init&#96;. Tokens: unknown until run. Steps: 17. Re-mints: none. Refutations paid: two (receipt 006 of 2026-10-21 on the provisional text; the 2026-10-23 pass's receipt on this text).
+- Cost: adds &#96;libs/shared/events&#96;, &#96;libs/shared/data-access&#96;, &#96;libs/shared/state&#96;, &#96;libs/features/board-data-access&#96;, the MSW worker and handlers, the interceptors, the persisted-state store feature and its storage token, the &#96;mocked&#96; build configuration, the shell's notices container, the hygiene check script and the scripts reference, about 75 source files; adds &#96;@ngrx/signals&#96;, &#96;@angular-architects/ngrx-toolkit&#96; (or house &#96;withCallState&#96; and &#96;withPersistedState&#96; features), &#96;msw&#96; pinned to 3.x (&#96;~3.0.3&#96; or the current 3.x at activation, recorded) to the workspace. Removes &#96;BoardFacade&#96;'s recorded-fixture provider (&#96;BoardFixtureToken&#96;); the fixture itself stays as the handler's response and the specs' input. Wall-clock: about 7 to 9 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 house rules 8, 11, 12, 16 and §The app and its sub-apps, the NgRx Events plugin and toolkit declarations, the MSW browser and Node guides, this order, about 160 KB. Commands added in the target: &#96;npm run lint:hygiene&#96;, &#96;npm run msw:init&#96;. Tokens: unknown until run. Steps: 17. Re-mints: none. Refutations paid: three (receipt 006 of 2026-10-21 on the provisional text; the 2026-10-23 pass's receipt; the 2026-10-24 pass's receipt on this text).
 - Authority: [docs/work-orders/WO-007-events-stores-data-access.md](WO-007-events-stores-data-access.md)
+
+### WO-013
+
+[WO-013 — The one app and its sub-apps: the shell's sub-app menu, the &#96;scene&#96; and &#96;machinery&#96; sub-app routes with their arriving pages, the sub-app grouping convention and the two reference documents that make a sub-app a feature added by convention](WO-013-sub-app-shell-and-menu.md)
+
+- State: draft.
+- Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-007.
+- References: WO-007: hard (unmet) — the navigation store, the error surface and the persisted-state feature the shell and the arriving pages compose; the base line is set to its merge commit before activation.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds the &#96;sub-app-menu&#96; template to &#96;libs/dotln/shell&#96;, two feature libraries with one arriving page each (&#96;libs/features/scene&#96;, &#96;libs/features/machinery&#96;), two &#96;BasePaths&#96; members, the menu's i18n block, two documents (&#96;docs/dev-reference/architecture/sub-apps.md&#96;, &#96;docs/ai-reference/sub-app-rules.md&#96;), about 24 source files; adds no dependency. Removes nothing; the board keeps its route. Wall-clock: about 2 to 4 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 house rules 2, 3, 4, 11, 12 and §The app and its sub-apps, the shell layout and &#96;app.ts&#96;, this order, about 60 KB. Commands added in the target: none. Tokens: unknown until run. Steps: 12. Re-mints: none. Refutations paid: one (the 2026-10-24 pass's receipt on this text).
+- Authority: [docs/work-orders/WO-013-sub-app-shell-and-menu.md](WO-013-sub-app-shell-and-menu.md)
+
+### WO-014
+
+[WO-014 — The toolbox catalog as the app's own data: the &#96;Tool&#96; schema with five faces and the closed transform enum, the run's 3,463 map rows typed into tools by a checkpointed fan-out of at most twelve workers, the catalog library that loads them, the allow-list and scrub check that keeps intake out of the commit, and the catalog browser under the Tools sub-app](WO-014-toolbox-catalog-pipeline.md)
+
+- State: draft.
+- Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-013.
+- References: WO-013: hard (unmet) — the Tools menu group this order fills and the sub-app convention it follows; the base line is set to its merge commit before activation.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds &#96;toolbox.ts&#96; to &#96;libs/shared/models&#96;, &#96;libs/shared/catalog&#96; with eight data files and a summary, &#96;tool-v0.schema.json&#96;, &#96;tools/scripts/catalog/&#96; (merge, check, report), &#96;libs/features/tools&#96; with the Tools home and the catalog browser, &#96;BasePaths.Tools&#96;, the Tools menu item, two documents, about 40 source files plus about 3,500 data rows; adds no runtime dependency (Ajv is a devDependency already). Removes nothing. Wall-clock: about 3 to 5 hours of executor work, of which the fan-out runs in parallel, plus the fixed cycle; unknown until run. Context bytes: WS-001 §The app and its sub-apps, the two toolbox captures and design B §2.1 read at the run's folder, the maps README, this order, about 140 KB for the executor; each classifier reads one map family (about 60 to 320 KB). Commands added in the target: &#96;npm run catalog:check&#96;, &#96;npm run catalog:report&#96;. Tokens: unknown until run; the fan-out is the largest spend of this workstream so far and is recorded per worker. Steps: 15. Re-mints: none. Refutations paid: one (the 2026-10-24 pass's receipt on this text).
+- Authority: [docs/work-orders/WO-014-toolbox-catalog-pipeline.md](WO-014-toolbox-catalog-pipeline.md)
+
+### WO-015
+
+[WO-015 — The soldier scene: twenty units on a 2D canvas behind a renderer seam, a toolbox rail fed by the catalog, real-time-strategy selection, flock, arrive and a two-level formation with slot roles, a deterministic seeded clock, before-and-after trials, and the pure scene engine every later scene reuses](WO-015-soldier-scene.md)
+
+- State: draft.
+- Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-014.
+- References: WO-014: hard (unmet) — the Tool types, the transform enum and the catalog the rail and the engine's interpreter read; the base line is set to its merge commit before activation.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds &#96;libs/shared/scene-engine&#96; (pure TypeScript), the &#96;scene&#96; feature's page, layout, rail, inspector, text layer, canvas wrapper, log, trial compare, facade, store, clock and tokens, four fixtures, the scene fixture check, two documents, one taxonomy sentence, about 70 source files; adds no runtime dependency. Removes the arriving page WO-013 shipped for &#96;/scene&#96;. Wall-clock: about 8 to 12 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 house rules 1, 5, 12, 14, 18 and §The app and its sub-apps, design B §1 to §4 read at the run's folder, the catalog types, this order, about 180 KB. Commands added in the target: none. Tokens: unknown until run. Steps: 16. Re-mints: none. Refutations paid: one (the 2026-10-24 pass's receipt on this text).
+- Authority: [docs/work-orders/WO-015-soldier-scene.md](WO-015-soldier-scene.md)
+
+### WO-016
+
+[WO-016 — The machinery view: one recorded order's agents in their role slots over scrubbed, field-reduced copies of the platform's WO-221 and WO-226 segments, each agent's active gems, supports and prose sections readable, a mechanism change the operator drops on an agent redrawing the example use case with the before as a ghost, the operator's own ideas persisted in the browser and saved to ignored intake through a local sink, and the shared records and replay libraries](WO-016-machinery-view.md)
+
+- State: draft.
+- Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-013.
+- References: WO-013: hard (unmet) — the machinery route and menu group this order fills; the base line is set to the preceding member's merge commit before activation.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds &#96;machinery.ts&#96; to &#96;libs/shared/models&#96;, &#96;libs/shared/records&#96; (reader, folds, fixture pack, kit), &#96;libs/shared/replay&#96; (the virtual-time clock), the &#96;machinery&#96; feature's page, strip, slots, cards, shelf, editor, facade and store, &#96;libs/features/machinery-data-access&#96;, the segment reducer and the record fixture check, the idea sink process, three fixtures, two documents, about 75 source files; adds no runtime dependency. Removes the arriving page WO-013 shipped for &#96;/machinery&#96;. Wall-clock: about 8 to 12 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 §The app and its sub-apps, design A §1 and §1.6, the UI vision §4 and V7 read at the run's folder, the fork's role skill stamps, this order, about 190 KB. Commands added in the target: &#96;npm run idea-sink&#96;. Tokens: unknown until run. Steps: 17. Re-mints: none. Refutations paid: one (the 2026-10-24 pass's receipt on this text).
+- Authority: [docs/work-orders/WO-016-machinery-view.md](WO-016-machinery-view.md)
 
 ### WO-008
 
@@ -49,7 +127,7 @@ None.
 - Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
 - Application target: unassigned.
 - Dependencies: typed; blocked on WO-007.
-- References: WO-007: hard (unmet) — the events, interceptors, stores and MSW wiring this order extends; the base line is set to its merge commit before activation.
+- References: WO-007: hard (unmet) — the events, interceptors, stores and MSW wiring this order extends; the base line is set to the preceding member's merge commit before activation.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -59,5 +137,47 @@ None.
 - Cost: adds &#96;libs/shared/auth&#96; with its kit, the mocked identity provider handlers and signing key for development, the &#96;authHttpEvents&#96; and &#96;sessionEvents&#96; groups, guards, the permission directive, the &#96;/login&#96; and &#96;/denied&#96; routes, about 60 source files; adds one OpenID Connect client library and &#96;jose&#96; (development signing in the mock) to the workspace. Removes nothing. Wall-clock: about 8 to 12 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 house rule 17, the events and state documents, the client library's documentation, this order, about 160 KB. Commands added in the target: none. Tokens: unknown until run. Steps: 15. Re-mints: none.
 - Authority: [docs/work-orders/WO-008-authentication-and-permissions.md](WO-008-authentication-and-permissions.md)
 
+### WO-017
+
+[WO-017 — The digital twin's first lane: the operator's patience after a hand-back as RxJS that runs on virtual time over the recorded WO-221, judged by the results of the order it would have run and never by agreement with the operator's beats, with every variant of the model kept as code and old versions never deleted](WO-017-digital-twin-patience-lane.md)
+
+- State: draft.
+- Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-016, WO-008.
+- References: WO-016: hard (unmet) — the records fixture pack, the concert fold and the replay clock this lane replays; the Machinery menu group it joins; WO-008: hard (unmet) — the preceding member in the serial chain; its merge commit becomes this order's base before activation.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds &#96;libs/shared/twin-model&#96; (the variants as RxJS code, the registry, the results fold), the &#96;twin&#96; feature's page, lanes, variant picker, flips, result cell, facade and store, the derivation script and its fixture, the variant registry check, two documents, about 55 source files; adds no runtime dependency. Removes nothing. Wall-clock: about 6 to 9 hours of executor work plus the fixed cycle; unknown until run. Context bytes: WS-001 §The app and its sub-apps and §The operator's model, design C §1.4, §2, §3, C1 and §5.2 to §5.3 read at the run's folder, the records and replay libraries, this order, about 170 KB. Commands added in the target: &#96;npm run twin:derive&#96;, &#96;npm run twin:check&#96;. Tokens: unknown until run. Steps: 15. Re-mints: none. Refutations paid: one (the 2026-10-24 pass's receipt on this text).
+- Authority: [docs/work-orders/WO-017-digital-twin-patience-lane.md](WO-017-digital-twin-patience-lane.md)
+
+### WO-018
+
+[WO-018 — The first public mining into the app's own store: The Art of War mapped from its public-domain text into catalog rows and typed into tools through the catalog pipeline, and toys designed as catalog records for the six mined sources that have none (Meadows, Pirsig, Poincaré, Gladwell, Taleb and the 5S set), with the toy shelf that lists every toy the app knows](WO-018-art-of-war-map-and-toys.md)
+
+- State: draft.
+- Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-014, WO-017.
+- References: WO-014: hard (unmet) — the Tool schema, the catalog layout, the allow-list check and the merge script this order's map pass and toy records reuse; WO-017: hard (unmet) — the preceding member in the serial chain; its merge commit becomes this order's base before activation.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; state the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh; reviewer xhigh.
+- Track: delivery
+- Cost: adds &#96;map-artofwar.json&#96; and &#96;tools-artofwar.json&#96; to the catalog data, &#96;toy-v0.schema.json&#96; and &#96;toys.ts&#96; to the models, &#96;toys.json&#96; (the six new toy records and the ids and short titles of the run's nineteen), the toy-source tool files, the toy shelf page under Tools, the map and toy checks, two documents, about 30 source files plus about 300 data rows; adds no runtime dependency. Removes nothing. Wall-clock: about 4 to 6 hours of executor work, of which two fan-outs run in parallel, plus the fixed cycle; unknown until run. Context bytes: WS-001 §The app and its sub-apps, the catalog rules, the maps README and design B §3 read at the run's folder, this order, about 120 KB for the executor; the mappers read one public-domain text. Commands added in the target: &#96;npm run catalog:check&#96; already covers the new files; &#96;npm run toys:check&#96;. Tokens: unknown until run; recorded per worker. Steps: 14. Re-mints: none. Refutations paid: one (the 2026-10-24 pass's receipt on this text).
+- Authority: [docs/work-orders/WO-018-art-of-war-map-and-toys.md](WO-018-art-of-war-map-and-toys.md)
+
 [WO-007]: WO-007-events-stores-data-access.md
 [WO-008]: WO-008-authentication-and-permissions.md
+[WO-013]: WO-013-sub-app-shell-and-menu.md
+[WO-014]: WO-014-toolbox-catalog-pipeline.md
+[WO-015]: WO-015-soldier-scene.md
+[WO-016]: WO-016-machinery-view.md
+[WO-017]: WO-017-digital-twin-patience-lane.md
+[WO-018]: WO-018-art-of-war-map-and-toys.md
