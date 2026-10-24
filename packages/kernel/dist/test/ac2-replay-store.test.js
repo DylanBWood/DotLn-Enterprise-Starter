@@ -287,7 +287,10 @@ function reservedStateReads(source) {
         if (!node)
             return false;
         const value = unwrap(node);
-        return ts.isIdentifier(value) && states.has(value.text);
+        return ((ts.isIdentifier(value) && states.has(value.text)) ||
+            (ts.isPropertyAccessExpression(value) && value.name.text === "state") ||
+            (ts.isElementAccessExpression(value) &&
+                property(value.argumentExpression) === "state"));
     };
     walk(ast, (node) => {
         if (ts.isPropertyAccessExpression(node) &&
@@ -539,6 +542,20 @@ test("AC2 evidence: store round trip preserves correlationId, causationId, and e
     assert.equal(roundTripped[0]?.causationId, "evt_0");
     assert.equal(roundTripped[0]?.episodeId, "ep-9");
 });
+test("store append returns exactly the event its serialized log replays", () => {
+    for (const payload of [
+        { nested: { value: NaN } },
+        { nested: [Infinity, -Infinity, undefined] },
+        { omitted: undefined, kept: true },
+        { nested: { text: "value", count: 2, absent: null } },
+    ]) {
+        const before = appendEvent("", draft("Added", 10, { amount: 1 }));
+        const appended = appendEvent(before.log, draft("Added", 20, payload));
+        assert.deepEqual(appended.event, decodeLog(appended.log).at(-1));
+        assert.equal(appended.log.slice(0, before.log.length), before.log);
+        assert.deepEqual(decodeLog(appended.log).slice(0, 1), [before.event]);
+    }
+});
 test("AC2 evidence: encodeLog ends with a newline so appendEvent after a round trip stays well-formed", () => {
     assert.equal(encodeLog([]), "");
     let log = "";
@@ -621,4 +638,15 @@ test("WO-142 application-state coupling detector catches alias and destructuring
     ])
         assert.throws(() => assertNoReservedStateReads(source), assert.AssertionError, source);
     assert.deepEqual(reservedStateReads("const policy = env.policy; const value = state.other;"), []);
+});
+test("application-state coupling detector catches optional nested state receivers", () => {
+    for (const source of [
+        "(context.state as { policy?: unknown } | undefined)?.policy;",
+        "(context['state'] as { rngState?: unknown } | undefined)?.rngState;",
+        "(context.state)?.['policy'];",
+        "(context as any)['state']?.policy;",
+        "(this.state as any)?.rngState;",
+    ])
+        assert.throws(() => assertNoReservedStateReads(source), assert.AssertionError, source);
+    assert.deepEqual(reservedStateReads("env?.policy; state?.other; context?.other?.policy;"), []);
 });

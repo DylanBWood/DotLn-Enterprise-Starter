@@ -64,7 +64,7 @@ export interface SourceUrlForm {
     readonly reference: string;
 }
 export interface SourceBundleFinding {
-    readonly kind: "secret-shape" | "url-form";
+    readonly kind: "secret-shape" | "url-form" | "url-credential";
     /** The matched shape's `shapeId` or form's `formId`; never the text. */
     readonly id: string;
     /** The string holding the match in the value screened, e.g. `$.sections[0].text`. */
@@ -98,6 +98,12 @@ export type SourceBundleDecodeResult = {
 export declare const SOURCE_SECRET_SHAPES: readonly SourceSecretShape[];
 /** The reference forms the screen reads as a URL; other text is text. */
 export declare const SOURCE_URL_FORMS: readonly SourceUrlForm[];
+/** Credential shapes read by the URL authority parser, independently of hosts. */
+export declare const SOURCE_URL_CREDENTIAL_SHAPES: readonly [{
+    readonly shapeId: "url-userinfo-password";
+    readonly description: "Non-empty data after the first colon and before the last @ of a declared URL authority.";
+    readonly reference: "RFC 3986 §3.2.1 (userinfo)";
+}];
 /** Screens every string of a decoded bundle, in field order. */
 export declare function screenSourceBundle(bundle: SourceBundle, allowedHosts: readonly string[]): readonly SourceBundleFinding[];
 /** Equality receipt over the canonical bundle, not a cryptographic identity. */

@@ -3,7 +3,7 @@ import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSyn
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
-import { canonicalStringify, decodeSourceBundle, resolveSourceSpan, SOURCE_SECRET_SHAPES, SOURCE_URL_FORMS, } from "@dotln/compiler";
+import { canonicalStringify, decodeSourceBundle, resolveSourceSpan, SOURCE_SECRET_SHAPES, SOURCE_URL_FORMS, SOURCE_URL_CREDENTIAL_SHAPES, } from "@dotln/compiler";
 import { fetchIssueBundle, IssueSourceRefusal, requireCompleteIssueBundle, } from "../src/github-issue-source.js";
 const record = JSON.parse(readFileSync(new URL("../../fixtures/wo062-issue.json", import.meta.url), "utf8"));
 const corpus = JSON.parse(readFileSync(new URL("../../../compiler/fixtures/wo060-source-bundles.json", import.meta.url), "utf8"));
@@ -160,12 +160,13 @@ test("WO-062 criterion 2: every declared shape/form is omitted from current text
     const h = replay(t);
     assert.deepEqual(corpus.screened.map((s) => s.case).sort(), [
         ...SOURCE_SECRET_SHAPES.map((s) => s.shapeId),
+        ...SOURCE_URL_CREDENTIAL_SHAPES.map((s) => s.shapeId),
         ...SOURCE_URL_FORMS.map((f) => f.formId),
     ].sort());
     for (const sample of corpus.screened)
         for (const location of ["body", "comment", "history"]) {
             h.reset();
-            const content = `Before 🙂 ${sample.matched} after`;
+            const content = `Before 🙂 ${sample.planted} after`;
             if (location === "body") {
                 h.issue().body = content;
                 h.issue().userContentEdits.nodes[0].diff = content;
