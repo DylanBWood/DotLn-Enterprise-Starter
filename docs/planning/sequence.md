@@ -8,5 +8,17 @@ pair run one at a time.
 <!-- dotln-work-order-sequence:start -->
 - WO-007 — Events, signal stores, data access and MSW
 
+- WO-013 — The sub-app shell and menu
+
+- WO-014 — The toolbox catalog pipeline
+
+- WO-015 — The soldier scene
+
+- WO-016 — The machinery view
+
 - WO-008 — Authentication and permissions
+
+- WO-017 — The digital twin's patience lane
+
+- WO-018 — The Art of War map pass and the toy shelf
 <!-- dotln-work-order-sequence:end -->

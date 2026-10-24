@@ -17,7 +17,14 @@ at that commit as `DotLn Angular v0.1.0` (Release published
 2026-10-21T21:14:44Z); its decisions, verification and final review live
 once, under `docs/dotln/` in this repository, bound from the launchpad's
 control segment. WO-007's base is that merge commit (planning pass of
-2026-10-23).
+2026-10-23). The 2026-10-24 planning pass restated the app's subject on the
+operator's decisions (one app with sub-apps behind a menu, not wired to
+core, its data from public mining into its own store; WS-001 §The app and
+its sub-apps), moved WO-007's board route to the app's own API with
+`uifa-board-v1` kept as the response shape, and filed WO-013 to WO-018
+(the sub-app shell, the toolbox catalog, the soldier scene, the machinery
+view, the digital twin's patience lane, The Art of War map and the toy
+shelf) with provisional bases set as each predecessor merges.
 
 The launchpad that registers a repository owns its profile; this file is
 repo-native convention authority for sessions acting in
@@ -297,13 +304,18 @@ no host-qualification claim.
 - Facade: `libs/features/board/src/lib/facades/board.facade.ts`.
 - Data path: scrubbed `libs/features/board/src/testing/fixtures/launchpad-board-2026-10-21.json`
   through `BoardFixtureToken`, facade, container, composites and mappers; WO-007
-  supplies HTTP/MSW and a later platform host supplies live data.
+  supplies HTTP from the app's own API in the `uifa-board-v1` shape, answered
+  by MSW, and the mining store member supplies the data later; the app reads
+  no platform host (the operator's decision of 2026-10-24).
 - Role and convention checks: `eslint.config.mjs`, `tools/check-taxonomy-fixtures.mjs`,
   `tools/scripts/check-component-order.mjs` and `tools/scripts/check-shared-types.mjs`.
 - Component catalog: `.storybook/`, component-local stories, and
   `docs/dev-reference/workspace/storybook.md`.
 
-Stores, MSW handlers, interceptors and guards remain later workstream members.
+Stores, MSW handlers, interceptors and guards remain later workstream members
+(WO-007, WO-008); the sub-app menu, the catalog, the scene engine, the
+records and replay libraries, the twin model and the toy shelf are WO-013 to
+WO-018's.
 
 ## Upstream references
 
@@ -327,7 +339,9 @@ Stores, MSW handlers, interceptors and guards remain later workstream members.
   feature renders and the host rules WS-001 §The console restates; WO-006
   pins the schema's commit and SHA-256 in its decisions and the generator
   log, and the pin is reported stale by `resume: status`, never a live
-  dependency. The exact schema SHA-256 is
+  dependency; the same bytes ship as a kit file of the launchpad since
+  starter v0.93.0 (verified at v0.94.0 by the 2026-10-24 pass), and the
+  app keeps the shape as its own API's response contract for the board. The exact schema SHA-256 is
   `7d20e785c718b4b601f45a9c351461955666ea16d49f17ae6d8fde0676629cd3`.
   Since starter v0.93.0 the launchpad carries the same schema as a kit
   file, `packages/console/uifa-board-v1.schema.json`, byte-identical to

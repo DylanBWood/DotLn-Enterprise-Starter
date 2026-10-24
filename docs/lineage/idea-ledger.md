@@ -4,6 +4,22 @@ Statuses: `adopted`, `preserved`, `raw`, `superseded`, `transformed`, `rejected`
 
 Insert this instance's dated sessions below, newest first.
 
+## 2026-10-24 — planning pass: the mining run's designs cut into DotLn-Angular orders (starter v0.94.0 first, core's answers, the corrected subject, WO-013 to WO-018, the sequence) (operator dispatch of 2026-10-24)
+
+Dispatch: a `planning:` request for a standard pass with the latest
+upstream carrying core's answer block, followed in the same session by two
+holds while the operator gathered more, the merge of update #23 (starter
+v0.94.0), a pasted prompt the operator withdrew, a corrected paste and the
+operator's own statement of their decisions on the DotLn-Angular work with
+the six orders to cut, captured verbatim in ignored intake
+(`docs/intake/notes/planning-2026-10-24.md`, SHA-256
+`63b25fa11cbd648d224067c98d712b23e79734f35979cc8c9922566cc85e044c`). The
+record is [the planning document](../planning/mining-run-orders-2026-10-24.md);
+this heading registers the pass for the plan tooling. No idea is ledgered:
+the pass was not an ideation dispatch; the operator's ideas live in their
+research run (core's ignored intake) and in the orders cut from it, and the
+app's own idea sink (WO-016) is where play-time ideas will land.
+
 ## 2026-10-23 — planning pass: the standard pass on starter v0.93.0 (the update first, WO-007's base, the plan gate's moved-record reader, the mining run paused) (operator dispatch of 2026-10-23)
 
 Dispatch: a `planning:` request for a standard pass with the latest
