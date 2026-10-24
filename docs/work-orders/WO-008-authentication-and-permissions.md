@@ -9,7 +9,8 @@
 **Target release classification:** minor
 **Target release notes:** reviewed
 **Cost:** adds `libs/shared/auth` with its kit, the mocked identity provider
-handlers and signing key for development, the `authHttpEvents` and
+handlers (whose development signing key pair is generated when the mock
+starts and is never committed), the `authHttpEvents` and
 `sessionEvents` groups, guards, the permission directive, the `/login` and
 `/denied` routes, about 60 source files; adds one OpenID Connect client
 library and `jose` (development signing in the mock) to the workspace.
@@ -49,7 +50,11 @@ Amended by the 2026-10-24 standard pass
 record-path advisory of that starter, and the order's place in the sequence
 after the first four sub-app orders (WO-013 to WO-016), so its base is set to
 WO-016's merge commit by the planning pass that follows that merge; the
-dependency on WO-007 stands.
+dependency on WO-007 stands. Amended by the 2026-10-24 second pass
+([planning document](../planning/standard-pass-v0-96-1-2026-10-24.md) §6 D4): the base above is provisional: since starter v0.96.1 (core WO-230) the target publish describes the change from the merge base of the subject and the target's `main` and names the activation base beside it, so activation on this base publishes right; the planning pass that runs after WO-016 merges may set it to that merge commit, and none is required to (the 2026-10-24 second pass, D4); the record-path advisory
+closed at v0.96.1; and receipt 008's known issues (the storage assertion over
+issued tokens, the signing key never committed, the provider swap not
+exercised).
 **Workstream:** WS-001
 
 <!-- dotln-dependencies:start -->
@@ -57,7 +62,7 @@ dependency on WO-007 stands.
   {
     "workOrderId": "WO-007",
     "relation": "hard",
-    "reason": "the events, interceptors, stores and MSW wiring this order extends; the base line is set to the preceding member's merge commit before activation"
+    "reason": "the events, interceptors, stores and MSW wiring this order extends; the base line is provisional and publishes right under starter v0.96.1's merge-base publish"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -135,9 +140,10 @@ first permission-gated surfaces are the ones this order declares in
   `/mock-idp/authorize` renders the mock login page, validates the PKCE
   challenge it received and redirects back to `/auth/callback` with a code;
   Playwright drives that page directly, and no `page.route` handler is
-  needed. Tokens are signed with a development RSA key generated at startup
+  needed. Tokens are signed with a development RSA key pair generated at startup
   through `jose` under a fixed key identifier (`kid`) the bundle check in
-  criterion 5 names; the handlers expose knobs (`expiresInSeconds`,
+  criterion 5 names; no key material is committed to the repository, so forge
+  secret scanning has nothing to match (the `kid` is a label, not a key); the handlers expose knobs (`expiresInSeconds`,
   `failNextRefresh`, `invalidSignature`, `skewSeconds`) through a test-only
   header so e2e can drive the matrix. The mocked endpoint paths live in one
   constants file under `testing/idp/` so the bundle check can list them.
@@ -244,8 +250,11 @@ then the target gate plain and review once each.
    prints nothing; `grep -rc "console.log" libs/shared/auth/src --include='*.ts' | grep -v ":0"`
    prints nothing; and an e2e step after the sign-in reads every key of
    `localStorage` and `sessionStorage` and asserts that no value matches the
-   JWT shape (three dot-separated base64url segments), which covers the
-   client library's own stores as well as house code.
+   JWT shape (three dot-separated base64url segments) and that no value
+   equals or contains any token the mocked provider issued in that session
+   (the handlers keep the tokens they issued behind a test-only knob the e2e
+   reads), which covers opaque refresh tokens and the client library's own
+   stores as well as house code.
 2. `libs/shared/auth/src/lib/session/transitions.ts` declares the transition
    table for the six states and `transitions.spec.ts` asserts every state and
    event pair (the spec iterates the table and the event list, so an
@@ -284,15 +293,16 @@ then the target gate plain and review once each.
 **Evidence gate:** the gate rows, the recorded command outputs and
 `docs/evidence/WO-008/README.md`.
 
-**Known issues and carry-ins:** the base line is provisional until the pass
-after WO-016 sets it. Starter v0.94.0 (update #23 of 2026-10-24) carries
+**Known issues and carry-ins:** The base line is provisional and publishes right under starter v0.96.1 (the merge-base publish of core WO-230; WO-013's fix dispatch is its first use in this fork); a pass may set it to the predecessor's merge commit. Starter v0.94.0 (update #23 of 2026-10-24) carries
 core's fix for the plan gate's moved-record reader, so criterion 7's
 `npm run test:docs` clause is judged as written and no waiver is carried.
-Starter v0.94.0 prints an advisory that this order's execution plan names
-launchpad record paths carrying the order id (`host-qualification.md`,
-`preview-pr.json`, `RELEASE-NOTES.md`); they are the launchpad's own
-evidence paths and are kept, and the publish command's body file must not
-name them (the 2026-10-24 planning document, §11 item 1). WO-007's
+Starter v0.96.1's plan gate no longer advises on this order's own launchpad record paths (core's answer of 2026-10-24, item 1); they stay as the kit names them and the publish command's body file must not name them. From receipt 008 (the 2026-10-24 pass's refutation), carried
+into this text by the 2026-10-24 second pass: criterion 1's storage assertion
+now covers opaque tokens through the mock's record of what it issued; the
+development signing key pair is generated at the mock's start and never
+committed; and the objective's provider swap is documented (criterion 6) but
+not exercised by a second provider configuration, which a later member with a
+real provider pays for. WO-007's
 `StorageToken` binds the real `localStorage` inside
 `libs/shared/data-access`, so criterion 1's grep over `libs/shared/auth/src`
 and `apps/dotln/src` stays clean by construction. The client library is

@@ -708,6 +708,14 @@
           "reopenWhen": "A later hook-admitted target publish is denied by the host auto-mode classifier, or the next planning pass rules on the literal host-rules fallback with WO-007's two publish observations in hand.",
           "targets": [],
           "at": "2026-10-24T16:06:27.917Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Second 2026-10-24 planning pass (docs/planning/standard-pass-v0-96-1-2026-10-24.md) D10: WO-007's draft and final publishes of 2026-10-24 ran the node-spelled helper as plain commands, the hook recorded the registered-target admission and Claude Code's auto-mode classifier allowed both without a prompt (pull request #25 records them in docs/evidence/WO-007/host-qualification.md); WO-013's refusal of the same day came from the kit's outward lint before any host call. The hook's admission suffices in the field twice over, so no literal host-rules order is filed.",
+          "reopenWhen": "A hook-admitted target publish is denied by the host's auto-mode classifier.",
+          "targets": [],
+          "at": "2026-10-24T22:07:55.001Z"
         }
       ]
     },
@@ -2165,6 +2173,14 @@
           "reopenWhen": "A later hook-admitted target publish is denied by the host auto-mode classifier, or the next planning pass rules on the literal host-rules fallback with WO-007's two publish observations in hand.",
           "targets": [],
           "at": "2026-10-24T16:06:27.904Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Second 2026-10-24 planning pass (docs/planning/standard-pass-v0-96-1-2026-10-24.md) D10: WO-007's draft and final publishes of 2026-10-24 ran the node-spelled helper as plain commands, the hook recorded the registered-target admission and Claude Code's auto-mode classifier allowed both without a prompt (pull request #25 records them in docs/evidence/WO-007/host-qualification.md); WO-013's refusal of the same day came from the kit's outward lint before any host call. The hook's admission suffices in the field twice over, so no literal host-rules order is filed.",
+          "reopenWhen": "A hook-admitted target publish is denied by the host's auto-mode classifier.",
+          "targets": [],
+          "at": "2026-10-24T22:07:54.994Z"
         }
       ]
     },
@@ -2341,6 +2357,14 @@
           "reopenWhen": "Core answers the question; then the orders' known issues are amended or the files renamed.",
           "targets": [],
           "at": "2026-10-24T05:40:28.155Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Second 2026-10-24 planning pass (docs/planning/standard-pass-v0-96-1-2026-10-24.md) D3: core's answer of 2026-10-24, item 1, says the advisory is meant for target-side paths and the kit's own evidence paths stay as they are; the three target fixture names that carried a platform order id were renamed in WO-016 and WO-017 (segments/order-221.json, segments/order-226.json, order-221-derived-v0.json) and verified against the outward lint's matcher with node scripts/outward-lint.mjs pr-body --target; starter v0.96.1 (core WO-230) stops the plan gate advising on the order's own record paths.",
+          "reopenWhen": "The lint's identifier matcher changes to read a bare number as an identifier, or a target publish refuses one of the kit's own record paths.",
+          "targets": [],
+          "at": "2026-10-24T22:07:54.983Z"
         }
       ]
     },
@@ -2533,6 +2557,143 @@
           "reopenWhen": "An order touches libs/shared/state, the persisted-state feature, the shell notices container, the board store's devtools condition or the ui catalog, or adds a second RouteId; WO-013 is the first expected.",
           "targets": [],
           "at": "2026-10-24T16:06:27.930Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3372acd8d62e8cc7",
+      "key": "candidate:docs/planning/standard-pass-v0-96-1-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10::6ecc80440497a6331ac5c6a11a902fffcfcd4efb42526b30757ac386501bec97",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "aa25a4e2ae37f93dd6321ab33894ecb205a18a55660e7ec97b50f53553d9e41d",
+          "ref": "docs/planning/standard-pass-v0-96-1-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C2 A lane pair of WO-014 and WO-016, both depending on WO-013 alone, with the shell's shared files (BasePaths, app.routes.ts, the menu in app.ts, the i18n files) assigned to one of them by decision…",
+          "summary": "- **C2 A lane pair of WO-014 and WO-016, both depending on WO-013 alone, with the shell's shared files (`BasePaths`, `app.routes.ts`, the menu in `app.ts`, the i18n files) assigned to one of them by decision so the other rebases cleanly.** Reopen when the operator says they will run two worktrees at once; then the pass before the pair assigns the shared files and marks the pair in the sequence.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C2 of the second 2026-10-24 planning document (docs/planning/standard-pass-v0-96-1-2026-10-24.md): WO-014 and WO-016 both depend on WO-013 alone and could run as a lane pair, but they share the shell's BasePaths enum, app.routes.ts, the menu in app.ts and the i18n files, and the operator runs one worktree at a time (D6).",
+          "reopenWhen": "The operator says they will run two worktrees at once; the pass before the pair then assigns the shared shell files to one member and marks the pair in the sequence.",
+          "targets": [],
+          "at": "2026-10-24T22:07:55.019Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d3451c7078e670ab",
+      "key": "candidate:docs/planning/standard-pass-v0-96-1-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10::a1cfefd9ca2260961ad95ed4fb5482fc7be0d80b6ba725c890852bd130650d97",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "5c8b29b6b3a00114b55c1b0fec69819286abd28e4a7f6519cbb8f020335ea2d6",
+          "ref": "docs/planning/standard-pass-v0-96-1-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C3 The index's self members read diverged and stale whenever work-orders index runs on a branch, which every planning pass does (core's FUP-2811605b8e865d2d).",
+          "summary": "- **C3 The index's `self` members read `diverged` and `stale` whenever `work-orders index` runs on a branch, which every planning pass does (core's FUP-2811605b8e865d2d).** Reopen when core changes the refresh to read `main` for `self` members, or when a reader of the board or the index acts on the mark; then the pass records the fix or asks.",
+          "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/planning/standard-pass-v0-96-1-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C3 The index's self members read diverged and stale whenever work-orders index runs on a branch, which every planning pass does (core's FUP-2811605b8e865d2d).",
+          "summary": "- **C3 The index's `self` members read `diverged` and `stale` whenever `work-orders index` runs on a branch, which every planning pass does (core's FUP-2811605b8e865d2d).** Reopen when core changes the refresh to read `main` for `self` members, or when a reader of the board or the index acts on the mark; then the pass records the fix or asks.",
+          "missing": true
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C3 of the second 2026-10-24 planning document (docs/planning/standard-pass-v0-96-1-2026-10-24.md): the index's self members read integration diverged and stale yes when work-orders index runs on a branch whose HEAD differs from main (core's FUP-2811605b8e865d2d; observed on the update branch), and current when the refreshing branch sits at main's head (observed on this planning branch before its first commit) (D14).",
+          "reopenWhen": "Core changes the refresh to read main for self members, or a reader of the board or the index acts on the mark.",
+          "targets": [],
+          "at": "2026-10-24T22:07:55.026Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "duplicate",
+          "reason": "Second 2026-10-24 planning pass (docs/planning/standard-pass-v0-96-1-2026-10-24.md) §8: this row was minted from candidate C3 before the entry's text was corrected to the planning branch's own reading of the mark; the corrected entry was minted as FUP-d541e70c6f87eaa6, which carries C3's deferral and reopening condition. Duplicate of FUP-d541e70c6f87eaa6.",
+          "reopenWhen": "Never on its own; FUP-d541e70c6f87eaa6 carries the condition.",
+          "targets": [
+            "FUP-d541e70c6f87eaa6"
+          ],
+          "at": "2026-10-24T22:11:40.449Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d1dadda4ed57029c",
+      "key": "candidate:docs/planning/standard-pass-v0-96-1-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10::c424596f1ee0ab7c8cc5d92b45f93b3da78a358d284de41258e62d770c37a1f7",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "54cc19dfefe48177ba91e6b04b48f51fb774c556e62aa9ee79b0b7543c1ddd80",
+          "ref": "docs/planning/standard-pass-v0-96-1-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C1 The workstream field against the plan gate: starter v0.96.0's index check requires",
+          "summary": "- **C1 The workstream field against the plan gate: starter v0.96.0's index check requires `**Workstream:** WS-NNN` on every member order, and the plan gate refuses that one-line change on a closed order whose bytes an execution amendment binds, so this fork withdrew two amendments to add the field (D1).** Reopen when core answers §11 item 1 (an admitted metadata-field change for closed orders, or an index check that accepts a closed member without the field); then the withdrawals are revisited or left as the record.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C1 of the second 2026-10-24 planning document (docs/planning/standard-pass-v0-96-1-2026-10-24.md): starter v0.96.0's workstream check requires the leading Workstream field on every member order and the plan gate refused that one-line change on the closed WO-011 and WO-012 against their bound execution amendments, so the pass withdrew the two amendments through the gate's own route (D1) and asked core (§11 item 1).",
+          "reopenWhen": "Core answers §11 item 1 of the second 2026-10-24 pass: an admitted metadata-field change for closed orders, or an index check that accepts a closed member without the field.",
+          "targets": [],
+          "at": "2026-10-24T22:07:55.009Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-4ddf0151d707734a",
+      "key": "candidate:docs/planning/standard-pass-v0-96-1-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10::df9330e94dc145ac87beaad11fc8a2d8855961ed111587f8e047952be2bb5530",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "032130639cc125a87e4701c6a24e4139fa242873e0de6099d0f87568fcd4a99c",
+          "ref": "docs/planning/standard-pass-v0-96-1-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C4 The twin's fourth result: a figure a zero-patience variant pays, so that results alone can tell a faithful twin from a trivial one without scoring agreement with the operator's beats (receipt 008…",
+          "summary": "- **C4 The twin's fourth result: a figure a zero-patience variant pays, so that results alone can tell a faithful twin from a trivial one without scoring agreement with the operator's beats (receipt 008 on WO-017; the safe default is the three figures as written).** Reopen on the operator's word naming the result; then WO-017's fold is amended by the pass that hears it, or by an execution amendment if WO-017 is active.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C4 of the second 2026-10-24 planning document (docs/planning/standard-pass-v0-96-1-2026-10-24.md): receipt 008 found that a twin variant with every patience duration at zero yields the best of WO-017's three result figures while modelling no one; the operator's rule stands (results only, never agreement with the recorded beats), the safe default is the three figures as written, and a fourth result a zero-patience twin pays is the operator's to name (D4).",
+          "reopenWhen": "The operator names the fourth result; WO-017's fold is then amended by the pass that hears it, or by an execution amendment if WO-017 is active.",
+          "targets": [],
+          "at": "2026-10-24T22:07:55.034Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d541e70c6f87eaa6",
+      "key": "candidate:docs/planning/standard-pass-v0-96-1-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10::368ba388a7a03ce11d13740621c06ebcf0dc78df871c97c51e6ab5f9f4828519",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "3379966add0c9b39c58f6f1a486025d9710a0a3e1f8874acfc143da8af596ce3",
+          "ref": "docs/planning/standard-pass-v0-96-1-2026-10-24.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C3 The index's self members read diverged and stale whenever work-orders index runs on a branch whose HEAD has moved past main (the update branch did; a planning pass that regenerates before its…",
+          "summary": "- **C3 The index's `self` members read `diverged` and `stale` whenever `work-orders index` runs on a branch whose HEAD has moved past `main` (the update branch did; a planning pass that regenerates before its first commit reads `current`) (core's FUP-2811605b8e865d2d).** Reopen when core changes the refresh to read `main` for `self` members, or when a reader of the board or the index acts on the mark; then the pass records the fix or asks.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C3 of the second 2026-10-24 planning document (docs/planning/standard-pass-v0-96-1-2026-10-24.md): the index's self members read integration diverged and stale yes when work-orders index runs on a branch whose HEAD has moved past main (core's FUP-2811605b8e865d2d; observed on the update branch), and current when the refreshing branch sits at main's head (observed on this planning branch before its first commit) (D14).",
+          "reopenWhen": "Core changes the refresh to read main for self members, or a reader of the board or the index acts on the mark.",
+          "targets": [],
+          "at": "2026-10-24T22:11:40.455Z"
         }
       ]
     }

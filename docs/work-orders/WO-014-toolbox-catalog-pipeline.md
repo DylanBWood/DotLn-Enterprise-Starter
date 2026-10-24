@@ -44,10 +44,12 @@ SHA-256 `b60a7607797cd781c94dc2b872e5e478ab1eb18b42964e967d1f45269e2beb31`).
 Nothing from the run is copied here beyond ids, short titles and generic
 terms; the quarantine files are never opened. Planner-synthesized by the
 2026-10-24 planning pass ([planning document](../planning/mining-run-orders-2026-10-24.md)
-§6 D6 and §9). Opaque identifier, not a priority.
+§6 D6 and §9). Opaque identifier, not a priority. Amended by the
+2026-10-24 second pass ([planning document](../planning/standard-pass-v0-96-1-2026-10-24.md) §6 D4): the `provenance`
+field and the mapped-rows count rule, the rerun rule inside the twelve, the
+checkers' observability rule, the base clause and receipt 008's known issues.
 **Depends on:** WO-013 merged (hard: the sub-app menu's Tools group and the
-grouping convention; the base above is provisional and is set to WO-013's
-merge commit by the planning pass that follows it).
+grouping convention; the base above is provisional: since starter v0.96.1 (core WO-230) the target publish describes the change from the merge base of the subject and the target's `main` and names the activation base beside it, so activation on this base publishes right; the planning pass that runs after WO-013 merges may set it to that merge commit, and none is required to (the 2026-10-24 second pass, D4)).
 **Workstream:** WS-001
 
 <!-- dotln-dependencies:start -->
@@ -55,7 +57,7 @@ merge commit by the planning pass that follows it).
   {
     "workOrderId": "WO-013",
     "relation": "hard",
-    "reason": "the Tools menu group this order fills and the sub-app convention it follows; the base line is set to its merge commit before activation"
+    "reason": "the Tools menu group this order fills and the sub-app convention it follows; the base line is provisional and publishes right under starter v0.96.1's merge-base publish"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -111,17 +113,22 @@ tools. The run's row-id convention is `<file slug>:<1-based line>`.
   selection: { target; min; max }; transform: { kind: TransformKind; params:
   ParamSpec[] } | { kind: 'untyped'; reason }; observable: string[];
   toyMetric: MetricId[] }, analog?: { roles: DotLnRole[]; clause }, status:
-  'typed' | 'untyped' | 'background', classifiedBy, map: { file, line,
-  sha256 } }`. A tool of kind `background`, `sceneElement` or `metric` has no
-  faces. Everything `readonly`.
+  'typed' | 'untyped' | 'background', classifiedBy, provenance: 'map' |
+  'public-work', map: { file, line, sha256 } | null }`; `map` is an object
+  when `provenance` is `map` and `null` when it is `public-work` (the form
+  WO-018's toy-source tools take), and the schema states the pairing. A tool
+  of kind `background`, `sceneElement` or `metric` has no faces. Everything
+  `readonly`.
 - **Allow-list and scrub** (`tools/scripts/catalog/check-catalog.mjs`, run by
   `npm run catalog:check` and inside `check:fixtures`): Ajv against
   `tool-v0.schema.json` with `additionalProperties: false`; `title` at most
   80 characters; `analog.clause`, `transform.reason` and each `observable`
   entry at most 120; no row carries `definition`, `related`, `dotlnHooks`,
   `verified`, `section` or `chapter`; every string passes `assertScrubbed`;
-  ids unique; the row count equals the maps' total recorded in the summary.
-  This is the clean-room rule made mechanical: the commit carries ids, short
+  ids unique; the count of `provenance: 'map'` rows equals the maps' total
+  recorded in the summary. The check scans `libs/shared/catalog/src/data/`
+  only, so a map a later order owns lives in its own directory under its own
+  check. This is the clean-room rule made mechanical: the commit carries ids, short
   titles and generic terms, never the run's own-words definitions, relations
   or hooks.
 - **The data** (`libs/shared/catalog/src/data/`): one checkpoint file per
@@ -146,7 +153,15 @@ tools. The run's row-id convention is `<file slug>:<1-based line>`.
   twenty-unit scene, is the analog, when present, a real role of the
   platform; a failing tool is returned by id with the reason and the executor
   reruns the classifier on that batch's listed ids only (the checkpoint is
-  the unit of rerun). One synthesizer: the per-work scene type, the first
+  the unit of rerun). A rerun continues the batch's own worker, sent the
+  listed ids, and counts once: the twelve are twelve distinct workers with
+  their reruns inside them, and the evidence README lists each rerun under
+  its worker. A checker that finds a transform not observable in a
+  twenty-unit scene returns the tool as `untyped` with that reason, never
+  as a nearer kind, so the quota of three typed tools per work is met by
+  tools the checkers admit; a work that falls short is recorded as short in
+  the summary and the decisions file, never filled by force-fitting a
+  transform. One synthesizer: the per-work scene type, the first
   three tools per work, the counts. One critic: reads the summary and three
   seeded samples and returns findings; the executor disposes each in the
   decisions file. The executor merges checkpoints with
@@ -297,8 +312,7 @@ then the target gate plain and review once each.
 `docs/evidence/WO-014/README.md`, `docs/evidence/WO-014/fan-out.md` and
 `docs/evidence/WO-014/host-qualification.md`.
 
-**Known issues and carry-ins:** the base line is provisional until the pass
-after WO-013 sets it. The map files are ignored intake that may change
+**Known issues and carry-ins:** The base line is provisional and publishes right under starter v0.96.1 (the merge-base publish of core WO-230; WO-013's fix dispatch is its first use in this fork); a pass may set it to the predecessor's merge commit. The map files are ignored intake that may change
 between this pass and activation; the executor computes the digests at read
 time and records them, and a changed count is a decision, never a silent
 renumbering. The run's own README says many map rows are the mapping
@@ -306,8 +320,16 @@ worker's reading rather than verified text (PoEAA most of all); a classifier
 types what the row says and the critic names rows that look wrong; checking
 rows against the books is not this order's. Workers run under the launchpad's
 `subagentCap` with the executor's own session counted; the operator may
-name Fable on the dispatch line. The v0.94.0 advisory on launchpad record
-paths applies as in WO-013. This order activates only on a launchpad whose
+name Fable on the dispatch line. Starter v0.96.1's plan gate no longer advises on this order's own launchpad record paths (core's answer of 2026-10-24, item 1); they stay as the kit names them and the publish command's body file must not name them. From receipt 008 (the
+2026-10-24 pass's refutation), carried into this text by the 2026-10-24
+second pass: the catalog is bundled JSON while the board is HTTP, two data
+paths until the mining store (candidate C1) states one rule, and the
+loader's interface is the seam that keeps the difference out of every
+feature; a rerun is the batch's own worker continued and counts once under
+the twelve; and a checker's observability judgment is the counter-pressure
+on criterion 3's quota, so a short work is recorded, never force-fitted, and
+criterion 3 is then amended on the operator's word rather than met by a
+wrong transform. This order activates only on a launchpad whose
 starter carries core WO-221's `--draft` form; the draft pull request and its
 workflow runs are a final-review obligation read from
 `docs/evidence/WO-014/preview-pr.json`, never a criterion. `Target release

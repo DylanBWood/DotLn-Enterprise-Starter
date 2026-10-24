@@ -206,6 +206,20 @@ in one short question rather than guessing in either direction.
   WO-018 from their research run's design files and placed the sequence
   (planning pass of 2026-10-24, D1, D2 and D11; capture SHA-256
   `63b25fa11cbd648d224067c98d712b23e79734f35979cc8c9922566cc85e044c`).
+  Later on 2026-10-24 the operator took WO-007 through its cycle
+  (DotLn-Angular #5, this launchpad's #25) and closed it as `DotLn Angular
+  v0.2.0`, started WO-013's worktree and took it to final review, where the
+  kit's publish refused the verified draft (WO-013-D008); during that review
+  the operator chose the core route (D009), core filed WO-230 first in its
+  queue and shipped it as v0.96.1 the same evening, and the operator opened
+  a second standard pass with the latest upstream and core's answer block.
+  The update went first again (pull request #26, starter v0.96.1, merged
+  within a minute of opening), the session finished it on `main`, and the
+  pass amended the six open orders from receipt 008 and renamed the three
+  target fixtures core's answer named; WO-013's fix is the operator's next
+  dispatch in its worktree (second planning pass of 2026-10-24, D1 to D5;
+  capture SHA-256
+  `32a697b7c11563c62ceb8fefa10d796204364aec53ad1984e7409cf031eb6e11`).
 - Upstream updates: the operator asks for the outcome, the fork updated to
   the latest starter, and leaves the pull-request mechanics to the pass
   (refreshing an open update pull request or replacing it), which records
@@ -220,6 +234,13 @@ in one short question rather than guessing in either direction.
   fast-forward check, fast-forward, bootstrap), as the 2026-10-23 pass did
   after #21 and the 2026-10-24 pass after #23; the operator merges, the
   session finishes (planning passes of 2026-10-23, D1, and 2026-10-24, D1).
+  A repair a kit release's Read-before-upgrading names for this fork (the
+  workstream field v0.96.0 requires on WO-011 and WO-012) is made on the
+  update branch so the branch merges green; where the plan gate binds a
+  closed order's bytes through an execution amendment, the gate's own
+  `amend-order --withdraw` route is used with the reason recorded and the
+  operator's original authorization left standing in the order's decisions
+  (second planning pass of 2026-10-24, D1; pull request #26).
 - Lifecycle steps the operator runs: for every order, on the platform and
   in this fork, the operator starts the worktree themselves with
   `npm run worktree -- start WO-NNN <order path>` from `main`; opens a
@@ -236,7 +257,11 @@ in one short question rather than guessing in either direction.
   session opened before it runs with its hooks advisory and its first
   release-close prompt withheld, as WO-012's close of 2026-10-21 showed
   (the close completed and is fully recorded; UI planning pass of
-  2026-10-21, D12).
+  2026-10-21, D12). A failed final review sends the order to `resume: fix`
+  in the same worktree, which the operator dispatches; a fix that waits on
+  a kit release waits for the update to reach `main` first, and the fix
+  integrates `main` before it republishes (WO-013, 2026-10-24; second
+  planning pass of 2026-10-24, D2).
 - Research before asking: the product the UI serves is described at length
   in the DotLn platform's records (its private intake, its idea ledger and
   its product pages); a pass reads them through research workers, splitting

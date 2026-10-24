@@ -41,12 +41,15 @@ the six-source toy design, each sized under the twenty-agent rule; SHA-256
 from the run is copied here beyond ids, short titles and generic terms; the
 quarantine files are never opened. Planner-synthesized by the 2026-10-24
 planning pass ([planning document](../planning/mining-run-orders-2026-10-24.md)
-§6 D10 and §9). Opaque identifier, not a priority.
+§6 D10 and §9). Opaque identifier, not a priority. Amended by the
+2026-10-24 second pass ([planning document](../planning/standard-pass-v0-96-1-2026-10-24.md) §6 D4): the map's own
+directory and check, the `public-work` provenance of the toy-source tools,
+the mechanical never-a-passage check, the rerun rule inside the twelve, the
+base clause and receipt 008's known issues.
 **Depends on:** WO-014 merged (hard: the `Tool` schema, the catalog data
 layout, the allow-list check, the merge script and the classifier brief this
 order reuses); WO-017 merged (hard: the member before this one in the
-sequence, whose merge commit becomes this order's base; the base above is
-provisional and is set by the planning pass that follows WO-017).
+sequence; the base above is provisional: since starter v0.96.1 (core WO-230) the target publish describes the change from the merge base of the subject and the target's `main` and names the activation base beside it, so activation on this base publishes right; the planning pass that runs after WO-017 merges may set it to that merge commit, and none is required to (the 2026-10-24 second pass, D4)).
 **Workstream:** WS-001
 
 <!-- dotln-dependencies:start -->
@@ -59,7 +62,7 @@ provisional and is set by the planning pass that follows WO-017).
   {
     "workOrderId": "WO-017",
     "relation": "hard",
-    "reason": "the preceding member in the serial chain; its merge commit becomes this order's base before activation"
+    "reason": "the preceding member in the serial chain; the base line is provisional and publishes right under starter v0.96.1's merge-base publish"
   }
 ]
 <!-- dotln-dependencies:end -->
@@ -96,13 +99,22 @@ translation, ebook 132); the mappers read it once and commit no passage.
 
 **Design:**
 
-- **Map rows for a new work** (`libs/shared/catalog/src/data/map-artofwar.json`,
-  schema `map-row-v0.schema.json`): `{ id: 'aow:<n>', work: 'artofwar',
+- **Map rows for a new work** (`libs/shared/catalog/src/maps/map-artofwar.json`,
+  schema `map-row-v0.schema.json`; its own directory, because a map row
+  carries the fields the tool allow-list refuses and WO-014's
+  `check-catalog.mjs` scans `src/data/` only, so `check-map.mjs` owns the
+  maps directory): `{ id: 'aow:<n>', work: 'artofwar',
   chapter, section, concept, type, definition, related: ToolId[], verified:
   '<chapter reference>' }` where `definition` is the mapper's own words, at
   most 240 characters, about the public-domain text and never a passage of
   it; thirteen chapters; the critic samples twenty rows against the text and
-  returns the rows that misstate it, which the mapper rewrites. This is the
+  returns the rows that misstate it, which the mapper rewrites. "Never a
+  passage" is also mechanical: `check-map.mjs --text <path>` refuses any
+  definition that shares a run of eight or more consecutive words with the
+  recorded text (the text stays in the session scratch and is never
+  committed; its source and SHA-256 are in the evidence README, and the
+  check's zero-overlap result at that digest is recorded there, so a verifier
+  fetches the same text by its digest and reruns it). This is the
   first map the app owns: a work mined in public into the app's own store,
   the direction the operator gave; the run's maps stay in intake and only
   their typed tools came across in WO-014.
@@ -129,14 +141,16 @@ translation, ebook 132); the mappers read it once and commit no passage.
   the source's candidate ids from the run's probe listing (ids only, no
   prose; no quarantine file), and returns one toy record plus up to five
   tools for its source with five faces typed from public knowledge of the
-  work (`tools-<source>.json`, `map: null`, `provenance: 'public-work'`); the
+  work (`tools-<source>.json`, `provenance: 'public-work'` with `map: null`,
+  the pairing WO-014's schema declares, outside the mapped-rows count rule); the
   synthesizer orders the six toys by what the operator can play with
   soonest on the scene engine and writes `toys-summary.json`; the critic
   reads the six records and returns findings the executor disposes. A
   transform kind the enum lacks is recorded as `untyped` with the proposed
   kind in its reason; the enum grows only by a decision (WO-014's rule).
   Together with the map pass (two mappers, one critic, one classifier) the
-  order dispatches at most twelve workers, each a `dotln-worker` or
+  order dispatches at most twelve workers (a mapper's rewrite of the rows the
+  critic names continues that mapper and counts once, as WO-014's reruns do), each a `dotln-worker` or
   `dotln-worker-fable` on the operator's dispatch, under the launchpad's
   `subagentCap`; `node scripts/harness.mjs usage <session>` is read before
   the first spawn and at handoff.
@@ -176,7 +190,8 @@ with the fan-out record.
 2. `map-row-v0.schema.json`, `toy-v0.schema.json`, `toys.ts`;
    `tools/scripts/catalog/check-map.mjs` and `check-toys.mjs` with
    `npm run toys:check`; negative fixtures (a definition over 240
-   characters; a toy naming an unknown tool id) under
+   characters; a definition repeating eight consecutive words of a sample
+   text given with `--text`; a toy naming an unknown tool id) under
    `tools/lint-fixtures/catalog/`. Check: `npm run test:tooling` exits 0.
 3. Fetch the public-domain text once into the session scratch and record
    its source and SHA-256 in the evidence README; write the mapper brief
@@ -185,8 +200,10 @@ with the fan-out record.
    path.
 4. Dispatch two mappers (chapters 1 to 6 and 7 to 13) and the map critic;
    rewrite the sampled rows the critic names; merge into
-   `map-artofwar.json`. Check: `node tools/scripts/catalog/check-map.mjs`
-   exits 0 and the row count is recorded.
+   `src/maps/map-artofwar.json`. Check: `node tools/scripts/catalog/check-map.mjs`
+   exits 0, the same command with `--text` and the scratch path of the
+   fetched text prints zero overlapping runs, and the row count and that
+   result are recorded in the evidence README.
 5. Dispatch one classifier with WO-014's brief over the new map; merge
    `tools-artofwar.json`. Check: `npm run catalog:check` exits 0 and
    `npm run catalog:report` lists The Art of War with three typed tools.
@@ -228,11 +245,13 @@ each.
 **Acceptance criteria (all required)**
 
 1. `node tools/scripts/catalog/check-map.mjs` exits 0 over
-   `map-artofwar.json`: every row has `id`, `work`, `chapter`, `section`,
-   `concept`, `type`, `definition` (at most 240 characters), `related` and
-   `verified`, thirteen chapters are present, and the evidence README
-   records the public text's source and SHA-256 and the critic's sampled
-   row count.
+   `libs/shared/catalog/src/maps/map-artofwar.json`: every row has `id`,
+   `work`, `chapter`, `section`, `concept`, `type`, `definition` (at most
+   240 characters), `related` and `verified`, thirteen chapters are present,
+   `npm run catalog:check` still scans `src/data/` only, and the evidence
+   README records the public text's source and SHA-256, the critic's
+   sampled row count and the zero-overlap result of the check run with
+   `--text` against that text.
 2. `npm run catalog:check` exits 0 with `tools-artofwar.json` present, and
    `npm run catalog:report` lists `artofwar` with a scene type and three
    tools whose transform kinds are members of `TransformKind`.
@@ -265,13 +284,20 @@ each.
 `docs/evidence/WO-018/README.md`, `docs/evidence/WO-018/fan-out.md` and
 `docs/evidence/WO-018/host-qualification.md`.
 
-**Known issues and carry-ins:** the base line is provisional until the pass
-after WO-017 sets it. The six toys are designed, not built; building one is
+**Known issues and carry-ins:** The base line is provisional and publishes right under starter v0.96.1 (the merge-base publish of core WO-230; WO-013's fix dispatch is its first use in this fork); a pass may set it to the predecessor's merge commit. The six toys are designed, not built; building one is
 a later member the operator picks from the shelf (candidate C5). The
 commander-and-squad scene the tactics serve is a later toy. A transform kind
 the enum lacks stays `untyped` with the proposal in its reason until a
-decision grows the enum. The v0.94.0 advisory on launchpad record paths
-applies as in WO-013. This order activates only on a launchpad whose starter
+decision grows the enum. Starter v0.96.1's plan gate no longer advises on this order's own launchpad record paths (core's answer of 2026-10-24, item 1); they stay as the kit names them and the publish command's body file must not name them. From receipt 008 (the 2026-10-24
+pass's refutation), carried into this text by the 2026-10-24 second pass:
+the map lives in its own directory under its own check, outside the tool
+allow-list's scan; the toy-source tools carry `provenance: 'public-work'`
+with `map: null` under the pairing WO-014 declares, and the mapped-rows
+count rule does not count them; WO-015's rail reads its works from
+`catalog-summary.json`, so the seventh work changes the rail's expected
+count through the regenerated summary and no criterion elsewhere says six;
+"never a passage" has its word-run check; and a mapper's rewrite continues
+that mapper under the twelve. This order activates only on a launchpad whose starter
 carries core WO-221's `--draft` form; the draft pull request and its
 workflow runs are a final-review obligation read from
 `docs/evidence/WO-018/preview-pr.json`, never a criterion. `Target release
