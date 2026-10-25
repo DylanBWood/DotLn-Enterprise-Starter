@@ -1,0 +1,16 @@
+{
+  "observedAt": "2026-10-24T22:53:22.969Z",
+  "draft": "1e24c0884c2bafd7ad29b3f20b4368ff2be7b1a2",
+  "fetched": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+  "activationBase": "bc9133e932a00d33c15bc5289d683b8078f51ee4",
+  "describedBase": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+  "oldRows": 515,
+  "oldEarlierRecordRows": 17,
+  "rows": 83,
+  "earlierRecordRows": 0,
+  "outwardLint": "pass",
+  "bodyProfile": "pass",
+  "activationDisclosed": true,
+  "remoteEffects": "fetch only; no push or PR operation",
+  "limit": "Prepared draft before the generator-log rearrangement; later verification republishes the revised tree."
+}

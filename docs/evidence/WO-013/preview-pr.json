@@ -1,0 +1,107 @@
+{
+  "capturedAt": "2026-10-25T22:19:00Z",
+  "pullRequest": {
+    "baseRefName": "main",
+    "createdAt": "2026-10-24T23:09:34Z",
+    "headRefName": "feat/sub-app-menu",
+    "headRefOid": "99a30befa150e5d77a64259013e62b9d0372270e",
+    "isDraft": true,
+    "mergeable": "MERGEABLE",
+    "number": 6,
+    "state": "OPEN",
+    "title": ":sparkles: feat: add the sub-app menu and the scene and machinery routes",
+    "updatedAt": "2026-10-25T22:10:00Z",
+    "url": "https://github.com/DylanBWood/DotLn-Angular/pull/6"
+  },
+  "draft": {
+    "headSha": "99a30befa150e5d77a64259013e62b9d0372270e",
+    "parent": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+    "verifiedTree": "dc997234bc57801c1909a76fa45f5524f3e3dfab",
+    "changedFiles": 83,
+    "publishedBy": "the VER-002 session (Claude Code 2.1.310, claude-opus-5-5, xhigh), running the order's step 12 helper command verbatim after verification-result pass; the hook recorded the registered-target admission and the host allowed the call without a prompt (host-qualification.md). The first verified-phase attempt, by the VER-001 session under starter v0.94.0, was refused by the outward lint before any push because the body's Change table was composed from the activation base (WO-013-D008); starter v0.96.1 describes the change from the merge base. The VER-003 session republished the same commit at the same tree on 2026-10-25 after verification-result pass; the helper refreshed the body and reused pull request #6, and nothing was pushed (host-qualification.md).",
+    "readBy": "the final-review session (FINAL-003), 2026-10-25, through gh pr view, the comment and review counts, a GraphQL review-thread count and gh run list for feat/sub-app-menu, before the review's judgments were written; FINAL-001 and FINAL-002 read it earlier and failed on kit blockers outside the subject (WO-013-D008, D015), and FINAL-003 records pass, after which the final publish reuses this pull request"
+  },
+  "workflowRuns": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-24T23:09:37Z",
+      "databaseId": 40141573159,
+      "event": "pull_request",
+      "headSha": "99a30befa150e5d77a64259013e62b9d0372270e",
+      "name": "CI",
+      "status": "completed",
+      "jobs": [
+        "checks (completed 23:15:21Z, success)",
+        "visual (macos; completed 23:11:25Z, success)"
+      ],
+      "url": "https://github.com/DylanBWood/DotLn-Angular/actions/runs/40141573159",
+      "workflowName": "CI"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-24T23:09:37Z",
+      "databaseId": 40141573200,
+      "event": "pull_request",
+      "headSha": "99a30befa150e5d77a64259013e62b9d0372270e",
+      "name": "Pull request title",
+      "status": "completed",
+      "jobs": [
+        "title (completed 23:09:52Z, success)"
+      ],
+      "url": "https://github.com/DylanBWood/DotLn-Angular/actions/runs/40141573200",
+      "workflowName": "Pull request title"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-25T22:09:48Z",
+      "databaseId": 40238888097,
+      "event": "pull_request",
+      "headSha": "99a30befa150e5d77a64259013e62b9d0372270e",
+      "name": "Pull request title",
+      "status": "completed",
+      "jobs": [
+        "title (completed 22:10:03Z, success)"
+      ],
+      "url": "https://github.com/DylanBWood/DotLn-Angular/actions/runs/40238888097",
+      "workflowName": "Pull request title"
+    }
+  ],
+  "reviewThreads": [],
+  "reviews": [],
+  "issueComments": [],
+  "automatedReview": "none ran on this pull request: gh run list for feat/sub-app-menu shows only the CI workflow and the two Pull request title runs, all at the draft head; gh pr view counts zero comments and zero reviews, and the GraphQL read counts zero review threads (2026-10-25T22:19Z). Whether an automated reviewer runs is a repository setting the operator owns; this is an observation, not a finding of this order, as the previous two orders' previews recorded.",
+  "operatorItems": {
+    "source": "the operator's dispatch message of 2026-10-25 that opened FINAL-003 was the bare final-review phrase. It carried no note on the draft, and the pull request has no comment or review from the operator, as at FINAL-002",
+    "capture": null,
+    "captureSha256": null,
+    "count": 0
+  },
+  "routing": [],
+  "finalReviewRepairs": [],
+  "finalReviewBoarding": [
+    {
+      "decision": "WO-013-D018",
+      "summary": "the no-op integration at main 04c45cfa: the launchpad identity dbd80775… and the fix's passing complete review row reused, the affected checks green, and the repaired pre-review lint rerun read-only and passing over the one described commit"
+    },
+    {
+      "decision": "WO-013-D019",
+      "summary": "the acceptance: the draft commit 99a30bef is the reviewed commit with no review commit, the final publish reuses this pull request, and the three publication rows are settled from the final publish's recorded outcome after it runs"
+    }
+  ],
+  "earlierFinalReviewBoarding": {
+    "FINAL-002": [
+      {
+        "decision": "WO-013-D013",
+        "summary": "the branch head moved to the draft commit before the result transition (the pull request's head, the verified tree, a clean status) and kept there under the failing verdict; the target review gate row at the draft's tree reused; WO-007-D019 item (e) recorded as left for the order that touches the toast wrapper or the board browser spec"
+      },
+      {
+        "decision": "WO-013-D014",
+        "summary": "the register dispositions this review made: D006's six rows disposed, D005 and D007 deferred to their owners, the trust-entry row deferred with this order's observations; the D008 and D009 settlements superseded by D015's re-dispositions"
+      },
+      {
+        "decision": "WO-013-D015",
+        "summary": "the blocker: final-review-result pass is refused by the pre-review commit lint, which ranges from the activation base and trips on two already-merged subjects of 78 and 90 characters; the order's own commit has a 61-character subject; route (a) again, a core fix through a kit update that the fix dispatch integrates"
+      }
+    ]
+  }
+}

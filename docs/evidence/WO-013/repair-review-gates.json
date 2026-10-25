@@ -1,0 +1,83 @@
+{
+  "completeReview": {
+    "command": "npm test -- --review",
+    "checkId": "npm test",
+    "treeHash": "3fe11f9edaba4fbdf88d28eba66004dfc1a31538",
+    "codeIdentity": "dbd80775eda0b78bb08729662389d78c2905051201848699f91eb04b1adbc897",
+    "executionMode": "fresh",
+    "gateSelection": "review",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "durationMs": 14482,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:dbd80775eda0b78bb08729662389d78c2905051201848699f91eb04b1adbc897:npm test",
+    "recordedAt": "2026-10-25T21:52:13.617Z",
+    "freshSuites": 7,
+    "reusedSuites": 0,
+    "requiredSuites": [
+      "kit-verify",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host"
+    ],
+    "hostLaneWait": {
+      "wallMs": 50,
+      "byRelation": {
+        "this-checkout": 0,
+        "another-checkout": 0,
+        "unknown": 50
+      },
+      "holders": []
+    }
+  },
+  "targetReviewReuse": {
+    "repositoryId": "dotln-angular",
+    "commit": "99a30befa150e5d77a64259013e62b9d0372270e",
+    "treeHash": "dc997234bc57801c1909a76fa45f5524f3e3dfab",
+    "selection": "review",
+    "names": [
+      "install",
+      "lint",
+      "test",
+      "format",
+      "build",
+      "e2e",
+      "visual"
+    ],
+    "durationMs": 53575,
+    "evidenceRef": "target-gate:b11301fb-7e55-4bd4-b12e-69c65e5f22eb",
+    "recordedAt": "2026-10-24T22:50:59.596Z"
+  },
+  "additionalChecks": [
+    {
+      "command": "npm run publication:check",
+      "exitCode": 0,
+      "observation": "No editions declared; rerun after the profile and workstream updates."
+    },
+    {
+      "command": "node scripts/harness.mjs check",
+      "exitCode": 0,
+      "observation": "35 generated surfaces."
+    },
+    {
+      "command": "npm run release -- check-surfaces --local",
+      "exitCode": 0,
+      "observation": "Release, component, pin, body-profile, license and package-publication controls pass."
+    },
+    {
+      "command": "npm run plan -- check",
+      "exitCode": 0,
+      "observation": "10 receipts, 10 passes, no advisory; workspace subject equals the judged subject."
+    },
+    {
+      "command": "npm run sync",
+      "exitCode": 0,
+      "observation": "All nine artifact groups current; no regeneration."
+    }
+  ],
+  "limits": "Target gate reused at the unchanged tree with the current command declaration, as validated by targetGateEvidence. No application tests or browser/visual runs are claimed fresh in this repair. The document gate runs after the final handoff edit and is consumed by repair-complete."
+}

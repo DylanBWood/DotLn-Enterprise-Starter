@@ -1,0 +1,20 @@
+{
+  "basePaths": true,
+  "lazyRoutes": true,
+  "boardRedirects": 1,
+  "menuInjectCalls": 0,
+  "shellRouterImports": 0,
+  "sceneExports": 1,
+  "sceneTags": [
+    "scope:dotln",
+    "type:feature"
+  ],
+  "machineryExports": 1,
+  "machineryTags": [
+    "scope:dotln",
+    "type:feature"
+  ],
+  "testingAliases": true,
+  "menuKeys": true,
+  "controlRecordLines": 1
+}

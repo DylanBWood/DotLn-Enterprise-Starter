@@ -1,0 +1,370 @@
+{
+  "currentReview": {
+    "repositoryId": "dotln-angular",
+    "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+    "treeHash": "df45f1b303bdf5ec312f9d2e2789a34537ab842c",
+    "selection": "review",
+    "names": [
+      "install",
+      "lint",
+      "test",
+      "format",
+      "build",
+      "e2e",
+      "visual"
+    ],
+    "durationMs": 89153,
+    "evidenceRef": "target-gate:5540cb1a-b9c9-4578-9f85-f8a1dc667a45",
+    "recordedAt": "2026-10-24T17:03:55.012Z"
+  },
+  "rows": [
+    {
+      "checkId": "target:dotln-angular:install",
+      "repositoryId": "dotln-angular",
+      "treeHash": "ca872636b13947a68cc3741b7d38d75ac2a84c37",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "plain",
+      "names": [
+        "install"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 6363,
+      "evidenceRef": "target-gate:1c131419-87af-48d1-b22b-3647346f01f2:install",
+      "recordedAt": "2026-10-24T16:58:49.078Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular:lint",
+      "repositoryId": "dotln-angular",
+      "treeHash": "ca872636b13947a68cc3741b7d38d75ac2a84c37",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "plain",
+      "names": [
+        "lint"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 27131,
+      "evidenceRef": "target-gate:1c131419-87af-48d1-b22b-3647346f01f2:lint",
+      "recordedAt": "2026-10-24T16:59:16.373Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular:test",
+      "repositoryId": "dotln-angular",
+      "treeHash": "ca872636b13947a68cc3741b7d38d75ac2a84c37",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "plain",
+      "names": [
+        "test"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 436,
+      "evidenceRef": "target-gate:1c131419-87af-48d1-b22b-3647346f01f2:test",
+      "recordedAt": "2026-10-24T16:59:16.965Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular:format",
+      "repositoryId": "dotln-angular",
+      "treeHash": "ca872636b13947a68cc3741b7d38d75ac2a84c37",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "plain",
+      "names": [
+        "format"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 686,
+      "evidenceRef": "target-gate:1c131419-87af-48d1-b22b-3647346f01f2:format",
+      "recordedAt": "2026-10-24T16:59:17.807Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular",
+      "repositoryId": "dotln-angular",
+      "treeHash": "ca872636b13947a68cc3741b7d38d75ac2a84c37",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "plain",
+      "names": [
+        "install",
+        "lint",
+        "test",
+        "format"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 34616,
+      "evidenceRef": "target-gate:1c131419-87af-48d1-b22b-3647346f01f2",
+      "recordedAt": "2026-10-24T16:59:17.881Z"
+    },
+    {
+      "checkId": "target:dotln-angular:install",
+      "repositoryId": "dotln-angular",
+      "treeHash": "ca872636b13947a68cc3741b7d38d75ac2a84c37",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "install"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 6286,
+      "evidenceRef": "target-gate:11edae8a-0d46-4059-807e-3c4fee39e9eb:install",
+      "recordedAt": "2026-10-24T16:59:36.741Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular:lint",
+      "repositoryId": "dotln-angular",
+      "treeHash": "ca872636b13947a68cc3741b7d38d75ac2a84c37",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "lint"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 26111,
+      "evidenceRef": "target-gate:11edae8a-0d46-4059-807e-3c4fee39e9eb:lint",
+      "recordedAt": "2026-10-24T17:00:03.046Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular:test",
+      "repositoryId": "dotln-angular",
+      "treeHash": "ca872636b13947a68cc3741b7d38d75ac2a84c37",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "test"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 444,
+      "evidenceRef": "target-gate:11edae8a-0d46-4059-807e-3c4fee39e9eb:test",
+      "recordedAt": "2026-10-24T17:00:03.639Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular:format",
+      "repositoryId": "dotln-angular",
+      "treeHash": "ca872636b13947a68cc3741b7d38d75ac2a84c37",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "format"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 689,
+      "evidenceRef": "target-gate:11edae8a-0d46-4059-807e-3c4fee39e9eb:format",
+      "recordedAt": "2026-10-24T17:00:04.485Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular:build",
+      "repositoryId": "dotln-angular",
+      "treeHash": "ca872636b13947a68cc3741b7d38d75ac2a84c37",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "build"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 423,
+      "evidenceRef": "target-gate:11edae8a-0d46-4059-807e-3c4fee39e9eb:build",
+      "recordedAt": "2026-10-24T17:00:05.065Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular:e2e",
+      "repositoryId": "dotln-angular",
+      "treeHash": "ca872636b13947a68cc3741b7d38d75ac2a84c37",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "e2e"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 27572,
+      "evidenceRef": "target-gate:11edae8a-0d46-4059-807e-3c4fee39e9eb:e2e",
+      "recordedAt": "2026-10-24T17:00:32.794Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular:visual",
+      "repositoryId": "dotln-angular",
+      "treeHash": "ca872636b13947a68cc3741b7d38d75ac2a84c37",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "visual"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 17199,
+      "evidenceRef": "target-gate:11edae8a-0d46-4059-807e-3c4fee39e9eb:visual",
+      "recordedAt": "2026-10-24T17:00:50.149Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular",
+      "repositoryId": "dotln-angular",
+      "treeHash": "ca872636b13947a68cc3741b7d38d75ac2a84c37",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "install",
+        "lint",
+        "test",
+        "format",
+        "build",
+        "e2e",
+        "visual"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 78724,
+      "evidenceRef": "target-gate:11edae8a-0d46-4059-807e-3c4fee39e9eb",
+      "recordedAt": "2026-10-24T17:00:50.225Z"
+    },
+    {
+      "checkId": "target:dotln-angular:install",
+      "repositoryId": "dotln-angular",
+      "treeHash": "df45f1b303bdf5ec312f9d2e2789a34537ab842c",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "install"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 6131,
+      "evidenceRef": "target-gate:5540cb1a-b9c9-4578-9f85-f8a1dc667a45:install",
+      "recordedAt": "2026-10-24T17:02:30.919Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular:lint",
+      "repositoryId": "dotln-angular",
+      "treeHash": "df45f1b303bdf5ec312f9d2e2789a34537ab842c",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "lint"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 28952,
+      "evidenceRef": "target-gate:5540cb1a-b9c9-4578-9f85-f8a1dc667a45:lint",
+      "recordedAt": "2026-10-24T17:03:00.028Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular:test",
+      "repositoryId": "dotln-angular",
+      "treeHash": "df45f1b303bdf5ec312f9d2e2789a34537ab842c",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "test"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 3064,
+      "evidenceRef": "target-gate:5540cb1a-b9c9-4578-9f85-f8a1dc667a45:test",
+      "recordedAt": "2026-10-24T17:03:03.262Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular:format",
+      "repositoryId": "dotln-angular",
+      "treeHash": "df45f1b303bdf5ec312f9d2e2789a34537ab842c",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "format"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 699,
+      "evidenceRef": "target-gate:5540cb1a-b9c9-4578-9f85-f8a1dc667a45:format",
+      "recordedAt": "2026-10-24T17:03:04.115Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular:build",
+      "repositoryId": "dotln-angular",
+      "treeHash": "df45f1b303bdf5ec312f9d2e2789a34537ab842c",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "build"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 2786,
+      "evidenceRef": "target-gate:5540cb1a-b9c9-4578-9f85-f8a1dc667a45:build",
+      "recordedAt": "2026-10-24T17:03:07.065Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular:e2e",
+      "repositoryId": "dotln-angular",
+      "treeHash": "df45f1b303bdf5ec312f9d2e2789a34537ab842c",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "e2e"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 30305,
+      "evidenceRef": "target-gate:5540cb1a-b9c9-4578-9f85-f8a1dc667a45:e2e",
+      "recordedAt": "2026-10-24T17:03:37.532Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular:visual",
+      "repositoryId": "dotln-angular",
+      "treeHash": "df45f1b303bdf5ec312f9d2e2789a34537ab842c",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "visual"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 17216,
+      "evidenceRef": "target-gate:5540cb1a-b9c9-4578-9f85-f8a1dc667a45:visual",
+      "recordedAt": "2026-10-24T17:03:54.929Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular",
+      "repositoryId": "dotln-angular",
+      "treeHash": "df45f1b303bdf5ec312f9d2e2789a34537ab842c",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "install",
+        "lint",
+        "test",
+        "format",
+        "build",
+        "e2e",
+        "visual"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 89153,
+      "evidenceRef": "target-gate:5540cb1a-b9c9-4578-9f85-f8a1dc667a45",
+      "recordedAt": "2026-10-24T17:03:55.012Z"
+    }
+  ]
+}

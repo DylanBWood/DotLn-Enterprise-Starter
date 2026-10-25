@@ -652,6 +652,22 @@
           "reopenWhen": "A later hook-admitted target publish is denied by the host auto-mode classifier, or the next planning pass rules on the literal host-rules fallback with WO-007's two publish observations in hand.",
           "targets": [],
           "at": "2026-10-24T16:06:27.911Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-013's two verified-phase draft publishes of 2026-10-24 (the one refused by the outward lint under starter v0.94.0 and the one under v0.96.1 that opened DotLn-Angular pull request #6) both ran the node-spelled helper as plain commands: the hook recorded the registered-target admission and the host allowed each call without a prompt; the refusal was the outward lint's, not the host's, and the one classifier denial was an unrelated read-only readback in the first session (docs/evidence/WO-013/host-qualification.md). The condition, a hook-admitted target publish denied by the host classifier, did not occur (WO-013-D014).",
+          "reopenWhen": "A hook-admitted target publish is denied by the host classifier, or the next planning pass rules on the registration trust entry.",
+          "targets": [],
+          "at": "2026-10-24T23:34:28.587Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-013's four target publish calls (the VER-001 draft refused by the outward lint, the VER-002 draft that opened DotLn-Angular #6, the VER-003 republish and the FINAL-003 final publish of 2026-10-25) each ran the node-spelled helper from the launchpad root, were admitted by the hook with a registeredTargetAdmission row of kind helper, and were allowed by the host without a prompt; no PermissionDenied row was recorded (docs/evidence/WO-013/host-qualification.md). These are observations for the planning pass that rules on the registration trust entry, not that ruling.",
+          "reopenWhen": "A hook-admitted target publish is denied by the host classifier, or the next planning pass rules on the registration trust entry.",
+          "targets": [],
+          "at": "2026-10-25T22:34:40.818Z"
         }
       ]
     },
@@ -2565,6 +2581,14 @@
           "reopenWhen": "An order touches libs/shared/state, the persisted-state feature, the shell notices container, the board store's devtools condition or the ui catalog, or adds a second RouteId; WO-013 is the first expected.",
           "targets": [],
           "at": "2026-10-24T16:06:27.930Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-013's final review (FINAL-002; WO-013-D013): the order added four stories and four entries to the Storybook browser list, so item (e)'s condition came near, but the toast wrapper under libs/shared/ui and the board browser spec's failure state are outside WO-013's declared surfaces, and the order added no second RouteId and touched neither libs/shared/state, the persisted-state feature, the shell notices container nor the board store's devtools condition. Item (e) is recorded as left, not fixed: a fix would change target bytes after the re-verification's uncached runs and the draft's CI, cost a gate run and a commit, and satisfy no criterion.",
+          "reopenWhen": "An order touches the toast wrapper or the board browser spec (item e), libs/shared/state, the persisted-state feature, the shell notices container or the board store's devtools condition, or adds a second RouteId; WO-014, which adds the Tools route and the catalog browser, is the next expected.",
+          "targets": [],
+          "at": "2026-10-24T23:34:28.574Z"
         }
       ]
     },
@@ -2766,6 +2790,312 @@
           "reopenWhen": "WO-013 is withdrawn under WO-013-D008's route (b) and a successor is filed; the successor's Depends on then says merge ordering.",
           "targets": [],
           "at": "2026-10-25T21:03:45.793Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-cc80d31da7cb539b",
+      "key": "decision:docs/evidence/WO-013/decisions.md#wo-013-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "bb62cf41bbd5ef95829e1d329b57f7b7747efeb0b76184d5addb66a0ed72d357",
+          "ref": "docs/evidence/WO-013/decisions.md#wo-013-d004",
+          "title": "WO-013-D004: In the next repair of this order or the first order that edits the generator log: move the sub-app section, plan lines and results together, to the end of the log as one dated section…",
+          "summary": "{ \"id\": \"WO-013-D004\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify; VER-001 finding F1\", \"decision\": \"Board as a follow-up, not a blocking finding: the target generator log carries both library invocations and their results, so criterion 6 holds, but the entry is split. The new 'Sub-app routes, 2026-10-24' section sits above the log's own preamble and table, and its success result is appended at the end of the file under the previous order's '2026-10-24 — events and state' heading, where a reader attributes it to that section.\", \"evidence\": [ \"docs/dev-reference/workspace/generator-log.md in the target at tree df45f1b303bdf5ec312f9d2e2789a34537ab842c: line 3 is the new section's headin",
+          "missing": false
+        },
+        {
+          "hash": "e1054c677c8e4d95ce77f16c117d2f582a49514a1b8313bb120a52a45c6670fe",
+          "ref": "docs/evidence/WO-013/decisions.md#wo-013-d004",
+          "title": "WO-013-D004: In the next repair of this order or the first order that edits the generator log: move the sub-app section, plan lines and results together, to the end of the log as one dated section…",
+          "summary": "{ \"id\": \"WO-013-D004\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify; VER-001 finding F1\", \"decision\": \"Board as a follow-up, not a blocking finding: the target generator log carries both library invocations and their results, so criterion 6 holds, but the entry is split. The new 'Sub-app routes, 2026-10-24' section sits above the log's own preamble and table, and its success result is appended at the end of the file under the previous order's '2026-10-24 — events and state' heading, where a reader attributes it to that section.\", \"evidence\": [ \"docs/dev-reference/workspace/generator-log.md in the target at tree df45f1b303bdf5ec312f9d2e2789a34537ab842c: line 3 is the new section's headin",
+          "missing": false
+        },
+        {
+          "hash": "4751022771722cf70b03fe2c0c0a9763cdc6898491c597c87178443f6bac53aa",
+          "ref": "docs/evidence/WO-013/decisions.md#wo-013-d004",
+          "title": "WO-013-D004: In the next repair of this order or the first order that edits the generator log: move the sub-app section, plan lines and results together, to the end of the log as one dated section…",
+          "summary": "{ \"id\": \"WO-013-D004\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify; VER-001 finding F1\", \"decision\": \"Board as a follow-up, not a blocking finding: the target generator log carries both library invocations and their results, so criterion 6 holds, but the entry is split. The new 'Sub-app routes, 2026-10-24' section sits above the log's own preamble and table, and its success result is appended at the end of the file under the previous order's '2026-10-24 — events and state' heading, where a reader attributes it to that section.\", \"evidence\": [ \"docs/dev-reference/workspace/generator-log.md in the target at tree df45f1b303bdf5ec312f9d2e2789a34537ab842c: line 3 is the new section's headin",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "WO-013 repair D011 moves the sub-app plan and its result into one dated section after events/state, preserving every line. The bounded structure/content comparison and all seven target review commands pass at tree dc997234bc57801c1909a76fa45f5524f3e3dfab.",
+          "reopenWhen": "A later generator-log edit separates a planned invocation from its observed result or places a dated entry above the preamble.",
+          "targets": [],
+          "at": "2026-10-24T22:54:13.096Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c789b3662529a11c",
+      "key": "decision:docs/evidence/WO-013/decisions.md#wo-013-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6dc021d63514d02f47546d2823ab271e4662dc9cd8b8ff3e6854e62cbfd88f17",
+          "ref": "docs/evidence/WO-013/decisions.md#wo-013-d005",
+          "title": "WO-013-D005: Next planning pass: (1) write a multi-project check as 'npx nx run-many -t <target> -p <a> <b>' in any order it files or amends; (2) restate WO-013's dependency on WO-007 as merge…",
+          "summary": "{ \"id\": \"WO-013-D005\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify; VER-001 finding F2 and the planning receipt's criterion:1 known issue\", \"decision\": \"Board two order-text observations for the next planning pass; neither is an implementation defect and neither fails a criterion. (1) Criterion 3's literal command 'npx nx test scene machinery' runs only scene:test, because Nx parses machinery as an argument to that target; it exits 0, and both suites pass when run as projects, so the criterion's intent holds on other evidence. (2) The reopening condition of the 2026-10-24 receipt's criterion:1 known issue occurred: the subject imports nothing from @dotln-angular/state, @dotln-angular/d",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-013's final review (WO-013-D014): both order-text observations keep planning as their owner. The second 2026-10-24 planning pass left WO-013's text unchanged and this row untriaged; criterion 3's intent held on uncached run-many runs in VER-001, VER-002 and this review, and the WO-007 dependency's restatement waits for the pass that places the next lane.",
+          "reopenWhen": "The next planning pass files or amends a DotLn-Angular order, or a later pass cites WO-013's WO-007 dependency as composition.",
+          "targets": [],
+          "at": "2026-10-24T23:34:28.609Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-013-D017: the integrated 2026-10-25 planning pass D4/D5 applies the run-many form to amended multi-project checks, including WO-014 and WO-008. D005 item 2 remains under that pass's candidate FUP-2138dd6781c01e55: preserve this active order's text and restate merge ordering only in a successor. The two-project-form check candidate is separately FUP-dd50fa3363fd7d0a.",
+          "reopenWhen": "WO-013 is withdrawn and a successor is filed, or a later pass treats its WO-007 dependency as functional composition.",
+          "targets": [],
+          "at": "2026-10-25T21:51:45.513Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-bc6508078fd59255",
+      "key": "decision:docs/evidence/WO-013/decisions.md#wo-013-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "36e6b7096f380fb14871108038110668e1531426f6394b9850da23294c6e64fd",
+          "ref": "docs/evidence/WO-013/decisions.md#wo-013-d006",
+          "title": "WO-013-D006: Final review of WO-013 disposes the six rows: for WO-007-D019 item (e), add a dotln-toast story and an axe check of the board's failure state within the Boy Scout bound, or record it as…",
+          "summary": "{ \"id\": \"WO-013-D006\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify; VER-001 finding F3\", \"decision\": \"Record the verifier's judgment of the six pending follow-up rows the implementation-ready advisory matched, which the executor's evidence neither fixed nor recorded as left. Only WO-007-D019 item (e) has an occurred condition: this order touched the Storybook catalog (four stories and the catalog's browser list). Items (a) to (d) and (f) of that row did not occur: no RouteId was added (RouteId stays 'board' and only the board facade dispatches navigate), and libs/shared/state, the persisted-state feature, the shell notices container and the board store's devtools condition are untouche",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "WO-013's final review disposed the six rows D006 named (WO-013-D014): WO-007-D019's row is deferred with item (e) recorded as left and its reason; FUP-1508c6254455ccf3 and FUP-98c85b750cb36bd4 were declined by the second 2026-10-24 planning pass (D10) before this review; FUP-2479f6d32b2396a8 is deferred again with WO-013's draft-publish observations; FUP-48b1009d908e251d (C8) stays deferred because WO-016 has not merged; FUP-ffa034330edc5ff0 was settled by the second 2026-10-24 planning pass (D3).",
+          "reopenWhen": "A repair of WO-013 changes the Storybook catalog, libs/shared/state or the shell notices container before the order closes.",
+          "targets": [],
+          "at": "2026-10-24T23:34:28.581Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-40112dbc26c91d9e",
+      "key": "decision:docs/evidence/WO-013/decisions.md#wo-013-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2cbae7e6eb5832bd4f1cba9f81559be668d49075157b8b3483b5084dd44e5fb7",
+          "ref": "docs/evidence/WO-013/decisions.md#wo-013-d007",
+          "title": "WO-013-D007: In the first order that next changes apps/dotln/src/app/app.routes.ts (WO-014 adds the Tools route): add a not-found route that renders a translated not-found page with a link back to…",
+          "summary": "{ \"id\": \"WO-013-D007\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify; VER-001 finding F4\", \"decision\": \"Board as a follow-up the app's handling of an unknown path, which this order neither introduced nor changed: a path no route matches, such as /tools before it has a route or /scene/x, fails the initial navigation with NG04002, leaves the URL at / and the main region empty, and shows the generic application-error notice. main's app.routes.ts has no wildcard route either, so this is not a regression; the new Tools group, which has no route, makes the path likelier to be tried.\", \"evidence\": [ \"VER-001 scratch Playwright probe against the served production build: for /tools and /scene/x t",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-013's final review (WO-013-D014): the unknown-path behavior is unchanged from main and outside this order's criteria; apps/dotln/src/app/app.routes.ts gained only the two lazy children. WO-014, which adds the Tools route, is the first order that next changes that file.",
+          "reopenWhen": "An order changes apps/dotln/src/app/app.routes.ts, or the operator reports an empty page after following a link.",
+          "targets": [],
+          "at": "2026-10-24T23:34:28.603Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "WO-013-D017: the integrated 2026-10-25 planning pass D5 places the translated not-found page, trailing wildcard route, routes spec and browser case explicitly in WO-014 (design, step 10 and criterion 4). No target source changes in this repair.",
+          "reopenWhen": "WO-014 removes or fails the declared unknown-path behavior, or its lazy-route composition reveals a conflict.",
+          "targets": [
+            "WO-014"
+          ],
+          "at": "2026-10-25T21:51:45.520Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-032068baddbe1e4e",
+      "key": "decision:docs/evidence/WO-013/decisions.md#wo-013-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4d88618dcd2000b0b394a59b49bc73d8884a82dbfea8d4196353695c82db9be5",
+          "ref": "docs/evidence/WO-013/decisions.md#wo-013-d008",
+          "title": "WO-013-D008: Operator route, safe default above. Alternatives: (a) ask core for a kit route, either a base advance admitted when the new base descends from the activated base and equals the subject's…",
+          "summary": "{ \"id\": \"WO-013-D008\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify; verified-phase draft publish after verification-result pass\", \"decision\": \"Hold the verified-phase draft publish; the operator chooses the route that rebinds WO-013's base, and the safe default applies until then. The helper refused before any push: it composes the body's Change table and the base-tree exemption from the activation's base bc9133e932a00d33c15bc5289d683b8078f51ee4, the empty initial commit, so the table lists 515 files, earlier orders' docs/dotln records among them, and the outward lint refuses their launchpad identifiers (which are repaired, never confirmed). The draft commit itself is right: parent 2ab",
+          "missing": false
+        },
+        {
+          "hash": "b218cc51b29374bfea8397213fa00b2a141555a06a069ba1d1b209684988954d",
+          "ref": "docs/evidence/WO-013/decisions.md#wo-013-d008",
+          "title": "WO-013-D008: Operator route, safe default above. Alternatives: (a) ask core for a kit route, either a base advance admitted when the new base descends from the activated base and equals the subject's…",
+          "summary": "{ \"id\": \"WO-013-D008\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify; verified-phase draft publish after verification-result pass\", \"decision\": \"Hold the verified-phase draft publish; the operator chooses the route that rebinds WO-013's base, and the safe default applies until then. The helper refused before any push: it composes the body's Change table and the base-tree exemption from the activation's base bc9133e932a00d33c15bc5289d683b8078f51ee4, the empty initial commit, so the table lists 515 files, earlier orders' docs/dotln records among them, and the outward lint refuses their launchpad identifiers (which are repaired, never confirmed). The draft commit itself is right: parent 2ab",
+          "missing": false
+        },
+        {
+          "hash": "4ed76df157ce6dc039e38982fd30d35029fcfd3a4cade759e2a12bf9ce151195",
+          "ref": "docs/evidence/WO-013/decisions.md#wo-013-d008",
+          "title": "WO-013-D008: Operator route, safe default above. Alternatives: (a) ask core for a kit route, either a base advance admitted when the new base descends from the activated base and equals the subject's…",
+          "summary": "{ \"id\": \"WO-013-D008\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify; verified-phase draft publish after verification-result pass\", \"decision\": \"Hold the verified-phase draft publish; the operator chooses the route that rebinds WO-013's base, and the safe default applies until then. The helper refused before any push: it composes the body's Change table and the base-tree exemption from the activation's base bc9133e932a00d33c15bc5289d683b8078f51ee4, the empty initial commit, so the table lists 515 files, earlier orders' docs/dotln records among them, and the outward lint refuses their launchpad identifiers (which are repaired, never confirmed). The draft commit itself is right: parent 2ab",
+          "missing": false
+        },
+        {
+          "hash": "a4582dc1978594afea08706198bb23c599afccd9cbeef96623cabf538bb2bf99",
+          "ref": "docs/evidence/WO-013/decisions.md#wo-013-d008",
+          "title": "WO-013-D008: Operator route, safe default above. Alternatives: (a) ask core for a kit route, either a base advance admitted when the new base descends from the activated base and equals the subject's…",
+          "summary": "{ \"id\": \"WO-013-D008\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify; verified-phase draft publish after verification-result pass\", \"decision\": \"Hold the verified-phase draft publish; the operator chooses the route that rebinds WO-013's base, and the safe default applies until then. The helper refused before any push: it composes the body's Change table and the base-tree exemption from the activation's base bc9133e932a00d33c15bc5289d683b8078f51ee4, the empty initial commit, so the table lists 515 files, earlier orders' docs/dotln records among them, and the outward lint refuses their launchpad identifiers (which are repaired, never confirmed). The draft commit itself is right: parent 2ab",
+          "missing": false
+        },
+        {
+          "hash": "cd7506f2610fc8a283e62cd629166073a4253b220b880cddf9ff259310daa0ae",
+          "ref": "docs/evidence/WO-013/decisions.md#wo-013-d008",
+          "title": "WO-013-D008: Operator route, safe default above. Alternatives: (a) ask core for a kit route, either a base advance admitted when the new base descends from the activated base and equals the subject's…",
+          "summary": "{ \"id\": \"WO-013-D008\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: verify; verified-phase draft publish after verification-result pass\", \"decision\": \"Hold the verified-phase draft publish; the operator chooses the route that rebinds WO-013's base, and the safe default applies until then. The helper refused before any push: it composes the body's Change table and the base-tree exemption from the activation's base bc9133e932a00d33c15bc5289d683b8078f51ee4, the empty initial commit, so the table lists 515 files, earlier orders' docs/dotln records among them, and the outward lint refuses their launchpad identifiers (which are repaired, never confirmed). The draft commit itself is right: parent 2ab",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 5,
+          "status": "settled",
+          "reason": "The operator chose route (a) (WO-013-D009); core shipped the merge-base publication in starter v0.96.1 (core WO-230), the fix integrated it (WO-013-D010), the re-verified draft published as DotLn-Angular pull request #6 at 99a30befa150e5d77a64259013e62b9d0372270e with 83 change rows and no earlier-order record row (host-qualification.md, the VER-002 session), and FINAL-002 adopts that commit as the reviewed commit and publishes with the same helper (WO-013-D013, D014).",
+          "reopenWhen": "The final publish of WO-013 or of a later target order is refused for a Change table or base-tree exemption composed from the activation base.",
+          "targets": [],
+          "at": "2026-10-24T23:34:28.592Z"
+        },
+        {
+          "sourceRevision": 5,
+          "status": "deferred",
+          "reason": "Reopened by WO-013-D015 and deferred again: the settlement of 2026-10-24T23:3xZ anticipated FINAL-002's publish, but the result transition was refused first by the pre-review commit lint, which still ranges from the activation base (the same class as this row's refused Change table); the publish's own composition from the merge base holds (pull request #6, 83 rows), and the lint waits on the next kit update.",
+          "reopenWhen": "The kit update that moves the pre-review commit lint to the described merge base reaches main and WO-013's next final review passes and publishes, or the final publish is refused for a Change table or base-tree exemption composed from the activation base.",
+          "targets": [],
+          "at": "2026-10-24T23:49:04.714Z"
+        },
+        {
+          "sourceRevision": 5,
+          "status": "deferred",
+          "reason": "WO-013-D016/D017: starter v0.99.0 is integrated; the fetched target base is unchanged, the real pre-review lint passes over one commit, and seven transition controls pass. The prior merge-base publication reproduction and draft #6 remain valid; settlement waits for the independent verified draft and final reviewed publish.",
+          "reopenWhen": "The next final review passes and publishes, or publication refuses its Change table, base-tree exemption or commit range.",
+          "targets": [],
+          "at": "2026-10-25T21:51:45.525Z"
+        },
+        {
+          "sourceRevision": 5,
+          "status": "settled",
+          "reason": "WO-013's final review FINAL-003 recorded pass on 2026-10-25 (WO-013-D019), and its final publish ran: the helper composed the change from the merge base 2ab4f285, pushed the reviewed commit 99a30bef and the records commit 61cf1ae9 over the draft under its lease and marked DotLn-Angular pull request #6 ready, with no refusal (docs/evidence/WO-013/host-qualification.md, Final publish). The refused verified-phase publish this row records (WO-013-D008) is resolved: the draft opened #6 under starter v0.96.1 and the final publish reused it under starter v0.99.0.",
+          "reopenWhen": "A later target order's publish refuses its Change table, base-tree exemption or commit range by reading the activation base.",
+          "targets": [],
+          "at": "2026-10-25T22:34:40.797Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6f60d461e1ef101b",
+      "key": "decision:docs/evidence/WO-013/decisions.md#wo-013-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fdedfd937d9e6aead59a9d0f8a1ef6e6b065cd3c2a43d85a763bc0911331024a",
+          "ref": "docs/evidence/WO-013/decisions.md#wo-013-d009",
+          "title": "WO-013-D009: Fix dispatch of WO-013, after the operator's starter update carries core's target-publish base fix: integrate main with npm run worktree -- integrate WO-013 and run its printed affected…",
+          "summary": "{ \"id\": \"WO-013-D009\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: final review; operator direction during the dispatch\", \"decision\": \"Fail FINAL-001 on D008's blocker and send WO-013 to fix under the route the operator chose. During this dispatch the operator directed the review to send the order back to fix: the blocker needs a change in core, the operator will take the kit update that carries it, and the fix dispatch will integrate the latest changes. That is D008's route (a). A pass obliges this review to commit the reviewed target state and run the target publish, and the helper refuses that publish before any push: it composes the body's Change table and the base-tree exemption from the",
+          "missing": false
+        },
+        {
+          "hash": "d6ff985996a194e59c7d0608d50b8c236bf9c92658862ae57f995ab2ee71067a",
+          "ref": "docs/evidence/WO-013/decisions.md#wo-013-d009",
+          "title": "WO-013-D009: Fix dispatch of WO-013, after the operator's starter update carries core's target-publish base fix: integrate main with npm run worktree -- integrate WO-013 and run its printed affected…",
+          "summary": "{ \"id\": \"WO-013-D009\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: final review; operator direction during the dispatch\", \"decision\": \"Fail FINAL-001 on D008's blocker and send WO-013 to fix under the route the operator chose. During this dispatch the operator directed the review to send the order back to fix: the blocker needs a change in core, the operator will take the kit update that carries it, and the fix dispatch will integrate the latest changes. That is D008's route (a). A pass obliges this review to commit the reviewed target state and run the target publish, and the helper refuses that publish before any push: it composes the body's Change table and the base-tree exemption from the",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Every step D009's followup named has run: the fix integrated main at a7a076247cd817cec0b3f57c5d1fc9f44668da0c (starter v0.96.1) with its affected checks (WO-013-D010), confirmed the body composed from the fetched merge base (83 rows, outward lint passing; repair-publication.json), applied D004's generator-log move (WO-013-D011); VER-002 reran the verified-phase draft publish, which opened pull request #6; FINAL-002 disposes D006's rows and publishes (WO-013-D013, D014).",
+          "reopenWhen": "FINAL-002's final publish is refused, or origin/main of DotLn-Angular advances past 2ab4f28501628cf95dd0102c42440fd7de9f8055 before pull request #6 merges.",
+          "targets": [],
+          "at": "2026-10-24T23:34:28.598Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "Reopened by WO-013-D015 and deferred again: D009's fix steps ran (integration at starter v0.96.1, the merge-base composition, the generator-log move, VER-002's draft publish), but the next final review could not record pass because the pre-review commit lint still ranges from the activation base; a second fix under the same core route follows the next kit update.",
+          "reopenWhen": "WO-013's next final review records pass and publishes, or the starter update leaves the pre-review commit lint unchanged and D008 route (b) becomes the remaining route.",
+          "targets": [],
+          "at": "2026-10-24T23:49:04.720Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-013-D016/D017: the second fix integrates main 04c45cfa and discharges the kit/lint repair without changing the target. Preserve the verifier's draft-publish obligation and final reviewer's pass/publish obligation; a read-only lint success is not a live publication.",
+          "reopenWhen": "The next final review records pass and publishes, or a later result/publication refusal exposes an unresolved base reader.",
+          "targets": [],
+          "at": "2026-10-25T21:51:45.531Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-013's final review FINAL-003 recorded pass on 2026-10-25 (WO-013-D019), and its final publish ran: the helper composed the change from the merge base 2ab4f285, pushed the reviewed commit 99a30bef and the records commit 61cf1ae9 over the draft under its lease and marked DotLn-Angular pull request #6 ready, with no refusal (docs/evidence/WO-013/host-qualification.md, Final publish). The fix route this row records (WO-013-D009) is complete: both kit fixes reached the worktree, the independent verification republished the draft, and the final review passed and published.",
+          "reopenWhen": "A later target order's result transition or publication refuses on a base reader that still reads the activation base.",
+          "targets": [],
+          "at": "2026-10-25T22:34:40.805Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a59b958a5a2c9e8b",
+      "key": "decision:docs/evidence/WO-013/decisions.md#wo-013-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "57fc2e3cb69c5263d79d6310fd906b9969be6bd6b1c0478a1c80efd0f114b28f",
+          "ref": "docs/evidence/WO-013/decisions.md#wo-013-d015",
+          "title": "WO-013-D015: Fix dispatch of WO-013 after the starter update that carries core's fix to the pre-review commit lint (lint the commits between the described merge base of the subject and the target's…",
+          "summary": "{ \"id\": \"WO-013-D015\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: final review; final-review-result pass refused by the pre-review commit lint\", \"decision\": \"Fail FINAL-002 on a reproduced blocker of the same class as D008 and send WO-013 back to fix under the operator's route (a) of D009. The result transition's pre-review commit lint (scripts/lib/target-commit-lint.mjs, lintReviewedTargetCommits, called by scripts/resume.mjs for final-review-result pass on a target order) lints every commit from the reviewed subject's baseCommit to its commit, and reviewedTargetSubject binds baseCommit to the activation base bc9133e932a00d33c15bc5289d683b8078f51ee4, the repository's empty initial commit. I",
+          "missing": false
+        },
+        {
+          "hash": "b117e6007af2b9f6c3c384b815b0e9cfdaaa23457f41a91cdd63e2dcd2dfa1f0",
+          "ref": "docs/evidence/WO-013/decisions.md#wo-013-d015",
+          "title": "WO-013-D015: Fix dispatch of WO-013 after the starter update that carries core's fix to the pre-review commit lint (lint the commits between the described merge base of the subject and the target's…",
+          "summary": "{ \"id\": \"WO-013-D015\", \"date\": \"2026-10-24\", \"dispatch\": \"resume: final review; final-review-result pass refused by the pre-review commit lint\", \"decision\": \"Fail FINAL-002 on a reproduced blocker of the same class as D008 and send WO-013 back to fix under the operator's route (a) of D009. The result transition's pre-review commit lint (scripts/lib/target-commit-lint.mjs, lintReviewedTargetCommits, called by scripts/resume.mjs for final-review-result pass on a target order) lints every commit from the reviewed subject's baseCommit to its commit, and reviewedTargetSubject binds baseCommit to the activation base bc9133e932a00d33c15bc5289d683b8078f51ee4, the repository's empty initial commit. I",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Boarded by WO-013's second final review (FINAL-002, WO-013-D015): final-review-result pass was refused by the kit's pre-review commit lint, which ranges from the activation base and tripped on two subjects already merged on the target's main (78 and 90 characters); the order's own commit has a 61-character subject. The fix waits for the kit update that moves that lint to the described merge base, as the operator's record directs for a fix that waits on a kit release.",
+          "reopenWhen": "The starter update that carries core's fix to the pre-review commit lint reaches main (the operator then dispatches resume: fix in the wo-013 worktree), or core declines the fix, or origin/main of DotLn-Angular advances past 2ab4f28501628cf95dd0102c42440fd7de9f8055 before the fix integrates.",
+          "targets": [],
+          "at": "2026-10-24T23:49:04.707Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-013-D017 reopens this row on core WO-231 reaching the worktree in starter v0.99.0. Integration and reproduction pass: one described commit, activation provenance unchanged, all seven imported controls green. The independent verification, draft publication and final-review sequence remains with those dispatches.",
+          "reopenWhen": "Independent verification reproduces a defect, the target base or subject advances, or the next final-review result/publish passes or refuses.",
+          "targets": [],
+          "at": "2026-10-25T21:51:45.537Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-013's final review FINAL-003 recorded pass on 2026-10-25 (WO-013-D019), and its final publish ran: the helper composed the change from the merge base 2ab4f285, pushed the reviewed commit 99a30bef and the records commit 61cf1ae9 over the draft under its lease and marked DotLn-Angular pull request #6 ready, with no refusal (docs/evidence/WO-013/host-qualification.md, Final publish). The pre-review commit lint this row records (WO-013-D015) let final-review-result pass record: it linted the one described commit, and FINAL-003 reproduced that read-only beforehand (WO-013-D018).",
+          "reopenWhen": "The pre-review commit lint refuses a later target order on commits already merged on its base.",
+          "targets": [],
+          "at": "2026-10-25T22:34:40.811Z"
         }
       ]
     }

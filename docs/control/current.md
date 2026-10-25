@@ -1,24 +1,24 @@
 # Current control state
 
-## WO-007
+## WO-013
 
-- Work order: WO-007
-- Work-order path: docs/work-orders/WO-007-events-stores-data-access.md
-- Repository: dotln-angular @ 90fa6e8d879cb499107ff79d1051c200d17c1cbc
+- Work order: WO-013
+- Work-order path: docs/work-orders/WO-013-sub-app-shell-and-menu.md
+- Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4
 - Phase: closed
-- Latest verification: VER-002
-- Verification path: dotln-angular@4304a9d573527911d24dafe43bff319d461302e3:docs/dotln/verifications/WO-007/VER-002.md
+- Latest verification: VER-003
+- Verification path: dotln-angular@61cf1ae9e8434bd73d1bbd89c16850996a9e7e27:docs/dotln/verifications/WO-013/VER-003.md
 - Latest verdict: pass
-- Final review: FINAL-001
-- Final-review path: dotln-angular@4304a9d573527911d24dafe43bff319d461302e3:docs/dotln/final-reviews/WO-007/FINAL-001.md
-- Latest attestation: harness claude-code; version 2.1.310; model claude-fable-5-1; effort max; source claude-session-readback; account not-applicable
+- Final review: FINAL-003
+- Final-review path: dotln-angular@61cf1ae9e8434bd73d1bbd89c16850996a9e7e27:docs/dotln/final-reviews/WO-013/FINAL-003.md
+- Latest attestation: harness claude-code; version 2.1.310; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable
 - Effort drift: max -> xhigh
-- Latest recordedAt: 2026-10-24T16:16:04.507Z
-- Elapsed implementation: 3565379 ms
-- Elapsed verification: 1489252 ms
-- Elapsed repair: 1897331 ms
-- Elapsed finalReview: 2222089 ms
-- Latest checkpoint: 920ae2c8f974d7bf15a942c3f238bf1c73905760 (restore: `git checkout refs/dotln/checkpoint/WO-007/12 -- .`)
+- Latest recordedAt: 2026-10-25T22:29:52.403Z
+- Elapsed implementation: 2315742 ms
+- Elapsed verification: 590807 ms
+- Elapsed finalReview: 954804 ms
+- Elapsed repair: 665958 ms
+- Latest checkpoint: 8fedfbecd2491c4ab5e12b6d3f35f11834b4f338 (restore: `git checkout refs/dotln/checkpoint/WO-013/23 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct, override-record
 

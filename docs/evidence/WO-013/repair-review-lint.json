@@ -1,0 +1,68 @@
+{
+  "recordedAt": "2026-10-25T21:47:12.098Z",
+  "command": "node scripts/harness.mjs bounded -- node docs/evidence/WO-013/repair-commit-lint.mjs",
+  "exitCode": 0,
+  "activationBase": "bc9133e932a00d33c15bc5289d683b8078f51ee4",
+  "fetchedBaseTip": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+  "describedBase": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+  "subjectCommit": "99a30befa150e5d77a64259013e62b9d0372270e",
+  "targetTree": "dc997234bc57801c1909a76fa45f5524f3e3dfab",
+  "activationRangeCommits": 17,
+  "describedRangeCommits": 1,
+  "subjectLength": 61,
+  "oldRangeRefusals": [
+    {
+      "commit": "2e983e8ad40252b90453b5b03ae65f7f49525df5",
+      "subjectLength": 90
+    },
+    {
+      "commit": "90fa6e8d879cb499107ff79d1051c200d17c1cbc",
+      "subjectLength": 78
+    }
+  ],
+  "updatedLint": "pass",
+  "controlSegmentUnchanged": true,
+  "controlSegmentSha256": "273197a3077557b4ef8cec0bd97d158b3e7a5722761660cb917da0416de545c9",
+  "targetCleanBeforeAndAfter": true,
+  "regressions": {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern='^target final review (refuses a nonconventional|names a 90-character|excludes merged subjects|names the described range)' scripts/test-target-worktree-start.mjs",
+    "startedAt": "2026-10-25T21:47:22.086Z",
+    "finishedAt": "2026-10-25T21:47:45.921Z",
+    "durationMs": 23835,
+    "exitCode": 0,
+    "passed": 7,
+    "failed": 0,
+    "cases": [
+      "A nonconventional new commit refuses without a lifecycle event.",
+      "A 90-character new subject refuses at the existing 72-character limit.",
+      "Merged invalid subjects are excluded with the fetched ref present, even when origin is offline; the activation record is unchanged.",
+      "An absent fetched ref falls back to the activation range, names that fallback and refuses without a lifecycle event.",
+      "A new format violation names the described range, activation base and offending commit.",
+      "A new launchpad identifier is still refused with the same range context.",
+      "New AI attribution is still refused with the same range context."
+    ]
+  },
+  "reportPreservation": [
+    {
+      "path": "docs/verifications/WO-013/VER-001.md",
+      "sha256": "sha256:04e75d72fd0687a9116be70e017f49fcf017dcc75acd5e13cca05261bd60b617",
+      "matchesFiledHash": true
+    },
+    {
+      "path": "docs/final-reviews/WO-013/FINAL-001.md",
+      "sha256": "sha256:25b8142339ff62dc74f50859e51e877a9b6edf6a02a9d8ab181709b9f3cef975",
+      "matchesFiledHash": true
+    },
+    {
+      "path": "docs/verifications/WO-013/VER-002.md",
+      "sha256": "sha256:6af4cb2d1eaf18b49271765d2056c89e62af6c4e96fd8a0cd3c0a59f9207b1bb",
+      "matchesFiledHash": true
+    },
+    {
+      "path": "docs/final-reviews/WO-013/FINAL-002.md",
+      "sha256": "sha256:395cbf84e2ca010bd0eace619146e452c0584033c90803cbbae66e88086ad4f4",
+      "matchesFiledHash": true
+    }
+  ],
+  "limits": "The real-worktree probe invokes the same lint function as final-review-result pass without recording that transition. Synthetic fixture tests exercise the result transition. Verification, final review and publication remain separate dispatches."
+}
