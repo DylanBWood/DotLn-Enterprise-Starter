@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "commit": "0027d9c1e574d161b6215d43b80061eccda37340",
-  "tag": "v0.97.0",
+  "commit": "a81561976c8629834a5a18623b097fa4d7d8681a",
+  "tag": "v0.97.1",
   "files": [
     {
       "path": ".agents/skills/dotln-executor/SKILL.md",
@@ -161,7 +161,7 @@
     },
     {
       "path": "UPSTREAM.md",
-      "sha256": "0f5fabdcfdbde46ccaaf2237b1aeedf9d085f711b2f5e2b73caa7e910a81449f"
+      "sha256": "72991281596c881798acb0c1dbd10698a520269fb585b51a6bc43433124415b6"
     },
     {
       "path": "corpus/fixtures/ids/command-id-vectors.jsonl",
@@ -205,7 +205,7 @@
     },
     {
       "path": "docs/product/07-execution-guide.md",
-      "sha256": "c6dfd4e0feb69af6103078ba2efac2c280449306ca37e050686146bee9adcd43"
+      "sha256": "a6a9769df9657b46654e33070e38800c48c46f6a7158e94d32c1a8b045976d1e"
     },
     {
       "path": "docs/product/08-publication-compiler.md",
@@ -2857,7 +2857,7 @@
     },
     {
       "path": "scripts/fixtures/target-worktree-cases.json",
-      "sha256": "c2e729d8eee650cd25c9c851a96d18ba9e52e14f15ac364e2f5d3df83cd1ea57"
+      "sha256": "cd245f490beeeffc22cdfd8809e9f80062f583f773ef8fe97c728ff2c30e4b26"
     },
     {
       "path": "scripts/fixtures/vertical/crash.mjs",
@@ -3384,8 +3384,12 @@
       "sha256": "553ef302a279414386dd31db71aa6994c26862917e38c73042cd7a8d34a79d68"
     },
     {
+      "path": "scripts/lib/target-base.mjs",
+      "sha256": "074582f61484c529bfff69c3c69b34270662c85c542c62b0a029d369009a1052"
+    },
+    {
       "path": "scripts/lib/target-commit-lint.mjs",
-      "sha256": "3e18b03b30cda23cf7241201b6fdb3f56861fb0647a585f9934cb1021f271657"
+      "sha256": "5199ff3a388e6e8d5c1b8b479e41677ba4ca83d65737b060614824a3a4a4e58a"
     },
     {
       "path": "scripts/lib/target-gate.mjs",
@@ -3397,7 +3401,7 @@
     },
     {
       "path": "scripts/lib/target-publish.mjs",
-      "sha256": "bc0d00046c34604512854ceffe3681ca3340913b948022d194e87898ddfbe72a"
+      "sha256": "cc337167c3630583585ac98ff1ed623e2177cbb39732e46a6bb77076819e9fe5"
     },
     {
       "path": "scripts/lib/target-record-reader.mjs",
@@ -3909,7 +3913,7 @@
     },
     {
       "path": "scripts/test-target-worktree-start.mjs",
-      "sha256": "d8a10671faf1123d128350ea4aafded929111d586d7fad9763776ac6f9944ca5"
+      "sha256": "4bd8395eb328727d2aa8c7607e618bfea026c4913f89a3c587b07b778976b038"
     },
     {
       "path": "scripts/test-target-worktree.fixture-inputs.json",
