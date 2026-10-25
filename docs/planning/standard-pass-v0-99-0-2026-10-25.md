@@ -380,7 +380,87 @@ text (§6 D4 lists where); WO-013-D005's two observations are disposed (the
 
 ### 9.1 Known issues from this pass's receipt, by order
 
-Recorded after the refutation receipt is filed; see §14.
+The refutation (§14) returned `aligned-with-findings` on every order and for
+the plan, with thirty-one known issues and no hold; WO-013 is carried by
+hash. The six judged orders are frozen at the judged subject, so the next
+pass amends them for these and pays its refutation then; they are listed
+here so nothing is re-derived, and an executor who activates an order before
+that amendment meets each inside the order's authority and records it in the
+decisions file. The receipt's reopening observations are on the receipt.
+Where this pass's own records already answer a finding, the answer is named.
+
+- **WO-014.** (a) The allow-list guards by field name only; an overlap
+  check of every string in the data against the run's definitions (a shared
+  run of eight consecutive words, WO-018's form) would catch a near-verbatim
+  face or title that the field check admits. (b) Criterion 5 rests on each
+  worker's own statement; WO-018 criterion 4 now puts the launchpad's read
+  observation beside each statement and WO-014, the larger fan-out, lacks it.
+  (c) The objective classifies rows four ways and the status enum has three
+  values; where a scene element and a metric are recorded is unasserted, and
+  the untyped share is unbounded. (d) No criterion asserts the data-access
+  seam that lets candidate C1 replace the bundled source without edits in a
+  feature (the design names `CatalogLoader` as the seam; a criterion does
+  not). (e) The summary pinned at 3,463 rows and eleven maps meets WO-018's
+  seventh work with no rule for an in-repo map. (f) The fan-out's token spend
+  has no ceiling or stop rule declared before the spend.
+- **WO-015.** (a) The rail lists three tools per work while the engine
+  interprets only the first scene's kinds, so most per-work entries equip
+  only to be refused, and no criterion requires a visible distinction
+  between a tool the engine runs and one it refuses. (b) The clarify
+  affordance has no defined effect (the design says a typed note answered
+  from `clarifications.json` or exported as JSON; no criterion says so).
+- **WO-016.** (a) The sink's loopback check does not cover a page on another
+  origin open in the operator's browser posting to `127.0.0.1`; an `Origin`
+  or `Host` check is the missing guard. (b) "The repository's ignored intake"
+  names no repository, and a sink pointed at the launchpad's intake would be
+  a file-system channel into planning input that bypasses the issue route
+  (this pass's amendment requires a Git-ignored directory; the next names
+  DotLn-Angular's own tree). (c) Criterion 3's counts are asserted against
+  counts the executor set, and the v0.96.1 baseline in the parenthetical can
+  mislead a verifier reading a later starter. (d) No rule maps each idea
+  kind to its effect on the beats, so the e2e passes with the beats
+  unchanged (the caption rule says only `addWait` moves them; the finding
+  asks for the rule per kind in `machinery.md`). (e) No spec covers a stored
+  value under `dotln-angular.machinery` that fails to parse. (f) Whether
+  `actor` carries harness, model and effort in the committed fixtures, and
+  whether a model label is a pin or an observed value, is unstated (the
+  amended types say the composite carries them; the fixture's values are the
+  executor's to record). (g) `grep -c '"recordedAt"'` counts lines, not rows.
+  (h) The copies' provenance is the operator's own systems rather than
+  public mining, and whether the sources are public is unstated (the
+  platform's control segments and role files are public repositories; the
+  order should say so).
+- **WO-008.** (a) The foundation item sits behind three outcome orders and
+  WO-014's fan-out lies on its route; the sequence is the operator's (D7).
+  (b) The at-rest probe reads only `localStorage` and `sessionStorage`, not
+  IndexedDB, Cache Storage or cookies. (c) The matrix has no row for a page
+  reload, which WO-017's e2e needs after its sign-in. (d) Ten receipts name
+  this order before its activation; this pass's amendments changed four of
+  its criteria, and the next pass weighs leaving its text alone. (e) The
+  provider swap is claimed in the objective and documented, never
+  exercised; a later member with a real provider pays for it (already in the
+  known issues).
+- **WO-017.** (a) The derivation and WO-016's fold compute the same WO-221
+  figures twice with no canonical one named. (b) The Cost line names no
+  change to `routePermissions` or the mocked provider's users and no
+  criterion names the permission that guards `/twin` (this pass's WO-008
+  amendment makes `/twin` the first gated sub-app; the next WO-017 amendment
+  names `twin:read` and the Cost entries). (c) The reload after sign-in rests
+  on an unspecified re-authentication path (WO-008 (c)). (d) The
+  `JSON.parse` grep does not prove "no interpreted model": a walked rule
+  table or `new Function` passes it. (e) `twin:check` failing on an absent
+  base blocks a shallow checkout on history (this pass's amendment names the
+  commit and the fetch; the gate's clone is full). (f) No spec covers a
+  stored value that fails to parse or names an unknown variant.
+- **WO-018.** (a) The overlap check's window is unstated (this pass's
+  amendment says eight consecutive words; the criterion should). (b) The
+  toy-source tools rest on short fields and the `source` string alone,
+  because no text exists to check against (recorded in the amended known
+  issues). (c) "Store" means committed data here and the deferred mining
+  store in candidate C1, and the summary's admission of an in-repo map is
+  unstated (WO-014 (e)). (d) The horizon adds commands and checks with no
+  removal beyond the two arriving pages, unmeasured until the orders' rows
+  carry metrics.
 
 ## Candidates not filed, with their reopening conditions (section 10)
 
@@ -529,3 +609,50 @@ new dated heading needs one (`planning pass planning-8cf1b240128e3b80 needs
 a receipt`). The document gate before the receipt was not run, so the
 refuter's reads met no live gate; `npm run test:docs` after the receipt is
 recorded below.
+
+Commits: the subject `3a395af` (fourteen files: the six orders, WS-001, the
+profile, the operator record, the ledger and its index, the register, the
+index page and this document), the cost table `f644b7e` (the index was not
+touched by that refresh, the reading WO-232 promised), the receipt
+`90f2cf4`, then the known-issues commit that carries this section.
+
+Refutation: one fresh `dotln-worker` (the default type; the dispatch line
+named no Fable worker), spawned in the background with only the canonical
+prompt the helper printed (`npm run plan -- refute`, pass scope, 87,511
+bytes: the identity, mask and lens, the work order, the compiled subject,
+the output instructions, the result schema and the worker instructions), its
+schema and the instruction to return the frozen JSON and a one-line
+statement. It read that one file and nothing else, judged WO-014, WO-015,
+WO-016, WO-008, WO-017 and WO-018 (WO-013 carried by hash), and returned
+`aligned-with-findings` on every order and for the plan, with thirty-one
+known issues (§9.1) and no hold: the five trap series show no worsening, no
+supplied observation shows a failure, and the subject supplies no vision
+passage id. Worker time 603 s, 130,785 worker tokens, 17 tool uses. The
+receipt helper refused the first filing because the pair lay in the session
+scratch outside the repository (`must be contained regular files`); the two
+files were copied unchanged into ignored intake
+(`docs/intake/refutation-2026-10-25/`, the result's SHA-256 `393ef885…`
+before and after) and the second filing succeeded. Receipt
+`2026-10-25-planning-8cf1b240128e3b80-010` (`docs/planning/refutations/`),
+worker type `dotln-worker`, scope `pass`, 674,370 ms from dispatch
+(21:04:43Z) to file (11.2 minutes, the refiling included), judged subject
+`sha256:08d6b81e…` equal to the committed and workspace subjects; the gate
+after it: 10 receipts, 10 passes, no advisory. Dispositions: none needed (no
+hold); the thirty-one known issues are on the receipt and in §9.1 for the
+next pass.
+
+Session cost at the handoff (`node scripts/harness.mjs usage`, source
+`claude-transcript-message-usage`, scope `dispatch`): 10,382,974 total
+tokens (9,880,158 cached input, 387,117 cache-write input, 1,098 input,
+114,601 output; reasoning output and USD cost unavailable) over 91 steps and
+87 commands at 21:16Z, before the document suite and the pull request; one
+subagent of the cap of 20, 19 remaining. The update's wall-clock from the
+dispatch at 20:39Z to the finished `main` at about 20:50Z was eleven
+minutes, one of them the operator's merge; the planning branch opened at
+20:51Z.
+
+`npm run test:docs` after the receipt, on the tree that carries this
+section: 14 passed, 0 failed, 15.86 s of wall-clock, 14 fresh tasks, 0.1 s
+of lane wait behind checkout unknown; `plan` and `plan-refutation-current`
+PASS on receipt 010. The run at the final commit is reported in the pull
+request.
