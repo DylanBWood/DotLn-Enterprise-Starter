@@ -1,0 +1,185 @@
+{
+  "completeReview": {
+    "command": "npm test -- --review",
+    "checkId": "npm test",
+    "treeHash": "b7c52faa3afdd337dd7e5b81b1cd6cbb81145da5",
+    "codeIdentity": "3900f6f9a5aefe0bd1f6f010bcc69f977e9f3f8855608b6e9887dd293a53dda8",
+    "executed": true,
+    "exitCode": 0,
+    "durationMs": 617481,
+    "evidenceRef": "host-gate:3900f6f9a5aefe0bd1f6f010bcc69f977e9f3f8855608b6e9887dd293a53dda8:npm test",
+    "recordedAt": "2026-10-24T22:49:00.422Z",
+    "passedTasks": 7,
+    "hostLaneWaitMs": 603400,
+    "otherCheckoutWaitMs": 603300
+  },
+  "publicationRegressions": {
+    "command": "node scripts/harness.mjs bounded -- node --test --test-name-pattern='^(target draft describes the fetched merge base|target draft retains its preparation|target draft refuses a tree equal|target final publish excludes earlier records|same-tree draft retry refreshes)' scripts/test-target-worktree-publish.mjs",
+    "passed": 6,
+    "failed": 0,
+    "exitCode": 0,
+    "durationMs": 37524,
+    "startedAt": "2026-10-24T22:49:12.095Z",
+    "finishedAt": "2026-10-24T22:49:49.619Z"
+  },
+  "currentTargetReview": {
+    "repositoryId": "dotln-angular",
+    "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+    "treeHash": "dc997234bc57801c1909a76fa45f5524f3e3dfab",
+    "selection": "review",
+    "names": [
+      "install",
+      "lint",
+      "test",
+      "format",
+      "build",
+      "e2e",
+      "visual"
+    ],
+    "durationMs": 53575,
+    "evidenceRef": "target-gate:b11301fb-7e55-4bd4-b12e-69c65e5f22eb",
+    "recordedAt": "2026-10-24T22:50:59.596Z"
+  },
+  "targetRows": [
+    {
+      "checkId": "target:dotln-angular:install",
+      "repositoryId": "dotln-angular",
+      "treeHash": "dc997234bc57801c1909a76fa45f5524f3e3dfab",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "install"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 6305,
+      "evidenceRef": "target-gate:b11301fb-7e55-4bd4-b12e-69c65e5f22eb:install",
+      "recordedAt": "2026-10-24T22:50:11.289Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular:lint",
+      "repositoryId": "dotln-angular",
+      "treeHash": "dc997234bc57801c1909a76fa45f5524f3e3dfab",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "lint"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 27378,
+      "evidenceRef": "target-gate:b11301fb-7e55-4bd4-b12e-69c65e5f22eb:lint",
+      "recordedAt": "2026-10-24T22:50:38.830Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular:test",
+      "repositoryId": "dotln-angular",
+      "treeHash": "dc997234bc57801c1909a76fa45f5524f3e3dfab",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "test"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 440,
+      "evidenceRef": "target-gate:b11301fb-7e55-4bd4-b12e-69c65e5f22eb:test",
+      "recordedAt": "2026-10-24T22:50:39.427Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular:format",
+      "repositoryId": "dotln-angular",
+      "treeHash": "dc997234bc57801c1909a76fa45f5524f3e3dfab",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "format"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 687,
+      "evidenceRef": "target-gate:b11301fb-7e55-4bd4-b12e-69c65e5f22eb:format",
+      "recordedAt": "2026-10-24T22:50:40.264Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular:build",
+      "repositoryId": "dotln-angular",
+      "treeHash": "dc997234bc57801c1909a76fa45f5524f3e3dfab",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "build"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 429,
+      "evidenceRef": "target-gate:b11301fb-7e55-4bd4-b12e-69c65e5f22eb:build",
+      "recordedAt": "2026-10-24T22:50:40.860Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular:e2e",
+      "repositoryId": "dotln-angular",
+      "treeHash": "dc997234bc57801c1909a76fa45f5524f3e3dfab",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "e2e"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 469,
+      "evidenceRef": "target-gate:b11301fb-7e55-4bd4-b12e-69c65e5f22eb:e2e",
+      "recordedAt": "2026-10-24T22:50:41.493Z",
+      "baseCheckoutWriteCount": 0
+    },
+    {
+      "checkId": "target:dotln-angular:visual",
+      "repositoryId": "dotln-angular",
+      "treeHash": "dc997234bc57801c1909a76fa45f5524f3e3dfab",
+      "commit": "2ab4f28501628cf95dd0102c42440fd7de9f8055",
+      "selection": "review",
+      "names": [
+        "visual"
+      ],
+      "executed": true,
+      "exitCode": 0,
+      "durationMs": 17867,
+      "evidenceRef": "target-gate:b11301fb-7e55-4bd4-b12e-69c65e5f22eb:visual",
+      "recordedAt": "2026-10-24T22:50:59.521Z",
+      "baseCheckoutWriteCount": 0
+    }
+  ],
+  "additionalChecks": [
+    {
+      "command": "npm run publication:check",
+      "exitCode": 0,
+      "observation": "No editions declared."
+    },
+    {
+      "command": "node scripts/harness.mjs check",
+      "exitCode": 0,
+      "observation": "35 generated surfaces."
+    },
+    {
+      "command": "npm run release -- check-surfaces --local",
+      "exitCode": 0,
+      "observation": "Release and component checks pass; no launchpad release assigned."
+    },
+    {
+      "command": "npm run plan -- check",
+      "exitCode": 0,
+      "observation": "9 receipts, 9 passes, no advisories."
+    },
+    {
+      "command": "npm run sync",
+      "exitCode": 0,
+      "observation": "All nine artifact groups current; no regeneration."
+    }
+  ],
+  "limits": "Target commands use the registered Nx cache policy; a fresh uncached execution of every application task is not claimed. No remote publication was performed."
+}

@@ -1,0 +1,138 @@
+[
+  {
+    "name": "preflight-workspace",
+    "command": [
+      "npx",
+      "nx",
+      "run-many",
+      "-t",
+      "lint",
+      "test",
+      "build"
+    ],
+    "startedAt": "2026-10-24T16:46:44.909Z",
+    "finishedAt": "2026-10-24T16:47:42.129Z",
+    "durationMs": 57218,
+    "exitCode": 1,
+    "signal": null,
+    "error": null,
+    "source": "executor bounded command receipt"
+  },
+  {
+    "name": "preflight-workspace-fixed",
+    "command": [
+      "npx",
+      "nx",
+      "run-many",
+      "-t",
+      "lint",
+      "test",
+      "build",
+      "--output-style=static"
+    ],
+    "startedAt": "2026-10-24T16:49:15.339Z",
+    "finishedAt": "2026-10-24T16:50:06.848Z",
+    "durationMs": 51507,
+    "exitCode": 0,
+    "signal": null,
+    "error": null,
+    "source": "executor bounded command receipt"
+  },
+  {
+    "name": "preflight-extra",
+    "command": [
+      "node",
+      "preflight-extra.mjs"
+    ],
+    "startedAt": "2026-10-24T16:52:39.681Z",
+    "finishedAt": "2026-10-24T16:52:47.523Z",
+    "durationMs": 7841,
+    "exitCode": 0,
+    "signal": null,
+    "error": null,
+    "source": "executor bounded command receipt"
+  },
+  {
+    "name": "preflight-e2e",
+    "command": [
+      "npx",
+      "nx",
+      "e2e",
+      "dotln-e2e",
+      "--output-style=static"
+    ],
+    "startedAt": "2026-10-24T16:53:16.420Z",
+    "finishedAt": "2026-10-24T16:53:56.929Z",
+    "durationMs": 40507,
+    "exitCode": 1,
+    "signal": null,
+    "error": null,
+    "source": "executor bounded command receipt"
+  },
+  {
+    "name": "preflight-e2e-fixed",
+    "command": [
+      "npx",
+      "nx",
+      "e2e",
+      "dotln-e2e",
+      "--output-style=static"
+    ],
+    "startedAt": "2026-10-24T16:54:06.434Z",
+    "finishedAt": "2026-10-24T16:54:34.878Z",
+    "durationMs": 28443,
+    "exitCode": 0,
+    "signal": null,
+    "error": null,
+    "source": "executor bounded command receipt"
+  },
+  {
+    "name": "visual-baselines",
+    "command": [
+      "npx",
+      "playwright",
+      "test",
+      "--config=apps/dotln-e2e/playwright.visual.config.mts",
+      "--update-snapshots"
+    ],
+    "startedAt": "2026-10-24T16:55:01.478Z",
+    "finishedAt": "2026-10-24T16:55:24.110Z",
+    "durationMs": 22630,
+    "exitCode": 0,
+    "signal": null,
+    "error": null,
+    "source": "executor bounded command receipt"
+  },
+  {
+    "name": "visual-check",
+    "command": [
+      "npx",
+      "nx",
+      "e2e-visual",
+      "dotln-e2e",
+      "--output-style=static"
+    ],
+    "startedAt": "2026-10-24T16:57:05.522Z",
+    "finishedAt": "2026-10-24T16:57:23.316Z",
+    "durationMs": 17790,
+    "exitCode": 0,
+    "signal": null,
+    "error": null,
+    "source": "executor bounded command receipt"
+  },
+  {
+    "name": "final-source-format",
+    "command": [
+      "npm",
+      "run",
+      "format"
+    ],
+    "startedAt": "2026-10-24T17:01:57.750Z",
+    "finishedAt": "2026-10-24T17:01:59.276Z",
+    "durationMs": 1525,
+    "exitCode": 0,
+    "signal": null,
+    "error": null,
+    "source": "executor bounded command receipt"
+  }
+]

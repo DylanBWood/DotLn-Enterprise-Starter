@@ -2,9 +2,11 @@
 
 **Class:** `angular-nx-monorepo`
 **Base branch:** `main`
-**Checked:** `db4d648df5a6f1e46c6c5002ae0ebc0d4ff73954` (WO-007's reviewed
-commit of 2026-10-24, the verified draft commit its final review adopted, over
-the base `90fa6e8d879cb499107ff79d1051c200d17c1cbc`, WO-006's merge commit).
+**Checked:** `99a30befa150e5d77a64259013e62b9d0372270e` (WO-013's reviewed
+commit of 2026-10-25, the verified draft commit its final review accepted
+without a change, over the base `2ab4f28501628cf95dd0102c42440fd7de9f8055`,
+WO-007's merge commit; WO-013 adds no dependency, so the versions below are
+unchanged from WO-007's reviewed commit `db4d648d`).
 Node 26.9.0, npm 11.19.1, Nx 23.3.0, Angular 22.2.3, TypeScript 6.0.3 and
 Vitest 5.0.5 (with its UI and coverage packages, aligned from 4.1.12 by WO-007
 for MSW 3) were observed, with Transloco 8.4.0, Ramda 0.32.0, Ramda Adjunct
@@ -30,13 +32,18 @@ activation base (WO-013-D008); its fix integrated `main` at starter v0.96.1,
 whose publish describes the change from the merge base of the subject and
 this repository's `main` (core WO-230; WO-013-D010), VER-002 passed at tree
 `dc997234…` and its draft publish opened pull request #6 (`99a30bef…`, 83
-files, CI green), and FINAL-002 was refused by the kit's pre-review commit
-lint, which still ranged 17 commits from the activation base and met two
+files, CI green), and FINAL-002 found every criterion met and no new
+defect but was refused by the kit's pre-review commit lint, which still ranged 17 commits from the activation base and met two
 merged subjects of 78 and 90 characters (WO-013-D015); starter v0.97.1 (core
 WO-231) lints the described range and reached the launchpad's `main` on
-2026-10-25 (#28), so the fix dispatch integrates it and changes no target
-byte, the next verification republishes #6 at the same tree, and the next
-final review records pass and publishes (the 2026-10-25 planning pass, D3). The 2026-10-24 planning pass restated the app's subject on the
+2026-10-25 (#28). The repair integrated it through starter v0.99.0 and
+main `04c45cfa` on 2026-10-25, reproduced the passing one-commit lint and
+seven regression controls, and preserved the target tree (WO-013-D016,
+D017). VER-003 reproduced the corrected lint and republished #6 at the same
+tree, and FINAL-003 accepted the order on 2026-10-25 with every criterion
+met and no new finding, its unit and browser suites rerun uncached at
+`99a30bef` (WO-013-D018, D019). The final publish pushes that commit and the
+records commit over the draft and marks #6 ready. The 2026-10-24 planning pass restated the app's subject on the
 operator's decisions (one app with sub-apps behind a menu, not wired to
 core, its data from public mining into its own store; WS-001 §The app and
 its sub-apps), moved WO-007's board route to the app's own API with
@@ -323,6 +330,14 @@ no host-qualification claim.
 - Wrapper: `libs/shared/ui/src/lib/wrappers/tabs/tabs.ts`.
 - Composite: `libs/features/board/src/lib/composites/board-row/board-row.ts`.
 - Layout: `libs/dotln/shell/src/lib/layouts/app-layout/app-layout.ts`.
+- Sub-app menu templates:
+  `libs/dotln/shell/src/lib/templates/sub-app-menu/sub-app-menu.ts` and
+  `sub-app-menu-group.ts` beside it. The app projects groups and router links;
+  the menu owns the navigation landmark and the group owns its list fallback.
+- Lazy sub-app routes: `libs/features/scene/src/lib/scene.routes.ts` and
+  `libs/features/machinery/src/lib/machinery.routes.ts`; arriving containers
+  compose the house empty-state template. Scene, Machinery and Tools are the
+  menu groups; the root continues to redirect to the actor board at `/board`.
 - Mapper: `libs/features/board/src/lib/mappers/cell-value-mapper/cell-value-mapper.ts`.
 - Container: `libs/features/board/src/lib/containers/board-page/board-page.ts`.
 - Facade: `libs/features/board/src/lib/facades/board.facade.ts`.
@@ -343,8 +358,9 @@ no host-qualification claim.
 - Component catalog: `.storybook/`, component-local stories, and
   `docs/dev-reference/workspace/storybook.md`.
 
-WO-007 adds stores, MSW handlers and interceptors; guards remain WO-008; the sub-app menu, the catalog, the scene engine, the
-records and replay libraries, the twin model and the toy shelf are WO-013 to
+WO-007 adds stores, MSW handlers and interceptors; WO-013 adds the sub-app menu
+and arriving routes. Guards remain WO-008; the catalog, the scene engine, the
+records and replay libraries, the twin model and the toy shelf are WO-014 to
 WO-018's.
 
 ## Upstream references

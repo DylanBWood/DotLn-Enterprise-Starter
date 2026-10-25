@@ -1,0 +1,15 @@
+{
+  "observedAt": "2026-10-24T22:37:26.695038+00:00",
+  "check": "generator-log structure and content preservation",
+  "exitCode": 0,
+  "beforeSha256": "b0fb53b06b56386cbb771c5bdc703b4a1473976ce41f9a95fc419a65009653b6",
+  "afterSha256": "0465ed3f49d0a9bf262753d323079973701354ec9283e2e80783d2313ba86761",
+  "allLinesPreserved": true,
+  "singleDatedSectionAfterEventsState": true,
+  "invocationsPreserved": 6,
+  "resultsUnderCorrectHeading": true,
+  "targetTree": "dc997234bc57801c1909a76fa45f5524f3e3dfab",
+  "changedSinceVerifiedDraft": [
+    "docs/dev-reference/workspace/generator-log.md"
+  ]
+}
