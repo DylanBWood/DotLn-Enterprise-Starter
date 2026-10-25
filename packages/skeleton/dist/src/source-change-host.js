@@ -5,10 +5,12 @@ import { workerRequestKey } from "./worker-store.js";
 import { projectWorkerStatus } from "./worker-status.js";
 import { HEARTBEAT_MS, LEASE_MS, WorkerFailure, parseStoredWriterResult, validateWriterRequest, } from "./worker-protocol.js";
 import { SOURCE_CHANGE_HOST, decodeFocusedTest, decodeSourceRequest, decodeSharedRepositoryState, sameSourceValue, } from "./source-change-state.js";
-import { SourceChangeWorktree, runFocusedTest, sourceDigest, sourceGit, } from "./source-change-worktree.js";
-import { installSourceChangeCommands } from "./source-change-command.js";
+import { SourceChangeWorktree, sourceAdmissionReason, runFocusedTest, sourceDigest, sourceGit, } from "./source-change-worktree.js";
+import { installSourceChangeCommands, removeSourceChangeCommands, } from "./source-change-command.js";
 import { isArtifactIdentityV1 } from "./artifact-identity.js";
 import { deliverPendingSignal, interruptionCheckpoint, interruptibleHostCall, throwIfInterrupted, } from "./host-interruption.js";
+export const WRITER_REQUESTED_ATTENTION = "writer-requested-attention";
+const requestedAttention = (result) => result.envelope.status !== "completed" || result.envelope.requiresHuman;
 const json = (value) => value;
 // A saved number alone is never signal authority. Recovery revalidates the
 // recorded native birth identity before stopping a surviving writer group.
@@ -444,7 +446,7 @@ export class SourceChangeHost {
         }
         this.recordStopped(episodeId, "group-absent");
     }
-    async checkIntegrity() {
+    async checkIntegrity(settling = false) {
         const attempt = this.events()
             .filter((event) => event.type === "WorkerAttemptStarted")
             .at(-1);
@@ -466,11 +468,12 @@ export class SourceChangeHost {
                 : "shared-repository-unreadable";
         let after = null, outcome;
         try {
-            after = await interruptibleHostCall(this.options.signal, () => this.tree.sharedState());
+            after = await interruptibleHostCall(settling ? undefined : this.options.signal, () => this.tree.sharedState());
             outcome = sameSourceValue(before, after) ? "unchanged" : "changed";
         }
         catch {
-            throwIfInterrupted(this.options.signal);
+            if (!settling)
+                throwIfInterrupted(this.options.signal);
             outcome = "unreadable";
         }
         this.record("SourceChangeIntegrityChecked", {
@@ -480,6 +483,44 @@ export class SourceChangeHost {
             after,
         });
         return outcome === "unchanged" ? null : `shared-repository-${outcome}`;
+    }
+    cleanupCommands(episodeId) {
+        const result = removeSourceChangeCommands({
+            launchpad: this.options.launchpadCheckout,
+            target: this.tree.path,
+            commandId: this.command.commandId,
+            episodeId,
+            ...(this.options.unlinkCommandFile
+                ? { unlink: this.options.unlinkCommandFile }
+                : {}),
+        });
+        for (const survivor of result.survived)
+            this.record("CommandCleanupFailed", {
+                workerEpisodeId: episodeId,
+                commandId: this.command.commandId,
+                ...survivor,
+            });
+        if (!result.survived.length &&
+            !this.attemptEvents(episodeId).some((event) => event.type === "CommandGrantsRevoked"))
+            this.record("CommandGrantsRevoked", {
+                workerEpisodeId: episodeId,
+                commandId: this.command.commandId,
+                removed: result.removed,
+            });
+        return result;
+    }
+    cleanupRefusal(result) {
+        if (!result.survived.length)
+            return undefined;
+        // Cleanup is retryable host work. Keep the command pending so a restarted
+        // host can revoke the survivors before judging the retained candidate.
+        return {
+            status: "refused",
+            refusal: {
+                workOrderId: this.options.workOrder.workOrderId,
+                reason: `command-route-live:${result.survived.map((entry) => entry.path).join(",")}`,
+            },
+        };
     }
     closeCommand(outcome) {
         if (!this.events().some((event) => event.type === "CommandResult")) {
@@ -529,6 +570,16 @@ export class SourceChangeHost {
             testBefore,
             testAfter,
         };
+        check("import");
+        const imported = await interruptibleHostCall(this.options.signal, () => this.tree.importCandidate(effect.commit));
+        const previousImport = this.events().find((event) => event.type === "CandidateImported");
+        const importRecord = { commit: imported.commit, objects: imported.objects };
+        if (previousImport &&
+            !sameSourceValue(previousImport.payload, importRecord))
+            throw new Error("source-change imported candidate record drift");
+        if (!previousImport)
+            this.record("CandidateImported", importRecord);
+        await interruptibleHostCall(this.options.signal, () => this.tree.publishCandidate(imported));
         check("receipt");
         await interruptionCheckpoint(this.options.signal);
         this.options.store.saveSourceChangeReceipt(this.request("receipt"), observation);
@@ -570,19 +621,38 @@ export class SourceChangeHost {
             if (prior && !saved) {
                 await this.recoverTermination(prior.episodeId);
                 const integrity = await this.checkIntegrity();
+                const cleanup = this.cleanupRefusal(this.cleanupCommands(prior.episodeId));
+                if (cleanup)
+                    return cleanup;
                 if (integrity === "shared-repository-unreadable")
                     return this.refuse(integrity);
                 await interruptibleHostCall(this.options.signal, () => this.tree.verify());
                 if (integrity)
                     return this.refuse(integrity);
+                const previousResult = this.events()
+                    .filter((event) => event.type === "WorkerResultObserved")
+                    .map((event) => event.payload)
+                    .filter((payload) => payload.workerEpisodeId === prior.episodeId)
+                    .at(-1);
+                if (previousResult &&
+                    requestedAttention(parseStoredWriterResult({ envelope: previousResult.envelope }, this.request(prior.episodeId))))
+                    return this.refuse(WRITER_REQUESTED_ATTENTION);
             }
             this.fence();
             await interruptibleHostCall(this.options.signal, () => this.tree.prepare());
             if (saved) {
                 const effect = await interruptibleHostCall(this.options.signal, () => this.tree.effect());
+                let published;
+                try {
+                    published = sourceGit(this.options.workOrder.repo, "rev-parse", "--verify", `refs/heads/${this.options.branch}`);
+                }
+                catch {
+                    /* A missing published ref cannot replay an admitted receipt. */
+                }
                 if (!effect ||
                     effect.commit !== saved.commit ||
-                    effect.diffHash !== saved.diffHash)
+                    effect.diffHash !== saved.diffHash ||
+                    published !== saved.commit)
                     throw new Error("source-change saved effect no longer matches Git");
                 this.record("SourceChangeObserved", saved);
                 return this.closeCommand({ status: "observed", observation: saved });
@@ -606,16 +676,16 @@ export class SourceChangeHost {
                 // a fresh return. An accepted receipt remains replayable after a crash.
                 if (!prior || recoveryCheck === "receipt-persisted")
                     throw error;
-                return this.refuse(`host-admission-${recoveryCheck}`);
+                return this.refuse(sourceAdmissionReason(recoveryCheck, error));
             }
             if (this.attempts().length >= 2)
                 return this.refuse("recovery-dispatch-exhausted");
             if (!before)
-                await interruptibleHostCall(this.options.signal, () => this.tree.clean());
+                await interruptibleHostCall(this.options.signal, () => this.tree.cleanAgainstCommit());
             const testBefore = before ??
                 (await interruptibleHostCall(this.options.signal, () => runFocusedTest(this.tree.path, this.options.testCommand)));
             if (!before) {
-                await interruptibleHostCall(this.options.signal, () => this.tree.clean());
+                await interruptibleHostCall(this.options.signal, () => this.tree.cleanAgainstCommit());
                 if ((await interruptibleHostCall(this.options.signal, () => this.tree.verify())) !== this.tree.options.requested.baseCommit)
                     throw new Error("source-change baseline test moved HEAD");
             }
@@ -651,13 +721,20 @@ export class SourceChangeHost {
             let result;
             // WO-159: a Codex episode ends with its isolation record.
             let codexIsolation;
-            let revokeCommands = () => { };
+            let commandsLive = true;
+            let cleanupAttempted = false;
+            const revokeCommands = () => {
+                cleanupAttempted = true;
+                const result = this.cleanupCommands(episodeId);
+                commandsLive = result.survived.length !== 0;
+                return result;
+            };
             const interrupt = () => dispatch?.kill(this.options.signal?.reason);
             const interrupted = () => throwIfInterrupted(this.options.signal);
             let admissionCheck;
             try {
                 interrupted();
-                const removeCommands = installSourceChangeCommands({
+                installSourceChangeCommands({
                     launchpad: this.options.launchpadCheckout,
                     target: this.tree.path,
                     commandId: this.command.commandId,
@@ -670,13 +747,6 @@ export class SourceChangeHost {
                     expiresAt: Date.now() +
                         Math.min(180_000, this.options.authorityEnvelope.expiresAt - this.now()),
                 });
-                let commandsLive = true;
-                revokeCommands = () => {
-                    if (!commandsLive)
-                        return;
-                    removeCommands();
-                    commandsLive = false;
-                };
                 dispatch = this.options.transport.dispatch(request, this.now, launchGate ? { launchGate } : undefined);
                 this.options.signal?.addEventListener("abort", interrupt, {
                     once: true,
@@ -738,7 +808,6 @@ export class SourceChangeHost {
                 if (this.now() >= this.attempts().at(-1).leaseExpiresAt)
                     throw new WorkerFailure("interrupted", "source-change lease expired");
                 await this.settle(episodeId, dispatch);
-                revokeCommands();
                 this.options.afterResult?.();
                 this.record("WorkerResultObserved", {
                     workerEpisodeId: episodeId,
@@ -748,12 +817,17 @@ export class SourceChangeHost {
                 });
                 admissionCheck = "integrity";
                 const integrity = await this.checkIntegrity();
+                const cleanup = this.cleanupRefusal(revokeCommands());
+                if (cleanup)
+                    return cleanup;
                 if (integrity === "shared-repository-unreadable")
                     return this.refuse(integrity);
                 admissionCheck = "worktree";
                 await interruptibleHostCall(this.options.signal, () => this.tree.verify());
                 if (integrity)
                     return this.refuse(integrity);
+                if (requestedAttention(result))
+                    return this.refuse(WRITER_REQUESTED_ATTENTION);
                 admissionCheck = "effect";
                 const effect = await interruptibleHostCall(this.options.signal, () => this.tree.effect());
                 if (!effect)
@@ -776,49 +850,66 @@ export class SourceChangeHost {
                     throw error;
                 dispatch?.kill();
                 await this.settle(episodeId, dispatch);
-                revokeCommands();
                 codexIsolation ??= await dispatch?.isolation?.catch(() => undefined);
-                if (!this.options.signal?.aborted) {
-                    try {
-                        await this.checkIntegrity();
-                    }
-                    catch (integrityError) {
-                        if (!this.options.signal?.aborted)
-                            throw integrityError;
-                    }
-                }
-                if (admissionCheck && !this.options.signal?.aborted) {
+                if (!admissionCheck || this.options.signal?.aborted)
+                    this.record("WorkerInterrupted", {
+                        workerEpisodeId: episodeId,
+                        commandId: this.command.commandId,
+                        reason: this.options.signal?.aborted
+                            ? "interrupted"
+                            : error instanceof WorkerFailure
+                                ? error.code
+                                : "transport-failed",
+                        ...(this.options.signal?.aborted
+                            ? { signal: this.options.signal.reason }
+                            : {}),
+                        ...(codexIsolation ? { codexIsolation } : {}),
+                    });
+                await this.checkIntegrity(true);
+                const cleanup = this.cleanupRefusal(revokeCommands());
+                throwIfInterrupted(this.options.signal);
+                if (cleanup)
+                    return cleanup;
+                if (admissionCheck) {
                     this.record("SourceChangeRefused", {
                         workOrderId: this.options.workOrder.workOrderId,
-                        reason: `host-admission-${admissionCheck}`,
+                        reason: sourceAdmissionReason(admissionCheck, error),
                     });
-                    throw error;
                 }
-                this.record("WorkerInterrupted", {
-                    workerEpisodeId: episodeId,
-                    commandId: this.command.commandId,
-                    reason: this.options.signal?.aborted
-                        ? "interrupted"
-                        : error instanceof WorkerFailure
-                            ? error.code
-                            : "transport-failed",
-                    ...(this.options.signal?.aborted
-                        ? { signal: this.options.signal.reason }
-                        : {}),
-                    ...(codexIsolation ? { codexIsolation } : {}),
-                });
-                throwIfInterrupted(this.options.signal);
                 throw error;
             }
             finally {
                 if (timer)
                     clearInterval(timer);
                 this.options.signal?.removeEventListener("abort", interrupt);
-                revokeCommands();
+                if (commandsLive && !cleanupAttempted && this.stopped(episodeId))
+                    revokeCommands();
             }
         }
         finally {
-            this.options.store.release();
+            try {
+                // Only a settled writer can surrender its registration. Retention
+                // also covers thrown admission failures and retryable cleanup, whose
+                // command remains pending and has no terminal refusal to replay.
+                const last = this.attempts().at(-1);
+                const imported = this.events().some((event) => event.type === "CandidateImported");
+                if (!this.state.observation &&
+                    !imported &&
+                    last &&
+                    this.stopped(last.episodeId)) {
+                    const inspectionCommand = this.tree.retainUnimported();
+                    if (inspectionCommand &&
+                        !this.events().some((event) => event.type === "SourceChangeCandidateRetained"))
+                        this.record("SourceChangeCandidateRetained", {
+                            commandId: this.command.commandId,
+                            workOrderId: this.options.workOrder.workOrderId,
+                            inspectionCommand,
+                        });
+                }
+            }
+            finally {
+                this.options.store.release();
+            }
         }
     }
     finish() {

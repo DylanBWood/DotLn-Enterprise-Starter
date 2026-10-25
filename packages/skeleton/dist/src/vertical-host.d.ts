@@ -1,6 +1,11 @@
 import type { WorkOrder } from "@dotln/compiler";
 import { WorkerStore } from "./worker-store.js";
 export { interruption, throwIfInterrupted } from "./host-interruption.js";
+/** The source host retained a pending command while revoking a surviving
+ * command grant. A later vertical invocation must resume that same command. */
+export declare class RetryableSourceCleanupError extends Error {
+    constructor();
+}
 import { type IntentBinding, type VerticalCommand, type VerticalReceipt, type VerticalState } from "./vertical.js";
 export interface VerticalPorts {
     materialize(binding: IntentBinding): Promise<{

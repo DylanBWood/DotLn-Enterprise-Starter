@@ -5,6 +5,7 @@ import { SourceChangeHost } from "../src/source-change-host.js";
 import { WorkerStore } from "../src/worker-store.js";
 import { prepareWorktreeVerification } from "../src/verification-worktree.js";
 import { RepairHost } from "../src/repair-host.js";
+import { sourceWriterState } from "../src/source-change-worktree.js";
 import { createSourceFixture, sourceFixtureOptions, fixtureGit, } from "./source-change-fixture.js";
 import { snapshotContract, snapshotCriteria, snapshotTests, snapshotTransport, } from "./verification-worktree-fixture.js";
 export function repairTransport(root, wrong = false) {
@@ -38,7 +39,7 @@ export function repairTransport(root, wrong = false) {
                         requiresHuman: false,
                         observedCommit: {
                             sha: commit,
-                            branch: fixtureGit(request.cwd, "symbolic-ref", "--short", "HEAD"),
+                            branch: sourceWriterState(request.cwd).branch,
                         },
                         observedDenials: "unavailable",
                     },

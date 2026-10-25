@@ -1,7 +1,9 @@
 import test from "node:test";
+import { prepareSourceObjectStore, sourceObjectEnvironment, } from "../src/source-change-worktree.js";
+import { fixtureObjectEnvironment } from "./source-change-fixture.js";
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync, } from "node:fs";
+import { execFileSync, spawnSync } from "node:child_process";
+import { existsSync, chmodSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync, } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -42,6 +44,7 @@ const git = (cwd, ...args) => execFileSync("git", ["-c", "core.hooksPath=/dev/nu
     stdio: ["ignore", "pipe", "pipe"],
     env: {
         ...process.env,
+        ...fixtureObjectEnvironment(cwd),
         GIT_AUTHOR_NAME: "Fixture",
         GIT_AUTHOR_EMAIL: "fixture@example.invalid",
         GIT_COMMITTER_NAME: "Fixture",
@@ -60,7 +63,8 @@ function scratch() {
     writeFileSync(join(launchpad, "fixture-test.mjs"), "import assert from 'node:assert/strict'; import {readFileSync} from 'node:fs'; assert.equal(readFileSync('fixture.txt','utf8'), 'changed by synthetic worker\\n');\n");
     git(launchpad, "add", "-A");
     git(launchpad, "-c", "maintenance.auto=false", "commit", "-m", "fixture baseline");
-    git(launchpad, "worktree", "add", "-b", "writer", cwd);
+    git(launchpad, "worktree", "add", "--detach", cwd);
+    prepareSourceObjectStore(cwd, "writer", git(cwd, "rev-parse", "HEAD"));
     mkdirSync(join(cwd, ".dotln"));
     writeFileSync(join(launchpad, ".git/info/exclude"), "/.dotln/\n");
     const commitMessagePath = join(cwd, ".dotln/message.txt");
@@ -109,6 +113,82 @@ function scratch() {
         dispose: () => rmSync(root, { recursive: true, force: true }),
     };
 }
+const codexShellEnvironment = (request) => {
+    const table = canonicalWorkerArgs("codex-cli-exec", request, "/schema.json", "0.154.0").find((arg) => arg.startsWith("shell_environment_policy.set="));
+    return Object.fromEntries([...table.matchAll(/([A-Z][A-Z0-9_]*)=("(?:[^"\\]|\\.)*")/gu)].map(([, key, value]) => [key, JSON.parse(value)]));
+};
+const claudeWriterEnvironment = (request) => {
+    let captured;
+    const stop = new Error("captured before launch");
+    assert.throws(() => new ClaudeCliPrintWorkOrderTransport((launch) => {
+        captured = launch;
+        throw stop;
+    }, "2.1.270").dispatch(request, () => 1), (error) => error === stop);
+    assert.ok(captured?.env);
+    return captured.env;
+};
+for (const transport of ["codex", "claude"])
+    test(`WO-204 ${transport}: writer Git configuration suppresses rerere and detached maintenance`, { skip: transport === "codex" && process.getuid?.() === 0 }, () => {
+        const rows = [];
+        for (const control of transport === "codex" ? [false, true] : [false]) {
+            const s = scratch(), common = join(s.input.launchpadCheckout, ".git");
+            try {
+                git(s.request.cwd, "config", "rerere.enabled", "true");
+                git(s.request.cwd, "config", "commit.gpgsign", "false");
+                git(s.request.cwd, "config", "core.hooksPath", "/dev/null");
+                git(s.request.cwd, "pack-refs", "--all");
+                rmSync(join(common, "rr-cache"), { recursive: true, force: true });
+                const env = transport === "codex"
+                    ? codexShellEnvironment(s.request)
+                    : claudeWriterEnvironment(s.request);
+                if (control)
+                    for (const key of Object.keys(env))
+                        if (key.startsWith("GIT_CONFIG_"))
+                            delete env[key];
+                const trace = join(s.root, "trace.jsonl");
+                const runEnv = {
+                    ...env,
+                    GIT_AUTHOR_NAME: "Fixture",
+                    GIT_AUTHOR_EMAIL: "fixture@example.invalid",
+                    GIT_COMMITTER_NAME: "Fixture",
+                    GIT_COMMITTER_EMAIL: "fixture@example.invalid",
+                    GIT_TRACE2_EVENT: trace,
+                };
+                writeFileSync(join(s.request.cwd, "fixture.txt"), "changed by synthetic worker\n");
+                if (transport === "codex")
+                    chmodSync(common, 0o555);
+                const add = spawnSync("git", ["add", "-A"], {
+                    cwd: s.request.cwd,
+                    env: runEnv,
+                    encoding: "utf8",
+                });
+                assert.equal(add.status, 0, add.stderr);
+                const commit = spawnSync("git", ["commit", "-F", s.request.commitMessagePath], { cwd: s.request.cwd, env: runEnv, encoding: "utf8" });
+                const childStarts = readFileSync(trace, "utf8")
+                    .trim()
+                    .split("\n")
+                    .map((line) => JSON.parse(line))
+                    .filter((row) => row.event === "child_start" &&
+                    row.argv?.includes("maintenance"));
+                rows.push({
+                    control,
+                    exitCode: commit.status,
+                    rrCache: existsSync(join(common, "rr-cache")),
+                    maintenance: childStarts.length,
+                });
+            }
+            finally {
+                chmodSync(common, 0o755);
+                s.dispose();
+            }
+        }
+        assert.deepEqual(rows, transport === "codex"
+            ? [
+                { control: false, exitCode: 0, rrCache: false, maintenance: 0 },
+                { control: true, exitCode: 128, rrCache: false, maintenance: 0 },
+            ]
+            : [{ control: false, exitCode: 0, rrCache: false, maintenance: 0 }]);
+    });
 test("WO-051 inspection request, validator, parser, prompt and both launch arrays retain activation bytes", () => {
     assert.deepEqual(canonicalWorkerArgs("claude-cli-print", baseline.request, "/schema.json", "2.1.270"), baseline.claude);
     assert.deepEqual(canonicalWorkerArgs("codex-cli-exec", baseline.request, "/schema.json", "0.154.0"), baseline.codex);
@@ -308,9 +388,8 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
             ["codex-cli-exec", "codex"],
         ]) {
             const launched = canonicalWorkerArgs(name, s.request, "/schema.json", key === "claude" ? "2.1.270" : "0.154.0");
-            // Only the Codex writer's commit grants and its PATH are added, and
-            // --sandbox is dropped so the named profile applies; every other pinned
-            // byte is unchanged (WO-112 D017).
+            // The writer grants and shell environment specialize the pinned launch;
+            // the named profile takes the place of the inspection sandbox option.
             if (key === "codex")
                 assert.equal(launched.includes("--sandbox"), false);
             const args = key === "codex"
@@ -337,9 +416,10 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
                 const common = realpathSync(execFileSync("git", ["rev-parse", "--path-format=absolute", "--git-common-dir"], { cwd: s.request.cwd, encoding: "utf8" }).trim());
                 for (const [path, mode] of [
                     [gitDir, "write"],
-                    [join(common, "objects"), "write"],
-                    [join(common, "refs"), "write"],
-                    [join(common, "logs"), "write"],
+                    [
+                        sourceObjectEnvironment(s.request.cwd).GIT_OBJECT_DIRECTORY,
+                        "write",
+                    ],
                     [common, "read"],
                 ])
                     assert.ok(grants.includes(`${JSON.stringify(path)}=${JSON.stringify(mode)}`), `${path} ${mode}`);
@@ -357,7 +437,7 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
                 }
                 // The whole grant set, pinned: toolchain, Git and Codex installs,
                 // the user's Git identity, shared metadata read; the worktree's own
-                // gitdir and the commit's objects, refs and logs written.
+                // gitdir and its private objects written.
                 const installed = (name) => {
                     try {
                         return realpathSync(execFileSync("/usr/bin/which", [name], {
@@ -378,9 +458,10 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
                     [join(homedir(), ".gitconfig"), "read"],
                     [common, "read"],
                     [gitDir, "write"],
-                    [join(common, "objects"), "write"],
-                    [join(common, "refs"), "write"],
-                    [join(common, "logs"), "write"],
+                    [
+                        sourceObjectEnvironment(s.request.cwd).GIT_OBJECT_DIRECTORY,
+                        "write",
+                    ],
                 ]);
                 for (const [path] of grants.matchAll(/"((?:[^"\\]|\\.)*)"=/gu))
                     assert.ok(path !== "/" && !`${homedir()}/`.startsWith(`${path}/`), `${path} never covers the home directory`);
@@ -406,6 +487,26 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
                 }
                 // Hooks and config are never writable, and the network stays off.
                 assert.equal(grants.includes(`${JSON.stringify(common)}="write"`), false);
+                for (const entry of [
+                    "objects",
+                    "refs",
+                    "logs",
+                    "packed-refs",
+                    "packed-refs.lock",
+                    "rr-cache",
+                ])
+                    assert.equal(grants.includes(`${JSON.stringify(join(common, entry))}="write"`), false);
+                const environment = codexShellEnvironment(s.request);
+                const { PATH, ...gitEnvironment } = environment;
+                assert.ok(PATH?.includes(dirname(realpathSync(process.execPath))));
+                assert.deepEqual(gitEnvironment, {
+                    ...sourceObjectEnvironment(s.request.cwd),
+                    GIT_CONFIG_COUNT: "2",
+                    GIT_CONFIG_KEY_0: "rerere.enabled",
+                    GIT_CONFIG_VALUE_0: "false",
+                    GIT_CONFIG_KEY_1: "maintenance.auto",
+                    GIT_CONFIG_VALUE_1: "false",
+                });
                 assert.ok(launched.includes("permissions.dotln-writer.network.enabled=false"));
                 assert.match(launched.find((arg) => arg.startsWith("shell_environment_policy.set=")), new RegExp(dirname(realpathSync(process.execPath)).replaceAll("/", "\\/")));
             }
@@ -427,6 +528,32 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
         }
         const args = canonicalWorkerArgs("claude-cli-print", s.request, "/schema.json");
         assert.equal(args[args.indexOf("--allowedTools") + 1], `Edit,Write,Read,Bash(${confined}),Bash(git add -A),Bash(git commit -F ${s.request.commitMessagePath})`);
+        const inherited = Object.fromEntries(Object.entries(process.env).filter(([key]) => key.startsWith("GIT_CONFIG_")));
+        try {
+            Object.assign(process.env, {
+                GIT_CONFIG_COUNT: "1",
+                GIT_CONFIG_KEY_0: "rerere.enabled",
+                GIT_CONFIG_VALUE_0: "true",
+                GIT_CONFIG_KEY_99: "maintenance.auto",
+                GIT_CONFIG_VALUE_99: "true",
+            });
+            const environment = claudeWriterEnvironment(s.request);
+            assert.deepEqual(Object.fromEntries(Object.entries(environment).filter(([key]) => key.startsWith("GIT_CONFIG_"))), {
+                GIT_CONFIG_COUNT: "2",
+                GIT_CONFIG_KEY_0: "rerere.enabled",
+                GIT_CONFIG_VALUE_0: "false",
+                GIT_CONFIG_KEY_1: "maintenance.auto",
+                GIT_CONFIG_VALUE_1: "false",
+            });
+            for (const [key, value] of Object.entries(sourceObjectEnvironment(s.request.cwd)))
+                assert.equal(environment[key], value);
+        }
+        finally {
+            for (const key of Object.keys(process.env))
+                if (key.startsWith("GIT_CONFIG_"))
+                    delete process.env[key];
+            Object.assign(process.env, inherited);
+        }
         assert.ok(!args[args.indexOf("--allowedTools") + 1].includes("*"));
         assert.ok(s.request.profile.writableSurfaces.every((root) => !profileFile.startsWith(`${root}/`)));
         assert.throws(() => confinedTestCommand(s.request.cwd, "node *.mjs", profileFile), /asterisk.*refuses wildcards/u);

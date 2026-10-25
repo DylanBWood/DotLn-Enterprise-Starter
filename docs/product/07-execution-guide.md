@@ -673,7 +673,11 @@ registration from `main`. Selection compares physical launchpad
 identity, so alternate spellings keep the same order. With repository
 declarations or a target registry, an unregistered foreign directory selects
 no order; `status --json` then refuses with a nonzero exit. A passing final
-review binds the clean target commit and its review gate. Reports are drafted
+review binds the clean target commit and its review gate, linting only the commits
+from the subject's merge base with the clone's fetched base-branch ref
+(`refs/remotes/origin/<baseBranch>`) when the activation base is its ancestor,
+otherwise from the activation base; review does not fetch, and an absent ref
+keeps the activation-base range with the absence named in any refusal. Reports are drafted
 in the launchpad; `resume target-records` copies the order and moves its
 decisions and filed reports into the target's `documentationRoot`, retaining
 control state, raw evidence and links in the launchpad.
@@ -768,6 +772,19 @@ matching document in the configured `workstreams` root; the index validates
 its JSON membership block and records target facts for the board, with
 `track: separate` members outside the serial queue and `self` for an absent
 Repository field ([convention](../workstreams/README.md)).
+A closed member without the field is admitted from that document with an
+advisory; open members still require it. A self member's base and integration
+target both read the launchpad's `refs/heads/main`, so it remains `current`,
+stale `no`, when refreshed from a planning or update branch. Adding one exact
+leading `**Workstream:** WS-NNN` line to an order whose filed amendment source
+lacked it preserves the amendment binding. Bindings a previous release made
+with that field already present also remain matched; other changed bytes
+remain bound under either representation. Both field representations are
+checked for every historical title format, including activation-placeholder
+bindings.
+A field-only grouping change on a judged order still uses `amend-order` to
+record its authorization; that binding retains the field. Release-title
+assignment or retiming alone still needs no amendment.
 
 The host compiles a registered profile through the existing monotone authority
 floor. Profile denials and its expiry, resource, evidence and revocation
@@ -1187,11 +1204,20 @@ happen. The phrase is itself the operator request that authorizes the external
 CLI launch of the pinned reviewer and its refuter, and it adds no scheduler:
 nothing runs a review unless the operator opens a pass this way. A pass opened
 any other way may still consume an earlier review's surviving findings as one
-input among others. The subject is the launchpad; a review of a registered
-target repository at a recorded commit, or of a workstream's repositories,
-is WO-224's (`--repository <id>` and `--workstream WS-NNN`, filed by the
-2026-10-20 fork-answers pass), with the same pinned reviewer, refutation,
-receipts and disposition, paid once per repository. Consumptions: [[REVIEW-002 pass](../planning/entropy-review-002-2026-09-22.md),
+input among others. The subject defaults to the launchpad. A trailing
+registered repository id in `planning: entropy reducer <id>` selects
+`subject --repository <id>` and `review --repository <id> [<commit>]`;
+a trailing workstream id selects `subject --workstream WS-NNN` and
+`review --workstream WS-NNN`. The target defaults to its clone's already
+fetched base-branch tip. A workstream dispatches one distinct member at a
+time, with each receipt filed separately and all survivors disposed in this
+pass; `self` includes the launchpad at a named commit. Selected subjects
+report a needed refutation or remaining dispositions before another review;
+a completed set reports `complete`, and a later explicit review starts a new
+sequence. The same pinned reviewer, blinded refutation, immutable launchpad
+receipts and register disposition apply. Episode cost is paid once per
+repository: the REVIEW-002 observation above is about 993 s and USD 9.50
+for one episode, not the whole workstream. Consumptions: [[REVIEW-002 pass](../planning/entropy-review-002-2026-09-22.md),
 2026-09-22]; [[off-ramps pass](../planning/off-ramps-5s-entropy-2026-09-25.md)
 §9, 2026-09-25]; [[REVIEW-006 pass](../planning/entropy-review-006-2026-10-10.md),
 2026-10-10: one order from one finding, one product sentence from the other];
@@ -1536,7 +1562,18 @@ fails without the fix names the control, the case run with only that
 row's fix reverted and recorded with both arms' exit codes in a replayable
 file, as WO-218's repair recorded its 91 controls after VER-001 found three
 named cases passing at the base; a case that also passes at the base, or
-with the fix reverted, settles nothing. Order size
+with the fix reverted, settles nothing. One more [2026-10-25 pass]: an order
+that changes which commit a lifecycle step computes from (a base, a merge
+base, a revision) names every reader of that field across `scripts/` and
+`packages/` in its Observed gap, each kept or moved with its reason (WO-230
+moved the publish's three reads to the described base and left
+`lintReviewedTargetCommits`, the fourth reader, on the activation base; the
+DotLn-Angular fork's WO-013 FINAL-002 was refused on two merged subjects the
+day the release landed, and WO-231 moves it). A release's Read before
+upgrading is also screened: it asks an instance to read, never to edit a
+closed record by hand. A new or tightened kit check must admit records the
+previous release admitted, or the release is held; the `instance-history`
+suite checks that compatibility before release (WO-232). Order size
 [2026-10-13 pass, operator direction]: the 2026-09-08 cut (one seam and one outcome per order,
 split again above four hours) was a correction for its time and no longer
 binds. The binding cost is now the full gate run and the fixed cycle every
@@ -1767,7 +1804,14 @@ refresh. First export preserves an existing committed configuration and renders
 the new README with its release name. An ignored or untracked local configuration
 refuses before publication; commit its intended declaration before retrying.
 Generated control/planning records and opted-in instance actions
-remain unchanged. Ordinary instance kit updates still preserve seed ownership;
+remain unchanged. A kit check added or tightened in a release must admit the
+records the previous release admitted, or the release is held until it does.
+The core-only `instance-history` suite updates a committed fixture instance
+and runs its own sync, index, planning and document checks against accumulated
+record shapes. A new field refusal reported by an instance adds a shape at
+the next planning pass. A Read before upgrading line never asks an instance
+to edit a closed record by hand; a necessary migration needs its own planning
+decision before release. Ordinary instance kit updates still preserve seed ownership;
 the instance's own session previews the refreshed starter with the incoming
 revision's launchpad, merges it on an update branch, re-emits and generates
 the lineage index there, and commits the regenerated files in that update
@@ -2296,9 +2340,13 @@ are read separately when the order names them.
 
 Before `implementation-ready`, and not before `repair-complete`, the
 executor spawns two fresh `dotln-worker` agents, each given only the order
-and the diff: an adversary that attacks the criteria and an improver that
-critiques design, simplicity and what a maintainer will not understand in
-six months. It fixes or records every finding and writes a line in
+and the diff, with distinct briefs. The criteria adversary seeks concrete
+counterexamples, failed acceptance criteria and missing regression tests;
+design cleanup is outside its brief. The design improver seeks simpler
+structure, lower coupling, sound error handling and what a maintainer will
+not understand in six months; criterion verdicts and adversarial test design
+are outside its brief. An issue discovered in the other lane is transferred,
+not reviewed twice. The executor fixes or records every distinct finding and writes a line in
 `handoff.md` that starts `self-review: found N; fixed N; recorded N`, then
 names both workers or the separate-pass fallback and its evidence. A list
 marker, balanced inline emphasis or code wrappers may decorate the line;
