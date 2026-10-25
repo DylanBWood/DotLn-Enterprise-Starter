@@ -13,8 +13,8 @@ root `AI-HARNESS-SECURITY.md`; core-only section fragments are omitted there.
 An update can retain locally modified files at their prior manifest hashes;
 its dated output lists those exceptions to this source commit.
 
-- **Commit:** `a81561976c8629834a5a18623b097fa4d7d8681a`
-- **Tag:** `v0.97.1`
+- **Commit:** `28cc4882d24b573b7d809bc2d9a427a9fdc2b7d9`
+- **Tag:** `v0.98.0`
 - **Remote:** `github.com/DylanBWood/DotLn`
 - **Manifest:** `KIT-MANIFEST.json` (schema 1; 999 files with SHA-256)
 - **License files carried:** `LICENSE`, `LICENSE-docs`, `NOTICE`
@@ -107,84 +107,84 @@ block is checked by `node scripts/harness.mjs check` through the listed
 
 Core documents the kit does not carry, at the commit above:
 
-- `DylanBWood/DotLn@a81561976c86 docs/product/00-vision.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/product/01-principles.md` — a product document the kit points to and does not carry
-- `DylanBWood/DotLn@a81561976c86 docs/product/02-domain-model.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/product/03-architecture.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/product/04-interfaces.md` — a product document the kit points to and does not carry
-- `DylanBWood/DotLn@a81561976c86 docs/product/05-pattern-library.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/product/06-roadmap.md` — a product document the kit points to and does not carry
-- `DylanBWood/DotLn@a81561976c86 docs/product/09-audit-resilience-privacy.md` — a product document the kit points to and does not carry
-- `DylanBWood/DotLn@a81561976c86 docs/product/10-ir-compatibility.md` — a product document the kit points to and does not carry
-- `DylanBWood/DotLn@a81561976c86 docs/product/11-proteino.md` — a product document the kit points to and does not carry
-- `DylanBWood/DotLn@a81561976c86 docs/product/11-protino.md` — a product document the kit points to and does not carry
-- `DylanBWood/DotLn@a81561976c86 docs/product/12-workstream-application.md` — a product document the kit points to and does not carry
-- `DylanBWood/DotLn@a81561976c86 docs/product/13-uifa-roles.md` — referenced by `docs/PLAYBOOK.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/publication/base-outline.md` — referenced by `docs/publication/implementation-overlay-template.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/publication/audience-status-index.md` — the audience and status index of the product documents
-- `DylanBWood/DotLn@a81561976c86 docs/LEGAL.md` — the license posture, the pinned license hashes and the remaining distribution gates
-- `DylanBWood/DotLn@a81561976c86 CONTRIBUTING.md` — outbound licenses, the sign-off rule and the clean-room boundary
-- `DylanBWood/DotLn@a81561976c86 docs/AI-HARNESS-SECURITY.md` — the operator record the sanitized harness-security template is derived from
-- `DylanBWood/DotLn@a81561976c86 docs/decisions/0006-platform-mechanisms-instance-doctrine.md` — the platform and instance boundary this kit makes physical
-- `DylanBWood/DotLn@a81561976c86 docs/decisions/0007-presence-is-a-policy-input.md` — presence as a policy input with no universal direction
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-146/qualification.md` — referenced by `docs/PLAYBOOK.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/instance/entropy-reducer/README.md` — referenced by `docs/PLAYBOOK.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/decisions/0003-personal-ai-harness-security.md` — referenced by `docs/PLAYBOOK.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/planning/refutations/README.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/work-orders/README.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/work-orders/HISTORY.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/planning/work-order-map.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/planning/concurrent-work-orders-plan.md` — referenced by `docs/PLAYBOOK.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-039/harness-context.json` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-155/skill-loading.json` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-090/README.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/planning/critical-path-2026-09-08.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/planning/vision-into-use-2026-09-17.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-043/ideation-commands-and-usage.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-130/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/work-orders/WO-198-a-worktree-gate-names-what-moved.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-041/ideation.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/planning/r1-replan-2026-09-16.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/work-orders/WO-079-worktree-sync.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/work-orders/WO-157-closeout-followups.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/planning/off-ramps-5s-entropy-2026-09-25.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-131/ideation.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/work-orders/WO-158-lifecycle-off-ramps.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-157/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-219/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-158/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-202/commands-final.json` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/planning/entropy-review-002-2026-09-22.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/planning/entropy-review-006-2026-10-10.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/planning/entropy-review-007-2026-10-20.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/planning/onesie-twosie-followup-drain-2026-09-27.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/planning/followups.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/planning/outstanding-cleanup-2026-09-19.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/work-orders/WO-136-authority-enforcement-boundary.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/work-orders/WO-137-local-runner-readiness.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/work-orders/WO-138-local-model-role-qualification.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-064/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-189/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/work-orders/WO-187-verification-attacks-and-reviews.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-187/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-063/implementation.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-126/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-132/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-044/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-054/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-142/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/work-orders/WO-132-machinery-stand-down.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/planning/machinery-stand-down-2026-09-15.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-133/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-054/codex-continuation.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-140/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-126/build-comparison.json` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-127/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-115/scheduling-comparison.json` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-229/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-222/README.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/architecture/gate-execution.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/evidence/WO-216/README.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/planning/standard-pass-2026-10-19.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/publication/examples/README.md` — referenced by `docs/product/08-publication-compiler.md`; not carried in this instance
-- `DylanBWood/DotLn@a81561976c86 docs/work-orders/WO-126-process-debt.md` — referenced by `docs/product/08-publication-compiler.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/product/00-vision.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/product/01-principles.md` — a product document the kit points to and does not carry
+- `DylanBWood/DotLn@28cc4882d24b docs/product/02-domain-model.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/product/03-architecture.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/product/04-interfaces.md` — a product document the kit points to and does not carry
+- `DylanBWood/DotLn@28cc4882d24b docs/product/05-pattern-library.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/product/06-roadmap.md` — a product document the kit points to and does not carry
+- `DylanBWood/DotLn@28cc4882d24b docs/product/09-audit-resilience-privacy.md` — a product document the kit points to and does not carry
+- `DylanBWood/DotLn@28cc4882d24b docs/product/10-ir-compatibility.md` — a product document the kit points to and does not carry
+- `DylanBWood/DotLn@28cc4882d24b docs/product/11-proteino.md` — a product document the kit points to and does not carry
+- `DylanBWood/DotLn@28cc4882d24b docs/product/11-protino.md` — a product document the kit points to and does not carry
+- `DylanBWood/DotLn@28cc4882d24b docs/product/12-workstream-application.md` — a product document the kit points to and does not carry
+- `DylanBWood/DotLn@28cc4882d24b docs/product/13-uifa-roles.md` — referenced by `docs/PLAYBOOK.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/publication/base-outline.md` — referenced by `docs/publication/implementation-overlay-template.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/publication/audience-status-index.md` — the audience and status index of the product documents
+- `DylanBWood/DotLn@28cc4882d24b docs/LEGAL.md` — the license posture, the pinned license hashes and the remaining distribution gates
+- `DylanBWood/DotLn@28cc4882d24b CONTRIBUTING.md` — outbound licenses, the sign-off rule and the clean-room boundary
+- `DylanBWood/DotLn@28cc4882d24b docs/AI-HARNESS-SECURITY.md` — the operator record the sanitized harness-security template is derived from
+- `DylanBWood/DotLn@28cc4882d24b docs/decisions/0006-platform-mechanisms-instance-doctrine.md` — the platform and instance boundary this kit makes physical
+- `DylanBWood/DotLn@28cc4882d24b docs/decisions/0007-presence-is-a-policy-input.md` — presence as a policy input with no universal direction
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-146/qualification.md` — referenced by `docs/PLAYBOOK.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/instance/entropy-reducer/README.md` — referenced by `docs/PLAYBOOK.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/decisions/0003-personal-ai-harness-security.md` — referenced by `docs/PLAYBOOK.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/planning/refutations/README.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/work-orders/README.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/work-orders/HISTORY.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/planning/work-order-map.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/planning/concurrent-work-orders-plan.md` — referenced by `docs/PLAYBOOK.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-039/harness-context.json` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-155/skill-loading.json` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-090/README.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/planning/critical-path-2026-09-08.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/planning/vision-into-use-2026-09-17.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-043/ideation-commands-and-usage.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-130/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/work-orders/WO-198-a-worktree-gate-names-what-moved.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-041/ideation.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/planning/r1-replan-2026-09-16.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/work-orders/WO-079-worktree-sync.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/work-orders/WO-157-closeout-followups.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/planning/off-ramps-5s-entropy-2026-09-25.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-131/ideation.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/work-orders/WO-158-lifecycle-off-ramps.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-157/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-219/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-158/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-202/commands-final.json` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/planning/entropy-review-002-2026-09-22.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/planning/entropy-review-006-2026-10-10.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/planning/entropy-review-007-2026-10-20.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/planning/onesie-twosie-followup-drain-2026-09-27.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/planning/followups.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/planning/outstanding-cleanup-2026-09-19.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/work-orders/WO-136-authority-enforcement-boundary.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/work-orders/WO-137-local-runner-readiness.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/work-orders/WO-138-local-model-role-qualification.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-064/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-189/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/work-orders/WO-187-verification-attacks-and-reviews.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-187/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-063/implementation.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-126/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-132/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-044/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-054/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-142/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/work-orders/WO-132-machinery-stand-down.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/planning/machinery-stand-down-2026-09-15.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-133/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-054/codex-continuation.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-140/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-126/build-comparison.json` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-127/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-115/scheduling-comparison.json` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-229/decisions.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-222/README.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/architecture/gate-execution.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/evidence/WO-216/README.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/planning/standard-pass-2026-10-19.md` — referenced by `docs/product/07-execution-guide.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/publication/examples/README.md` — referenced by `docs/product/08-publication-compiler.md`; not carried in this instance
+- `DylanBWood/DotLn@28cc4882d24b docs/work-orders/WO-126-process-debt.md` — referenced by `docs/product/08-publication-compiler.md`; not carried in this instance

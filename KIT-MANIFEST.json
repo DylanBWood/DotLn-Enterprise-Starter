@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "commit": "a81561976c8629834a5a18623b097fa4d7d8681a",
-  "tag": "v0.97.1",
+  "commit": "28cc4882d24b573b7d809bc2d9a427a9fdc2b7d9",
+  "tag": "v0.98.0",
   "files": [
     {
       "path": ".agents/skills/dotln-executor/SKILL.md",
@@ -161,7 +161,7 @@
     },
     {
       "path": "UPSTREAM.md",
-      "sha256": "72991281596c881798acb0c1dbd10698a520269fb585b51a6bc43433124415b6"
+      "sha256": "e5fdfdbb93d15c0836c66581c6801448bdf0241624a3f39dc9adf902d9d72bf4"
     },
     {
       "path": "corpus/fixtures/ids/command-id-vectors.jsonl",
@@ -205,7 +205,7 @@
     },
     {
       "path": "docs/product/07-execution-guide.md",
-      "sha256": "a6a9769df9657b46654e33070e38800c48c46f6a7158e94d32c1a8b045976d1e"
+      "sha256": "2ba90477feafc7a17c34d6ccc7f016d93395b14af95c99118dc4c32863ae5e99"
     },
     {
       "path": "docs/product/08-publication-compiler.md",
@@ -2949,7 +2949,7 @@
     },
     {
       "path": "scripts/kit/README.client.md",
-      "sha256": "621e8d86177bab166ba37d919121e155d0f936d5672709a5f8e50639c8059512"
+      "sha256": "84d8068dbe3ddca21977154fe7c0402ae66867466fd49e1c6cc91f547a5a282c"
     },
     {
       "path": "scripts/kit/budgets.template.json",
@@ -2977,11 +2977,11 @@
     },
     {
       "path": "scripts/kit/workstream.template.md",
-      "sha256": "68f3afd56b0e6d73188c9c800105ec000bf7ffa58333654aeca6c77cf291cc9f"
+      "sha256": "d9f85a06e715f2929de194b2ab73c212e7fa045c844b3647232096d7e0201e64"
     },
     {
       "path": "scripts/launchpad.mjs",
-      "sha256": "5cc364290e3bfa83f85e3e8ada37baa443ee5fff5d8eb837bea39b9e87a54435"
+      "sha256": "e6b5407d22e2b45227fcecdb7c8636504495284a2e984b7390cbf25457fdc9fd"
     },
     {
       "path": "scripts/lib/adjacent-queue.mjs",
@@ -3261,7 +3261,7 @@
     },
     {
       "path": "scripts/lib/plan-continuation.mjs",
-      "sha256": "f33169053abf79796aa311a400dde674a3f89e912a21186cc34ab04ff54060b2"
+      "sha256": "6ec3341ab710b800d6d7682de4ecfa1fddeb7f560c01a96d48a1be515dc3e37a"
     },
     {
       "path": "scripts/lib/plan-dependency-migration.mjs",
@@ -3461,7 +3461,7 @@
     },
     {
       "path": "scripts/lib/work-order-workstream.mjs",
-      "sha256": "023790c10bc9b2aa94bf53d292fb77816ac2e4f717413a4398b47db19e0771a6"
+      "sha256": "798aceb2ef64c9efc64ac28577eea244aaf6a9fc72f7e39779ac22976b4fd1a0"
     },
     {
       "path": "scripts/lib/worktree-integration.mjs",
@@ -3817,7 +3817,7 @@
     },
     {
       "path": "scripts/test-plan-refutation.mjs",
-      "sha256": "ebe18424f9a3983a34a0cd7f3178d33a77426b05091edd66aff8311778d7e05e"
+      "sha256": "3c34c04d8e766995e7debb15eda557f4cde25766f26fed0e9d2b82630c6acf74"
     },
     {
       "path": "scripts/test-portfolio.mjs",
@@ -3873,7 +3873,7 @@
     },
     {
       "path": "scripts/test-runner.mjs",
-      "sha256": "05b6017311de1500e8941668cf63824d4c7e09f69c8073550d1c642a5bf77c07"
+      "sha256": "ed952d79eaafc2b2702083cf9f3ae65b253b52290d45a901802b7db6bff03ead"
     },
     {
       "path": "scripts/test-runner.test.fixture-inputs.json",
@@ -3961,7 +3961,7 @@
     },
     {
       "path": "scripts/test-work-orders.mjs",
-      "sha256": "98c9ac88409ec0b675e0dcda501ef50b989fbee2f021d5c1e796e7fab37bd0c2"
+      "sha256": "d54cd0c4f73d0af77cdcca7efa4f54fd8ed35a8e57accc59d35a6be8524769bb"
     },
     {
       "path": "scripts/test-work-orders.sh",
@@ -3993,7 +3993,7 @@
     },
     {
       "path": "scripts/work-orders.mjs",
-      "sha256": "d10abca63f59b019555463fba5e11aedbcc85a8da5f3a22ac980c2caecae4ec1"
+      "sha256": "dfc101046786f557d3647bd8b16ad35cac276bfe44d4a57c8f656e390f69f2e0"
     },
     {
       "path": "scripts/worktree.mjs",
