@@ -40,7 +40,10 @@ Planner-synthesized by the 2026-10-24 planning pass
 ([planning document](../planning/standard-pass-v0-96-1-2026-10-24.md) §6 D4): the interpreter's refusal of an
 uninterpreted kind, the rail's selection by recorded ids and the summary's
 works, the clock's virtual driver as this order's own, the base clause and
-receipt 008's known issues.
+receipt 008's known issues. Amended by the 2026-10-25 pass
+([planning document](../planning/standard-pass-v0-99-0-2026-10-25.md) §6 D4): receipt 009's known issues (the
+canvas search beyond the tag, the first-scene floor, the refused step's
+unchanged frame and clock, the stored value that no longer parses).
 **Depends on:** WO-014 merged (hard: the `Tool` types, the closed transform
 enum, the catalog's typed tools and the first three per work the rail
 lists; the base above is provisional: since starter v0.96.1 (core WO-230) the target publish describes the change from the merge base of the subject and the target's `main` and names the activation base beside it, so activation on this base publishes right; the planning pass that runs after WO-014 merges may set it to that merge commit, and none is required to (the 2026-10-24 second pass, D4)).
@@ -152,7 +155,10 @@ determinism as evidence.
   `type:data-access`): a SignalStore whose live frame state is in memory
   and whose saved compositions and clarify notes persist through WO-007's
   `withPersistedState({ key: 'scene', select })` under `dotln-angular.scene`;
-  JSON export and import. `SceneClock` with three drivers: animation frame,
+  JSON export and import. A stored value under that key that fails to parse
+  or to validate against the composition schema is ignored, the idle field
+  renders and the tool log notes it; it is never thrown and never rewritten
+  until the operator saves. `SceneClock` with three drivers: animation frame,
   manual `tick(n)` (specs and reduced motion), and RxJS virtual time (this
   order's own driver; WO-016's replay clock lands later over a generic
   `{ recordedAt }` shape and may adopt it, so nothing here waits on it).
@@ -218,7 +224,8 @@ four fixtures and their check; the taxonomy sentence; the two documents;
    blending clips; priority is silent with nothing to avoid; the anchor
    stays within a bound of the members' mean; greedy assignment equals the
    hand-computed table; determinism over 600 frames; the interpreter refuses
-   an uninterpreted kind with a reason naming it). Check: `npx nx test
+   an uninterpreted kind with a reason naming it and leaves the next frame
+   hash and the clock's tick count equal to a run without that step). Check: `npx nx test
    scene-engine` exits 0.
 4. `SceneRenderer`, `CanvasSceneRenderer`, `TextSceneRenderer`,
    `NullSceneRenderer`; `SceneClock` with the three drivers. Check: `npx nx
@@ -234,7 +241,8 @@ four fixtures and their check; the taxonomy sentence; the two documents;
    0; `npm run lint:components` exits 0.
 8. The rail reads the catalog (`firstThree` for each work the summary lists
    and the first-scene tools by the ids the decisions file names at
-   activation); the inspector's preview arrows; equip appends a step. Check:
+   activation, a list whose floor is one tool each for flock, arrive and the
+   wedge, line and column formations); the inspector's preview arrows; equip appends a step. Check:
    a facade spec applies flock to twelve units and the cohesion metric falls.
 9. RTS selection on the canvas and the text layer. Check: specs for click,
    shift-click, marquee, double-click, Escape and Space.
@@ -246,8 +254,8 @@ four fixtures and their check; the taxonomy sentence; the two documents;
     exits 0.
 12. e2e `apps/dotln-e2e/src/scene.spec.ts`: twenty rows in the text layer;
     Step advances the frame counter under reduced motion; the rail lists the
-    first-scene tools the decisions file names and three per work the
-    summary lists; a marquee selects at least two
+    first-scene tools the decisions file names (flock, arrive, wedge, line
+    and column at least) and three per work the summary lists; a marquee selects at least two
     units and Escape clears; equip Flock changes the cohesion metric's text;
     a saved composition survives a reload; axe at the board spec's threshold;
     no horizontal overflow at 360, 768 and 1440; the root still redirects to
@@ -283,10 +291,13 @@ review once each.
    the committed hand-computed table, that the first divergence between a
    branch before and after an equip is the equip frame plus one, and that
    the interpreter refuses a step whose kind it does not interpret with a
-   reason naming the kind.
+   reason naming the kind while the next frame's hash and the clock's tick
+   count equal those of a run without that step.
 2. `libs/features/scene/src/lib/wrappers/scene-canvas/` owns the only
    `<canvas>` in the feature (`grep -rl "<canvas" libs/features/scene/src`
-   prints exactly that component's file), `SceneRenderer` has `Canvas`,
+   prints exactly that component's file, and
+   `grep -rlE "createElement\(['\"]canvas|OffscreenCanvas|getContext\(" libs/features/scene/src --include='*.ts' | grep -v spec | grep -v wrappers/scene-canvas/`
+   prints nothing), `SceneRenderer` has `Canvas`,
    `Text` and `Null` implementations, and the feature's specs run with the
    null renderer under jsdom (`npx nx test scene` exits 0).
 3. The facade's frame loop writes signals at most once per animation frame
@@ -294,8 +305,10 @@ review once each.
    `vm` change per driver frame).
 4. `npx nx e2e dotln-e2e` exits 0 and includes: twenty rows in the text
    layer; Step advancing the frame counter under `reducedMotion: 'reduce'`;
-   the rail listing every first-scene tool the decisions file names and
-   three tools for each work `catalog-summary.json` lists; a marquee
+   the rail listing every first-scene tool the decisions file names, a list
+   whose floor is one tool each for flock, arrive and the wedge, line and
+   column formations, and three tools for each work `catalog-summary.json`
+   lists; a marquee
    selecting at least two units and Escape clearing
    the selection; equip Flock changing the cohesion metric's text; a saved
    composition present after a reload; axe at the board spec's threshold;
@@ -303,7 +316,9 @@ review once each.
    `/board`.
 5. The persisted-state spec asserts every key written starts with
    `dotln-angular.scene` and no other storage, cookie or network write
-   occurs; `grep -rlE "from 'node:|from \"node:|require\(" libs/shared/scene-engine/src libs/features/scene/src libs/features/scene-data-access/src --include='*.ts' | grep -v spec`
+   occurs, and a second spec seeds that key with a value that does not parse
+   and with one of an older shape and asserts that the facade yields the
+   idle twenty units; `grep -rlE "from 'node:|from \"node:|require\(" libs/shared/scene-engine/src libs/features/scene/src libs/features/scene-data-access/src --include='*.ts' | grep -v spec`
    prints nothing.
 6. `package.json`'s `dependencies` keys equal the base's (the step 14
    command prints nothing), and `npx nx build dotln --configuration=production`
@@ -336,7 +351,13 @@ and the rail selects the first-scene tools by the ids the decisions file
 names at activation from the catalog's typed rows (the observed gap lists
 fifteen candidate ids and design B's first slice names ten, and map lines may
 move), with the works read from the summary so a later work changes the
-rail without a text change here. This order activates only on a launchpad whose
+rail without a text change here. From receipt 009 (the second 2026-10-24
+pass's refutation), carried into this text by the 2026-10-25 pass: the
+canvas search covers `createElement`, `OffscreenCanvas` and `getContext`
+outside the wrapper (criterion 2); the first-scene list has a floor (step
+8, step 12, criterion 4); a refused step leaves the frame hash and the clock
+unchanged (step 3, criterion 1); a stored value that fails to parse yields
+the idle field (the store, criterion 5). This order activates only on a launchpad whose
 starter carries core WO-221's `--draft` form; the draft pull request and its
 workflow runs are a final-review obligation read from
 `docs/evidence/WO-015/preview-pr.json`, never a criterion. `Target release

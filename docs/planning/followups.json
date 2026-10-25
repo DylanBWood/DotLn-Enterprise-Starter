@@ -1353,6 +1353,14 @@
           "reopenWhen": "A starter release carries core's WO-224 (then the operator opens planning: entropy reducer for WS-001's repositories, DotLn-Angular at its then main, one episode per member repository).",
           "targets": [],
           "at": "2026-10-21T02:23:19.889Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-25 planning pass (docs/planning/standard-pass-v0-99-0-2026-10-25.md) D6: the condition occurred, starter v0.97.0 (core WO-224) carries the Entropy Reducer over a registered target or a workstream's repositories and v0.99.0's product 07 names the dispatch form planning: entropy reducer WS-001, taken by update #28. The pass does not run it: a live review is a paid episode (about USD 5 to 9.50 and roughly 1,000 s per distinct repository, two for WS-001: self and dotln-angular) whose authorization is the operator's own phrase, and nothing runs a review on a cadence. The pass recommends dispatching it after WO-013 merges so the target's subject carries the sub-app shell, and asks core (§11 item 4) to confirm the phrase's form before the first paid episode.",
+          "reopenWhen": "The operator dispatches planning: entropy reducer WS-001 (or the form core confirms); the pass opened that way consumes the receipts and disposes every survivor.",
+          "targets": [],
+          "at": "2026-10-25T21:03:45.787Z"
         }
       ]
     },
@@ -2646,6 +2654,14 @@
           "reopenWhen": "Core answers §11 item 1 of the second 2026-10-24 pass: an admitted metadata-field change for closed orders, or an index check that accepts a closed member without the field.",
           "targets": [],
           "at": "2026-10-24T22:07:55.009Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-25 planning pass (docs/planning/standard-pass-v0-99-0-2026-10-25.md) D2: core answered yes to both questions of the second 2026-10-24 pass's §11 item 1 and shipped WO-232 in v0.98.0, taken by update #28: the amendment binding admits one exact leading Workstream field added later to an order whose filed source lacked it, and the workstream check admits a closed member without the field with one advisory. The two withdrawals of #26 stand as this fork's record; no rebinding exists for a closed order, which has left the judged horizon by design.",
+          "reopenWhen": "A later starter update refuses WO-011 or WO-012 again on the Workstream field, or the plan gate refuses a field-only change on a judged order without offering amend-order.",
+          "targets": [],
+          "at": "2026-10-25T21:03:45.775Z"
         }
       ]
     },
@@ -2694,6 +2710,62 @@
           "reopenWhen": "Core changes the refresh to read main for self members, or a reader of the board or the index acts on the mark.",
           "targets": [],
           "at": "2026-10-24T22:11:40.455Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-25 planning pass (docs/planning/standard-pass-v0-99-0-2026-10-25.md) D2: core confirmed the observation, reproduced it on its own branch and fixed it in WO-232 (v0.98.0): a self member's base and integration target both read the launchpad's refs/heads/main. Observed in the field on update #28's branch, whose HEAD was two commits past main: npm run work-orders -- index recorded WO-003, WO-011 and WO-012 integration current, stale no, with base and target at main's head, and that page is committed.",
+          "reopenWhen": "The index reads a self member diverged or stale from any branch, or a reader of the board or the index acts on such a mark.",
+          "targets": [],
+          "at": "2026-10-25T21:03:45.782Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-dd50fa3363fd7d0a",
+      "key": "candidate:docs/planning/standard-pass-v0-99-0-2026-10-25.md#candidates-not-filed-with-their-reopening-conditions-section-10::4e8eef739ed3aed843a6d40480a3f610eb5899400f3a4c22096fabc4b2228654",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e9496b2121904eca1d6f03d94ec4d0dc28babebce8d682f02e5d46b5222d4f8a",
+          "ref": "docs/planning/standard-pass-v0-99-0-2026-10-25.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C2 A fork document check over order texts for the npx nx test <a> <b> form, which Nx reads as one project and one argument (WO-013-D005, item 1), refusing it in favour of npx nx run-many -t <target>…",
+          "summary": "- **C2 A fork document check over order texts for the `npx nx test <a> <b>` form, which Nx reads as one project and one argument (WO-013-D005, item 1), refusing it in favour of `npx nx run-many -t <target> -p <a> <b>`.** Not filed: this pass rewrote the two occurrences (WO-008 step 7, WO-014 step 3) and the other orders carry single-project forms; a check is worth its own order only when the form recurs. Reopen when a third order is filed or amended with the two-project form, or a verification fails a criterion on it.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C2 of the 2026-10-25 planning document (docs/planning/standard-pass-v0-99-0-2026-10-25.md): a fork document check refusing the npx nx test <a> <b> form in order texts (Nx reads it as one project and one argument, WO-013-D005 item 1). The pass rewrote the two occurrences (WO-008 step 7, WO-014 step 3) into npx nx run-many -t test -p <a> <b>; the other orders carry single-project forms, so a check is not worth its own order yet.",
+          "reopenWhen": "A third order is filed or amended with the two-project form, or a verification fails a criterion on it.",
+          "targets": [],
+          "at": "2026-10-25T21:03:45.798Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2138dd6781c01e55",
+      "key": "candidate:docs/planning/standard-pass-v0-99-0-2026-10-25.md#candidates-not-filed-with-their-reopening-conditions-section-10::c04e2b3230ce2c52dbcc21c695575946b00f3818be0ab74198859c7b50679076",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b2b340fb3c7ce61bf940e4022346b740706380ad89d39d1d447962fe1bbb4895",
+          "ref": "docs/planning/standard-pass-v0-99-0-2026-10-25.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C1 Restating WO-013's dependency on WO-007 as merge ordering rather than a functional need (WO-013-D005, item 2; receipt 008's known issue, whose reopening condition occurred when the subject…",
+          "summary": "- **C1 Restating WO-013's dependency on WO-007 as merge ordering rather than a functional need (WO-013-D005, item 2; receipt 008's known issue, whose reopening condition occurred when the subject imported nothing from the state, data-access or events libraries).** Not done: the order is active in `needs-fix` and a planning pass never edits an active order's judged text without operator direction; when it closes it leaves the horizon, so the restatement would never be judged. Reopen when WO-013 is withdrawn under D008's route (b) and a successor is filed; then the successor's `Depends on` says merge ordering.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C1 of the 2026-10-25 planning document (docs/planning/standard-pass-v0-99-0-2026-10-25.md): WO-013-D005 item 2 asks the next planning pass to restate WO-013's dependency on WO-007 as merge ordering; the order is active in needs-fix and a planning pass never edits an active order's judged text without operator direction, and a closed order leaves the judged horizon, so the restatement would never be judged.",
+          "reopenWhen": "WO-013 is withdrawn under WO-013-D008's route (b) and a successor is filed; the successor's Depends on then says merge ordering.",
+          "targets": [],
+          "at": "2026-10-25T21:03:45.793Z"
         }
       ]
     }

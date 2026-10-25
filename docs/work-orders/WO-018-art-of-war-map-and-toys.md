@@ -45,7 +45,10 @@ planning pass ([planning document](../planning/mining-run-orders-2026-10-24.md)
 2026-10-24 second pass ([planning document](../planning/standard-pass-v0-96-1-2026-10-24.md) §6 D4): the map's own
 directory and check, the `public-work` provenance of the toy-source tools,
 the mechanical never-a-passage check, the rerun rule inside the twelve, the
-base clause and receipt 008's known issues.
+base clause and receipt 008's known issues. Amended by the 2026-10-25 pass
+([planning document](../planning/standard-pass-v0-99-0-2026-10-25.md) §6 D4): receipt 009's known issues (the
+map check inside the gate, the titles rule, the toy-source tools' public
+sources, the read observation beside each worker's statement).
 **Depends on:** WO-014 merged (hard: the `Tool` schema, the catalog data
 layout, the allow-list check, the merge script and the classifier brief this
 order reuses); WO-017 merged (hard: the member before this one in the
@@ -103,7 +106,9 @@ translation, ebook 132); the mappers read it once and commit no passage.
   schema `map-row-v0.schema.json`; its own directory, because a map row
   carries the fields the tool allow-list refuses and WO-014's
   `check-catalog.mjs` scans `src/data/` only, so `check-map.mjs` owns the
-  maps directory): `{ id: 'aow:<n>', work: 'artofwar',
+  maps directory and runs inside `check:fixtures` after the catalog and
+  record checks, so the gate's lint target carries it; the `--text` form
+  runs by hand, because the text is never committed): `{ id: 'aow:<n>', work: 'artofwar',
   chapter, section, concept, type, definition, related: ToolId[], verified:
   '<chapter reference>' }` where `definition` is the mapper's own words, at
   most 240 characters, about the public-domain text and never a passage of
@@ -129,7 +134,9 @@ translation, ebook 132); the mappers read it once and commit no passage.
   'run-2026-10-22' | 'this-app' }`; `title` at most 80 characters and
   `question` at most 160, in generic terms. The run's nineteen toys enter as
   `{ id, title, source, status: 'designed', origin: 'run-2026-10-22' }` with
-  no question, tools or faces, because their designs stay in intake; the six
+  no question, tools or faces, because their designs stay in intake (an id
+  and a short title are what the operator's rule admits, not prose from the
+  run, and the decisions file records that reading); the six
   new toys enter in full with `origin: 'this-app'`. `toys:check` validates
   the schema, the allow-list and that every tool id a toy names exists in
   the catalog.
@@ -141,7 +148,11 @@ translation, ebook 132); the mappers read it once and commit no passage.
   the source's candidate ids from the run's probe listing (ids only, no
   prose; no quarantine file), and returns one toy record plus up to five
   tools for its source with five faces typed from public knowledge of the
-  work (`tools-<source>.json`, `provenance: 'public-work'` with `map: null`,
+  work, each tool naming its public source (the work and the chapter or
+  named concept) in a `source` string of at most 120 characters in the
+  designer's own words, which the schema admits for `public-work` rows only,
+  with the six works and their editions listed in the decisions file
+  (`tools-<source>.json`, `provenance: 'public-work'` with `map: null`,
   the pairing WO-014's schema declares, outside the mapped-rows count rule); the
   synthesizer orders the six toys by what the operator can play with
   soonest on the scene engine and writes `toys-summary.json`; the critic
@@ -188,8 +199,8 @@ with the fan-out record.
 1. Base guard and activation as WO-005 step 1, for WO-018; read `node
    scripts/harness.mjs usage <session>` and record the subagent remainder.
 2. `map-row-v0.schema.json`, `toy-v0.schema.json`, `toys.ts`;
-   `tools/scripts/catalog/check-map.mjs` and `check-toys.mjs` with
-   `npm run toys:check`; negative fixtures (a definition over 240
+   `tools/scripts/catalog/check-map.mjs` (wired into `check:fixtures`) and
+   `check-toys.mjs` with `npm run toys:check`; negative fixtures (a definition over 240
    characters; a definition repeating eight consecutive words of a sample
    text given with `--text`; a toy naming an unknown tool id) under
    `tools/lint-fixtures/catalog/`. Check: `npm run test:tooling` exits 0.
@@ -212,7 +223,11 @@ with the fan-out record.
    toys:check` exits 0 over the six records.
 7. Dispatch the synthesizer and the critic; dispose findings in the
    decisions file; write `toys-summary.json`. Check: the evidence README
-   lists at most twelve workers with their statements.
+   lists at most twelve workers with their statements and, beside each, the
+   launchpad's own observation: the session's harness journal under
+   `docs/control/local/harness/` searched for the quarantine directory's
+   name, with the row count found (zero expected) or `unobserved` where the
+   harness kept no journal rows for that worker.
 8. The run's nineteen toys as id-and-title records in `toys.json` (origin
    `run-2026-10-22`). Check: `npm run toys:check` exits 0 over 25 records.
 9. `ChildPaths.Toys`, `toys-page`, the toy cards, filters, the Tools home
@@ -248,8 +263,9 @@ each.
    `libs/shared/catalog/src/maps/map-artofwar.json`: every row has `id`,
    `work`, `chapter`, `section`, `concept`, `type`, `definition` (at most
    240 characters), `related` and `verified`, thirteen chapters are present,
-   `npm run catalog:check` still scans `src/data/` only, and the evidence
-   README records the public text's source and SHA-256, the critic's
+   `npm run catalog:check` still scans `src/data/` only, `npm run
+   check:fixtures` runs the map check (its output names `check-map`), and
+   the evidence README records the public text's source and SHA-256, the critic's
    sampled row count and the zero-overlap result of the check run with
    `--text` against that text.
 2. `npm run catalog:check` exits 0 with `tools-artofwar.json` present, and
@@ -260,11 +276,17 @@ each.
    `status`, and 6 with `origin: 'this-app'` (one each for `meadows`,
    `pirsig`, `poincare`, `gladwell`, `taleb`, `fives`) carrying a scene
    type, a question of at most 160 characters, a metric and at least one
-   tool id that exists in the catalog; a tooling test proves a toy naming an
-   unknown tool id fails the check.
+   tool id that exists in the catalog; every `public-work` tool carries a
+   `source` string naming its work and chapter or concept; the decisions
+   file records that the nineteen ids and titles are admitted as ids and
+   short titles, not prose from the run, and lists the public source each
+   toy-source tool rests on; a tooling test proves a toy naming an unknown
+   tool id fails the check.
 4. `docs/evidence/WO-018/README.md` lists at most twelve workers across the
    two fan-outs with their labels and one-line statements, each saying no
-   quarantine file was read, and records the subagent count from
+   quarantine file was read, with the launchpad's read observation beside
+   each (the harness journal's row count for the quarantine path, or
+   `unobserved`), and records the subagent count from
    `node scripts/harness.mjs usage <session>` at handoff.
 5. `npx nx e2e dotln-e2e` exits 0 and includes: `/tools/toys` listing 25
    toys; a filter by source narrowing to one; a new toy's card showing its
@@ -297,7 +319,16 @@ count rule does not count them; WO-015's rail reads its works from
 `catalog-summary.json`, so the seventh work changes the rail's expected
 count through the regenerated summary and no criterion elsewhere says six;
 "never a passage" has its word-run check; and a mapper's rewrite continues
-that mapper under the twelve. This order activates only on a launchpad whose starter
+that mapper under the twelve. From receipt 009 (the second 2026-10-24
+pass's refutation), carried into this text by the 2026-10-25 pass: the map
+check runs inside `check:fixtures`, so the gate carries it (the design, step
+2, criterion 1); an id and a short title are not prose from the run and the
+decisions file says so (the records, criterion 3); a toy-source tool names
+its public source and the overlap check cannot run against a copyrighted
+work, so the source and the own-words rule are the screen (the fan-out,
+criterion 3); a worker's no-quarantine statement is self-attested and the
+fan-out record puts the launchpad's own read observation beside it (step 7,
+criterion 4). This order activates only on a launchpad whose starter
 carries core WO-221's `--draft` form; the draft pull request and its
 workflow runs are a final-review obligation read from
 `docs/evidence/WO-018/preview-pr.json`, never a criterion. `Target release

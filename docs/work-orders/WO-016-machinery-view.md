@@ -48,7 +48,9 @@ re-derived WO-221 and WO-226 tables), §6 D8 and §9). Opaque identifier, not a
 priority. Amended by the 2026-10-24 second pass ([planning document](../planning/standard-pass-v0-96-1-2026-10-24.md)
 §6 D3 and D4): the fixture file names, criterion 3's starter and counts, the
 records types' name, the caption rule, the base clause and receipt 008's known
-issues.
+issues. Amended by the 2026-10-25 pass ([planning document](../planning/standard-pass-v0-99-0-2026-10-25.md)
+§6 D4): receipt 009's known issues (the `actor` composite and its scrub, the
+repairer slot, the sink's directory rule and a drop while the sink is down).
 **Depends on:** WO-013 merged (hard: the `/machinery` route and the Machinery
 menu group; the base above is provisional: since starter v0.96.1 (core WO-230) the target publish describes the change from the merge base of the subject and the target's `main` and names the activation base beside it, so activation on this base publishes right; the planning pass that runs after WO-015, the member before this one in the sequence, merges may set it to that merge commit, and none is required to (the 2026-10-24 second pass, D4)).
 **Workstream:** WS-001
@@ -118,7 +120,10 @@ generated cards, ideas saved to ignored intake.
 - **Types** (`libs/shared/models/src/lib/machinery.ts`, `type:models`):
   `ControlEventLite { ordinal, type, recordedAt, workOrderId, actor?: {
   harness, model, effort, mode? }, verdict?: 'pass' | 'fail' }` and nothing
-  else, the operator's field list; `SlotId` (`executor`, `verifier`,
+  else, the operator's field list (`actor` is one composite object with
+  exactly those keys, declared in the schema with `additionalProperties:
+  false`; a slot label reads its three values as they are, and the reader
+  never splits or derives them); `SlotId` (`executor`, `verifier`,
   `repairer`, `reviewer`); `Beat`, `Episode`, `OrderStrip` (beats,
   episodes, anchor, totals of operator and worker minutes, omissions; named a
   strip, not a scene, so that "scene" stays the scene engine's and the
@@ -159,15 +164,20 @@ generated cards, ideas saved to ignored intake.
 - **Fixtures.** `tools/scripts/reduce-control-segment.mjs <segment.jsonl>
   <out.json> --commit <sha>` keeps exactly the fields of `ControlEventLite`,
   writes `{ schema: 'control-event-lite-v0', source: { repository:
-  'DylanBWood/DotLn', commit, order }, rows }`, runs `assertScrubbed`, and
-  prints PASS or FAIL without values; run by hand against the platform's
+  'DylanBWood/DotLn', commit, order }, rows }`, runs `assertScrubbed` over
+  every string, each `actor` value included, which must read as a harness,
+  model or effort label (a value carrying `@`, a path separator or a dotted
+  hostname fails), and prints PASS or FAIL without values; run by hand against the platform's
   public repository at a recorded commit, as the board fixture was captured.
   `tools/scripts/check-record-fixtures.mjs` (Ajv against
   `control-event-lite-v0.schema.json` with `additionalProperties: false`,
   plus `assertScrubbed`) wired into `check:fixtures`.
   `role-mechanisms.json` lists, per role, the ids the launchpad's role skill
   stamps carry and the prose section keys of each skill, with the file name
-  and the starter version as its source; copied as data by the executor from
+  and the starter version as its source; the repairer slot has no skill of
+  its own, because the repairer is the executor role at `resume: fix`, so
+  the file maps `repairer` to the executor's entry and the agent card says
+  so; copied as data by the executor from
   the launchpad kit files at activation, which records the starter and the
   per-role counts it read in the decisions file (at starter v0.96.1 the
   executor stamp carries 19 ids and each other role 13; a later starter may
@@ -199,11 +209,16 @@ generated cards, ideas saved to ignored intake.
   body over 16 KB, never logs a body, and appends one JSON line per idea to
   `DOTLN_INTAKE_SINK_DIR` (default `docs/intake/ideas/` in the repository,
   which this order adds to `.gitignore` with a `.gitkeep`), creating
-  `ideas-YYYY-MM-DD.jsonl`; both variables documented in `.env.example`, values
+  `ideas-YYYY-MM-DD.jsonl`; the sink refuses to start when the resolved
+  directory lies in no Git repository or is not ignored by the one that
+  contains it (`git check-ignore -q <dir>` exits nonzero), so an idea never
+  lands in a tracked path, a control directory or the launchpad; both variables documented in `.env.example`, values
   never committed. The app posts a dropped idea when
   `environment.ideaSinkUrl` is a string (development:
-  `http://127.0.0.1:4310/ideas`; production: `null`); a failed post is one
-  toast through WO-007's error store and never blocks the drop. The operator
+  `http://127.0.0.1:4310/ideas`; production: `null`); the drop is applied
+  and persisted in browser storage first, then posted, and a failed post
+  (the sink set but down) is one toast through WO-007's error store, so
+  nothing is lost and nothing blocks. The operator
   runs the sink beside `nx serve` from their own checkout, so the ideas land
   in that checkout's ignored intake and are not lost in a browser.
 - **Documents:** `docs/dev-reference/architecture/machinery.md` (the records
@@ -283,15 +298,18 @@ data-access library; the idea sink and its tooling test; the two documents;
     `.gitignore` entry for `docs/intake/`, `environment.ideaSinkUrl`
     (development string, production `null`), the post on drop with the
     toast on failure. Check: a tooling test starts the sink on an ephemeral
-    port with a temporary directory, posts one idea and asserts one JSON
-    line appended; a second post over 16 KB is refused.
+    port with a temporary ignored directory, posts one idea and asserts one
+    JSON line appended; a second post over 16 KB is refused; a third test
+    starts it on a tracked directory of a temporary repository and asserts
+    the refusal; a facade spec with the post failing asserts the idea is
+    applied and present in the fake storage.
 12. Replace the arriving page in `machineryRoutes`; `machinery.*` i18n keys;
     the Machinery menu group lists Board and Agents. Check: `npm run
     i18n:check` exits 0; `npx nx build dotln --configuration=production`
     exits 0 and `grep -rl "127.0.0.1" dist/apps/dotln/browser` prints
     nothing.
-13. e2e `apps/dotln-e2e/src/machinery.spec.ts`: sixteen beat buttons and
-    five slots; stepping to the second beat fills the executor slot; the
+13. e2e `apps/dotln-e2e/src/machinery.spec.ts`: sixteen beat buttons, four
+    role slots and the operator figure; stepping to the second beat fills the executor slot; the
     verifier slot shows a ghost after beat 8; an idea created in the form,
     applied to the verifier, redraws the card with the ghost and the band; a
     refused drop stays visible with its reason; the idea survives a reload;
@@ -341,25 +359,29 @@ then the target gate plain and review once each.
    role's count against the expected counts the executor set from the files
    read, and the decisions file records the starter and the counts; at
    starter v0.96.1 they read 19 for the executor and 13 for each other role),
-   and
+   the `repairer` slot reads the executor's entry and its card states that
+   the repairer runs the executor role at `resume: fix` (a spec asserts the
+   card's text), and
    `grep -c "/Users/" libs/shared/records/testing/src/fixtures/role-mechanisms.json`
    prints 0.
 4. `grep -rl "generated" libs/features/machinery/src/testing/fixtures`
    prints nothing and the shelf's fixture of ideas is empty at first render
    (a spec asserts zero cards before the operator creates one).
 5. The tooling test for the idea sink passes (`npm run test:tooling` exits
-   0): one post appends one JSON line to a temporary directory, a body over
-   16 KB is refused, and a request from a non-loopback host is refused;
+   0): one post appends one JSON line to a temporary ignored directory, a
+   body over 16 KB is refused, a request from a non-loopback host is refused,
+   and the sink refuses to start on a directory that is not Git-ignored;
    `environment.prod.ts` sets `ideaSinkUrl` to `null` and
    `grep -rl "127.0.0.1" dist/apps/dotln/browser` prints nothing after
    `npx nx build dotln --configuration=production`.
 6. The persisted-state spec asserts every key written starts with
    `dotln-angular.machinery` and no other storage, cookie or network write
-   occurs except the sink post when `ideaSinkUrl` is set; and
+   occurs except the sink post when `ideaSinkUrl` is set, a spec with that
+   post failing asserts the dropped idea is applied and persisted; and
    `grep -rlE "from 'node:|from \"node:|require\(" libs/shared/records/src libs/shared/replay/src libs/features/machinery/src libs/features/machinery-data-access/src --include='*.ts' | grep -v spec`
    prints nothing.
-7. `npx nx e2e dotln-e2e` exits 0 and includes: sixteen beat buttons and
-   five slots on `/machinery`; the executor slot filled at the second beat;
+7. `npx nx e2e dotln-e2e` exits 0 and includes: sixteen beat buttons, four
+   role slots and the operator figure on `/machinery`; the executor slot filled at the second beat;
    a ghost in the verifier slot after the eighth; an idea created, applied
    and redrawn with the ghost, the presentation-only band and a caption
    naming what changed; a refused drop
@@ -393,7 +415,15 @@ so for every other change (the Objective, the `use-case-caption` composite
 and step 10); criterion 3 reads the role stamps at activation instead of
 hard-coding a starter and its counts; and the records types are `OrderStrip`,
 not `ConcertScene`, so that "scene" is not overloaded across the fold, the
-scene engine and the catalog. This order activates only on a launchpad whose
+scene engine and the catalog. From receipt 009 (the second 2026-10-24 pass's
+refutation), carried into this text by the 2026-10-25 pass: `actor` is one
+composite the schema declares and the reducer's scrub screens each of its
+values (the types, the reducer, criterion 1); the repairer slot reads the
+executor's entry and its card says why, and the e2e counts four role slots
+and the operator figure (the fixtures, step 13, criteria 3 and 7); the sink
+refuses a directory that is not Git-ignored, and a drop while the sink is
+down is applied and persisted before the post (the sink, step 11, criteria
+5 and 6). This order activates only on a launchpad whose
 starter carries core WO-221's `--draft` form; the draft pull request and its
 workflow runs are a final-review obligation read from
 `docs/evidence/WO-016/preview-pr.json`, never a criterion. `Target release

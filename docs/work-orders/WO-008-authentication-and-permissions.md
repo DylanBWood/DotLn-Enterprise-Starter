@@ -11,14 +11,16 @@
 **Cost:** adds `libs/shared/auth` with its kit, the mocked identity provider
 handlers (whose development signing key pair is generated when the mock
 starts and is never committed), the `authHttpEvents` and
-`sessionEvents` groups, guards, the permission directive, the `/login` and
-`/denied` routes, about 60 source files; adds one OpenID Connect client
-library and `jose` (development signing in the mock) to the workspace.
+`sessionEvents` groups, guards, the permission directive, the `/login`,
+`/denied` and `/account` routes, about 60 source files; adds one OpenID
+Connect client library to `dependencies` and `jose` (development signing in
+the mock) to `devDependencies`.
 Removes nothing. Wall-clock: about 8 to 12 hours of executor work plus the
 fixed cycle; unknown until run. Context bytes: WS-001 house rule 17, the
 events and state documents, the client library's documentation, this order,
 about 160 KB. Commands added in the target: none. Tokens: unknown until run.
-Steps: 15. Re-mints: none.
+Steps: 15. Re-mints: none. Refutations paid: nine receipts (001 to 009) name
+this order, the last two judging the amended text.
 **Nomination provenance:** the 2026-10-18 angular-workstream planning pass
 ([planning document](../planning/angular-workstream-2026-10-18.md) §5 and §8),
 on the operator's direction of 2026-10-17 (ignored intake capture, SHA-256
@@ -54,7 +56,11 @@ dependency on WO-007 stands. Amended by the 2026-10-24 second pass
 ([planning document](../planning/standard-pass-v0-96-1-2026-10-24.md) §6 D4): the base above is provisional: since starter v0.96.1 (core WO-230) the target publish describes the change from the merge base of the subject and the target's `main` and names the activation base beside it, so activation on this base publishes right; the planning pass that runs after WO-016 merges may set it to that merge commit, and none is required to (the 2026-10-24 second pass, D4); the record-path advisory
 closed at v0.96.1; and receipt 008's known issues (the storage assertion over
 issued tokens, the signing key never committed, the provider swap not
-exercised).
+exercised). Amended by the 2026-10-25 pass ([planning document](../planning/standard-pass-v0-99-0-2026-10-25.md)
+§6 D4): receipt 009's known issues (the storage grep's scope, the public
+sub-app routes and the gated `/account` page, a production build without a
+provider, `jose` as a development dependency, the refutations paid) and the
+multi-project check form of WO-013-D005.
 **Workstream:** WS-001
 
 <!-- dotln-dependencies:start -->
@@ -88,9 +94,12 @@ the app has no identity, no tokens, no guards and no permission model;
 exists for this project; the operator wants none set up yet and the operator's
 later choice (a hosted provider) must drop in through configuration. By the
 time this order activates, WO-013 to WO-016 have added the sub-app menu, the
-catalog, the scene and the machinery view, none of which gates a route; the
-first permission-gated surfaces are the ones this order declares in
-`routePermissions`, which covers every `BasePaths` member then present.
+catalog, the scene and the machinery view, none of which gates a route;
+`routePermissions` covers every `BasePaths` member then present, the sub-app
+members (`Board`, `Scene`, `Machinery`, `Tools`) stay public with an empty
+permission list so their e2e specs need no session, the first gated surface
+is this order's own `/account` page, and WO-017's `/twin` is the first
+gated sub-app.
 
 **Design:**
 
@@ -101,7 +110,9 @@ first permission-gated surfaces are the ones this order declares in
   Apache-2.0, with PKCE and silent refresh; the decision records the choice
   and the alternatives), provided by `provideDotlnAuth(config)` reading
   `EnvironmentConfig.auth` (`issuer`, `clientId`, `scopes`, `redirectPath`,
-  `postLogoutPath`), now typed `AuthConfig`.
+  `postLogoutPath`), now typed `AuthConfig | null`; `null` means no provider
+  is configured, the state of a production build until the operator supplies
+  one.
 - Token handling (house rule 17; the browser-based-apps best practice):
   access and refresh tokens in memory only (the store's state), never in
   `localStorage` or `sessionStorage`; refresh-token rotation honored; a
@@ -122,7 +133,10 @@ first permission-gated surfaces are the ones this order declares in
 - Permissions: `PermissionsStore` derives `roles` and `permissions` from the
   ID token and access token claims; `routePermissions` is a declared
   adjacency list in `core` (`Record<BasePaths, Permission[]>`, with
-  `BoardPaths` nested); `canMatch` guards (`requirePermissions(...)`) read it;
+  `BoardPaths` nested; an empty list means public, and at this order
+  `Board`, `Scene`, `Machinery` and `Tools` are public while `Account`
+  requires `account:read`, which the mock grants to its default user and
+  withholds from its `denied` user); `canMatch` guards (`requirePermissions(...)`) read it;
   `*dotlnHasPermission` structural directive (a knowing directive in `auth`)
   hides elements; facades expose `can(permission)` for feature-level checks;
   denied navigation dispatches `navigationEvents.navigate({ route: BasePaths.Denied })`.
@@ -147,9 +161,13 @@ first permission-gated surfaces are the ones this order declares in
   `failNextRefresh`, `invalidSignature`, `skewSeconds`) through a test-only
   header so e2e can drive the matrix. The mocked endpoint paths live in one
   constants file under `testing/idp/` so the bundle check can list them.
-- Routes: `/login` (anonymous shell page with the sign-in button),
-  `/auth/callback`, `/denied`, `/mock-idp/login` (development only, excluded
-  from production builds by environment); `BasePaths` gains them.
+- Routes: `/login` (anonymous shell page with the sign-in button; with
+  `auth` at `null` it shows the unavailable state naming the missing
+  configuration instead of the button, and the public sub-apps stay
+  reachable), `/auth/callback`, `/denied`, `/account` (the signed-in user's
+  claims and permissions as a key-value list; the gated surface the matrix
+  drives), `/mock-idp/login` (development only, excluded from production
+  builds by environment); `BasePaths` gains them.
 - Failure matrix, each a unit spec and, where the UI changes, an e2e test:
   network timeout on token exchange; `exchangeFailure` with `invalid_grant`;
   expired access token on request (refresh once, replay); refresh failure
@@ -182,8 +200,11 @@ provider; the matrix tests; the two documents; `docs/evidence/WO-008/`.
 **Execution plan:**
 
 1. Base guard and activation as WO-005 step 1, for WO-008.
-2. Choose and install the client library and `jose`; record the decision with
-   the alternatives and the license. Check: `npm ls` exits 0.
+2. Choose and install the client library (`dependencies`) and `jose`
+   (`devDependencies`); record the decision with the alternatives and the
+   license. Check: `npm ls` exits 0 and
+   `node -e "const p=require('./package.json');if(p.dependencies.jose)throw new Error('jose')"`
+   prints nothing.
 3. Generate `auth` (`scope:shared,type:auth`) with logged commands; `events`
    gains `sessionEvents` and `authHttpEvents`; `models` gains `AuthConfig`,
    `Permission`, `Claims`. Check: `npx nx test events` exits 0.
@@ -194,12 +215,14 @@ provider; the matrix tests; the two documents; `docs/evidence/WO-008/`.
 6. Interceptors with single-flight refresh; specs for the concurrency case.
    Check: `npx nx test auth` exits 0.
 7. `PermissionsStore`, `routePermissions` in `core`, guards, directive,
-   facade `can()`. Check: `npx nx test core auth home` exits 0.
+   facade `can()`. Check: `npx nx run-many -t test -p core auth home` exits
+   0 (the multi-project form Nx parses; `npx nx test a b` runs only the first
+   project, WO-013-D005).
 8. Mocked provider handlers, signing key, knobs, `/mock-idp/login` page
    (development only). Check: `npx nx serve dotln` completes a sign-in in
    the browser (recorded).
-9. Routes and pages (`/login`, `/auth/callback`, `/denied`); `BasePaths`
-   updated; `app.config.ts` wiring. Check: `npx nx build dotln --configuration=production`
+9. Routes and pages (`/login`, `/auth/callback`, `/denied`, `/account`);
+   `BasePaths` updated; `app.config.ts` wiring. Check: `npx nx build dotln --configuration=production`
    exits 0 and the production bundle contains no `mock-idp` string
    (`grep -rc "mock-idp" dist/apps/dotln/browser | grep -v ":0"` prints
    nothing).
@@ -246,7 +269,10 @@ then the target gate plain and review once each.
 
 **Acceptance criteria (all required)**
 
-1. `grep -rlE "localStorage|sessionStorage" libs/shared/auth/src apps/dotln/src --include='*.ts' | grep -v spec`
+1. `grep -rlE "localStorage|sessionStorage" libs/shared/auth/src --include='*.ts' | grep -v spec`
+   prints nothing, and the same grep over the files under `apps/dotln/src`
+   this order adds or changes
+   (`git diff --name-only $(git merge-base HEAD origin/main)..HEAD -- apps/dotln/src`)
    prints nothing; `grep -rc "console.log" libs/shared/auth/src --include='*.ts' | grep -v ":0"`
    prints nothing; and an e2e step after the sign-in reads every key of
    `localStorage` and `sessionStorage` and asserts that no value matches the
@@ -266,9 +292,12 @@ then the target gate plain and review once each.
    through the MSW handler's call count), `state` mismatch, redirect loop
    stop, cross-tab sign-out.
 4. `core` exports `routePermissions` covering every `BasePaths` member
-   (a spec asserts the record's keys equal the enum's values), guards use it,
-   and `npx nx e2e dotln-e2e` includes: sign in through the mocked provider
-   and land on `returnTo`; a denied route redirecting to `/denied`; an
+   (a spec asserts the record's keys equal the enum's values and that
+   `Board`, `Scene`, `Machinery` and `Tools` map to an empty list), guards
+   use it, the `board`, `scene`, `machinery` and `catalog` e2e specs run
+   unchanged without a session, and `npx nx e2e dotln-e2e` includes: sign in
+   through the mocked provider and land on `returnTo` at `/account`;
+   `/account` as the `denied` user redirecting to `/denied`; an
    element hidden by `*dotlnHasPermission` for a user without the permission;
    token expiry during use followed by a transparent refresh; refresh failure
    returning to `/login`.
@@ -277,9 +306,12 @@ then the target gate plain and review once each.
    development signing key's identifier (the `kid` constant) and for every
    path the mocked provider's constants file declares (both listed in the
    evidence README), `grep -rl "<value>" dist/apps/dotln/browser` prints
-   nothing; and the bearer token is attached only to requests under
+   nothing; the bearer token is attached only to requests under
    `apiBaseUrl` (a spec asserts a request to another origin carries no
-   `Authorization` header).
+   `Authorization` header); `jose` is listed under `devDependencies` and not
+   under `dependencies` (the step 2 check prints nothing); and with `auth` at
+   `null` the four public routes' guards admit an anonymous visitor and the
+   login page renders the unavailable state (two specs assert it).
 6. `docs/dev-reference/security/authentication.md` states the storage rule,
    the refresh rule, the matrix, the provider swap and that the server
    enforces authorization while client checks shape presentation only
@@ -302,7 +334,15 @@ now covers opaque tokens through the mock's record of what it issued; the
 development signing key pair is generated at the mock's start and never
 committed; and the objective's provider swap is documented (criterion 6) but
 not exercised by a second provider configuration, which a later member with a
-real provider pays for. WO-007's
+real provider pays for. From receipt 009 (the second 2026-10-24 pass's
+refutation), carried into this text by the 2026-10-25 pass: criterion 1's
+app-side grep runs over the files this order changes, so a storage helper
+an earlier member placed in the app is not this order's failure; the
+sub-app routes stay public and `/account` is the gated surface, so no
+earlier e2e spec gains a sign-in and WO-018's toy shelf under Tools stays
+public (the design, criterion 4); a production build with no provider keeps
+the public sub-apps and shows the unavailable state at `/login`, with `jose`
+in `devDependencies` (criterion 5); step 7 uses the `run-many` form. WO-007's
 `StorageToken` binds the real `localStorage` inside
 `libs/shared/data-access`, so criterion 1's grep over `libs/shared/auth/src`
 and `apps/dotln/src` stays clean by construction. The client library is
