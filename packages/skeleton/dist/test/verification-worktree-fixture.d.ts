@@ -33,3 +33,13 @@ export declare function openSnapshotDriver(fixture: Awaited<ReturnType<typeof so
     driver: VerificationDriver;
     host: VerificationHost;
 };
+export declare const forgeGraph: (file: string, commit: string, change: {
+    tree: string;
+} | {
+    parent: string;
+}) => void;
+/** Each planted interpretation has a control that ordinary Git would consume. */
+export declare function plantGitInterpretation(root: string, worktree: string, kind: "replace" | "graph" | "hooks", commit: string, base: string): {
+    common: string;
+    marker: string;
+};

@@ -36,6 +36,8 @@ export interface SourceChangeHostOptions {
     readonly afterResult?: () => void;
     readonly afterReceiptSaved?: () => void;
     readonly onEvent?: (event: Event) => void;
+    /** Host filesystem seam for deterministic cleanup-failure qualification. */
+    readonly unlinkCommandFile?: (path: string) => void;
     /** Run-owned interruption; its reason is the received host signal. */
     readonly signal?: AbortSignal;
 }
@@ -46,6 +48,7 @@ export type SourceChangeOutcome = {
     readonly status: "refused";
     readonly refusal: SourceChangeRefused;
 };
+export declare const WRITER_REQUESTED_ATTENTION = "writer-requested-attention";
 /** One compiled order, one branch and one host-owned commit receipt. No publication. */
 export declare class SourceChangeHost {
     readonly options: SourceChangeHostOptions;
@@ -73,6 +76,8 @@ export declare class SourceChangeHost {
     private processIdentity;
     private recoverTermination;
     private checkIntegrity;
+    private cleanupCommands;
+    private cleanupRefusal;
     private closeCommand;
     private refuse;
     private observe;

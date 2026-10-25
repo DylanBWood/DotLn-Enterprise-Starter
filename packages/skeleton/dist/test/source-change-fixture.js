@@ -1,18 +1,56 @@
 import { execFileSync } from "node:child_process";
-import { appendFileSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, writeFileSync, } from "node:fs";
+import { appendFileSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, existsSync, lstatSync, unlinkSync, writeFileSync, } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { WorkerStore } from "../src/worker-store.js";
 import { SOURCE_CHANGE_DENIED, } from "../src/worker-protocol.js";
 import { ClaudeCliPrintWorkOrderTransport, CodexCliExecWorkOrderTransport, runWorkerProcess, } from "../src/worker-transport.js";
+/** Faults are per path and call, without changing any host permissions. */
+export function cleanupFaults(fail) {
+    const calls = [];
+    const counts = new Map();
+    return {
+        calls,
+        unlink(path) {
+            const kind = path.endsWith("source-change-commands.json")
+                ? "route"
+                : "profile";
+            const count = (counts.get(path) ?? 0) + 1;
+            counts.set(path, count);
+            calls.push({ path, kind, count });
+            if (fail[kind] === "always" || fail[kind]?.includes(count))
+                throw Object.assign(new Error("synthetic owned-grant removal failure"), { code: "EACCES" });
+            unlinkSync(path);
+        },
+    };
+}
+export const sourceEventOrder = (root) => readFileSync(join(root, "store/events.jsonl"), "utf8")
+    .trim()
+    .split("\n")
+    .filter(Boolean)
+    .map((line) => JSON.parse(line).type);
 export const launchpad = realpathSync(fileURLToPath(new URL("../../../../", import.meta.url)));
+export const fixtureObjectEnvironment = (cwd) => {
+    const link = join(cwd, ".git");
+    if (!existsSync(link) || !lstatSync(link).isFile())
+        return {};
+    const gitdir = resolve(cwd, readFileSync(link, "utf8").trim().slice(8));
+    const objects = join(gitdir, "dotln-objects");
+    return existsSync(objects)
+        ? {
+            GIT_OBJECT_DIRECTORY: objects,
+            GIT_ALTERNATE_OBJECT_DIRECTORIES: JSON.stringify(join(resolve(gitdir, readFileSync(join(gitdir, "commondir"), "utf8").trim()), "objects")),
+        }
+        : {};
+};
 export const fixtureGit = (cwd, ...args) => execFileSync("git", ["-c", "core.hooksPath=/dev/null", "-c", "commit.gpgsign=false", ...args], {
     cwd,
     encoding: "utf8",
     stdio: ["ignore", "pipe", "pipe"],
     env: {
         ...process.env,
+        ...fixtureObjectEnvironment(cwd),
         GIT_AUTHOR_NAME: "Fixture",
         GIT_AUTHOR_EMAIL: "fixture@example.invalid",
         GIT_COMMITTER_NAME: "Fixture",
