@@ -220,6 +220,19 @@ in one short question rather than guessing in either direction.
   dispatch in its worktree (second planning pass of 2026-10-24, D1 to D5;
   capture SHA-256
   `32a697b7c11563c62ceb8fefa10d796204364aec53ad1984e7409cf031eb6e11`).
+  Later on 2026-10-24 the operator dispatched WO-013's fix, its verification
+  (whose draft publish opened DotLn-Angular #6 from the merge base) and a
+  second final review, which the kit's own review lint refused on two merged
+  subjects outside the order's commit (WO-013-D015); the operator stopped
+  there, opened a planning session in core, which filed WO-231 first and
+  shipped it as v0.97.1 that night, and on 2026-10-25 opened a standard pass
+  here with the latest upstream and core's answer summary. The update went
+  first again (pull request #28, starter v0.99.0, merged within a minute),
+  the session finished it on `main`, and the pass amended six orders from
+  receipt 009 and WO-013's boarded rows; WO-013's fix is again the
+  operator's next dispatch in its worktree (planning pass of 2026-10-25, D1
+  to D5; capture SHA-256
+  `9506b972e4a6947ad2d0b3085300467d3aa46114b047b5356249e0180c82cd48`).
 - Upstream updates: the operator asks for the outcome, the fork updated to
   the latest starter, and leaves the pull-request mechanics to the pass
   (refreshing an open update pull request or replacing it), which records
@@ -232,8 +245,9 @@ in one short question rather than guessing in either direction.
   Since starter v0.90.0 the session finishes a merged update itself with
   `node scripts/launchpad.mjs update --finish` on clean `main` (fetch,
   fast-forward check, fast-forward, bootstrap), as the 2026-10-23 pass did
-  after #21 and the 2026-10-24 pass after #23; the operator merges, the
-  session finishes (planning passes of 2026-10-23, D1, and 2026-10-24, D1).
+  after #21, the 2026-10-24 passes after #23 and #26 and the 2026-10-25
+  pass after #28; the operator merges, the session finishes (planning passes
+  of 2026-10-23, D1, 2026-10-24, D1, and 2026-10-25, D1).
   A repair a kit release's Read-before-upgrading names for this fork (the
   workstream field v0.96.0 requires on WO-011 and WO-012) is made on the
   update branch so the branch merges green; where the plan gate binds a
@@ -261,7 +275,11 @@ in one short question rather than guessing in either direction.
   in the same worktree, which the operator dispatches; a fix that waits on
   a kit release waits for the update to reach `main` first, and the fix
   integrates `main` before it republishes (WO-013, 2026-10-24; second
-  planning pass of 2026-10-24, D2).
+  planning pass of 2026-10-24, D2). The same route served WO-013 twice
+  (D009 and D015): the fork records the blocker in the order's decisions
+  with the safe default, the operator stops and opens a core planning
+  session, core files the kit order first, and the fork takes the release
+  with its next pass (planning pass of 2026-10-25, D3).
 - Research before asking: the product the UI serves is described at length
   in the DotLn platform's records (its private intake, its idea ledger and
   its product pages); a pass reads them through research workers, splitting

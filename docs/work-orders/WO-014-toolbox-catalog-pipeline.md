@@ -48,6 +48,9 @@ terms; the quarantine files are never opened. Planner-synthesized by the
 2026-10-24 second pass ([planning document](../planning/standard-pass-v0-96-1-2026-10-24.md) §6 D4): the `provenance`
 field and the mapped-rows count rule, the rerun rule inside the twelve, the
 checkers' observability rule, the base clause and receipt 008's known issues.
+Amended by the 2026-10-25 pass ([planning document](../planning/standard-pass-v0-99-0-2026-10-25.md)
+§6 D5): the not-found route WO-013-D007 boards for the first order that
+changes `app.routes.ts`, and the multi-project check form of WO-013-D005.
 **Depends on:** WO-013 merged (hard: the sub-app menu's Tools group and the
 grouping convention; the base above is provisional: since starter v0.96.1 (core WO-230) the target publish describes the change from the merge base of the subject and the target's `main` and names the activation base beside it, so activation on this base publishes right; the planning pass that runs after WO-013 merges may set it to that merge commit, and none is required to (the 2026-10-24 second pass, D4)).
 **Workstream:** WS-001
@@ -185,7 +188,12 @@ tools. The run's row-id convention is `<file slug>:<1-based line>`.
   status) as `dotln-menu` wrappers, a `tool-list` composite (one row per
   tool: title, id, work, kind, transform kind or `untyped` with its reason)
   and a `tool-faces` composite (the five faces and the analog when present);
-  the menu's Tools group gains the Catalog item.
+  the menu's Tools group gains the Catalog item. `app.routes.ts` gains a
+  wildcard route, last, rendering a translated not-found page in the main
+  region with a link to `/board` (`shell.notFound.*` keys): this is the
+  first order to change that file since WO-013 boarded the unknown path
+  (WO-013-D007: `/tools/x` today fails the initial navigation, leaves the
+  main region empty and shows the generic error notice).
 - **Report** (`npm run catalog:report`): prints the summary's counts and the
   first three tools per work; the evidence README carries its output.
 - **Documents:** `docs/dev-reference/architecture/catalog.md` (the schema,
@@ -220,8 +228,9 @@ documents; `docs/evidence/WO-014/` with the fan-out record.
    and testing entry points. Check: `npx nx show projects` lists both.
 3. `libs/shared/models/src/lib/toolbox.ts` and
    `libs/shared/catalog/src/schema/tool-v0.schema.json`; a spec compiles the
-   schema and refuses a row carrying `definition`. Check: `npx nx test
-   models catalog` exits 0.
+   schema and refuses a row carrying `definition`. Check: `npx nx run-many
+   -t test -p models catalog` exits 0 (the multi-project form Nx parses;
+   `npx nx test a b` runs only the first project, WO-013-D005).
 4. `tools/scripts/catalog/check-catalog.mjs`, `merge-checkpoints.mjs`,
    `report.mjs`; `npm run catalog:check` and `catalog:report`;
    `check:fixtures` runs the catalog check after the board check; a negative
@@ -245,14 +254,17 @@ documents; `docs/evidence/WO-014/` with the fan-out record.
     exits 0.
 11. `libs/features/tools`: `toolsRoutes`, the Tools home, `catalog-page`,
     `ToolsFacade`, `tool-list`, `tool-faces`, the filters, stories; `BasePaths.Tools`,
-    `ChildPaths.Catalog`; the lazy route in `app.routes.ts`; the Catalog
-    menu item in `app.ts`; `tools.*` i18n keys. Check: `npx nx test tools`
-    and `npx nx build dotln --configuration=production` exit 0, and the
+    `ChildPaths.Catalog`; the lazy route in `app.routes.ts` and the wildcard
+    not-found route last in that file; the Catalog menu item in `app.ts`;
+    `tools.*` and `shell.notFound.*` i18n keys. Check: `npx nx test tools`
+    and `npx nx build dotln --configuration=production` exit 0, a core
+    routes spec asserts an unknown path renders the not-found page, and the
     production build's lazy chunks for the catalog data are listed with
     their sizes in the evidence README.
 12. e2e `apps/dotln-e2e/src/catalog.spec.ts`: `/tools/catalog` lists tools;
     filtering by work and by transform kind narrows the list; an untyped
-    tool shows its reason; axe; no overflow. Check: `npx nx e2e dotln-e2e`
+    tool shows its reason; `/tools/nope` renders the not-found page with a
+    link back to `/board`; axe; no overflow. Check: `npx nx e2e dotln-e2e`
     exits 0.
 13. Documents: `catalog.md`, `catalog-rules.md`, pointers from the two
     README files, `conventions.md` gains the catalog rule. Check: files
@@ -294,8 +306,9 @@ then the target gate plain and review once each.
    `node scripts/harness.mjs usage <session>` at handoff.
 6. `npx nx e2e dotln-e2e` exits 0 and includes: `/tools/catalog` rendering a
    list; a filter by work narrowing it; a filter by transform kind narrowing
-   it; an untyped tool showing its reason; axe at the board spec's threshold;
-   no horizontal overflow at 360, 768 and 1440.
+   it; an untyped tool showing its reason; an unknown path (`/tools/nope`)
+   rendering the not-found page with a link back to `/board`; axe at the
+   board spec's threshold; no horizontal overflow at 360, 768 and 1440.
 7. `npx nx build dotln --configuration=production` exits 0 within the
    declared budgets, and the evidence README records the size of each lazy
    catalog chunk.
@@ -329,7 +342,12 @@ feature; a rerun is the batch's own worker continued and counts once under
 the twelve; and a checker's observability judgment is the counter-pressure
 on criterion 3's quota, so a short work is recorded, never force-fitted, and
 criterion 3 is then amended on the operator's word rather than met by a
-wrong transform. This order activates only on a launchpad whose
+wrong transform. From WO-013's verification and final review, carried into
+this text by the 2026-10-25 pass: the app's unknown-path handling, unchanged
+since the scaffold, is this order's to fix because it is the first to change
+`app.routes.ts` (WO-013-D007; the design, steps 11 and 12, criterion 6), and
+every multi-project check is written in the `run-many` form (WO-013-D005;
+step 3). This order activates only on a launchpad whose
 starter carries core WO-221's `--draft` form; the draft pull request and its
 workflow runs are a final-review obligation read from
 `docs/evidence/WO-014/preview-pr.json`, never a criterion. `Target release

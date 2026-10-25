@@ -44,7 +44,10 @@ replaces that figure with the result fold below. Planner-synthesized by the
 2026-10-24 second pass ([planning document](../planning/standard-pass-v0-96-1-2026-10-24.md) §6 D3 and D4): the derived
 fixture's name, the `routePermissions` entry and the signed-in e2e path, the
 registry check's failure on an absent base, the base clause and receipt 008's
-known issues.
+known issues. Amended by the 2026-10-25 pass ([planning document](../planning/standard-pass-v0-99-0-2026-10-25.md)
+§6 D4): receipt 009's known issues (readiness defined, the registry check's
+message on an absent base and the variants as lazy chunks, one tick contract
+on the replay library).
 **Depends on:** WO-016 merged (hard: the `records` fixture pack and fold, the
 `replay` clock and the `/machinery` group this lane joins); WO-008 merged
 (hard: the member before this one in the sequence; the base above is provisional: since starter v0.96.1 (core WO-230) the target publish describes the change from the merge base of the subject and the target's `main` and names the activation base beside it, so activation on this base publishes right; the planning pass that runs after WO-008 merges may set it to that merge commit, and none is required to (the 2026-10-24 second pass, D4)).
@@ -123,11 +126,17 @@ operator has decided: results only, variants kept, nothing held back.
   the variant file with its default; a flip is a runtime override of those
   values and a kept flip is exported as a new variant file the operator
   commits. Nothing is held back from a variant: it may read every field the
-  copies carry.
+  copies carry. Variants load lazily by id (`import('./variants/<file>')`),
+  so the twin's initial chunk carries the registry index and the production
+  budget check reads it; a kept variant adds one lazy chunk, never bytes to
+  the initial one.
 - **The result fold** (`results.ts`, pure): replays the order on virtual time
   with the twin deciding each dispatch moment and the recorded worker
   durations (completion minus request, per phase, from the copy) following
-  each dispatch; yields the virtual close time, the twin's total waiting
+  each dispatch. A hand-back is ready at the `recordedAt` of its completion
+  row, the only moment the six-field copy carries; waiting minutes count
+  from that moment to the twin's dispatch, and a dispatch before it is
+  early. The fold yields the virtual close time, the twin's total waiting
   minutes, the count of dispatches fired before the preceding hand-back
   existed (zero by construction for a patience table, counted so a later
   variant that fires on a timer is judged), and the same three figures for
@@ -150,8 +159,11 @@ operator has decided: results only, variants kept, nothing held back.
   the manifest; the manifest at `HEAD` contains every id the manifest at the
   order's base contains (read with `git show <base>:…`); a removed id fails
   the check, and so does an absent or unreadable base commit or base
-  manifest: the check never passes vacuously. Old versions are kept to play
-  with.
+  manifest: the check never passes vacuously. An absent base commit is
+  refused with its own message naming the commit and the fetch that supplies
+  it (`git fetch origin <base>` in a shallow or fresh clone), distinct from a
+  removed id's; the registered clone the gate runs in is full, so the gate
+  never meets it. Old versions are kept to play with.
 - **Feature** (`libs/features/twin`, `scope:dotln`, `type:feature`,
   `twinRoutes`; `BasePaths.Twin = 'twin'`, listed in the Machinery menu
   group, with its entry in WO-008's `routePermissions` adjacency list, whose
@@ -169,10 +181,12 @@ operator has decided: results only, variants kept, nothing held back.
   to a native emoji with a text equivalent), `lane-mapper`; a layout.
   `TwinStore` (`libs/features/twin-data-access`) persists the chosen variant
   and the current flips through `withPersistedState` under
-  `dotln-angular.twin`. The replay runs on an injected virtual scheduler
-  flushed synchronously, so a flip redraws without a clock; the scheduler
-  question is answered once at step 6 and recorded in the architecture
-  document.
+  `dotln-angular.twin`. The replay runs on `@dotln-angular/replay`'s
+  `ReplayClock` and its virtual scheduler, flushed synchronously, so a flip
+  redraws without a clock and the twin adds no third time abstraction
+  (WO-015's scene clock drives frames, WO-016's replay clock drives recorded
+  time, and the twin replays on the latter); the scheduler question is
+  answered once at step 6 and recorded in the architecture document.
 - **Documents:** `docs/dev-reference/architecture/twin.md` (the twin as
   code, the variant lineage rule, the result fold and its baseline spec, the
   scheduler answer, what the lane claims and does not) and
@@ -214,16 +228,19 @@ library with kits; the menu item; the two documents; `docs/evidence/WO-017/`.
 4. The three variants, the registry, the manifest and `check-variants.mjs`
    with `npm run twin:check`; a tooling test removes an id from a copy of
    the manifest and asserts the check fails, and a second runs the check
-   against an absent base commit and asserts it fails. Check: `npm run
-   twin:check` exits 0; `npm run test:tooling` exits 0.
+   against an absent base commit and asserts it fails with the message
+   naming the commit and the fetch. Check: `npm run twin:check` exits 0;
+   `npm run test:tooling` exits 0.
 5. `results.ts` with marble specs: the baseline replay reproduces the
    recorded close within one virtual second and the operator's 227.0
    waiting minutes; the patience-table variant yields its own three figures;
    a flip changes only the twin's figures. Check: `npx nx test twin-model`
    exits 0.
-6. The scheduler question answered: the browser replay runs on the chosen
-   scheduler with the resolution parameter; recorded in `twin.md` with the
-   frame cap observed. Check: a spec flushes a full WO-221 replay at one
+6. The scheduler question answered: the browser replay runs on the replay
+   library's virtual scheduler with the resolution parameter; recorded in
+   `twin.md` with the frame cap observed and the statement that the twin
+   shares the replay clock's tick contract and defines readiness as the
+   completion row. Check: a spec flushes a full WO-221 replay at one
    frame per recorded second.
 7. `TwinStore` with `withPersistedState` under `dotln-angular.twin`. Check:
    the persisted-state spec over a fake storage asserts the key prefix and
@@ -274,8 +291,9 @@ each.
    each).
 2. `npx nx test twin-model` exits 0 with marble specs asserting that the
    baseline replay with the recorded dispatches reproduces the recorded close
-   time within one virtual second, that the patience-table variant's three
-   result figures are computed, and that a flip changes the twin's figures
+   time within one virtual second, that waiting minutes and early fires are
+   counted from each hand-back's completion row, that the patience-table
+   variant's three result figures are computed, and that a flip changes the twin's figures
    and lane and nothing on the recorded lane.
 3. `grep -rliE "hit ?rate|hits/n|tolerance band" libs/shared/twin-model/src libs/features/twin/src libs/features/twin-data-access/src --include='*.ts'`
    prints nothing, and the result cell's `vm` type has no field named `hits`
@@ -284,7 +302,8 @@ each.
 4. `variants.json` lists at least three variants with files that exist,
    `npm run twin:check` exits 0, a tooling test proves a manifest with a
    removed id fails the check, and a second tooling test proves the check
-   fails, not passes, when the base commit is absent.
+   fails, not passes, when the base commit is absent, with a message naming
+   the commit and the fetch to run.
 5. `grep -rl "JSON.parse" libs/shared/twin-model/src --include='*.ts' | grep -v spec`
    prints nothing (no interpreted model), and the export spec type-checks a
    generated variant against `TwinVariant`.
@@ -301,10 +320,13 @@ each.
    keyboard path over every flip; axe at the board spec's threshold; no
    horizontal overflow at 360, 768 and 1440.
 8. `docs/dev-reference/architecture/twin.md` records the scheduler chosen
-   and the frame cap observed, `docs/ai-reference/twin-rules.md` states that
+   (the replay library's), the frame cap observed and that readiness is the
+   hand-back's completion row, `docs/ai-reference/twin-rules.md` states that
    a variant is never deleted and that the twin is judged by results only
-   (`grep -c "results" docs/ai-reference/twin-rules.md` is at least 1), and
-   `package.json`'s `dependencies` keys equal the base's.
+   (`grep -c "results" docs/ai-reference/twin-rules.md` is at least 1),
+   `package.json`'s `dependencies` keys equal the base's, and the production
+   build's budget output names no twin chunk over budget (each variant a
+   lazy chunk).
 9. `node scripts/target-gate.mjs WO-017 --review` records a passing row for
    every declared command with no tracked-byte mutation, and
    `npm run test:docs` passes in the launchpad order worktree; the Preflight
@@ -334,7 +356,16 @@ a zero-patience twin pays (for instance the cost of a dispatch issued before
 the hand-back's report could have been read); the pass that hears it amends
 the fold, and until then the safe default is the three figures as written.
 `BasePaths.Twin` now carries its `routePermissions` entry and the e2e signs
-in first; `twin:check` fails on an absent base.
+in first; `twin:check` fails on an absent base. From receipt 009 (the second
+2026-10-24 pass's refutation), carried into this text by the 2026-10-25
+pass: readiness is the completion row's `recordedAt`, the only moment the
+copy carries, so a zero-patience variant dominates the three figures by
+construction and the fourth result stays the operator's to name (candidate
+C4 of the second 2026-10-24 pass; the fold, step 6, criteria 2 and 8);
+`twin:check` names the commit and the fetch on an absent base (step 4,
+criterion 4); variants are lazy chunks under the budget (the model, criterion
+8); the twin replays on the replay library's clock and adds no third tick
+contract (the feature, step 6, criterion 8).
 This order activates only on a launchpad whose starter carries core WO-221's
 `--draft` form; the draft pull request and its workflow runs are a
 final-review obligation read from `docs/evidence/WO-017/preview-pr.json`,

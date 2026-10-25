@@ -26,10 +26,17 @@ that commit as `DotLn Angular v0.2.0` (Release published 2026-10-24T16:26Z),
 its records under `docs/dotln/` at `4304a9d5`. WO-013 activated on 2026-10-24
 at the provisional base `bc9133e9`; its verified draft (parent `2ab4f285`, 83
 files) was refused at publish because the kit described the change from the
-activation base (WO-013-D008), and its fix integrates `main` at starter
-v0.96.1, whose publish describes the change from the merge base of the
-subject and this repository's `main` (core WO-230; the 2026-10-24 second
-planning pass, D2). The 2026-10-24 planning pass restated the app's subject on the
+activation base (WO-013-D008); its fix integrated `main` at starter v0.96.1,
+whose publish describes the change from the merge base of the subject and
+this repository's `main` (core WO-230; WO-013-D010), VER-002 passed at tree
+`dc997234…` and its draft publish opened pull request #6 (`99a30bef…`, 83
+files, CI green), and FINAL-002 was refused by the kit's pre-review commit
+lint, which still ranged 17 commits from the activation base and met two
+merged subjects of 78 and 90 characters (WO-013-D015); starter v0.97.1 (core
+WO-231) lints the described range and reached the launchpad's `main` on
+2026-10-25 (#28), so the fix dispatch integrates it and changes no target
+byte, the next verification republishes #6 at the same tree, and the next
+final review records pass and publishes (the 2026-10-25 planning pass, D3). The 2026-10-24 planning pass restated the app's subject on the
 operator's decisions (one app with sub-apps behind a menu, not wired to
 core, its data from public mining into its own store; WS-001 §The app and
 its sub-apps), moved WO-007's board route to the app's own API with

@@ -4,6 +4,18 @@ Statuses: `adopted`, `preserved`, `raw`, `superseded`, `transformed`, `rejected`
 
 Insert this instance's dated sessions below, newest first.
 
+## 2026-10-25 — planning pass: the standard pass on starter v0.99.0 (the update first, core's answer to the fork's two questions, WO-013's second refusal and its route, the receipt-009 amendments) (operator dispatch of 2026-10-25)
+
+Dispatch: a `planning:` request for a standard pass with the latest upstream
+carrying core's answer summary written right after the operator stopped on
+WO-013's second refusal, followed in the same session by the operator's merge
+of update #28 (starter v0.99.0), captured verbatim in ignored intake
+(`docs/intake/notes/planning-2026-10-25.md`, SHA-256
+`9506b972e4a6947ad2d0b3085300467d3aa46114b047b5356249e0180c82cd48`). The
+record is [the planning document](../planning/standard-pass-v0-99-0-2026-10-25.md);
+this heading registers the pass for the plan tooling. No idea is ledgered:
+the pass was not an ideation dispatch.
+
 ## 2026-10-24 — planning pass: the standard pass on starter v0.96.1 (the update first, core's second answers, WO-013's fix route, the fixture renames and the receipt-008 amendments) (operator dispatch of 2026-10-24, second)
 
 Dispatch: a `planning:` request for a standard pass with the latest upstream
