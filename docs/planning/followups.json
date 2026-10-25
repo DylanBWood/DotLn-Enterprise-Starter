@@ -660,6 +660,14 @@
           "reopenWhen": "A hook-admitted target publish is denied by the host classifier, or the next planning pass rules on the registration trust entry.",
           "targets": [],
           "at": "2026-10-24T23:34:28.587Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-013's four target publish calls (the VER-001 draft refused by the outward lint, the VER-002 draft that opened DotLn-Angular #6, the VER-003 republish and the FINAL-003 final publish of 2026-10-25) each ran the node-spelled helper from the launchpad root, were admitted by the hook with a registeredTargetAdmission row of kind helper, and were allowed by the host without a prompt; no PermissionDenied row was recorded (docs/evidence/WO-013/host-qualification.md). These are observations for the planning pass that rules on the registration trust entry, not that ruling.",
+          "reopenWhen": "A hook-admitted target publish is denied by the host classifier, or the next planning pass rules on the registration trust entry.",
+          "targets": [],
+          "at": "2026-10-25T22:34:40.818Z"
         }
       ]
     },
@@ -2978,6 +2986,14 @@
           "reopenWhen": "The next final review passes and publishes, or publication refuses its Change table, base-tree exemption or commit range.",
           "targets": [],
           "at": "2026-10-25T21:51:45.525Z"
+        },
+        {
+          "sourceRevision": 5,
+          "status": "settled",
+          "reason": "WO-013's final review FINAL-003 recorded pass on 2026-10-25 (WO-013-D019), and its final publish ran: the helper composed the change from the merge base 2ab4f285, pushed the reviewed commit 99a30bef and the records commit 61cf1ae9 over the draft under its lease and marked DotLn-Angular pull request #6 ready, with no refusal (docs/evidence/WO-013/host-qualification.md, Final publish). The refused verified-phase publish this row records (WO-013-D008) is resolved: the draft opened #6 under starter v0.96.1 and the final publish reused it under starter v0.99.0.",
+          "reopenWhen": "A later target order's publish refuses its Change table, base-tree exemption or commit range by reading the activation base.",
+          "targets": [],
+          "at": "2026-10-25T22:34:40.797Z"
         }
       ]
     },
@@ -3025,6 +3041,14 @@
           "reopenWhen": "The next final review records pass and publishes, or a later result/publication refusal exposes an unresolved base reader.",
           "targets": [],
           "at": "2026-10-25T21:51:45.531Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-013's final review FINAL-003 recorded pass on 2026-10-25 (WO-013-D019), and its final publish ran: the helper composed the change from the merge base 2ab4f285, pushed the reviewed commit 99a30bef and the records commit 61cf1ae9 over the draft under its lease and marked DotLn-Angular pull request #6 ready, with no refusal (docs/evidence/WO-013/host-qualification.md, Final publish). The fix route this row records (WO-013-D009) is complete: both kit fixes reached the worktree, the independent verification republished the draft, and the final review passed and published.",
+          "reopenWhen": "A later target order's result transition or publication refuses on a base reader that still reads the activation base.",
+          "targets": [],
+          "at": "2026-10-25T22:34:40.805Z"
         }
       ]
     },
@@ -3064,6 +3088,14 @@
           "reopenWhen": "Independent verification reproduces a defect, the target base or subject advances, or the next final-review result/publish passes or refuses.",
           "targets": [],
           "at": "2026-10-25T21:51:45.537Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-013's final review FINAL-003 recorded pass on 2026-10-25 (WO-013-D019), and its final publish ran: the helper composed the change from the merge base 2ab4f285, pushed the reviewed commit 99a30bef and the records commit 61cf1ae9 over the draft under its lease and marked DotLn-Angular pull request #6 ready, with no refusal (docs/evidence/WO-013/host-qualification.md, Final publish). The pre-review commit lint this row records (WO-013-D015) let final-review-result pass record: it linted the one described commit, and FINAL-003 reproduced that read-only beforehand (WO-013-D018).",
+          "reopenWhen": "The pre-review commit lint refuses a later target order on commits already merged on its base.",
+          "targets": [],
+          "at": "2026-10-25T22:34:40.811Z"
         }
       ]
     }

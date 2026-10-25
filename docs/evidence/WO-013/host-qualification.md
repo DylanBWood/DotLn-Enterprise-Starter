@@ -202,3 +202,44 @@ outcome remains unobserved here.
   hook-admitted target publish denied by the host classifier, did not occur.
 - No private journal contents are copied here: only row kinds, timestamps,
   the admission kind and the registration id.
+
+## Final publish (FINAL-003 session, 2026-10-25)
+
+- Host: Claude Code 2.1.310; model `claude-opus-5-5`, effort `xhigh` from
+  `CLAUDE_EFFORT`. The publish ran after `final-review-result pass` recorded
+  FINAL-003 and `target-records` added the records commit `61cf1ae9…` in the
+  target, and after this worktree's records were committed (`f51d128`,
+  `8f18110`), so the launchpad checkout was clean.
+- Helper command line as run, verbatim, from the launchpad root, with no
+  pipe, redirect, directory change or variable prefix:
+  `node scripts/worktree.mjs publish WO-013 --target-worktree --branch feat/sub-app-menu --title ":sparkles: feat: add the sub-app menu and the scene and machinery routes" --body-file docs/final-reviews/WO-013/PR.md`
+- Journal: at 2026-10-25T22:32:20.308Z the hook recorded a
+  `registeredTargetAdmission` row of kind `helper` for `dotln-angular`. The
+  call's PostToolUse rows follow at 22:32:26Z. The session has no
+  `PermissionDenied` row.
+- Host decision: allowed. No permission prompt surfaced in this session.
+- Helper output: "Pushed feat/sub-app-menu at
+  61cf1ae9e8434bd73d1bbd89c16850996a9e7e27 over draft
+  99a30befa150e5d77a64259013e62b9d0372270e and marked pull request #6 on
+  github.com/DylanBWood/DotLn-Angular ready."
+- Local readback: target `HEAD` is `61cf1ae9…`, the records commit, whose
+  parent is the reviewed commit `99a30bef…`; 0 porcelain lines.
+  `git ls-remote origin` reads `feat/sub-app-menu` at `61cf1ae9…` and `main`
+  at `2ab4f285…`, so the target's `main` did not advance before the push.
+- Remote readback: `gh pr view 6 --repo DylanBWood/DotLn-Angular` reads
+  number 6, `isDraft` false, state `OPEN`, mergeable, head
+  `feat/sub-app-menu` at `61cf1ae9…`, base `main`, title ":sparkles: feat:
+  add the sub-app menu and the scene and machinery routes", updated
+  2026-10-25T22:32:26Z. CI run 40240672471 started at 22:32:29Z on the new
+  head.
+- Interventions: none. No `--confirm-terms` was needed, and no host denial
+  occurred.
+- Outcome against the record: the final publish composed the change from
+  the merge base, pushed under the draft's lease and reused pull request #6,
+  as WO-013-D019 planned. The reopening conditions of the D008, D009 and
+  D015 rows did not occur, and this outcome is what settles them.
+  `FUP-2479f6d32b2396a8`'s condition, a hook-admitted target publish denied
+  by the host classifier, did not occur: all four of this order's publish
+  calls were admitted by the hook and allowed by the host.
+- No private journal contents are copied here: only row kinds, timestamps,
+  the admission kind and the registration id.

@@ -14,7 +14,7 @@ No authority, schema or document root changes in the launchpad, and the `dotln-a
 
 ## Progressive polish
 
-This is the first target change published under the kit's merge-base description: the change table lists the 83 files of this change and none of the earlier orders' records, so the outward lint passed where it had refused the same tree a day earlier. The pre-review commit lint now reads the same range, one commit here instead of seventeen. The verified-phase draft publishes ran as plain helper commands admitted by the hook and allowed by the host without a prompt. The generator log now keeps one dated section per run, plans and results together, in date order.
+This is the first target change published under the kit's merge-base description: the change table lists the 83 files of this change and none of the earlier orders' records, so the outward lint passed where it had refused the same tree a day earlier. The pre-review commit lint now reads the same range, one commit here instead of seventeen. The verified-phase draft publishes and the final publish ran as plain helper commands admitted by the hook and allowed by the host without a prompt. The generator log now keeps one dated section per run, plans and results together, in date order.
 
 ## Evidence and compatibility
 

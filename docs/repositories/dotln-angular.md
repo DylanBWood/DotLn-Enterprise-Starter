@@ -42,8 +42,8 @@ seven regression controls, and preserved the target tree (WO-013-D016,
 D017). VER-003 reproduced the corrected lint and republished #6 at the same
 tree, and FINAL-003 accepted the order on 2026-10-25 with every criterion
 met and no new finding, its unit and browser suites rerun uncached at
-`99a30bef` (WO-013-D018, D019). The final publish pushes that commit and the
-records commit over the draft and marks #6 ready. The 2026-10-24 planning pass restated the app's subject on the
+`99a30bef` (WO-013-D018, D019). The final publish pushed that commit and the
+records commit `61cf1ae9` over the draft and marked #6 ready the same day. The 2026-10-24 planning pass restated the app's subject on the
 operator's decisions (one app with sub-apps behind a menu, not wired to
 core, its data from public mining into its own store; WS-001 §The app and
 its sub-apps), moved WO-007's board route to the app's own API with
