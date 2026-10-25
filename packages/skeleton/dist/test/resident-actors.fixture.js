@@ -5,6 +5,8 @@ import { join } from "node:path";
 import { sourceChangeProfile } from "../src/source-change-environment.js";
 import { SOURCE_CHANGE_DENIED, } from "../src/worker-protocol.js";
 import { decodeResidentConfiguration } from "../src/resident-state.js";
+import { prepareSourceObjectStore } from "../src/source-change-worktree.js";
+import { fixtureObjectEnvironment } from "./source-change-fixture.js";
 export function actorFixture(kind = "writer") {
     const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-resident-actors-")));
     const launchpad = join(root, "launchpad"), parent = join(root, "trees"), cwd = join(parent, "writer");
@@ -16,6 +18,7 @@ export function actorFixture(kind = "writer") {
         stdio: ["ignore", "pipe", "pipe"],
         env: {
             ...process.env,
+            ...fixtureObjectEnvironment(directory),
             GIT_AUTHOR_NAME: "Fixture",
             GIT_AUTHOR_EMAIL: "fixture@example.invalid",
             GIT_COMMITTER_NAME: "Fixture",
@@ -27,7 +30,8 @@ export function actorFixture(kind = "writer") {
     writeFileSync(join(launchpad, "fixture-test.mjs"), "import assert from 'node:assert/strict'; import {readFileSync} from 'node:fs'; assert.equal(readFileSync('fixture.txt','utf8'), 'resident changed this fixture\\n');\n");
     git(launchpad, "add", "-A");
     git(launchpad, "-c", "maintenance.auto=false", "commit", "-m", "fixture baseline");
-    git(launchpad, "worktree", "add", "-b", "writer", cwd);
+    git(launchpad, "worktree", "add", "--detach", cwd);
+    prepareSourceObjectStore(cwd, "writer", git(cwd, "rev-parse", "HEAD"));
     git(cwd, "config", "user.name", "Fixture");
     git(cwd, "config", "user.email", "fixture@example.invalid");
     git(cwd, "config", "commit.gpgsign", "false");

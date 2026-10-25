@@ -5,10 +5,11 @@ import { observedExecFileSync as execFileSync, observedSpawnSync as spawnSync, }
 import { discoverySandbox } from "./discovery-sandbox.js";
 import { WorkerFailure } from "./worker-protocol.js";
 import { interruptibleHostCall } from "./host-interruption.js";
+import { HOST_GIT } from "./source-change-worktree.js";
 const refuse = (detail) => {
     throw new WorkerFailure("profile-refused", detail);
 };
-const git = (cwd, ...args) => execFileSync("git", args, {
+const git = (cwd, ...args) => execFileSync("git", [...HOST_GIT, ...args], {
     cwd,
     timeout: 15_000,
     maxBuffer: 16 * 1024 * 1024,

@@ -1,6 +1,6 @@
 import { observedSpawnSync as spawnSync } from "./gate-deadlines.mjs";
 import { withWriterRegistration } from "./writer-teardown.mjs";
-import { sourceChangeCommandEffect } from "./source-change-command.js";
+import { sourceChangeCommandEffect, sourceChangeWriterBranch, } from "./source-change-command.js";
 import { createHash, randomBytes } from "node:crypto";
 import { AsyncLocalStorage } from "node:async_hooks";
 import { tmpdir } from "node:os";
@@ -3092,14 +3092,23 @@ function writerIsolationFacts(root, invocation, session, observed = invocation) 
         (metadataCommand(command) || managedUsageCommand(invocation, session)))
         return { ...feedbackWriterFacts(root, actorId, []), writable: false };
     const location = feedbackWriterFacts(root, actorId, []);
+    const target = targetState.getStore();
+    // Detached source writers have a destination branch bound by a live host
+    // route. Ordinary detached checkouts still cannot acquire a writer slot.
+    const branch = location.branch === "HEAD" && target?.root === root
+        ? (sourceChangeWriterBranch(target.launchpad, root) ?? location.branch)
+        : location.branch;
     // A command already ineligible to own this checkout must not leave a lock
     // behind when the compiled writer predicate refuses it.
     if (location.cwd !== location.gitRoot ||
         location.cwd !== location.worktree ||
-        !location.branch ||
-        location.branch === "HEAD")
+        !branch ||
+        branch === "HEAD")
         return location;
-    return feedbackWriterFacts(root, actorId, reserveHarnessWriter(root, observed, actorId));
+    return {
+        ...feedbackWriterFacts(root, actorId, reserveHarnessWriter(root, observed, actorId)),
+        branch,
+    };
 }
 /** Host fact collection is separate from the sole compiled feedback predicate. */
 export function harnessFeedbackFacts(policy, input, root, session) {
@@ -5014,7 +5023,7 @@ export async function runTargetHarnessHook(config, boundary) {
             if (info && (!info.isDirectory() || info.isSymbolicLink()))
                 throw new Error("target state directory unavailable");
         }
-        response = await targetState.run({ root, directory }, async () => {
+        response = await targetState.run({ root, directory, launchpad }, async () => {
             let result;
             try {
                 if (config.kind === "permission") {
@@ -5049,7 +5058,8 @@ export async function runTargetHarnessHook(config, boundary) {
                             const info = lstatSync(destination, { throwIfNoEntry: false });
                             if (info &&
                                 (info.isSymbolicLink() ||
-                                    (!info.isDirectory() && (!info.isFile() || info.nlink !== 1))))
+                                    (!info.isDirectory() &&
+                                        (!info.isFile() || info.nlink !== 1))))
                                 throw new Error("target write requires ordinary unlinked file paths");
                         }
                     };
