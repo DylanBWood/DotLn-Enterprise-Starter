@@ -100,6 +100,90 @@
       "reason": "missing file",
       "count": 1,
       "note": "WO-007's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-007/ by target-records (TargetRecordsCommitted, 2026-10-24); the launchpad record keeps its original link; declared by WO-007's final review (FINAL-001, 2026-10-24) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-013/README.md",
+      "href": "decisions.md",
+      "reason": "missing file",
+      "count": 2,
+      "note": "WO-013's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-013/ by target-records (TargetRecordsCommitted, 2026-10-25); the launchpad record keeps its original link; declared by WO-013's final review (FINAL-003, 2026-10-25) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-013/README.md",
+      "href": "decisions.md#wo-013-d016",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-013's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-013/ by target-records (TargetRecordsCommitted, 2026-10-25); the launchpad record keeps its original link; declared by WO-013's final review (FINAL-003, 2026-10-25) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-013/handoff.md",
+      "href": "decisions.md#wo-013-d016",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-013's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-013/ by target-records (TargetRecordsCommitted, 2026-10-25); the launchpad record keeps its original link; declared by WO-013's final review (FINAL-003, 2026-10-25) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-013/handoff.md",
+      "href": "decisions.md#wo-013-d017",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-013's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-013/ by target-records (TargetRecordsCommitted, 2026-10-25); the launchpad record keeps its original link; declared by WO-013's final review (FINAL-003, 2026-10-25) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-013/host-qualification.md",
+      "href": "decisions.md#wo-013-d001",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-013's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-013/ by target-records (TargetRecordsCommitted, 2026-10-25); the launchpad record keeps its original link; declared by WO-013's final review (FINAL-003, 2026-10-25) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-013/host-qualification.md",
+      "href": "decisions.md#wo-013-d008",
+      "reason": "missing file",
+      "count": 2,
+      "note": "WO-013's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-013/ by target-records (TargetRecordsCommitted, 2026-10-25); the launchpad record keeps its original link; declared by WO-013's final review (FINAL-003, 2026-10-25) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-013/host-qualification.md",
+      "href": "../../verifications/WO-013/VER-002.md",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-013's VER-002.md moved into DotLn-Angular's docs/dotln/verifications/WO-013/ by target-records (TargetRecordsCommitted, 2026-10-25); the launchpad record keeps its original link; declared by WO-013's final review (FINAL-003, 2026-10-25) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-013/host-qualification.md",
+      "href": "decisions.md#wo-013-d010",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-013's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-013/ by target-records (TargetRecordsCommitted, 2026-10-25); the launchpad record keeps its original link; declared by WO-013's final review (FINAL-003, 2026-10-25) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-013/host-qualification.md",
+      "href": "decisions.md#wo-013-d009",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-013's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-013/ by target-records (TargetRecordsCommitted, 2026-10-25); the launchpad record keeps its original link; declared by WO-013's final review (FINAL-003, 2026-10-25) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-013/host-qualification.md",
+      "href": "../../verifications/WO-013/VER-003.md",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-013's VER-003.md moved into DotLn-Angular's docs/dotln/verifications/WO-013/ by target-records (TargetRecordsCommitted, 2026-10-25); the launchpad record keeps its original link; declared by WO-013's final review (FINAL-003, 2026-10-25) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-013/host-qualification.md",
+      "href": "decisions.md#wo-013-d015",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-013's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-013/ by target-records (TargetRecordsCommitted, 2026-10-25); the launchpad record keeps its original link; declared by WO-013's final review (FINAL-003, 2026-10-25) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-013/host-qualification.md",
+      "href": "decisions.md#wo-013-d017",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-013's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-013/ by target-records (TargetRecordsCommitted, 2026-10-25); the launchpad record keeps its original link; declared by WO-013's final review (FINAL-003, 2026-10-25) before the records publish, so the records branch and main stay green."
     }
   ],
   "homePaths": {
