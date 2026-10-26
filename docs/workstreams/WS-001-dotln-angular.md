@@ -24,13 +24,8 @@ the starter, the starter this fork, and the fork the app in turn.
 gate in its target worktree (`node scripts/target-gate.mjs WO-NNN --review`),
 its change reaches the operator as a pull request they read before it merges,
 and its write-backs keep `docs/dev-reference` and `docs/ai-reference` in the
-target current. The workstream is delivered when WO-004 to WO-008 and WO-013
-to WO-018 are merged and `apps/dotln` runs locally with the sub-app menu, the
-soldier scene over the catalog, the machinery view over the recorded orders,
-the twin's first lane, the toy shelf, login, permissions and i18n, with the
-component taxonomy demonstrated in every sub-app. The operator judges
-delivery by merging the last member's pull request.
-**Delivery state:** active (WO-003 to WO-007, WO-011, WO-012 and WO-013 merged; WO-014 final-reviewed on 2026-10-26, its pull request DotLn-Angular #7 opened ready by the final publish and awaiting the operator's merge)
+target current. The workstream is delivered when WO-004 to WO-008 and WO-013 to WO-019 are merged and `apps/dotln` runs locally with the sub-app menu, the catalog as something to read, the soldier scene over it, the machinery view over the recorded orders, the twin's first lane, the toy shelf, login, permissions and i18n, with the component taxonomy demonstrated in every sub-app and every page accepted by use (rule 24). The operator judges delivery by using the app and merging the last member's pull request.
+**Delivery state:** active (WO-003 to WO-007, WO-011, WO-012, WO-013 and WO-014 merged and closed, WO-013 as `DotLn Angular v0.3.0` on 2026-10-25 and WO-014 as `DotLn Angular v0.4.0` on 2026-10-26; WO-019 filed and WO-015 and WO-018 rewritten by the 2026-10-26 pass)
 
 ## Member orders
 
@@ -45,11 +40,12 @@ delivery by merging the last member's pull request.
 | WO-007 | dotln-angular | `90fa6e8d879cb499107ff79d1051c200d17c1cbc` | events, signal stores, call state, data access, the board over HTTP from the app's own API in the `uifa-board-v1` shape answered by MSW, persisted UI state, navigation and flags; base set 2026-10-23; amended 2026-10-24 |
 | WO-013 | dotln-angular | `bc9133e932a00d33c15bc5289d683b8078f51ee4`, activated 2026-10-24 on the provisional base; v0.96.1 publishes and v0.97.1 reviews from the merge base| the sub-app menu in the shell, the `scene` and `machinery` routes with arriving pages, the sub-app grouping convention |
 | WO-014 | dotln-angular | `bc9133e932a00d33c15bc5289d683b8078f51ee4`, activated 2026-10-25 on the provisional base and fast-forwarded to WO-013's merge `83184879…` (WO-014-D001); v0.96.1 publishes from the merge base| the toolbox catalog as the app's own data: the `Tool` schema, the run's 3,463 map rows typed by a checkpointed fan-out, the allow-list check, the catalog browser under Tools |
-| WO-015 | dotln-angular | provisional; publishes right under v0.96.1; a pass may set it when WO-014 merges| the soldier scene: the pure scene engine, twenty units on a 2D canvas behind a renderer seam, the tool rail, RTS selection, flock, arrive, formation |
+| WO-019 | dotln-angular | `1c3a4ff24e38d179d0fd1ad910bc6719c2740045` (WO-014's merge), set 2026-10-26 | the catalog as something to read: the run's definitions, relations and hooks as each tool's data, the allow-list and the scrub gone, the reading surface, the scene's tools typed |
+| WO-015 | dotln-angular | provisional; publishes right under v0.96.1; a pass may set it when WO-019 merges| the soldier scene: the pure scene engine, twenty units on a 2D canvas behind a renderer seam, a rail of the tools the engine runs with their definitions, RTS selection, flock, arrive, formation, the first look, the root route; rewritten 2026-10-26 |
 | WO-016 | dotln-angular | provisional; publishes right under v0.96.1; a pass may set it when WO-015 merges| the machinery view over scrubbed six-field copies of WO-221 and WO-226, the records and replay libraries, the operator's ideas and the local idea sink |
 | WO-008 | dotln-angular | provisional; publishes right under v0.96.1; a pass may set it when WO-016 merges| authentication and permissions, legitimate from the Angular side                     |
 | WO-017 | dotln-angular | provisional; publishes right under v0.96.1; a pass may set it when WO-008 merges| the digital twin's first lane: patience over WO-221 on virtual time, judged by results, variants kept as code |
-| WO-018 | dotln-angular | provisional; publishes right under v0.96.1; a pass may set it when WO-017 merges| The Art of War mapped into the catalog from its public text, toys designed as records for the six mined sources without one, the toy shelf |
+| WO-018 | dotln-angular | provisional; publishes right under v0.96.1; a pass may set it when WO-017 merges| The Art of War mapped into the catalog from its public text with its maxims, the run's nineteen toys and six new ones as full records, the toy shelf; rewritten 2026-10-26 |
 
 Proposed later members, not yet filed (§The app and its sub-apps below and
 the planning document of 2026-10-24 §10 record each with its reopening
@@ -64,9 +60,7 @@ primer, if WO-005 leaves any of it out.
 
 ## Dependency and compatibility plan
 
-The members form one serial chain in the sequence's order: WO-007, WO-013,
-WO-014, WO-015, WO-016, WO-008, WO-017, WO-018 (the planning pass of
-2026-10-24, D11; WO-007 closed on 2026-10-24 and left the sequence): each
+The members form one serial chain in the sequence's order: WO-007, WO-013, WO-014, WO-019, WO-015, WO-016, WO-008, WO-017, WO-018 (the planning pass of 2026-10-24, D11, with WO-019 placed before WO-015 by the 2026-10-26 pass, D10; WO-007 closed on 2026-10-24 and left the sequence): each
 target order's base is the merge commit of the member before it. The kit
 creates a target worktree at the commit the order's `**Repository:**` line
 names, so a filed successor carries the repository's only commit as a
@@ -101,11 +95,7 @@ releases). No two members run side by side: every member edits `nx.json`,
 `tsconfig.base.json`, the ESLint configuration and the generator log, so
 their surfaces overlap. A member that needs something a later member delivers
 ships the smallest honest stand-in and names the replacement in its known
-issues. The typed edges: WO-013 on WO-007 (the stores and the error surface);
-WO-014 on WO-013 (the Tools menu group); WO-015 on WO-014 (the `Tool` types
-and the catalog); WO-016 on WO-013 (the machinery route); WO-008 on WO-007
-(the interceptors and stores it extends); WO-017 on WO-016 and WO-008; WO-018
-on WO-014 and WO-017. WO-008 runs after the first four sub-app orders because
+issues. The typed edges: WO-013 on WO-007 (the stores and the error surface); WO-014 on WO-013 (the Tools menu group); WO-019 on WO-014 (the catalog it rebuilds); WO-015 on WO-019 (the definitions and the typed scene tools); WO-016 on WO-013 (the machinery route); WO-008 on WO-007 (the interceptors and stores it extends); WO-017 on WO-016 and WO-008; WO-018 on WO-014, WO-019 and WO-017. WO-008 runs after the first four sub-app orders because
 the operator's sandbox is served soonest by the menu, the catalog, the scene
 and the machinery view, none of which gates a route, and the twin's lane,
 the first content about the operator, lands after permissions exist; the
@@ -217,8 +207,7 @@ an order's recorded decision, never silently.
     once per library, in a `types.ts` exported through `public_api.ts`
     where public, and promoted to `utils` when a second library needs one;
     a house check that lists a type alias or interface name declared in more
-    than one file under `libs/shared`, run by `tools:lint`, lands with the
-    first order that edits the lint rules (WO-005-D022; planning pass of
+    than one file under `libs/shared`, run by the `workspace-tools` project's lint target (WO-014 renamed the `tools` project to make room for the Tools feature), lands with the first order that edits the lint rules (WO-005-D022; planning pass of
     2026-10-20).
 14. **Behavior and vendor libraries behind wrappers.** `@angular/aria`,
     `@angular/cdk` and any third-party UI library are imported only inside
@@ -291,18 +280,67 @@ an order's recorded decision, never silently.
     are the app's. Splitting a sub-app into its own app or workstream later
     is cheap because the logic is in libraries (the operator's decision of
     2026-10-24; WO-006-D005 settled; planning pass of 2026-10-24, D5).
-23. **The sandbox and the clean room for mined data.** Every new idea lands in
-    the app first as a toy the operator plays with; promotion is a GitHub
-    issue on the platform's repository, never a control record. The app's
-    data comes from public mining into its own store, served to the UI through
-    its own API; until that store exists, committed data files and scrubbed
-    six-field copies of the platform's public WO-221 and WO-226 records are
-    the stopgap. For an order cut from the operator's research run, nothing
-    from intake enters a committed file beyond ids, short titles and generic
-    terms, the quarantine files are never opened, and the order names the
-    design file it builds from by path and SHA-256; a mechanical allow-list
-    check enforces the first rule for the catalog (the operator's rules of
-    2026-10-24; planning pass of 2026-10-24, D6).
+23. **The sandbox, its data, and the clean room's scope.** Every new idea
+    lands in the app first as a toy the operator plays with; promotion is a
+    GitHub issue on the platform's repository, never a control record. The
+    app's data comes from public mining into its own store, served to the UI
+    through its own API; until that store exists, committed data files and
+    scrubbed six-field copies of the platform's public WO-221 and WO-226
+    records are the stopgap. The books, films, games and ideas the operator
+    references, the run's maps of them and the designs cut from them are the
+    app's subject matter and lie outside the clean room: an order carries
+    their definitions, relations, hooks, toy designs and the maxims of a
+    public-domain text as data, and no allow-list, scrub, overlap check or
+    own-words rule is applied to them. Whether a verbatim passage of a work
+    still in copyright is committed is an ordinary publishing question the
+    order that wants one decides in its decisions file, not a clean-room
+    one. The clean room keeps governing what it always governed: employer
+    material, credentials, private identifiers and the operator's own raw
+    message text, which is paraphrased and cited by digest; the reducer's
+    scrub over the platform's control records stays for that reason, and the
+    run's quarantine files stay closed because they were quarantined for
+    that material. An order cut from the operator's research run names the
+    design file it builds from by path and SHA-256, because the run is
+    ignored intake that may change. Corrected by the 2026-10-26 pass: the
+    2026-10-24 pass recorded an "ids, short titles and generic terms" rule
+    as the operator's; it was a clause of the prompt core's session drafted
+    for the operator to paste, the operator never gave it, and WO-014's
+    allow-list and every clause built on it are struck (the operator's
+    direction of 2026-10-26, capture SHA-256
+    `9ec78ddbc267936d59fc7fe88b4a8b9c8d42d4692979db31be5129c817fd72a6`;
+    planning pass of 2026-10-26, D2 and D3).
+24. **Acceptance by use.** Every member order's Objective describes the
+    operator's session on the page: what they see on arrival, what they do,
+    what changes as they do it, and what they learn or decide. At least one
+    acceptance criterion is judged by using the served page as that
+    Objective describes: the verifier performs the session in the served
+    production build, files a `## Walkthrough` section with the dated steps
+    and screenshots at 360, 768 and 1440 under the order's evidence
+    directory, and records the criterion met only when every step completed
+    and the report states in the verifier's own words what was read or
+    watched. The refuter's goal review asks of every judged order whether
+    the operator would use the page for the stated purpose and whether it is
+    the previous page with different fields. The final reviewer performs the
+    session before recording pass. Grep, exit-code and count checks support
+    criteria and never substitute for the use criterion. A page that renders
+    records as label-value lists with nothing to read, do or learn fails the
+    use criterion whatever its other checks say. Every planning pass states,
+    in one table, what the operator will see on screen after each sequenced
+    order lands. The operator's direction of 2026-10-26 (capture SHA-256
+    `9ec78ddb…`; planning pass of 2026-10-26, D4); the kit's role text is
+    core's, so this rule binds the roles through the order text, the
+    workstream and the operator record, and §Requests to core of that pass
+    asks core for an instance-owned role duty.
+25. **The look is briefed and judged, never defaulted.** Every member order
+    that lands a page carries a design brief under the workstream's design
+    direction (§Design direction), builds two candidate layouts or chromes
+    as stories, puts both screenshots at 1440 and 360 in its pull request,
+    and records the operator's pick in its decisions file; the other
+    candidate is deleted before final review. The plain skin stays the token
+    layer the brief is expressed in (G4); a scene may scope a second token
+    set to its region. The 2026-10-21 reading that visuals only verify is
+    withdrawn: the operator judged every page's look on 2026-10-26 and it is
+    part of what an order delivers (planning pass of 2026-10-26, D5).
 
 ## Design: the Tipping Point taxonomy
 
@@ -431,10 +469,7 @@ branch), paraphrased:
   that runs.
 - Agents collaborate.
 
-The designs the sub-apps build from are the operator's own research run of
-2026-10-22 (core's ignored intake, read-only); each order names its design
-file by path and SHA-256 and copies nothing beyond ids, short titles and
-generic terms (rule 23). The platform's records carry the contracts the board
+The designs the sub-apps build from are the operator's own research run of 2026-10-22 (core's ignored intake, read-only), the operator's own work and outside the clean room; each order names its design file by path and SHA-256 because the run may change, and carries the run's definitions, relations, hooks and toy designs as the app's data (rule 23 as corrected on 2026-10-26). The platform's records carry the contracts the board
 still renders (DotLn `docs/product/04-interfaces.md` §Plural UI hosts, §Actor
 board v0; `packages/console/uifa-board-v1.schema.json` as a kit file since
 starter v0.93.0).
@@ -442,9 +477,9 @@ starter v0.93.0).
 **The menu and the sub-apps (WO-013):** Scene (`/scene`), Machinery (the
 actor board at `/board`, the agents strip at `/machinery`, the twin at
 `/twin`) and Tools (the catalog browser and the toy shelf under `/tools`).
-Rule 22 is the grouping.
+Rule 22 is the grouping. The root route lands on the scene once WO-015 merges (the 2026-10-26 pass, D10); until then it lands on the board.
 
-**The first screen, the actor board (WO-006), and its data path (WO-007).**
+**The actor board (WO-006), the first screen until the scene lands, and its data path (WO-007).**
 The actor board, `uifa-board-v1`: five panels in the document's order
 (Actors, Builds, Mechanisms, Work, Blueprint), each naming the UIFA roles it
 serves and the question it answers, with sections, rows and evidence-linked
@@ -491,10 +526,22 @@ intake, read 2026-10-21; they govern every sub-app):
   CSS never decides behavior, and no utility-class string lives in domain
   state. The plain skin ships first.
 - **G5 Native emoji first for glyphs**, each with a text equivalent.
-- **G6 Readable, fluid layout.** Lists of label, value and status over
-  dense tables; no fixed page width (the operator reads on an ultrawide
-  display); the true value or `unknown`, never an invented number; a figure
-  prints its sample size and its source.
+- **G6 Readable, fluid layout.** No fixed page width (the operator reads on an ultrawide display); the true value or `unknown`, never an invented number; a figure prints its sample size and its source; a record is shown in the form its reading needs, prose where it is read, an instrument where it is watched, a table where rows are compared, and a label-value list is never the default form of a page (revised by the 2026-10-26 pass from the 2026-10-21 wording, which preferred label-value lists over dense tables and became the form of every page).
+
+**Design direction** (rule 25, briefed by the 2026-10-26 pass from the
+operator's judgment of that day; each order's brief specializes it): the
+subject is the page. On a scene the field fills the viewport below the
+header and the chrome recedes; on a reading surface the text sits in a
+65ch to 70ch measure with a real type scale. One role palette colours the
+units of the scene, the slots of the machinery view and the actors of the
+board; one work palette colours a tool's provenance in the catalog, the
+rail and the toy shelf. Figures that are watched read as instruments: a
+large numeral, a small label, a sparkline. Relations, hooks, obligations
+and mechanisms read as prose and lists of names, never as a definition-list
+grid, and no page is a card grid of records. Motion only when something
+moves, nothing animated at rest (G2). The shell and the board adopt the
+direction in the order that next touches them (the 2026-10-26 pass, §10
+C1).
 
 **Operating rules** (from the platform's product 04 §Later console hosts,
 WO-006-D022 and the operator's decisions of 2026-10-24; each enforced by
@@ -515,9 +562,7 @@ WO-007 and the members after it):
   `uifa-board-v1` as its response shape, so a newer app reads older data and
   a later API serves the same shapes.
 
-**The method:** toys first. Every idea lands as a toy the operator plays
-with; the operator's play is the judgment; what works is promoted as a GitHub
-issue on the platform's repository. The pairwise comparison the 2026-10-21
+**The method:** toys first, accepted by use. Every idea lands as a toy the operator plays with; the operator's play is the judgment, and every page is accepted by someone using it against the session its order states (rule 24); what works is promoted as a GitHub issue on the platform's repository. The pairwise comparison the 2026-10-21
 pass adopted stays available for choosing between two screens and is no
 longer the gate before a sub-app is built; the UX ideation the 2026-10-23 pass
 deferred is replaced by the operator's own research run, whose designs the
@@ -529,12 +574,13 @@ NoOp records):
 
 | Member or candidate | What the operator sees or does | Reopens when |
 | --- | --- | --- |
-| WO-013 the shell | the menu with Scene, Machinery and Tools; the two sub-app routes arriving | filed |
-| WO-014 the catalog | 3,463 map rows typed into tools with five faces; the catalog browser under Tools | filed |
-| WO-015 the scene | twenty units, a rail from the catalog, RTS selection, flock, arrive, formation, trials | filed |
+| WO-013 the shell | the menu with Scene, Machinery and Tools; the two sub-app routes arriving | merged 2026-10-25 (DotLn-Angular #6) |
+| WO-014 the catalog pipeline | 3,463 map rows typed into tools with five faces; a browser of titles and labels the operator called hollow on 2026-10-26 | merged 2026-10-26 (DotLn-Angular #7) |
+| WO-019 the catalog as something to read | the six works as a shelf, a chapter and its concepts, a definition in a reading measure with its relations and hooks, the scene's tools typed | filed 2026-10-26 |
+| WO-015 the scene | the root route: twenty units on a dark field, a rail of the tools the engine runs with their definitions, RTS selection, flock, arrive, formation, the instruments, trials, the first look | rewritten 2026-10-26 |
 | WO-016 the machinery view | one order's agents in their slots over the six-field copies; a mechanism change dropped on an agent; ideas saved | filed |
 | WO-017 the twin's first lane | patience over WO-221 on virtual time, judged by results, variants kept as code | filed |
-| WO-018 the first public mining | The Art of War in the catalog; toys as records for six sources; the toy shelf | filed |
+| WO-018 the first public mining | The Art of War in the catalog with its maxims; twenty-five toys read in full on the shelf; the next toy picked | rewritten 2026-10-26 |
 | the mining store and the app's API | the committed data and the copies replaced by a store the app fills from public sources | after WO-018, when the operator names the next public source, or when the copies limit a toy (C1) |
 | the Babylon.js painter | the scene in 3D behind the same renderer seam | the operator asks after WO-015 (C2) |
 | manim in the monorepo | animations beside the toys | the operator's word (C3) |
@@ -576,14 +622,15 @@ minutes, 227.0 waiting minutes, a span of 1,110.3 minutes.
 | WO-012 | merged   | merged as #18 and released as Launchpad v0.3.3 on 2026-10-21; declares `DotLn Angular` releases, grants `release.close`, retains judged base output and names the operator's public commit identity; [configuration, grant and gate evidence](../evidence/WO-012/README.md) (`docs/evidence/WO-012/`) |
 | WO-006 | merged   | merged in DotLn-Angular as #4 on 2026-10-21 and closed the same day as `DotLn Angular v0.1.0`, the target's first release; its records as #20 in this launchpad; [evidence](../evidence/WO-006/README.md) |
 | WO-007 | merged   | merged in DotLn-Angular as #5 (`2ab4f28501628cf95dd0102c42440fd7de9f8055`, 2026-10-24T16:23Z) and closed the same day as `DotLn Angular v0.2.0`; VER-001 failed on an `ErrorHandler` regression the verifier reproduced, the repair passed VER-002 and FINAL-001; its decisions, verification and final review live in the target under `docs/dotln/`, its records as #25 in this launchpad; [evidence](../evidence/WO-007/README.md) |
-| WO-013 | merged   | merged in DotLn-Angular as #6 (`83184879358a30a60596aea983d587ed5681ea9d`, 2026-10-25) and its records as #30 in this launchpad; activated 2026-10-24 at the provisional base; VER-001 pass; FINAL-001 fail on the publish blocker (the kit described the change from the activation base, WO-013-D008); the fix of 2026-10-24 integrated starter v0.96.1 and moved the generator-log entry (D010, D011); VER-002 pass at tree `dc997234…` and its draft publish opened DotLn-Angular #6 (`99a30bef…`, 83 files from the merge base, CI green); FINAL-002 fail with every criterion met and no new defect, on the kit's pre-review commit lint, which ranged 17 commits from the activation base and refused two merged subjects outside the order's one commit (D015); the second repair integrated `main` at `04c45cfa` and starter v0.99.0 on 2026-10-25, reproduced the v0.97.1 one-commit lint and seven passing regression controls, and changed no target byte (D016, D017); VER-003 pass, reproducing the corrected lint and republishing #6 at the same tree; FINAL-003 pass on 2026-10-25 with every criterion met and no new finding, the reviewed commit `99a30bef…` accepted without a change and the unit and browser suites rerun uncached (D018, D019); the final publish pushed the records commit `61cf1ae9…` over the draft and marked #6 ready, and the records branch follows; the 2026-10-25 pass left its text unchanged (D3); [evidence](../evidence/WO-013/README.md) |
-| WO-014 | active   | activated 2026-10-25 at the provisional base and fast-forwarded to WO-013's merge `83184879…` (WO-014-D001); the operator raised the cap to 40 for its fan-out (D002) and amended criterion 3 to admit a recorded shortfall (D006); twelve catalog workers typed the 3,463 rows, 121 typed, 1,914 untyped and 1,428 background (D003 to D010); VER-001 fail on criterion 7, an avoidable initial-bundle growth from 495.40 kB to 530.37 kB (D011 to D015); the repair of 2026-10-26 moved the menu stack to the lazy Tools route, curated the utility exports and added the bundle check and the sampler under the operator's bounded additions (D016 to D022); VER-002 pass at tree `da7780d7…` with the initial bundle at 376.91 kB, two follow-ups (D023, D024) and no draft publish; FINAL-001 pass on 2026-10-26 with every criterion met, four in-surface items fixed and the review gate rerun at the reviewed commits `23b39aef…` and `d487a807…`, the missing draft recorded and the cap restored to 20 (D025 to D028); the final publish pushed the records commit `0090ffd5…` and opened DotLn-Angular #7 ready on `feat/toolbox-catalog` the same day, and the records branch follows; [evidence](../evidence/WO-014/README.md) |
-| WO-015 | proposed | filed by the 2026-10-24 planning pass; amended by the 2026-10-24 second pass with receipt 008's known issues and by the 2026-10-25 pass with receipt 009's; the base is provisional and publishes right under starter v0.96.1 (a pass may set it when WO-014 merges) |
-| WO-016 | proposed | filed by the 2026-10-24 planning pass; amended by the 2026-10-24 second pass with receipt 008's known issues and the segment fixtures renamed `order-221.json` and `order-226.json`, and by the 2026-10-25 pass with receipt 009's; the base is provisional and publishes right under starter v0.96.1 (a pass may set it when WO-015 merges) |
-| WO-008 | proposed | filed by the 2026-10-18 planning pass; given its release header by the UI planning pass of 2026-10-21 and the v0.91.0 publication rules by the standard pass of 2026-10-23; the carry-in closed and its place after WO-016 set by the 2026-10-24 pass; base provisional until WO-016 merges; amended by the 2026-10-24 second pass with receipt 008's known issues and the v0.96.1 base clause, and by the 2026-10-25 pass with receipt 009's (the public sub-app routes and the gated `/account` page) |
-| WO-017 | proposed | filed by the 2026-10-24 planning pass; amended by the 2026-10-24 second pass with receipt 008's known issues and the derived fixture renamed `order-221-derived-v0.json`, and by the 2026-10-25 pass with receipt 009's; the base is provisional and publishes right under starter v0.96.1 (a pass may set it when WO-008 merges) |
-| WO-018 | proposed | filed by the 2026-10-24 planning pass; amended by the 2026-10-24 second pass with receipt 008's known issues and by the 2026-10-25 pass with receipt 009's; the base is provisional and publishes right under starter v0.96.1 (a pass may set it when WO-017 merges) |
+| WO-013 | merged   | merged in DotLn-Angular as #6 (`83184879358a30a60596aea983d587ed5681ea9d`, 2026-10-25) and its records as #30 in this launchpad; activated 2026-10-24 at the provisional base; VER-001 pass; FINAL-001 fail on the publish blocker (the kit described the change from the activation base, WO-013-D008); the fix of 2026-10-24 integrated starter v0.96.1 and moved the generator-log entry (D010, D011); VER-002 pass at tree `dc997234…` and its draft publish opened DotLn-Angular #6 (`99a30bef…`, 83 files from the merge base, CI green); FINAL-002 fail with every criterion met and no new defect, on the kit's pre-review commit lint, which ranged 17 commits from the activation base and refused two merged subjects outside the order's one commit (D015); the second repair integrated `main` at `04c45cfa` and starter v0.99.0 on 2026-10-25, reproduced the v0.97.1 one-commit lint and seven passing regression controls, and changed no target byte (D016, D017); VER-003 pass, reproducing the corrected lint and republishing #6 at the same tree; FINAL-003 pass on 2026-10-25 with every criterion met and no new finding, the reviewed commit `99a30bef…` accepted without a change and the unit and browser suites rerun uncached (D018, D019); the final publish pushed the records commit `61cf1ae9…` over the draft and marked #6 ready, and the records branch follows; the 2026-10-25 pass left its text unchanged (D3); closed by the operator as `DotLn Angular v0.3.0` (tag `v0.3.0` at `83184879`, Release published 2026-10-25T22:42:09Z); [evidence](../evidence/WO-013/README.md) |
+| WO-014 | merged   | merged in DotLn-Angular as #7 (`1c3a4ff24e38d179d0fd1ad910bc6719c2740045`, 2026-10-26) and its records as #31 in this launchpad; activated 2026-10-25 at the provisional base and fast-forwarded to WO-013's merge (WO-014-D001); the operator raised the cap to 40 for its fan-out (D002) and amended criterion 3 (D006); twelve catalog workers typed the 3,463 rows, 121 typed, 1,914 untyped and 1,428 background (D003 to D010); VER-001 fail on the initial bundle's growth (D011 to D015); the repair of 2026-10-26 (D016 to D022); VER-002 pass at 376.91 kB; FINAL-001 pass with the cap restored to 20 (D025 to D028); closed by the operator as `DotLn Angular v0.4.0` (tag `v0.4.0` at `1c3a4ff2`, Release published 2026-10-26T12:34:52Z, six minutes before the 2026-10-26 pass was dispatched; that pass first recorded the close as pending from an unfetched clone and corrected itself the same day); the browser it shipped is the page the operator called hollow on 2026-10-26 and WO-019 rebuilds it; [evidence](../evidence/WO-014/README.md) |
+| WO-019 | proposed | filed by the 2026-10-26 planning pass at WO-014's merge commit `1c3a4ff2…` |
+| WO-015 | proposed | filed by the 2026-10-24 planning pass; amended by the two passes that followed for receipts 008 and 009; rewritten by the 2026-10-26 pass (the rail of tools the engine runs with their definitions, the use criterion, the design brief, the root route); the base is provisional and publishes right under starter v0.96.1 (a pass may set it when WO-019 merges) |
+| WO-016 | proposed | filed by the 2026-10-24 planning pass; amended by the 2026-10-24 second pass with receipt 008's known issues and the segment fixtures renamed `order-221.json` and `order-226.json`, by the 2026-10-25 pass with receipt 009's, and by the 2026-10-26 pass (the use criterion, the design brief, receipt 010's items); the base is provisional and publishes right under starter v0.96.1 (a pass may set it when WO-015 merges) |
+| WO-008 | proposed | filed by the 2026-10-18 planning pass; given its release header by the UI planning pass of 2026-10-21 and the v0.91.0 publication rules by the standard pass of 2026-10-23; the carry-in closed and its place after WO-016 set by the 2026-10-24 pass; base provisional until WO-016 merges; amended by the 2026-10-24 second pass with receipt 008's known issues and the v0.96.1 base clause, by the 2026-10-25 pass with receipt 009's (the public sub-app routes and the gated `/account` page), and by the 2026-10-26 pass (the use criterion, the at-rest probe over every browser store, the reload row) |
+| WO-017 | proposed | filed by the 2026-10-24 planning pass; amended by the 2026-10-24 second pass with receipt 008's known issues and the derived fixture renamed `order-221-derived-v0.json`, by the 2026-10-25 pass with receipt 009's, and by the 2026-10-26 pass (the use criterion, the design brief, the `twin:read` permission, receipt 010's items); the base is provisional and publishes right under starter v0.96.1 (a pass may set it when WO-008 merges) |
+| WO-018 | proposed | filed by the 2026-10-24 planning pass; amended by the two passes that followed for receipts 008 and 009; rewritten by the 2026-10-26 pass (the toys in full, the maxims of the public text, the use criterion, the design brief); the base is provisional and publishes right under starter v0.96.1 (a pass may set it when WO-017 merges) |
 
 <!-- dotln-workstream:start -->
-{ "id": "WS-001", "members": [{ "workOrderId": "WO-003", "repositoryId": "self" }, { "workOrderId": "WO-004", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-011", "repositoryId": "self" }, { "workOrderId": "WO-005", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-012", "repositoryId": "self" }, { "workOrderId": "WO-006", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-007", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-013", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-014", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-015", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-016", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-008", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-017", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-018", "repositoryId": "dotln-angular" }], "edges": [{ "from": "WO-003", "to": "WO-004", "relation": "hard" }, { "from": "WO-004", "to": "WO-005", "relation": "hard" }, { "from": "WO-011", "to": "WO-005", "relation": "hard" }, { "from": "WO-005", "to": "WO-006", "relation": "hard" }, { "from": "WO-012", "to": "WO-006", "relation": "hard" }, { "from": "WO-006", "to": "WO-007", "relation": "hard" }, { "from": "WO-007", "to": "WO-013", "relation": "hard" }, { "from": "WO-013", "to": "WO-014", "relation": "hard" }, { "from": "WO-014", "to": "WO-015", "relation": "hard" }, { "from": "WO-013", "to": "WO-016", "relation": "hard" }, { "from": "WO-007", "to": "WO-008", "relation": "hard" }, { "from": "WO-016", "to": "WO-017", "relation": "hard" }, { "from": "WO-008", "to": "WO-017", "relation": "hard" }, { "from": "WO-014", "to": "WO-018", "relation": "hard" }, { "from": "WO-017", "to": "WO-018", "relation": "hard" }] }
+{ "id": "WS-001", "members": [{ "workOrderId": "WO-003", "repositoryId": "self" }, { "workOrderId": "WO-004", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-011", "repositoryId": "self" }, { "workOrderId": "WO-005", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-012", "repositoryId": "self" }, { "workOrderId": "WO-006", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-007", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-013", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-014", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-019", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-015", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-016", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-008", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-017", "repositoryId": "dotln-angular" }, { "workOrderId": "WO-018", "repositoryId": "dotln-angular" }], "edges": [{ "from": "WO-003", "to": "WO-004", "relation": "hard" }, { "from": "WO-004", "to": "WO-005", "relation": "hard" }, { "from": "WO-011", "to": "WO-005", "relation": "hard" }, { "from": "WO-005", "to": "WO-006", "relation": "hard" }, { "from": "WO-012", "to": "WO-006", "relation": "hard" }, { "from": "WO-006", "to": "WO-007", "relation": "hard" }, { "from": "WO-007", "to": "WO-013", "relation": "hard" }, { "from": "WO-013", "to": "WO-014", "relation": "hard" }, { "from": "WO-014", "to": "WO-019", "relation": "hard" }, { "from": "WO-019", "to": "WO-015", "relation": "hard" }, { "from": "WO-013", "to": "WO-016", "relation": "hard" }, { "from": "WO-007", "to": "WO-008", "relation": "hard" }, { "from": "WO-016", "to": "WO-017", "relation": "hard" }, { "from": "WO-008", "to": "WO-017", "relation": "hard" }, { "from": "WO-014", "to": "WO-018", "relation": "hard" }, { "from": "WO-019", "to": "WO-018", "relation": "hard" }, { "from": "WO-017", "to": "WO-018", "relation": "hard" }] }
 <!-- dotln-workstream:end -->

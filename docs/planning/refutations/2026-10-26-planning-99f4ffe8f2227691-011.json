@@ -1,0 +1,2114 @@
+{
+  "schemaVersion": "plan-refutation-receipt-v1",
+  "receiptId": "2026-10-26-planning-99f4ffe8f2227691-011",
+  "pass": {
+    "id": "planning-99f4ffe8f2227691",
+    "kind": "planning",
+    "heading": "2026-10-26 — planning pass: acceptance by use, the clean room's scope and the catalog as something to read (operator dispatch of 2026-10-26)"
+  },
+  "ordinal": 11,
+  "previousReceiptHash": "sha256:031f5b3205efbcd7fd6163fe495f8120879c4e3ed061bd80e86d31ebd752e692",
+  "subject": {
+    "schemaVersion": "plan-subject-v1",
+    "revision": "f6a8d3b12c516c28070f98cca42eea1872258d9e",
+    "hash": "sha256:4ed6059adf0af084a08c22fee1a2c61937c9d3a9832c1ed352a117e2a7b7e7f5",
+    "sequenceHash": "sha256:e949871c3caea258f48244e1a01a1b8b2c4c7d2c5f61acde611aa365f7f52cfc",
+    "inputs": [
+      {
+        "name": "sequence",
+        "hash": "sha256:e949871c3caea258f48244e1a01a1b8b2c4c7d2c5f61acde611aa365f7f52cfc"
+      },
+      {
+        "name": "docs/work-orders/WO-013-sub-app-shell-and-menu.md",
+        "hash": "sha256:23eb972c95f040cad884e36c5d406d523bee2ecabda2a1313e11f7885fae011f"
+      },
+      {
+        "name": "docs/work-orders/WO-014-toolbox-catalog-pipeline.md",
+        "hash": "sha256:65e9c34822bb766931981ae8b73ae24d97c6f37c5efc6e9f49f450e631306ca0"
+      },
+      {
+        "name": "docs/work-orders/WO-019-catalog-as-content.md",
+        "hash": "sha256:f13876f94a5edd97a3d2845982d66db2c4d8ef2cfa4f5fe947ed87a0f60becb4"
+      },
+      {
+        "name": "docs/work-orders/WO-015-soldier-scene.md",
+        "hash": "sha256:f3fe0b73e516f58460a517996667dc9b0b616c091a2eccb3b9d520e75ba1c14e"
+      },
+      {
+        "name": "docs/work-orders/WO-016-machinery-view.md",
+        "hash": "sha256:e64d62c2a7589753978d32b581dfdaff91879d803f0a3e999aad12bdc436625d"
+      },
+      {
+        "name": "docs/work-orders/WO-008-authentication-and-permissions.md",
+        "hash": "sha256:a7f5d34b2b54d1dd7011319da1256d5979d683e94e39d10e393049ca9a4e91a7"
+      },
+      {
+        "name": "docs/work-orders/WO-017-digital-twin-patience-lane.md",
+        "hash": "sha256:861749741524be6ddbf69eb32723d8d35c1cfab05e6912d75f0b3ddf26eef868"
+      },
+      {
+        "name": "docs/work-orders/WO-018-art-of-war-map-and-toys.md",
+        "hash": "sha256:e3ab4acfa137d6348b7b13ae2cbd389d7ad72749a7b414af03225d662fdd7c31"
+      },
+      {
+        "name": "vision:unavailable",
+        "hash": "sha256:65e325c17ca6b3c6219d1e9ef62b815b236ce63a5d8b2563ac9e08eb0e6c8df5"
+      },
+      {
+        "name": "vision:what-dotln-is-not",
+        "hash": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "roles",
+        "hash": "sha256:50fce8a97c8d1fe03e3975fd318c6ee8021d6c155294b5eddbe7fecf44b7453a"
+      },
+      {
+        "name": "capability:unavailable",
+        "hash": "sha256:eeb378703698eaa12a1105f5874dc17930699970f4b6dcdd1b737238df89795f"
+      },
+      {
+        "name": "goal-review",
+        "hash": "sha256:945f0f0cfd16e25d59ad9739a783e4a8a52fd4fd019459c7089ac0299154692d"
+      },
+      {
+        "name": "cost-table",
+        "hash": "sha256:695c54bb39cc9d3a2c554d6f916ec338665ef8a9b1b115f50a23678194b560ef"
+      }
+    ],
+    "standard": {
+      "theses": [],
+      "exclusions": [],
+      "roles": [],
+      "rolesTable": "",
+      "capabilities": [],
+      "unavailable": [
+        "docs/product/00-vision.md",
+        "docs/product/13-uifa-roles.md",
+        "docs/planning/capability-table.md"
+      ]
+    },
+    "orders": [
+      {
+        "workOrderId": "WO-013",
+        "path": "docs/work-orders/WO-013-sub-app-shell-and-menu.md",
+        "title": "WO-013 — The one app and its sub-apps: the shell's sub-app menu, the `scene` and `machinery` sub-app routes with their arriving pages, the sub-app grouping convention and the two reference documents that make a sub-app a feature added by convention",
+        "objective": "`apps/dotln` is one app whose primary navigation is a menu of\nsub-apps: **Scene** (the game-AI authoring scene, `/scene`), **Machinery**\n(the view of DotLn's machinery, `/machinery`, with the existing actor board\nlisted under it at `/board`) and **Tools** (side utilities; the group is\nrendered with no entries until WO-014 adds the catalog browser); each sub-app\nis a lazily loaded feature library that exports only its routes; `/scene` and\n`/machinery` render an arriving page that names the sub-app and the order\nthat lands it; the grouping convention for sub-apps is written once for people\nand once for sessions; and the root still redirects to `/board`.",
+        "cost": "adds the `sub-app-menu` template to `libs/dotln/shell`, two feature\nlibraries with one arriving page each (`libs/features/scene`,\n`libs/features/machinery`), two `BasePaths` members, the menu's i18n block,\ntwo documents (`docs/dev-reference/architecture/sub-apps.md`,\n`docs/ai-reference/sub-app-rules.md`), about 24 source files; adds no\ndependency. Removes nothing; the board keeps its route. Wall-clock: about 2 to\n4 hours of executor work plus the fixed cycle; unknown until run. Context\nbytes: WS-001 house rules 2, 3, 4, 11, 12 and §The app and its sub-apps, the\nshell layout and `app.ts`, this order, about 60 KB. Commands added in the\ntarget: none. Tokens: unknown until run. Steps: 12. Re-mints: none.\nRefutations paid: one (the 2026-10-24 pass's receipt on this text).",
+        "criteria": [
+          {
+            "id": "criterion:1",
+            "text": "`libs/shared/core/src/lib/paths/routes.ts` declares `BasePaths.Scene` and\n   `BasePaths.Machinery`, `apps/dotln/src/app/app.routes.ts` lazy-loads\n   `@dotln-angular/scene` and `@dotln-angular/machinery`, and\n   `grep -c \"redirectTo: BasePaths.Board\" apps/dotln/src/app/app.routes.ts`\n   is at least 1."
+          },
+          {
+            "id": "criterion:2",
+            "text": "`libs/dotln/shell/src/lib/templates/sub-app-menu/sub-app-menu.ts` exists,\n   contains no `inject(` and imports nothing from `@angular/router`\n   (`grep -c \"@angular/router\" libs/dotln/shell/src -r` prints 0), and\n   `npx nx test dotln-shell` exits 0 with a spec that renders three projected\n   groups and the empty-state line for a group with no item."
+          },
+          {
+            "id": "criterion:3",
+            "text": "`libs/features/scene/src/index.ts` and `libs/features/machinery/src/index.ts`\n   each export exactly one `*Routes` symbol (`grep -c \"export\" <file>` is 1),\n   both libraries are tagged `scope:dotln,type:feature` in their\n   `project.json`, and `npx nx test scene machinery` exits 0."
+          },
+          {
+            "id": "criterion:4",
+            "text": "`npx nx e2e dotln-e2e` exits 0 and includes: the menu's three group\n   headings rendered; `/scene` and `/machinery` rendering their arriving\n   pages; the root redirecting to `/board`; the keyboard path over every\n   menu link; axe at the board spec's threshold; no horizontal overflow at\n   360, 768 and 1440."
+          },
+          {
+            "id": "criterion:5",
+            "text": "`npm run i18n:check` exits 0 and `apps/dotln/public/i18n/en.json` carries\n   `shell.menu.scene`, `shell.menu.machinery`, `shell.menu.tools` and\n   `shell.menu.toolsEmpty`."
+          },
+          {
+            "id": "criterion:6",
+            "text": "`docs/dev-reference/architecture/sub-apps.md` and\n   `docs/ai-reference/sub-app-rules.md` exist, the rules file states that a\n   sub-app writes no control record and that graduation is a GitHub issue on\n   the platform's repository\n   (`grep -c \"control record\" docs/ai-reference/sub-app-rules.md` is at least\n   1), and `docs/dev-reference/workspace/generator-log.md` carries the two\n   library invocations with their results."
+          },
+          {
+            "id": "criterion:7",
+            "text": "`node scripts/target-gate.mjs WO-013 --review` records a passing row for\n   every declared command with no tracked-byte mutation, and\n   `npm run test:docs` passes in the launchpad order worktree; the Preflight\n   line ran before the first full gate."
+          }
+        ],
+        "nonGoals": "the scene and the machinery view themselves (WO-015, WO-016);\nthe Tools route and the catalog browser (WO-014); moving the board under\n`/machinery`; permission-gated menu items (WO-008); drag; any read of the\nplatform."
+      },
+      {
+        "workOrderId": "WO-014",
+        "path": "docs/work-orders/WO-014-toolbox-catalog-pipeline.md",
+        "title": "WO-014 — The toolbox catalog as the app's own data: the `Tool` schema with five faces and the closed transform enum, the run's 3,463 map rows typed into tools by a checkpointed fan-out of at most twelve workers, the catalog library that loads them, the allow-list and scrub check that keeps intake out of the commit, and the catalog browser under the Tools sub-app",
+        "objective": "every one of the run's 3,463 concept rows (AI for Games parts\nA and B, Enterprise Integration Patterns, Patterns of Enterprise Application\nArchitecture, RxJS core, RxJS practice, GEB map parts 1 and 2, Team Topologies\nmap parts 1 to 3) is classified once into the app's own catalog as a tool a\nunit can be given, a scene element, a metric or a background concept; every\ntool carries the five faces (scene, selection, transform, observable, toy\nmetric), a transform from the closed enum or `untyped` with its reason, and\nan analog only when obvious; the catalog is committed as the app's own data\nunder a schema and an allow-list check that admits ids, short titles and\ngeneric terms and refuses every other map field; the per-work scene type and\nthe first three tools per work are recorded; and the operator browses and\nfilters the catalog at `/tools/catalog`.",
+        "cost": "adds `toolbox.ts` to `libs/shared/models`, `libs/shared/catalog`\nwith eight data files and a summary, `tool-v0.schema.json`,\n`tools/scripts/catalog/` (merge, check, report), `libs/features/tools` with\nthe Tools home and the catalog browser, `BasePaths.Tools`, the Tools menu\nitem, two documents, about 40 source files plus about 3,500 data rows; adds\nno runtime dependency (Ajv is a devDependency already). Removes nothing.\nWall-clock: about 3 to 5 hours of executor work, of which the fan-out runs\nin parallel, plus the fixed cycle; unknown until run. Context bytes: WS-001\n§The app and its sub-apps, the two toolbox captures and design B §2.1 read at\nthe run's folder, the maps README, this order, about 140 KB for the executor;\neach classifier reads one map family (about 60 to 320 KB). Commands added in\nthe target: `npm run catalog:check`, `npm run catalog:report`. Tokens:\nunknown until run; the fan-out is the largest spend of this workstream so\nfar and is recorded per worker. Steps: 15. Re-mints: none. Refutations paid:\none (the 2026-10-24 pass's receipt on this text).",
+        "criteria": [
+          {
+            "id": "criterion:1",
+            "text": "`npm run catalog:check` exits 0 over the eight data files, and the summary\n   it validates records a row total of 3,463 across eleven map files with\n   their SHA-256 digests and no absolute path."
+          },
+          {
+            "id": "criterion:2",
+            "text": "`node tools/scripts/catalog/check-catalog.mjs tools/lint-fixtures/catalog/with-definition.json`\n   exits nonzero, and `grep -rlE '\"(definition|related|dotlnHooks|verified)\"' libs/shared/catalog/src/data`\n   prints nothing."
+          },
+          {
+            "id": "criterion:3",
+            "text": "`npm run catalog:report` exits 0 and prints, for each of the six works,\n   a primary scene type and up to three tools whose transform kind is a member\n   of `TransformKind`. It records the shortfall from three explicitly. A spec\n   asserts the valid typed examples and the correctly computed shortfall over\n   `catalog-summary.json`. Each example retains its own applicable scene types;\n   the work's primary scene is a recommendation, not a constraint on every example."
+          },
+          {
+            "id": "criterion:4",
+            "text": "Every row's `status` is `typed`, `untyped` or `background`; every `typed`\n   row's `transform.kind` is a member of `TransformKind`; every `untyped` row\n   carries a non-empty `reason`; a spec iterates every data file and asserts\n   these three."
+          },
+          {
+            "id": "criterion:5",
+            "text": "`docs/evidence/WO-014/README.md` lists at most twelve workers with their\n   labels, batches, row counts and one-line statements, each statement\n   saying no quarantine file was read, and records the subagent count from\n   `node scripts/harness.mjs usage <session>` at handoff."
+          },
+          {
+            "id": "criterion:6",
+            "text": "`npx nx e2e dotln-e2e` exits 0 and includes: `/tools/catalog` rendering a\n   list; a filter by work narrowing it; a filter by transform kind narrowing\n   it; an untyped tool showing its reason; an unknown path (`/tools/nope`)\n   rendering the not-found page with a link back to `/board`; axe at the\n   board spec's threshold; no horizontal overflow at 360, 768 and 1440."
+          },
+          {
+            "id": "criterion:7",
+            "text": "`npx nx build dotln --configuration=production` exits 0 within the\n   declared budgets, and the evidence README records the size of each lazy\n   catalog chunk."
+          },
+          {
+            "id": "criterion:8",
+            "text": "`docs/dev-reference/architecture/catalog.md` and\n   `docs/ai-reference/catalog-rules.md` exist, and the rules file states\n   that the transform enum grows only by a recorded decision\n   (`grep -c \"decision\" docs/ai-reference/catalog-rules.md` is at least 1)."
+          },
+          {
+            "id": "criterion:9",
+            "text": "`node scripts/target-gate.mjs WO-014 --review` records a passing row for\n   every declared command with no tracked-byte mutation, and\n   `npm run test:docs` passes in the launchpad order worktree; the Preflight\n   line ran before the first full gate."
+          }
+        ],
+        "nonGoals": "the scene engine or any tool's execution (WO-015); mining a new\nwork (WO-018 maps The Art of War); the mining store and the HTTP API\n(candidate C1); a clarify dialog with a live agent; checking model-knowledge\nrows against the books; copying any definition, relation or hook from the\nrun."
+      },
+      {
+        "workOrderId": "WO-019",
+        "path": "docs/work-orders/WO-019-catalog-as-content.md",
+        "title": "WO-019 — The catalog as something to read: every tool carries the run's definition, relations, hooks, chapter and section as its data, the allow-list and the scrub over reference material go, the browser becomes a reading surface where the operator chooses a work, reads a concept, follows its relations and sees where it runs, and the steering, formation and objective tools the soldier scene needs are typed so the scene reads a catalog that serves it",
+        "objective": "(the operator's session, WS-001 rule 24) the operator opens Tools, Catalog\nand sees the six works as a shelf, each with its title, its row count and the\nscene it feeds. They choose AI for Games and see its chapters as a table of\ncontents with a concept count per chapter; they open Chapter 3 Movement and\nsee its sections and their concepts; they choose Two-level formation\nsteering and read, in a measure set for reading, its definition in full, its\ntype, its place in the book (part, chapter, section, subsection), its related\nconcepts as links in running text (Anchor point, Slot, Fixed formations), the\nhook the map's author suggested for DotLn as a sentence, and, because the\ntool is typed, its five faces rendered as one sentence (give it to a\nformation of three or more units on terrain; it steers an anchor as a\ncharacter and the members to slots; watch the anchor-to-mean distance and\nthe slot error; measure the assignment cost) with its parameters and their\ndefaults. They follow Slot to its own reading and return. They type \"arrive\"\ninto the search and reach Arrive in two keystrokes and one click. On Arrive\nthey read that the soldier scene runs it, and once the scene exists a link\nopens the scene with that tool chosen. Their last ten readings persist\nacross a reload. A concept whose definition the run marked as the mapping\nworker's own reading says so beside the definition. Nothing on the page is a\nlabel-value list with nothing to read. What the operator learns is what each\nconcept is and how a work hangs together; what they decide is which tool to\ntry in the scene.",
+        "cost": "changes `toolbox.ts` in `libs/shared/models`, the catalog schema\n(`tool-v1`), the eight data files and the summary (regenerated by the join),\n`check-catalog.mjs` and `report.mjs`; adds `join-maps.mjs`; rebuilds the\n`tools` feature's catalog page (layout, shelf, contents, reading pane, faces\nsentence, search, history, mappers, facade, stories), its events and its\npersisted state; rewrites the catalog e2e and its visual baselines, the two\ncatalog documents and the `tools.*` translation block; about 35 source files\nplus the regenerated data. Removes the `tool-list` and `tool-faces`\ncomposites, the `with-definition.json` negative fixture and the scrub call\nover catalog strings. Adds no runtime dependency. Wall-clock: about 4 to 6\nhours of executor work plus the fixed cycle; unknown until run. Context\nbytes: WS-001 house rules 3, 7, 8, 10, 11, 12, 15, 23, 24 and 25 and §The app\nand its sub-apps, the maps README at the run's folder, the catalog library\nand the Tools feature at the base, this order, about 150 KB. Commands added\nin the target: `npm run catalog:join`. Tokens: unknown until run. Steps: 15.\nRe-mints: none. Refutations paid: one (the 2026-10-26 pass's receipt on this\ntext).",
+        "criteria": [
+          {
+            "id": "criterion:1",
+            "text": "**Use (WS-001 rule 24).** The verifier performs the Objective's session\n   in the served production build in this order: open Tools, Catalog; choose\n   AI for Games; open Chapter 3; open Two-level formation steering; follow\n   Slot and return; search \"arrive\" and open Arrive; reload and find both in\n   the history. The VER report carries a `## Walkthrough` section with the\n   dated steps and names the screenshots the verifier took at 360, 768 and\n   1440 under `docs/evidence/WO-019/walkthrough/` (`ls\n   docs/evidence/WO-019/walkthrough | wc -l` prints at least 9), and states\n   in the verifier's own words what Two-level formation steering and Slot\n   are as read from the page alone. The criterion is met only when every\n   step completed and that statement is present; a step that could not be\n   completed, or a definition that could not be read without leaving the\n   page, is unmet."
+          },
+          {
+            "id": "criterion:2",
+            "text": "`npm run catalog:check` exits 0 over the eight data files and the `v1`\n   summary; a spec iterates every data file and asserts every row carries a\n   non-empty `definition` and a `place.chapter`; `grep -rl \"assertScrubbed\"\n   tools/scripts/catalog` prints nothing; `npm run test:tooling` proves\n   `missing-definition.json` fails the check."
+          },
+          {
+            "id": "criterion:3",
+            "text": "`npm run catalog:report` lists for `aifg` the scene tools of step 5, each\n   with a kind in {`steer.blend`, `steer.priority`, `formation.twoLevel`,\n   `formation.fixed`, `objective.set`}, and a spec asserts that list against\n   `catalog-summary.json`; every typed row's `transform.kind` is a member of\n   `TransformKind` and every untyped row carries a non-empty `reason`\n   (WO-014's spec kept)."
+          },
+          {
+            "id": "criterion:4",
+            "text": "Every `related` entry with a non-null id names an existing tool (a spec\n   over every data file), and `catalog:report` prints the fraction of\n   resolved relations per work, recorded in the evidence README as a figure."
+          },
+          {
+            "id": "criterion:5",
+            "text": "`npx nx e2e dotln-e2e` exits 0 and includes the step 10 cases, axe at the\n   board spec's threshold and no horizontal overflow at 360, 768 and 1440."
+          },
+          {
+            "id": "criterion:6",
+            "text": "`grep -rlE \"<dl|dotln-key-value-list\" libs/features/tools/src` prints\n   nothing, and the stories `LayoutSide` and `LayoutStrip` existed at the\n   pull request with both screenshots in its body, the decisions file\n   recording the operator's pick, and only the picked layout remaining at\n   final review (`grep -c \"Layout\" libs/features/tools/src/lib/containers/catalog-page/catalog-page.stories.ts`\n   prints 1)."
+          },
+          {
+            "id": "criterion:7",
+            "text": "`npm run check:bundle` exits 0 within the declared budgets, and a tooling\n   test proves it refuses the Angular Aria menu and the CDK overlay in the\n   initial graph."
+          },
+          {
+            "id": "criterion:8",
+            "text": "`docs/dev-reference/architecture/catalog.md` and\n   `docs/ai-reference/catalog-rules.md` exist; `grep -c \"ids, short titles\"`\n   over each prints 0; and the rules file states that the clean room does\n   not govern the works the operator references (`grep -c \"clean room\"\n   docs/ai-reference/catalog-rules.md` is at least 1)."
+          },
+          {
+            "id": "criterion:9",
+            "text": "`node scripts/target-gate.mjs WO-019 --review` records a passing row for\n   every declared command with no tracked-byte mutation, and\n   `npm run test:docs` passes in the launchpad order worktree; the Preflight\n   line ran before the first full gate."
+          }
+        ],
+        "nonGoals": "the scene engine or any tool's execution (WO-015); mining a\nnew work (WO-018); the mining store and the HTTP API (candidate C1); a live\nagent; checking the worker's-reading rows against the books; the shell's or\nthe board's look beyond the tokens the brief adds."
+      },
+      {
+        "workOrderId": "WO-015",
+        "path": "docs/work-orders/WO-015-soldier-scene.md",
+        "title": "WO-015 — The soldier scene: twenty units on a 2D canvas behind a renderer seam, a rail of the tools the engine runs with each tool's definition read from the catalog, real-time-strategy selection, flock, arrive and a two-level formation with slot roles, a deterministic seeded clock, before-and-after trials, the first real look, the root route, and the pure scene engine every later scene reuses",
+        "objective": "(the operator's session, WS-001 rule 24) the operator opens the app and lands\non `/scene`: twenty units idling on a dark field that fills the page below\nthe shell's header, each labelled with a lifecycle role and coloured by it;\na narrow rail on the right lists the tools the engine runs, grouped by what\nthey do (move: seek, arrive, wander; group: separation, cohesion, velocity\nmatching, flock; avoid: priority steering; form: wedge, line, column, with\ntwo-level and fixed formation and slot roles), each name in its work's\ncolour; an instrument strip along the bottom shows cohesion radius,\ncollisions, heading variance, time to objective and stalled units at their\nidle values beside the seed and the transport. They drag a marquee round\ntwelve units (or click, shift-click, double-click a squad, Escape to clear,\nor Tab and Space through the text layer below the field). They choose Flock\nin the rail and the inspector shows the catalog's definition of flocking in\na readable measure, its five faces as a sentence, its three weights as\nsliders with defaults, and ghost arrows on the selected units showing the\nfirst frame's accelerations. They apply: the twelve pull together and move\nas a group, the cohesion radius falls, collisions stay at zero, and a\nsparkline under each figure shows the change. They click the field to set an\nobjective and apply Arrive: the group slows and stops inside the target\nradius. They select eight more and apply Formation: wedge; the units sort\nthemselves into slots, the hardest to place first, while the slot table in\nthe inspector fills from the cost table. They open Compare and see the\nbranch before the equip as a ghost under the branch after, two series per\nmetric, with the first divergence frame marked; they keep the trial. They\nsave the composition, reload, and find it. Under reduced motion the field is\nstill until they press Step or Play; the same seed and the same steps\nreproduce the same frames; nothing leaves the browser. A tool opened from\nthe catalog's \"runs in the soldier scene\" link arrives chosen in the rail.\nWhat the operator learns is what each movement idea does to a group when\nthey can see it; what they decide is which ideas to keep and which to try\non the agents next.",
+        "cost": "adds `libs/shared/scene-engine` (pure TypeScript), the `scene`\nfeature's page, layout, rail, inspector, text layer, canvas wrapper, log,\ntrial compare, facade, store, clock and tokens, the field skin's token layer,\nfour fixtures, the scene fixture check, two documents, one taxonomy\nsentence, about 70 source files; adds no runtime dependency. Removes the\narriving page WO-013 shipped for `/scene`; moves the root redirect from\n`/board` to `/scene`. Wall-clock: about 8 to 12 hours of executor work plus\nthe fixed cycle; unknown until run. Context bytes: WS-001 house rules 1, 5,\n12, 14, 18, 24 and 25 and §The app and its sub-apps, design B §1 to §4 read\nat the run's folder, the catalog types and the scene tools WO-019 types,\nthis order, about 180 KB. Commands added in the target: none. Tokens:\nunknown until run. Steps: 17. Re-mints: none. Refutations paid: two (the\n2026-10-24 pass's receipt on the first text, the 2026-10-26 pass's on this\none).",
+        "criteria": [
+          {
+            "id": "criterion:1",
+            "text": "**Use (WS-001 rule 24).** The verifier performs the Objective's session\n   in the served production build in this order: open the root and land on\n   `/scene`; marquee twelve units; choose Flock, read its definition, apply;\n   click the field and apply Arrive; select eight more and apply the wedge;\n   open Compare and keep the trial; save, reload, find the composition; open\n   `/scene?tool=<flock id>` from the catalog's link. The VER report carries\n   a `## Walkthrough` section with the dated steps and names the\n   screenshots at 360, 768 and 1440 under `docs/evidence/WO-015/walkthrough/`\n   (`ls docs/evidence/WO-015/walkthrough | wc -l` prints at least 12), and\n   states in the verifier's own words what cohesion radius, collisions and\n   time to objective did at each equip. The criterion is met only when\n   every step completed and that statement is present; a step that could\n   not be completed, a tool in the rail that refused on Apply, or a\n   definition that could not be read in the inspector is unmet."
+          },
+          {
+            "id": "criterion:2",
+            "text": "`grep -rlE \"@angular|document\\.|window\\.\" libs/shared/scene-engine/src --include='*.ts' | grep -v spec`\n   prints nothing, and `npx nx test scene-engine` exits 0 with specs that\n   two runs from one seed and one step list produce identical frame hashes\n   over 600 frames, that flock with the separation weight at zero yields\n   collisions greater than zero within 600 frames while the default weights\n   reach and keep zero after settling, that greedy slot assignment equals\n   the committed hand-computed table, that the first divergence between a\n   branch before and after an equip is the equip frame plus one, and that\n   the interpreter refuses a step whose kind it does not interpret with a\n   reason naming the kind while the next frame's hash and the clock's tick\n   count equal those of a run without that step."
+          },
+          {
+            "id": "criterion:3",
+            "text": "`libs/features/scene/src/lib/wrappers/scene-canvas/` owns the only\n   `<canvas>` in the feature (`grep -rl \"<canvas\" libs/features/scene/src`\n   prints exactly that component's file, and\n   `grep -rlE \"createElement\\(['\\\"]canvas|OffscreenCanvas|getContext\\(\" libs/features/scene/src --include='*.ts' | grep -v spec | grep -v wrappers/scene-canvas/`\n   prints nothing), `SceneRenderer` has `Canvas`, `Text` and `Null`\n   implementations, and the feature's specs run with the null renderer\n   under jsdom (`npx nx test scene` exits 0)."
+          },
+          {
+            "id": "criterion:4",
+            "text": "The facade's frame loop writes signals at most once per animation frame\n   (a spec with the manual clock ticks 60 times and asserts at most one\n   `vm` change per driver frame)."
+          },
+          {
+            "id": "criterion:5",
+            "text": "`npx nx e2e dotln-e2e` exits 0 and includes: the root landing on\n   `/scene`; twenty rows in the text layer; Step advancing the frame counter\n   under `reducedMotion: 'reduce'`; the rail listing every tool of step 8's\n   floor and no tool whose kind the engine refuses (a spec asserts every\n   rail entry's kind against the interpreter's set); a marquee selecting at\n   least two units and Escape clearing the selection; equip Flock changing\n   the cohesion figure's text; a clicked objective and Arrive changing time\n   to objective; a saved composition present after a reload;\n   `/scene?tool=<id>` arriving with that tool chosen; axe at the board\n   spec's threshold; no horizontal overflow at 360, 768 and 1440."
+          },
+          {
+            "id": "criterion:6",
+            "text": "The persisted-state spec asserts every key written starts with\n   `dotln-angular.scene` and no other storage, cookie or network write\n   occurs, and a second spec seeds that key with a value that does not parse\n   and with one of an older shape and asserts that the facade yields the\n   idle twenty units; `grep -rlE \"from 'node:|from \\\"node:|require\\(\" libs/shared/scene-engine/src libs/features/scene/src libs/features/scene-data-access/src --include='*.ts' | grep -v spec`\n   prints nothing."
+          },
+          {
+            "id": "criterion:7",
+            "text": "`grep -rlE \"<dl|dotln-key-value-list\" libs/features/scene/src` prints\n   nothing (no label-value list on the scene); the stories `ChromeColumn`\n   and `ChromeDrawer` existed at the pull request with both screenshots in\n   its body, the decisions file records the operator's pick, and only the\n   picked chrome remains at final review; `npm run check:tokens` exits 0\n   with the field skin's tokens named `--dotln-field-*`."
+          },
+          {
+            "id": "criterion:8",
+            "text": "`package.json`'s `dependencies` keys equal the base's (the step 15\n   command prints nothing), and `npx nx build dotln --configuration=production`\n   exits 0 within the declared budgets with the scene as a lazy chunk."
+          },
+          {
+            "id": "criterion:9",
+            "text": "`docs/dev-reference/architecture/component-taxonomy.md` carries the\n   sentence admitting a wrapper that owns a browser drawing API\n   (`grep -c \"drawing API\" docs/dev-reference/architecture/component-taxonomy.md`\n   is at least 1); `docs/dev-reference/architecture/scene.md` and\n   `docs/ai-reference/scene-rules.md` exist and the rules file states that\n   the rail offers only tools the engine runs (`grep -c \"engine runs\"\n   docs/ai-reference/scene-rules.md` is at least 1)."
+          },
+          {
+            "id": "criterion:10",
+            "text": "`node scripts/target-gate.mjs WO-015 --review` records a passing row for\n    every declared command with no tracked-byte mutation, and\n    `npm run test:docs` passes in the launchpad order worktree; the Preflight\n    line ran before the first full gate."
+          }
+        ],
+        "nonGoals": "3D or any rendering dependency; pathfinding, obstacles, a\ncommander, channels, an influence map; a live agent; persistence beyond\ncompositions and notes; any read of the platform or any write outside the\nbrowser; a DotLn analog claim from a flock; the look of the board or the\nshell beyond the shared palettes and the field skin's tokens."
+      },
+      {
+        "workOrderId": "WO-016",
+        "path": "docs/work-orders/WO-016-machinery-view.md",
+        "title": "WO-016 — The machinery view: one recorded order's agents in their role slots over scrubbed, field-reduced copies of the platform's WO-221 and WO-226 segments, each agent's active gems, supports and prose sections readable, a mechanism change the operator drops on an agent redrawing the example use case with the before as a ghost, the operator's own ideas persisted in the browser and saved to ignored intake through a local sink, and the shared records and replay libraries",
+        "objective": "at `/machinery` the operator sees one recorded order (WO-221,\nswitchable to WO-226) as a strip of beats left to right in recorded time,\nthe distance between beats proportional to the minutes between rows; above\nit the four role slots (executor, verifier, repairer, reviewer) and the\noperator as a figure at the edge; stepping the anchor fills a slot with the\nagent that made the next row, labelled by harness, model and effort, with a\nhand-back card reading pass, fail or no verdict; a refilled slot keeps the\nearlier occupant as a ghost; opening an agent shows its declared obligation,\nthe mechanisms it runs with (the role's active gems and supports by id and\nits prose sections by key, from the launchpad's own role files at the\nstarter version named) and what it waited on; a shelf holds the operator's\nown ideas, each a titled mechanism change (remove or add a gem or support,\nnarrow the knowledge to listed inputs, set the rung, add a wait with its\ncause, replace a prose section with the operator's own words); selecting an\nidea then an agent redraws that agent's card and the use case's beats under\nthe idea's caption with the before as a ghost and a band saying presentation\nonly, nothing written (the caption names what the change shows in the use\ncase and says so when the beats are unchanged); a refused drop stays visible\nwith its reason; the\noperator's ideas and applied state persist in browser storage and, when the\nlocal sink runs, every dropped idea is also appended to the repository's\nignored intake; nothing else leaves the browser.",
+        "cost": "adds `machinery.ts` to `libs/shared/models`, `libs/shared/records`\n(reader, folds, fixture pack, kit), `libs/shared/replay` (the virtual-time\nclock), the `machinery` feature's page, strip, slots, cards, shelf, editor,\nfacade and store, `libs/features/machinery-data-access`, the segment reducer\nand the record fixture check, the idea sink process, three fixtures, two\ndocuments, about 75 source files; adds no runtime dependency. Removes the\narriving page WO-013 shipped for `/machinery`. Wall-clock: about 8 to 12\nhours of executor work plus the fixed cycle; unknown until run. Context\nbytes: WS-001 §The app and its sub-apps, design A §1 and §1.6, the UI\nvision §4 and V7 read at the run's folder, the fork's role skill stamps,\nthis order, about 190 KB. Commands added in the target: `npm run idea-sink`.\nTokens: unknown until run. Steps: 17. Re-mints: none. Refutations paid: four (receipts 008 to 010 on the earlier texts; the 2026-10-26 pass's receipt on this one).",
+        "criteria": [
+          {
+            "id": "criterion:1",
+            "text": "`libs/shared/records/testing/src/fixtures/segments/order-221.json` and\n   `order-226.json` validate against `control-event-lite-v0.schema.json` with\n   `additionalProperties: false` over the fields `ordinal`, `type`,\n   `recordedAt`, `workOrderId`, `actor`, `verdict`, carry a `source.commit`\n   and no absolute path (`npm run check:fixtures` exits 0), and a spec asserts `order-221.json` carries 16 rows and `order-226.json` 6, and `ls libs/shared/records/testing/src/fixtures/segments | grep -ciE '^wo-'`\n   prints 0."
+          },
+          {
+            "id": "criterion:2",
+            "text": "`npx nx test records` exits 0 with specs asserting: the WO-221 fold has 8\n   operator beats and the seven gaps 87.8, 109.9, 1.7, 1.4, 2.1, 18.2 and\n   5.9 minutes within one second each, the first following a hand-back with\n   no verdict; the WO-226 fold has gaps of 316.0 and 31.7 minutes; an\n   unknown `type` yields an `unknown` beat; the verifier slot carries one\n   ghost after its refill; and `applyIdeas` refuses a card whose `appliesTo`\n   excludes the target with a reason while the scene stays unchanged."
+          },
+          {
+            "id": "criterion:3",
+            "text": "`role-mechanisms.json` lists, for the executor, planner, refuter,\n   release-close, reviewer and verifier, the ids each role's Origin stamp\n   carries at the starter the launchpad carried at activation, each role\n   naming its source file and that starter version (a spec asserts each role's count against the counts the executor recorded in the decisions file from the files read at activation; no starter's figures are written here, because they change with the starter),\n   the `repairer` slot reads the executor's entry and its card states that\n   the repairer runs the executor role at `resume: fix` (a spec asserts the\n   card's text), and\n   `grep -c \"/Users/\" libs/shared/records/testing/src/fixtures/role-mechanisms.json`\n   prints 0."
+          },
+          {
+            "id": "criterion:4",
+            "text": "`grep -rl \"generated\" libs/features/machinery/src/testing/fixtures`\n   prints nothing and the shelf's fixture of ideas is empty at first render\n   (a spec asserts zero cards before the operator creates one)."
+          },
+          {
+            "id": "criterion:5",
+            "text": "The tooling test for the idea sink passes (`npm run test:tooling` exits\n   0): one post appends one JSON line to a temporary ignored directory, a\n   body over 16 KB is refused, a request whose `Origin` is not the development origin or whose `Host` is not the loopback is refused, and the sink refuses to start on a directory that is not Git-ignored;\n   `environment.prod.ts` sets `ideaSinkUrl` to `null` and\n   `grep -rl \"127.0.0.1\" dist/apps/dotln/browser` prints nothing after\n   `npx nx build dotln --configuration=production`."
+          },
+          {
+            "id": "criterion:6",
+            "text": "The persisted-state spec asserts every key written starts with\n   `dotln-angular.machinery` and no other storage, cookie or network write\n   occurs except the sink post when `ideaSinkUrl` is set, a spec with that post failing asserts the dropped idea is applied and persisted, a spec seeding `dotln-angular.machinery` with a value that does not parse asserts the shelf renders empty and the strip renders; and\n   `grep -rlE \"from 'node:|from \\\"node:|require\\(\" libs/shared/records/src libs/shared/replay/src libs/features/machinery/src libs/features/machinery-data-access/src --include='*.ts' | grep -v spec`\n   prints nothing."
+          },
+          {
+            "id": "criterion:7",
+            "text": "`npx nx e2e dotln-e2e` exits 0 and includes: sixteen beat buttons, four\n   role slots and the operator figure on `/machinery`; the executor slot filled at the second beat;\n   a ghost in the verifier slot after the eighth; an idea created, applied\n   and redrawn with the ghost, the presentation-only band and a caption\n   naming what changed; a refused drop\n   visible with its reason; the idea present after a reload; the keyboard\n   path across the beats and the shelf; axe at the board spec's threshold;\n   no horizontal overflow at 360, 768 and 1440."
+          },
+          {
+            "id": "criterion:8",
+            "text": "`docs/dev-reference/architecture/machinery.md` and\n   `docs/ai-reference/machinery-rules.md` exist and the rules file states\n   that the fold decides nothing and that no card is generated from records\n   (`grep -c \"generated\" docs/ai-reference/machinery-rules.md` is at least 1);\n   `package.json`'s `dependencies` keys equal the base's."
+          },
+          {
+            "id": "criterion:9",
+            "text": "`node scripts/target-gate.mjs WO-016 --review` records a passing row for\n   every declared command with no tracked-byte mutation, and\n   `npm run test:docs` passes in the launchpad order worktree; the Preflight line ran before the first full gate."
+          },
+          {
+            "id": "criterion:10",
+            "text": "**Use (WS-001 rule 24).** The verifier performs the Objective's session in the served production build: open `/machinery` on WO-221; step the anchor to the second beat and read the executor's card; step past the eighth and find the verifier's ghost; open an agent and read its obligation, its mechanisms and what it waited on; create an idea in the shelf, apply it to the verifier and read the caption and the band; apply a refused drop and read its reason; reload and find the idea; switch to WO-226. The VER report carries a `## Walkthrough` section with the dated steps and names the screenshots at 360, 768 and 1440 under `docs/evidence/WO-016/walkthrough/` (`ls docs/evidence/WO-016/walkthrough | wc -l` prints at least 12), and states in the verifier's own words what the applied idea changed in the use case. The criterion is met only when every step completed and that statement is present."
+          }
+        ],
+        "nonGoals": "a live connection to any resident or to core; drag; generated\nidea cards; agents in concert beyond one order's slots (the fleet, the\nblackboard room and the flow instruments of the run are later members,\ncandidate C5); the digital twin's lane (WO-017); any write outside browser\nstorage and the local sink; a token axis."
+      },
+      {
+        "workOrderId": "WO-008",
+        "path": "docs/work-orders/WO-008-authentication-and-permissions.md",
+        "title": "WO-008 — Authentication and permissions for DotLn-Angular, legitimate from the Angular side: `auth` with an OpenID Connect authorization-code-with-PKCE client behind a port, in-memory token handling with single-flight refresh, expiry and invalid-token paths, the auth and permission stores, route and feature permission checks from a declared adjacency list, the mocked identity provider through MSW, and the failure-case matrix in unit and e2e tests",
+        "objective": "a visitor to `apps/dotln` signs in through an OpenID Connect\nauthorization-code flow with PKCE against a mocked provider, holds tokens only\nin memory, is refreshed once when a request meets an expired token and\nsigned out when refresh fails or a token is invalid, sees only the routes and\nfeatures the declared permission model grants, and every failure case in the\nmatrix below has a passing test; swapping the mocked provider for a real one\nchanges configuration and nothing in the Angular code.",
+        "cost": "adds `libs/shared/auth` with its kit, the mocked identity provider\nhandlers (whose development signing key pair is generated when the mock\nstarts and is never committed), the `authHttpEvents` and\n`sessionEvents` groups, guards, the permission directive, the `/login`,\n`/denied` and `/account` routes, about 60 source files; adds one OpenID\nConnect client library to `dependencies` and `jose` (development signing in\nthe mock) to `devDependencies`.\nRemoves nothing. Wall-clock: about 8 to 12 hours of executor work plus the\nfixed cycle; unknown until run. Context bytes: WS-001 house rule 17, the\nevents and state documents, the client library's documentation, this order,\nabout 160 KB. Commands added in the target: none. Tokens: unknown until run.\nSteps: 15. Re-mints: none. Refutations paid: ten receipts (001 to 010) name this order, and the 2026-10-26 pass's receipt judges this text.",
+        "criteria": [
+          {
+            "id": "criterion:1",
+            "text": "`grep -rlE \"localStorage|sessionStorage\" libs/shared/auth/src --include='*.ts' | grep -v spec`\n   prints nothing, and the same grep over the files under `apps/dotln/src`\n   this order adds or changes\n   (`git diff --name-only $(git merge-base HEAD origin/main)..HEAD -- apps/dotln/src`)\n   prints nothing; `grep -rc \"console.log\" libs/shared/auth/src --include='*.ts' | grep -v \":0\"`\n   prints nothing; and an e2e step after the sign-in reads every key of `localStorage` and `sessionStorage`, every object store of every IndexedDB database, every Cache Storage entry and every cookie, and asserts that no value matches the JWT shape (three dot-separated base64url segments) and that no value\n   equals or contains any token the mocked provider issued in that session\n   (the handlers keep the tokens they issued behind a test-only knob the e2e\n   reads), which covers opaque refresh tokens and the client library's own\n   stores as well as house code."
+          },
+          {
+            "id": "criterion:2",
+            "text": "`libs/shared/auth/src/lib/session/transitions.ts` declares the transition\n   table for the six states and `transitions.spec.ts` asserts every state and\n   event pair (the spec iterates the table and the event list, so an\n   unhandled pair fails); `npx nx test auth` exits 0."
+          },
+          {
+            "id": "criterion:3",
+            "text": "Unit specs exist and pass for each matrix row: timeout on exchange,\n   `invalid_grant`, expired-then-refresh-then-replay, refresh failure to\n   sign-out, invalid signature, wrong audience, skew within and beyond\n   tolerance, two concurrent `401`s producing one refresh request (asserted\n   through the MSW handler's call count), `state` mismatch, redirect loop stop, cross-tab sign-out, page reload during a session."
+          },
+          {
+            "id": "criterion:4",
+            "text": "`core` exports `routePermissions` covering every `BasePaths` member\n   (a spec asserts the record's keys equal the enum's values and that\n   `Board`, `Scene`, `Machinery` and `Tools` map to an empty list), guards\n   use it, the `board`, `scene`, `machinery` and `catalog` e2e specs run\n   unchanged without a session, and `npx nx e2e dotln-e2e` includes: sign in\n   through the mocked provider and land on `returnTo` at `/account`;\n   `/account` as the `denied` user redirecting to `/denied`; an element hidden by `*dotlnHasPermission` for a user without the permission; a reload at `/account` keeping the session or returning to `/login` with `returnTo`; token expiry during use followed by a transparent refresh; refresh failure\n   returning to `/login`."
+          },
+          {
+            "id": "criterion:5",
+            "text": "The production build contains no mock provider code:\n   `npx nx build dotln --configuration=production` exits 0, and for the\n   development signing key's identifier (the `kid` constant) and for every\n   path the mocked provider's constants file declares (both listed in the\n   evidence README), `grep -rl \"<value>\" dist/apps/dotln/browser` prints\n   nothing; the bearer token is attached only to requests under\n   `apiBaseUrl` (a spec asserts a request to another origin carries no\n   `Authorization` header); `jose` is listed under `devDependencies` and not\n   under `dependencies` (the step 2 check prints nothing); and with `auth` at\n   `null` the four public routes' guards admit an anonymous visitor and the\n   login page renders the unavailable state (two specs assert it)."
+          },
+          {
+            "id": "criterion:6",
+            "text": "`docs/dev-reference/security/authentication.md` states the storage rule,\n   the refresh rule, the matrix, the provider swap and that the server\n   enforces authorization while client checks shape presentation only\n   (`grep -c \"server enforces authorization\" docs/dev-reference/security/authentication.md`\n   is at least 1), and `docs/ai-reference/auth-rules.md` exists."
+          },
+          {
+            "id": "criterion:7",
+            "text": "`node scripts/target-gate.mjs WO-008 --review` records a passing row for\n   every declared command with no tracked-byte mutation, and\n   `npm run test:docs` passes in the launchpad order worktree; the Preflight line ran before the first full gate."
+          },
+          {
+            "id": "criterion:8",
+            "text": "**Use (WS-001 rule 24).** The verifier performs the Objective's session in the served production build with the mocked provider: open `/account` anonymously and be sent to `/login`; sign in and land back on `/account` with the claims readable; reload and keep the session or be returned to `/login` with `returnTo`; sign in as the `denied` user and land on `/denied`; drive the expiry knob and watch a request succeed through a transparent refresh; drive the refresh-failure knob and land on `/login`; open a second tab, sign out there and watch the first tab follow. The VER report carries a `## Walkthrough` section with the dated steps and names the screenshots at 360, 768 and 1440 under `docs/evidence/WO-008/walkthrough/` (`ls docs/evidence/WO-008/walkthrough | wc -l` prints at least 12), and states in the verifier's own words what each page said at each step. The criterion is met only when every step completed and that statement is present."
+          }
+        ],
+        "nonGoals": "a real identity provider or API; a backend-for-frontend;\nmulti-factor flows; user management screens; social login."
+      },
+      {
+        "workOrderId": "WO-017",
+        "path": "docs/work-orders/WO-017-digital-twin-patience-lane.md",
+        "title": "WO-017 — The digital twin's first lane: the operator's patience after a hand-back as RxJS that runs on virtual time over the recorded WO-221, judged by the results of the order it would have run and never by agreement with the operator's beats, with every variant of the model kept as code and old versions never deleted",
+        "objective": "at `/twin` the operator sees WO-221 as one time axis with its\nsixteen beats as glyphs, a recorded lane carrying the operator's eight beats\nas reference marks, and a twin lane carrying where the chosen variant of the\ntwin's patience stream fires after each hand-back when the order is replayed\non virtual time; the result cell beside the lanes states what the order would\nhave cost under the twin: the virtual close time, the twin's total waiting\nminutes and the number of times it fired before anything was ready, each next\nto the recorded order's 1,110.3 minutes and the operator's 227.0 waiting\nminutes; a variant picker lists every variant ever written with its version\nand lineage, and a flip (a duration or a multiplier changed) redraws the twin\nlane at once with a near-transparent ghost of the previous position and\nrecomputes the result cell; the operator saves a kept flip as a new variant\nby exporting the TypeScript the UI generates, because the RxJS that describes\nthe operator is the RxJS that runs; the recorded lane never moves and no\nagreement figure against it is computed or shown; WO-226 is the second order.",
+        "cost": "adds `libs/shared/twin-model` (the variants as RxJS code, the\nregistry, the results fold), the `twin` feature's page, lanes, variant picker,\nflips, result cell, facade and store, the derivation script and its fixture, the variant registry check, the `twin:read` entry in `routePermissions` and the claim on the mocked provider's default user, two documents, about 55 source files; adds no\nruntime dependency. Removes nothing. Wall-clock: about 6 to 9 hours of\nexecutor work plus the fixed cycle; unknown until run. Context bytes: WS-001\n§The app and its sub-apps and §The operator's model, design C §1.4, §2, §3,\nC1 and §5.2 to §5.3 read at the run's folder, the records and replay\nlibraries, this order, about 170 KB. Commands added in the target:\n`npm run twin:derive`, `npm run twin:check`. Tokens: unknown until run.\nSteps: 15. Re-mints: none. Refutations paid: four (receipts 008 to 010 on the earlier texts; the 2026-10-26 pass's receipt on this one).",
+        "criteria": [
+          {
+            "id": "criterion:1",
+            "text": "`npm run twin:derive` exits 0 and `order-221-derived-v0.json` records 8\n   operator rows, seven gaps of 87.8, 109.9, 1.7, 1.4, 2.1, 18.2 and 5.9\n   minutes, a waiting total of 227.0 minutes and a span of 1,110.3 minutes,\n   with the first gap's preceding row carrying no verdict (a spec asserts\n   each)."
+          },
+          {
+            "id": "criterion:2",
+            "text": "`npx nx test twin-model` exits 0 with marble specs asserting that the\n   baseline replay with the recorded dispatches reproduces the recorded close\n   time within one virtual second, that waiting minutes and early fires are\n   counted from each hand-back's completion row, that the patience-table variant's three result figures are computed, that the derivation script's figures equal the fold's baseline figures, and that a flip changes the twin's figures and lane and nothing on the recorded lane."
+          },
+          {
+            "id": "criterion:3",
+            "text": "`grep -rliE \"hit ?rate|hits/n|tolerance band\" libs/shared/twin-model/src libs/features/twin/src libs/features/twin-data-access/src --include='*.ts'`\n   prints nothing, and the result cell's `vm` type has no field named `hits`\n   (a spec asserts the field set: virtual close, waiting minutes, early\n   fires, each with its baseline)."
+          },
+          {
+            "id": "criterion:4",
+            "text": "`variants.json` lists at least three variants with files that exist,\n   `npm run twin:check` exits 0, a tooling test proves a manifest with a\n   removed id fails the check, and a second tooling test proves the check\n   fails, not passes, when the base commit is absent, with a message naming\n   the commit and the fetch to run."
+          },
+          {
+            "id": "criterion:5",
+            "text": "`grep -rlE \"JSON.parse|new Function|eval\\(\" libs/shared/twin-model/src --include='*.ts' | grep -v spec` prints nothing and a spec asserts every registry entry's module exports `describe` as a function (no interpreted model), and the export spec type-checks a generated variant against `TwinVariant`."
+          },
+          {
+            "id": "criterion:6",
+            "text": "The persisted-state spec asserts every key written starts with `dotln-angular.twin` and no other storage, cookie or network write occurs, and a second spec seeds that key with a value that does not parse and with one naming an unknown variant and asserts the facade yields the first registry entry with no flips;\n   `grep -rlE \"from 'node:|from \\\"node:|require\\(\" libs/shared/twin-model/src libs/features/twin/src libs/features/twin-data-access/src --include='*.ts' | grep -v spec`\n   prints nothing."
+          },
+          {
+            "id": "criterion:7",
+            "text": "`npx nx e2e dotln-e2e` exits 0 and includes: a sign-in through WO-008's\n   mocked provider, then the two lanes and the result cell with the recorded\n   baseline on `/twin` (`routePermissions` maps `BasePaths.Twin` to `['twin:read']`, WO-008's coverage spec passes, and the `denied` user reaching `/twin` lands on `/denied`); three variants in the picker;\n   a flip redrawing the twin lane and leaving the recorded marks; the export\n   dialog showing TypeScript; the chosen variant present after a reload; the\n   keyboard path over every flip; axe at the board spec's threshold; no\n   horizontal overflow at 360, 768 and 1440."
+          },
+          {
+            "id": "criterion:8",
+            "text": "`docs/dev-reference/architecture/twin.md` records the scheduler chosen\n   (the replay library's), the frame cap observed and that readiness is the\n   hand-back's completion row, `docs/ai-reference/twin-rules.md` states that\n   a variant is never deleted and that the twin is judged by results only\n   (`grep -c \"results\" docs/ai-reference/twin-rules.md` is at least 1),\n   `package.json`'s `dependencies` keys equal the base's, and the production\n   build's budget output names no twin chunk over budget (each variant a\n   lazy chunk)."
+          },
+          {
+            "id": "criterion:9",
+            "text": "`node scripts/target-gate.mjs WO-017 --review` records a passing row for\n   every declared command with no tracked-byte mutation, and\n   `npm run test:docs` passes in the launchpad order worktree; the Preflight line ran before the first full gate."
+          },
+          {
+            "id": "criterion:10",
+            "text": "**Use (WS-001 rule 24).** The verifier performs the Objective's session in the served production build: sign in through the mocked provider; open `/twin` on WO-221 and read the two lanes and the result cell against the recorded baseline; pick each of the three variants; flip one parameter and watch the twin lane and the figures change while the recorded lane stays; export the kept flip and read the TypeScript; reload and find the chosen variant; switch to WO-226. The VER report carries a `## Walkthrough` section with the dated steps and names the screenshots at 360, 768 and 1440 under `docs/evidence/WO-017/walkthrough/` (`ls docs/evidence/WO-017/walkthrough | wc -l` prints at least 12), and states in the verifier's own words what the three figures were before and after the flip. The criterion is met only when every step completed and that statement is present."
+          }
+        ],
+        "nonGoals": "a fidelity or agreement figure against the operator's beats;\nthe dozen-order grid, the blind replay and the ring; a live route, journal\ndigests or presence; a wait policy shipped to the platform (a graduated idea\ngoes to core as a GitHub issue); any write outside browser storage."
+      },
+      {
+        "workOrderId": "WO-018",
+        "path": "docs/work-orders/WO-018-art-of-war-map-and-toys.md",
+        "title": "WO-018 — The first public mining into the app's own store: The Art of War mapped from its public-domain text into catalog rows and typed into tools through the catalog pipeline, the run's nineteen toys carried in full and six new toys designed for the mined sources that have none (Meadows, Pirsig, Poincaré, Gladwell, Taleb and the 5S set), and the toy shelf where the operator reads what each toy would show and picks the next one to build",
+        "objective": "(the operator's session, WS-001 rule 24) the operator opens Tools, Toys and\nsees twenty-five toys on a shelf, grouped by the five purposes the run gave\nthem (agents in concert, the toolbox and the toy scene, the operator-model\ntestbed, the planning and riff surface, flow and the constraint) and the\nsix new ones under their sources; each toy shows its title, its source\nworks, its one-line question and its status (designed, built, graduated,\ndid not stick). They open The Twenty and read, in a measure set for reading,\nwhat the toy is (its purpose), what they would see on screen, the question\nit answers, the evidence it would produce, what it would graduate into, the\nrecords it replays, and the tools it needs as links into the catalog, where\neach tool reads; its status says built and links to the scene. They open\nThe patience lane and read the same. They open a new toy, Meadows' leverage\npoints as a scene, and read its question, its scene type, its metric and\nthe tools designed for it, each typed from the work and linked. They filter\nto one source and to designed toys, and decide which to build next; the\ncard says how to say so (a GitHub issue on the platform's repository, the\ngraduation route). The catalog now carries The Art of War: they open it on\nthe catalog's shelf, read a chapter, read a maxim's row with the maxim\nitself where the maxim is the concept, and see the tactics typed for the\ncommander scene to come. What the operator learns is what every toy in the\nrun would show them; what they decide is the next one to build.",
+        "cost": "adds `map-artofwar.json` and `tools-artofwar.json` to the catalog\ndata, `toy-v0.schema.json` and `toys.ts` to the models, `toys.json` (the\nrun's nineteen toys in full and the six new ones), the toy-source tool\nfiles, the toy shelf and the toy page under Tools, the map and toy checks,\ntwo document sections, about 32 source files plus about 300 data rows; adds\nno runtime dependency. Removes nothing. Wall-clock: about 4 to 6 hours of\nexecutor work, of which two fan-outs run in parallel, plus the fixed cycle;\nunknown until run. Context bytes: WS-001 §The app and its sub-apps, the\ncatalog rules as WO-019 leaves them, the maps README, design B §3 and\n`toys.jsonl` read at the run's folder, this order, about 190 KB for the\nexecutor; the mappers read one public-domain text. Commands added in the\ntarget: `npm run toys:check`; `npm run catalog:check` and `catalog:join`\nalready cover the new files. Tokens: unknown until run; recorded per worker.\nSteps: 14. Re-mints: none. Refutations paid: two (the 2026-10-24 pass's\nreceipt on the first text, the 2026-10-26 pass's on this one).",
+        "criteria": [
+          {
+            "id": "criterion:1",
+            "text": "**Use (WS-001 rule 24).** The verifier performs the Objective's session\n   in the served production build: open Tools, Toys; open The Twenty and\n   follow a tool into the catalog and its status into the scene; open The\n   patience lane; open the Meadows toy; filter to one source and to\n   designed toys; open The Art of War on the catalog's shelf and read a\n   maxim's row. The VER report carries a `## Walkthrough` section with the\n   dated steps and names the screenshots at 360, 768 and 1440 under\n   `docs/evidence/WO-018/walkthrough/` (`ls docs/evidence/WO-018/walkthrough | wc -l`\n   prints at least 12), and states in the verifier's own words what each of\n   the three opened toys would show. The criterion is met only when every\n   step completed and that statement is present."
+          },
+          {
+            "id": "criterion:2",
+            "text": "`node tools/scripts/catalog/check-map.mjs` exits 0 over\n   `libs/shared/catalog/src/maps/map-artofwar.json`: every row has `id`,\n   `work`, `chapter`, `section`, `concept`, `type`, `definition`, `related`,\n   `hooks` and `verified`, thirteen chapters are present, at least one row\n   per chapter carries a `maxim`, `npm run check:fixtures` runs the map\n   check (its output names `check-map`), and the evidence README records the\n   public text's source and SHA-256 and the critic's sampled row count."
+          },
+          {
+            "id": "criterion:3",
+            "text": "`npm run catalog:check` exits 0 with `tools-artofwar.json` present and\n   every one of its rows carrying a definition, and `npm run catalog:report`\n   lists `artofwar` with a scene type and at least three tools whose\n   transform kinds are members of `TransformKind`."
+          },
+          {
+            "id": "criterion:4",
+            "text": "`npm run toys:check` exits 0 over `toys.json` with 25 records: 19 with\n   `origin: 'run-2026-10-22'` each carrying `purpose`, `question`,\n   `youWouldSee`, `evidence`, `sources` and `tools` (a spec asserts no\n   empty field among them), and 6 with `origin: 'this-app'` (one each for\n   `meadows`, `pirsig`, `poincare`, `gladwell`, `taleb`, `fives`) carrying a\n   scene type, a question, a metric and at least one tool id that exists in\n   the catalog; every `public-work` tool carries a `definition` and a\n   `source` string naming its work and chapter or concept; a tooling test\n   proves a toy naming an unknown tool id fails the check."
+          },
+          {
+            "id": "criterion:5",
+            "text": "`docs/evidence/WO-018/README.md` lists at most twelve workers across the\n   two fan-outs with their labels and one-line statements, each saying no\n   quarantine file was read, with the launchpad's read observation beside\n   each (the harness journal's row count for the quarantine path, or\n   `unobserved`), and records the subagent count from\n   `node scripts/harness.mjs usage <session>` at handoff."
+          },
+          {
+            "id": "criterion:6",
+            "text": "`npx nx e2e dotln-e2e` exits 0 and includes the step 10 cases, axe at the\n   board spec's threshold and no horizontal overflow at 360, 768 and 1440;\n   `grep -rlE \"<dl|dotln-key-value-list\" libs/features/tools/src` prints\n   nothing."
+          },
+          {
+            "id": "criterion:7",
+            "text": "`docs/dev-reference/architecture/catalog.md` carries the headings\n   `Mining a new work` and `Toys`, and `docs/ai-reference/catalog-rules.md`\n   states that a map row may carry the public text's maxim and that a toy\n   enters with its full design (`grep -c \"full design\"\n   docs/ai-reference/catalog-rules.md` is at least 1); `package.json`'s\n   `dependencies` keys equal the base's."
+          },
+          {
+            "id": "criterion:8",
+            "text": "`node scripts/target-gate.mjs WO-018 --review` records a passing row for\n   every declared command with no tracked-byte mutation, and\n   `npm run test:docs` passes in the launchpad order worktree; the Preflight\n   line ran before the first full gate."
+          }
+        ],
+        "nonGoals": "building any of the six toys; the commander scene; mining\nGladwell book by book or any further work; a live agent; the graduation\nroute's issue export (candidate C4)."
+      }
+    ],
+    "deferrals": [],
+    "costTable": {
+      "schemaVersion": 1,
+      "subjectSourceHash": "sha256:268cb952d76b4fb9f13efeb454e3c88fc69a55d288c8f3250d44b96fa8afafba",
+      "acceptances": [],
+      "observedAt": "2026-10-26T13:29:29.029Z",
+      "subjectRevision": "60def4c819630c2ca6eaa675335f51b89e7c8f22",
+      "rows": [
+        {
+          "workOrder": "WO-013",
+          "observedAt": "2026-10-26T13:29:29.029Z",
+          "metrics": {
+            "elapsedMs": 9803089,
+            "attempts": 9,
+            "failedVerifications": 0,
+            "failedFinalReviews": 2,
+            "repairs": 2,
+            "recordedCorrections": 1,
+            "gateMs": 631963,
+            "fastGateMs": 14482,
+            "readObligationCount": null,
+            "readObligationBytes": null,
+            "codeDiffBytes": null,
+            "readAmplification": null,
+            "machineryShare": 0.5600973325856778,
+            "elapsedPerCodeByte": null,
+            "tokens": null,
+            "costUsd": null,
+            "declaredPromptTokens": null,
+            "coldStartBytes": null,
+            "subjectCharacters": 71,
+            "gateStepCount": 7,
+            "operatorCorrections": null,
+            "operatorDirections": 3,
+            "guardRefusals": null,
+            "stopRefusals": null,
+            "reAnnouncements": null,
+            "manualCloseoutSteps": null,
+            "emergencyPasses": null,
+            "bypassTools": null,
+            "adHocScripts": null,
+            "commandsRun": null,
+            "bytesReadIntoContext": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "prBodyBytes": 6464
+          }
+        },
+        {
+          "workOrder": "WO-014",
+          "observedAt": "2026-10-26T13:29:29.029Z",
+          "metrics": {
+            "elapsedMs": 14946102,
+            "attempts": 5,
+            "failedVerifications": 1,
+            "failedFinalReviews": 0,
+            "repairs": 1,
+            "recordedCorrections": 0,
+            "gateMs": 28230,
+            "fastGateMs": 14547,
+            "readObligationCount": null,
+            "readObligationBytes": null,
+            "codeDiffBytes": null,
+            "readAmplification": null,
+            "machineryShare": 0.2689386169049295,
+            "elapsedPerCodeByte": null,
+            "tokens": 117733609,
+            "costUsd": null,
+            "declaredPromptTokens": null,
+            "coldStartBytes": null,
+            "subjectCharacters": 74,
+            "gateStepCount": 7,
+            "operatorCorrections": null,
+            "operatorDirections": 6,
+            "guardRefusals": null,
+            "stopRefusals": null,
+            "reAnnouncements": null,
+            "manualCloseoutSteps": null,
+            "emergencyPasses": null,
+            "bypassTools": null,
+            "adHocScripts": null,
+            "commandsRun": null,
+            "bytesReadIntoContext": null,
+            "stepCount": null,
+            "authorshipSnapshots": null,
+            "authorshipMs": null,
+            "authorshipBytes": null,
+            "authorshipCommands": null,
+            "authorshipMeanMs": null,
+            "authorshipPeakBytes": null,
+            "hookRuns": null,
+            "hookMs": null,
+            "hookMeanMs": null,
+            "hookPeakMs": null,
+            "prBodyBytes": 10201
+          }
+        },
+        {
+          "workOrder": "WO-019",
+          "observedAt": "2026-10-26T13:29:29.029Z",
+          "metrics": null
+        },
+        {
+          "workOrder": "WO-015",
+          "observedAt": "2026-10-26T13:29:29.029Z",
+          "metrics": null
+        },
+        {
+          "workOrder": "WO-016",
+          "observedAt": "2026-10-26T13:29:29.029Z",
+          "metrics": null
+        },
+        {
+          "workOrder": "WO-008",
+          "observedAt": "2026-10-26T13:29:29.029Z",
+          "metrics": null
+        },
+        {
+          "workOrder": "WO-017",
+          "observedAt": "2026-10-26T13:29:29.029Z",
+          "metrics": null
+        },
+        {
+          "workOrder": "WO-018",
+          "observedAt": "2026-10-26T13:29:29.029Z",
+          "metrics": null
+        }
+      ],
+      "traps": [
+        {
+          "id": "rule-beating",
+          "signal": "Read-obligation bytes against diff bytes; Stop refusals and re-announcements",
+          "metric": "readAmplification",
+          "series": [
+            {
+              "workOrder": "WO-012",
+              "value": 18.556229327453142,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-006",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-007",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-013",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-014",
+              "value": null,
+              "delta": null
+            }
+          ],
+          "indicators": [
+            {
+              "metric": "readAmplification",
+              "series": [
+                {
+                  "workOrder": "WO-012",
+                  "value": 18.556229327453142,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-006",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-007",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-013",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-014",
+                  "value": null,
+                  "delta": null
+                }
+              ]
+            },
+            {
+              "metric": "stopRefusals",
+              "series": [
+                {
+                  "workOrder": "WO-012",
+                  "value": 0,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-006",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-007",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-013",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-014",
+                  "value": null,
+                  "delta": null
+                }
+              ]
+            },
+            {
+              "metric": "reAnnouncements",
+              "series": [
+                {
+                  "workOrder": "WO-012",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-006",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-007",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-013",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-014",
+                  "value": null,
+                  "delta": null
+                }
+              ]
+            }
+          ],
+          "worsening": [],
+          "reopenCandidate": false
+        },
+        {
+          "id": "seeking-the-wrong-goal",
+          "signal": "Machinery share of elapsed time; phase durations against code-change size",
+          "metric": "machineryShare",
+          "series": [
+            {
+              "workOrder": "WO-012",
+              "value": 0.7557616192455047,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-006",
+              "value": 0.27183935389471725,
+              "delta": -0.4839222653507874
+            },
+            {
+              "workOrder": "WO-007",
+              "value": 0.4833401698475768,
+              "delta": 0.21150081595285952
+            },
+            {
+              "workOrder": "WO-013",
+              "value": 0.5600973325856778,
+              "delta": 0.07675716273810107
+            },
+            {
+              "workOrder": "WO-014",
+              "value": 0.2689386169049295,
+              "delta": -0.29115871568074836
+            }
+          ],
+          "indicators": [
+            {
+              "metric": "machineryShare",
+              "series": [
+                {
+                  "workOrder": "WO-012",
+                  "value": 0.7557616192455047,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-006",
+                  "value": 0.27183935389471725,
+                  "delta": -0.4839222653507874
+                },
+                {
+                  "workOrder": "WO-007",
+                  "value": 0.4833401698475768,
+                  "delta": 0.21150081595285952
+                },
+                {
+                  "workOrder": "WO-013",
+                  "value": 0.5600973325856778,
+                  "delta": 0.07675716273810107
+                },
+                {
+                  "workOrder": "WO-014",
+                  "value": 0.2689386169049295,
+                  "delta": -0.29115871568074836
+                }
+              ]
+            },
+            {
+              "metric": "elapsedPerCodeByte",
+              "series": [
+                {
+                  "workOrder": "WO-012",
+                  "value": 2069.9746416758544,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-006",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-007",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-013",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-014",
+                  "value": null,
+                  "delta": null
+                }
+              ]
+            }
+          ],
+          "worsening": [],
+          "reopenCandidate": false
+        },
+        {
+          "id": "shifting-the-burden-to-the-intervenor",
+          "signal": "Operator corrections and directions, manual closeout steps and emergency planning passes",
+          "corrections": [
+            {
+              "workOrder": "WO-012",
+              "total": 1,
+              "byPhase": {
+                "verification": 1
+              },
+              "byUnit": {
+                "unnamed": 1
+              },
+              "byPhaseAndUnit": {
+                "verification": {
+                  "unnamed": 1
+                }
+              },
+              "source": "session-journal"
+            },
+            {
+              "workOrder": "WO-006",
+              "total": null,
+              "byPhase": null,
+              "byUnit": null,
+              "byPhaseAndUnit": null,
+              "source": "unavailable"
+            },
+            {
+              "workOrder": "WO-007",
+              "total": null,
+              "byPhase": null,
+              "byUnit": null,
+              "byPhaseAndUnit": null,
+              "source": "unavailable"
+            },
+            {
+              "workOrder": "WO-013",
+              "total": null,
+              "byPhase": null,
+              "byUnit": null,
+              "byPhaseAndUnit": null,
+              "source": "unavailable"
+            },
+            {
+              "workOrder": "WO-014",
+              "total": null,
+              "byPhase": null,
+              "byUnit": null,
+              "byPhaseAndUnit": null,
+              "source": "unavailable"
+            }
+          ],
+          "directions": [
+            {
+              "workOrder": "WO-012",
+              "total": 1,
+              "byKind": {
+                "scopeExpand": 0,
+                "operatorOverride": 0,
+                "analysis": 0,
+                "conversationOnly": 0,
+                "operatorLabel": 0,
+                "resumeCorrection": 0,
+                "resumeDirection": 1,
+                "resumeScopeExpansion": 0,
+                "resumeOverride": 0,
+                "resumeTakeover": 0,
+                "resumeAnswer": 0,
+                "OperatorOverrideRecorded": 0,
+                "RecordCorrected": 0,
+                "CriterionWaived": 0
+              },
+              "source": "committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events"
+            },
+            {
+              "workOrder": "WO-006",
+              "total": 4,
+              "byKind": {
+                "scopeExpand": 2,
+                "operatorOverride": 0,
+                "analysis": 0,
+                "conversationOnly": 0,
+                "operatorLabel": 0,
+                "resumeCorrection": 0,
+                "resumeDirection": 1,
+                "resumeScopeExpansion": 0,
+                "resumeOverride": 0,
+                "resumeTakeover": 0,
+                "resumeAnswer": 0,
+                "OperatorOverrideRecorded": 0,
+                "RecordCorrected": 1,
+                "CriterionWaived": 0
+              },
+              "source": "committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events"
+            },
+            {
+              "workOrder": "WO-007",
+              "total": 1,
+              "byKind": {
+                "scopeExpand": 0,
+                "operatorOverride": 0,
+                "analysis": 0,
+                "conversationOnly": 0,
+                "operatorLabel": 0,
+                "resumeCorrection": 0,
+                "resumeDirection": 1,
+                "resumeScopeExpansion": 0,
+                "resumeOverride": 0,
+                "resumeTakeover": 0,
+                "resumeAnswer": 0,
+                "OperatorOverrideRecorded": 0,
+                "RecordCorrected": 0,
+                "CriterionWaived": 0
+              },
+              "source": "committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events"
+            },
+            {
+              "workOrder": "WO-013",
+              "total": 3,
+              "byKind": {
+                "scopeExpand": 0,
+                "operatorOverride": 0,
+                "analysis": 0,
+                "conversationOnly": 0,
+                "operatorLabel": 0,
+                "resumeCorrection": 1,
+                "resumeDirection": 1,
+                "resumeScopeExpansion": 1,
+                "resumeOverride": 0,
+                "resumeTakeover": 0,
+                "resumeAnswer": 0,
+                "OperatorOverrideRecorded": 0,
+                "RecordCorrected": 0,
+                "CriterionWaived": 0
+              },
+              "source": "committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events"
+            },
+            {
+              "workOrder": "WO-014",
+              "total": 6,
+              "byKind": {
+                "scopeExpand": 0,
+                "operatorOverride": 0,
+                "analysis": 0,
+                "conversationOnly": 0,
+                "operatorLabel": 0,
+                "resumeCorrection": 1,
+                "resumeDirection": 5,
+                "resumeScopeExpansion": 0,
+                "resumeOverride": 0,
+                "resumeTakeover": 0,
+                "resumeAnswer": 0,
+                "OperatorOverrideRecorded": 0,
+                "RecordCorrected": 0,
+                "CriterionWaived": 0
+              },
+              "source": "committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events"
+            }
+          ],
+          "metric": "operatorCorrections",
+          "series": [
+            {
+              "workOrder": "WO-012",
+              "value": 1,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-006",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-007",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-013",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-014",
+              "value": null,
+              "delta": null
+            }
+          ],
+          "indicators": [
+            {
+              "metric": "operatorCorrections",
+              "series": [
+                {
+                  "workOrder": "WO-012",
+                  "value": 1,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-006",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-007",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-013",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-014",
+                  "value": null,
+                  "delta": null
+                }
+              ]
+            },
+            {
+              "metric": "operatorDirections",
+              "series": [
+                {
+                  "workOrder": "WO-012",
+                  "value": 1,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-006",
+                  "value": 4,
+                  "delta": 3
+                },
+                {
+                  "workOrder": "WO-007",
+                  "value": 1,
+                  "delta": -3
+                },
+                {
+                  "workOrder": "WO-013",
+                  "value": 3,
+                  "delta": 2
+                },
+                {
+                  "workOrder": "WO-014",
+                  "value": 6,
+                  "delta": 3
+                }
+              ]
+            },
+            {
+              "metric": "manualCloseoutSteps",
+              "series": [
+                {
+                  "workOrder": "WO-012",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-006",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-007",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-013",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-014",
+                  "value": null,
+                  "delta": null
+                }
+              ]
+            },
+            {
+              "metric": "emergencyPasses",
+              "series": [
+                {
+                  "workOrder": "WO-012",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-006",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-007",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-013",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-014",
+                  "value": null,
+                  "delta": null
+                }
+              ]
+            }
+          ],
+          "worsening": [],
+          "reopenCandidate": false,
+          "planningCaptures": [
+            {
+              "pass": "planning-99f4ffe8f2227691",
+              "date": "2026-10-26",
+              "captures": 1
+            },
+            {
+              "pass": "planning-8cf1b240128e3b80",
+              "date": "2026-10-25",
+              "captures": 1
+            },
+            {
+              "pass": "planning-d693ddbce103291d",
+              "date": "2026-10-24",
+              "captures": 1
+            },
+            {
+              "pass": "planning-45059c186a40389b",
+              "date": "2026-10-24",
+              "captures": 1
+            },
+            {
+              "pass": "planning-668813faab47b0ee",
+              "date": "2026-10-23",
+              "captures": 1
+            },
+            {
+              "pass": "planning-24597b606f20e33d",
+              "date": "2026-10-21",
+              "captures": 1
+            },
+            {
+              "pass": "planning-fc1c0ec6bba3073a",
+              "date": "2026-10-21",
+              "captures": 1
+            },
+            {
+              "pass": "planning-56357ae66bd3a7f6",
+              "date": "2026-10-20",
+              "captures": 1
+            },
+            {
+              "pass": "planning-e0dd1f8a7a5b84af",
+              "date": "2026-10-19",
+              "captures": 1
+            },
+            {
+              "pass": "planning-14fefa7dc1ee9d3b",
+              "date": "2026-10-18",
+              "captures": 1
+            },
+            {
+              "pass": "planning-afc1740dd0afc954",
+              "date": "2026-10-18",
+              "captures": 1
+            }
+          ]
+        },
+        {
+          "id": "drift-to-low-performance",
+          "signal": "Subject length, gate step count and cold-start byte series",
+          "metric": "coldStartBytes",
+          "series": [
+            {
+              "workOrder": "WO-012",
+              "value": 29364,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-006",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-007",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-013",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-014",
+              "value": null,
+              "delta": null
+            }
+          ],
+          "indicators": [
+            {
+              "metric": "coldStartBytes",
+              "series": [
+                {
+                  "workOrder": "WO-012",
+                  "value": 29364,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-006",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-007",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-013",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-014",
+                  "value": null,
+                  "delta": null
+                }
+              ]
+            },
+            {
+              "metric": "subjectCharacters",
+              "series": [
+                {
+                  "workOrder": "WO-012",
+                  "value": 117,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-006",
+                  "value": 98,
+                  "delta": -19
+                },
+                {
+                  "workOrder": "WO-007",
+                  "value": 123,
+                  "delta": 25
+                },
+                {
+                  "workOrder": "WO-013",
+                  "value": 71,
+                  "delta": -52
+                },
+                {
+                  "workOrder": "WO-014",
+                  "value": 74,
+                  "delta": 3
+                }
+              ]
+            },
+            {
+              "metric": "gateStepCount",
+              "series": [
+                {
+                  "workOrder": "WO-012",
+                  "value": 7,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-006",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-007",
+                  "value": 7,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-013",
+                  "value": 7,
+                  "delta": 0
+                },
+                {
+                  "workOrder": "WO-014",
+                  "value": 7,
+                  "delta": 0
+                }
+              ]
+            }
+          ],
+          "worsening": [],
+          "reopenCandidate": false,
+          "coldStart": {
+            "comparisonEdition": "v0.3.3",
+            "profiles": [
+              {
+                "role": "executor",
+                "skillsRoot": ".claude/skills",
+                "path": ".claude/skills/dotln-executor/SKILL.md",
+                "skillBytes": 22955,
+                "bytes": 29978,
+                "previousBytes": 29364,
+                "previousCause": null,
+                "delta": 614,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.executor",
+                "verdict": "unset"
+              },
+              {
+                "role": "verifier",
+                "skillsRoot": ".claude/skills",
+                "path": ".claude/skills/dotln-verifier/SKILL.md",
+                "skillBytes": 20284,
+                "bytes": 27307,
+                "previousBytes": 26127,
+                "previousCause": null,
+                "delta": 1180,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.verifier",
+                "verdict": "unset"
+              },
+              {
+                "role": "reviewer",
+                "skillsRoot": ".claude/skills",
+                "path": ".claude/skills/dotln-reviewer/SKILL.md",
+                "skillBytes": 22712,
+                "bytes": 29735,
+                "previousBytes": 28950,
+                "previousCause": null,
+                "delta": 785,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.reviewer",
+                "verdict": "unset"
+              },
+              {
+                "role": "release-close",
+                "skillsRoot": ".claude/skills",
+                "path": ".claude/skills/dotln-release-close/SKILL.md",
+                "skillBytes": 11475,
+                "bytes": 18498,
+                "previousBytes": 17890,
+                "previousCause": null,
+                "delta": 608,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.release-close",
+                "verdict": "unset"
+              },
+              {
+                "role": "planner",
+                "skillsRoot": ".claude/skills",
+                "path": ".claude/skills/dotln-planner/SKILL.md",
+                "skillBytes": 12384,
+                "bytes": 19407,
+                "previousBytes": 18639,
+                "previousCause": null,
+                "delta": 768,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.planner",
+                "verdict": "unset"
+              },
+              {
+                "role": "refuter",
+                "skillsRoot": ".claude/skills",
+                "path": ".claude/skills/dotln-refuter/SKILL.md",
+                "skillBytes": 11198,
+                "bytes": 18221,
+                "previousBytes": 17613,
+                "previousCause": null,
+                "delta": 608,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.refuter",
+                "verdict": "unset"
+              },
+              {
+                "role": "executor",
+                "skillsRoot": ".agents/skills",
+                "path": ".agents/skills/dotln-executor/SKILL.md",
+                "skillBytes": 22955,
+                "bytes": 29978,
+                "previousBytes": 29364,
+                "previousCause": null,
+                "delta": 614,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.executor",
+                "verdict": "unset"
+              },
+              {
+                "role": "verifier",
+                "skillsRoot": ".agents/skills",
+                "path": ".agents/skills/dotln-verifier/SKILL.md",
+                "skillBytes": 20284,
+                "bytes": 27307,
+                "previousBytes": 26127,
+                "previousCause": null,
+                "delta": 1180,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.verifier",
+                "verdict": "unset"
+              },
+              {
+                "role": "reviewer",
+                "skillsRoot": ".agents/skills",
+                "path": ".agents/skills/dotln-reviewer/SKILL.md",
+                "skillBytes": 22712,
+                "bytes": 29735,
+                "previousBytes": 28950,
+                "previousCause": null,
+                "delta": 785,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.reviewer",
+                "verdict": "unset"
+              },
+              {
+                "role": "release-close",
+                "skillsRoot": ".agents/skills",
+                "path": ".agents/skills/dotln-release-close/SKILL.md",
+                "skillBytes": 11475,
+                "bytes": 18498,
+                "previousBytes": 17890,
+                "previousCause": null,
+                "delta": 608,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.release-close",
+                "verdict": "unset"
+              },
+              {
+                "role": "planner",
+                "skillsRoot": ".agents/skills",
+                "path": ".agents/skills/dotln-planner/SKILL.md",
+                "skillBytes": 12384,
+                "bytes": 19407,
+                "previousBytes": 18639,
+                "previousCause": null,
+                "delta": 768,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.planner",
+                "verdict": "unset"
+              },
+              {
+                "role": "refuter",
+                "skillsRoot": ".agents/skills",
+                "path": ".agents/skills/dotln-refuter/SKILL.md",
+                "skillBytes": 11198,
+                "bytes": 18221,
+                "previousBytes": 17613,
+                "previousCause": null,
+                "delta": 608,
+                "ceiling": null,
+                "lastAcceptance": {
+                  "date": null,
+                  "ceiling": null,
+                  "revision": null,
+                  "source": null,
+                  "bytes": null,
+                  "delta": null,
+                  "cause": "no-acceptance"
+                },
+                "metric": "coldStartBytes.refuter",
+                "verdict": "unset"
+              }
+            ]
+          }
+        },
+        {
+          "id": "policy-resistance",
+          "signal": "Guard refusals, bypass tools and ad hoc scripts",
+          "metric": "guardRefusals",
+          "series": [
+            {
+              "workOrder": "WO-012",
+              "value": 0,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-006",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-007",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-013",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-014",
+              "value": null,
+              "delta": null
+            }
+          ],
+          "indicators": [
+            {
+              "metric": "guardRefusals",
+              "series": [
+                {
+                  "workOrder": "WO-012",
+                  "value": 0,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-006",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-007",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-013",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-014",
+                  "value": null,
+                  "delta": null
+                }
+              ]
+            },
+            {
+              "metric": "bypassTools",
+              "series": [
+                {
+                  "workOrder": "WO-012",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-006",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-007",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-013",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-014",
+                  "value": null,
+                  "delta": null
+                }
+              ]
+            },
+            {
+              "metric": "adHocScripts",
+              "series": [
+                {
+                  "workOrder": "WO-012",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-006",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-007",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-013",
+                  "value": null,
+                  "delta": null
+                },
+                {
+                  "workOrder": "WO-014",
+                  "value": null,
+                  "delta": null
+                }
+              ]
+            }
+          ],
+          "worsening": [],
+          "reopenCandidate": false
+        }
+      ],
+      "firstVerifications": {
+        "counted": 8,
+        "failed": 2,
+        "orders": [
+          {
+            "workOrder": "WO-010",
+            "firstVerification": "pass"
+          },
+          {
+            "workOrder": "WO-011",
+            "firstVerification": "pass"
+          },
+          {
+            "workOrder": "WO-005",
+            "firstVerification": "pass"
+          },
+          {
+            "workOrder": "WO-012",
+            "firstVerification": "pass"
+          },
+          {
+            "workOrder": "WO-006",
+            "firstVerification": "pass"
+          },
+          {
+            "workOrder": "WO-007",
+            "firstVerification": "fail"
+          },
+          {
+            "workOrder": "WO-013",
+            "firstVerification": "pass"
+          },
+          {
+            "workOrder": "WO-014",
+            "firstVerification": "fail"
+          }
+        ],
+        "source": "canonical control fold: the first completed verification of each of the last eight orders by close time"
+      }
+    },
+    "goalReview": {
+      "platformStandard": "the point is to create a platform, not to prove every\nconstructible case before filing, and the refutation pass must be made worth\nits cost before a later pass pays it again.",
+      "goalStandard": "## Goal-aligned decisions\n\nThe [sequence](../planning/sequence.md) and selected work order determine\ncurrent placement and authority. The mission is the outcome; the critical path\nis the dependency route to the next outcome. Useful prerequisite or\nrisk-reduction work must name the blocked outcome it enables. Process activity,\nreceipt volume and agent utilization are not progress by themselves. Goal\nalignment grants no authority to reorder or expand work. In all phases, the Goal\nAlignment and Process Cost procedure lives in the generated role skills\n[WO-043, 2026-09-11].\n\nAccuracy takes priority over agreement in every phase. The already-equipped\nCorrectness over Sycophancy rule applies to operator suggestions and the agent's\nown premises equally: challenge unsupported claims, distinguish observation\nfrom inference, state material uncertainty, and correct mistakes when evidence\nchanges. A confident request or an earlier decision is not proof of correctness.\nRecord material disagreement and its evidence in the same decision or phase\nreceipt; do not manufacture dissent or seek approval for ordinary judgment.\n\n| Lens                                  | Decision question                                                                                         |\n| ------------------------------------- | --------------------------------------------------------------------------------------------------------- |\n| Policy resistance / fixes that fail   | Will local goals or guards undo one another?                                                              |\n| Tragedy of the commons                | Does the solution consume shared compute, context or operator attention without accounting for the total? |\n| Drift to low performance              | Does it improve an explicit outcome standard rather than normalize a worse baseline?                      |\n| Escalation                            | Will additional process provoke more process or workarounds?                                              |\n| Success to the successful             | Are credible alternatives excluded merely because the current mechanism already has investment?           |\n| Shifting the burden to the intervenor | Does the solution remove recurring operator rescue or depend on it?                                       |\n| Rule beating                          | Can the evidence pass without the intended behavior occurring?                                            |\n| Seeking the wrong goal                | Does it advance operator flow and the selected product outcome rather than a proxy?                       |\n\nNaive Interventionism adds the existing system's useful functions, affected\nconsumers, second-order harm, reversibility and smallest useful probe. NoOp\nrecords what happens if nothing changes, why action or inaction wins, and the\nevidence that would reopen the choice. Scale detail to consequence: explain\napplicable risks and briefly group immaterial lenses with a reason; do not\nmanufacture eight repetitive paragraphs for routine edits.\n\nRecord evidence of benefit and the risks of intervening in existing behavior;\nverification and handoff compare observed outcomes with the promised benefit.\nRequired legal or release actions retain their existing authority; NoOp is a\nconsidered alternative, not an ambient veto or permission to abandon authorized\nwork.\n\n\n\nMaterial choices and rationales go in existing phase evidence: per-order\n`docs/evidence/WO-NNN/decisions.md` and cited product sections for work-order\ndecisions; planning dispositions/candidate records for planning choices; the\nindependent report or refutation receipt for its judgment; retained closeout\nevidence for release decisions. The decisions index exposes per-order records.\nReuse and link a current rationale until its assumptions change; do not create\na parallel decision log or an extra approval ritual.\n\n\nThis launchpad is the operator's own DotLn instance. Its purpose is to plan and\nrun bounded, evidence-gated work orders across the operator's repositories, so\nthat every change arrives as a pull request the operator reads before it merges,\nwhile the kit itself stays upstream and reaches this fork only through starter\nupdates. The first workstream is DotLn-Angular, an Nx and Angular monorepo that\nserves two outcomes at once: the operator's reference Angular workspace, which a\ncolleague should recognize as the way the operator builds Angular, and the\noperator's sandbox app, one app with sub-apps behind a menu: a scene for\nauthoring game AI from a toolbox mined from the works the operator reads, a\nview of DotLn's machinery where a change to an agent's mechanisms shows what\nchanges in an example use case, the operator's own digital twin, and side\nutilities. Every new idea lives there first as a toy the operator plays with\nbefore promoting the ones that work, for the five UIFA roles, people and\nsoftware actors alike. The app is not wired to DotLn core: its data comes from\npublic mining into its own store, served to the UI through its own API, and it\ninforms the platform through GitHub issues, never by writing a control record,\nso that the app improves the platform, the platform the starter, the starter\nthis fork, and the fork the app in turn. The critical path runs from registering\nthat repository in this launchpad, through one witnessed target order that\nscaffolds the workspace, to a foundation where a feature is added by convention:\nshared libraries, the component taxonomy, events and stores, the sub-app shell,\nand a legitimate client-side authentication and permission model. Later\nworkstreams join the same way: one registration and one planning pass each,\nwith the fork's own machinery changes cut as self orders beside them.\n",
+      "criticalPath": "unavailable: docs/planning/critical-path-2026-09-08.md; this instance has not declared a critical path",
+      "evidenceHash": "sha256:fd756fa8e5766f188848ca2e30a80daea987cd52308936a08fec5b10343dbf8c",
+      "observations": [
+        {
+          "id": "docs/planning/cost-table.json#row:WO-013",
+          "text": "{\"workOrder\":\"WO-013\",\"observedAt\":\"2026-10-26T13:29:29.029Z\",\"metrics\":{\"elapsedMs\":9803089,\"attempts\":9,\"failedVerifications\":0,\"failedFinalReviews\":2,\"repairs\":2,\"recordedCorrections\":1,\"gateMs\":631963,\"fastGateMs\":14482,\"readObligationCount\":null,\"readObligationBytes\":null,\"codeDiffBytes\":null,\"readAmplification\":null,\"machineryShare\":0.5600973325856778,\"elapsedPerCodeByte\":null,\"tokens\":null,\"costUsd\":null,\"declaredPromptTokens\":null,\"coldStartBytes\":null,\"subjectCharacters\":71,\"gateStepCount\":7,\"operatorCorrections\":null,\"operatorDirections\":3,\"guardRefusals\":null,\"stopRefusals\":null,\"reAnnouncements\":null,\"manualCloseoutSteps\":null,\"emergencyPasses\":null,\"bypassTools\":null,\"adHocScripts\":null,\"commandsRun\":null,\"bytesReadIntoContext\":null,\"stepCount\":null,\"authorshipSnapshots\":null,\"authorshipMs\":null,\"authorshipBytes\":null,\"authorshipCommands\":null,\"authorshipMeanMs\":null,\"authorshipPeakBytes\":null,\"hookRuns\":null,\"hookMs\":null,\"hookMeanMs\":null,\"hookPeakMs\":null,\"prBodyBytes\":6464}}"
+        },
+        {
+          "id": "docs/planning/cost-table.json#row:WO-014",
+          "text": "{\"workOrder\":\"WO-014\",\"observedAt\":\"2026-10-26T13:29:29.029Z\",\"metrics\":{\"elapsedMs\":14946102,\"attempts\":5,\"failedVerifications\":1,\"failedFinalReviews\":0,\"repairs\":1,\"recordedCorrections\":0,\"gateMs\":28230,\"fastGateMs\":14547,\"readObligationCount\":null,\"readObligationBytes\":null,\"codeDiffBytes\":null,\"readAmplification\":null,\"machineryShare\":0.2689386169049295,\"elapsedPerCodeByte\":null,\"tokens\":117733609,\"costUsd\":null,\"declaredPromptTokens\":null,\"coldStartBytes\":null,\"subjectCharacters\":74,\"gateStepCount\":7,\"operatorCorrections\":null,\"operatorDirections\":6,\"guardRefusals\":null,\"stopRefusals\":null,\"reAnnouncements\":null,\"manualCloseoutSteps\":null,\"emergencyPasses\":null,\"bypassTools\":null,\"adHocScripts\":null,\"commandsRun\":null,\"bytesReadIntoContext\":null,\"stepCount\":null,\"authorshipSnapshots\":null,\"authorshipMs\":null,\"authorshipBytes\":null,\"authorshipCommands\":null,\"authorshipMeanMs\":null,\"authorshipPeakBytes\":null,\"hookRuns\":null,\"hookMs\":null,\"hookMeanMs\":null,\"hookPeakMs\":null,\"prBodyBytes\":10201}}"
+        },
+        {
+          "id": "docs/planning/cost-table.json#trap:rule-beating",
+          "text": "{\"id\":\"rule-beating\",\"signal\":\"Read-obligation bytes against diff bytes; Stop refusals and re-announcements\",\"metric\":\"readAmplification\",\"series\":[{\"workOrder\":\"WO-012\",\"value\":18.556229327453142,\"delta\":null},{\"workOrder\":\"WO-006\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-007\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-013\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-014\",\"value\":null,\"delta\":null}],\"indicators\":[{\"metric\":\"readAmplification\",\"series\":[{\"workOrder\":\"WO-012\",\"value\":18.556229327453142,\"delta\":null},{\"workOrder\":\"WO-006\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-007\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-013\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-014\",\"value\":null,\"delta\":null}]},{\"metric\":\"stopRefusals\",\"series\":[{\"workOrder\":\"WO-012\",\"value\":0,\"delta\":null},{\"workOrder\":\"WO-006\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-007\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-013\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-014\",\"value\":null,\"delta\":null}]},{\"metric\":\"reAnnouncements\",\"series\":[{\"workOrder\":\"WO-012\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-006\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-007\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-013\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-014\",\"value\":null,\"delta\":null}]}],\"worsening\":[],\"reopenCandidate\":false}"
+        },
+        {
+          "id": "docs/planning/cost-table.json#trap:seeking-the-wrong-goal",
+          "text": "{\"id\":\"seeking-the-wrong-goal\",\"signal\":\"Machinery share of elapsed time; phase durations against code-change size\",\"metric\":\"machineryShare\",\"series\":[{\"workOrder\":\"WO-012\",\"value\":0.7557616192455047,\"delta\":null},{\"workOrder\":\"WO-006\",\"value\":0.27183935389471725,\"delta\":-0.4839222653507874},{\"workOrder\":\"WO-007\",\"value\":0.4833401698475768,\"delta\":0.21150081595285952},{\"workOrder\":\"WO-013\",\"value\":0.5600973325856778,\"delta\":0.07675716273810107},{\"workOrder\":\"WO-014\",\"value\":0.2689386169049295,\"delta\":-0.29115871568074836}],\"indicators\":[{\"metric\":\"machineryShare\",\"series\":[{\"workOrder\":\"WO-012\",\"value\":0.7557616192455047,\"delta\":null},{\"workOrder\":\"WO-006\",\"value\":0.27183935389471725,\"delta\":-0.4839222653507874},{\"workOrder\":\"WO-007\",\"value\":0.4833401698475768,\"delta\":0.21150081595285952},{\"workOrder\":\"WO-013\",\"value\":0.5600973325856778,\"delta\":0.07675716273810107},{\"workOrder\":\"WO-014\",\"value\":0.2689386169049295,\"delta\":-0.29115871568074836}]},{\"metric\":\"elapsedPerCodeByte\",\"series\":[{\"workOrder\":\"WO-012\",\"value\":2069.9746416758544,\"delta\":null},{\"workOrder\":\"WO-006\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-007\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-013\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-014\",\"value\":null,\"delta\":null}]}],\"worsening\":[],\"reopenCandidate\":false}"
+        },
+        {
+          "id": "docs/planning/cost-table.json#trap:shifting-the-burden-to-the-intervenor",
+          "text": "{\"id\":\"shifting-the-burden-to-the-intervenor\",\"signal\":\"Operator corrections and directions, manual closeout steps and emergency planning passes\",\"corrections\":[{\"workOrder\":\"WO-012\",\"total\":1,\"byPhase\":{\"verification\":1},\"byUnit\":{\"unnamed\":1},\"byPhaseAndUnit\":{\"verification\":{\"unnamed\":1}},\"source\":\"session-journal\"},{\"workOrder\":\"WO-006\",\"total\":null,\"byPhase\":null,\"byUnit\":null,\"byPhaseAndUnit\":null,\"source\":\"unavailable\"},{\"workOrder\":\"WO-007\",\"total\":null,\"byPhase\":null,\"byUnit\":null,\"byPhaseAndUnit\":null,\"source\":\"unavailable\"},{\"workOrder\":\"WO-013\",\"total\":null,\"byPhase\":null,\"byUnit\":null,\"byPhaseAndUnit\":null,\"source\":\"unavailable\"},{\"workOrder\":\"WO-014\",\"total\":null,\"byPhase\":null,\"byUnit\":null,\"byPhaseAndUnit\":null,\"source\":\"unavailable\"}],\"directions\":[{\"workOrder\":\"WO-012\",\"total\":1,\"byKind\":{\"scopeExpand\":0,\"operatorOverride\":0,\"analysis\":0,\"conversationOnly\":0,\"operatorLabel\":0,\"resumeCorrection\":0,\"resumeDirection\":1,\"resumeScopeExpansion\":0,\"resumeOverride\":0,\"resumeTakeover\":0,\"resumeAnswer\":0,\"OperatorOverrideRecorded\":0,\"RecordCorrected\":0,\"CriterionWaived\":0},\"source\":\"committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events\"},{\"workOrder\":\"WO-006\",\"total\":4,\"byKind\":{\"scopeExpand\":2,\"operatorOverride\":0,\"analysis\":0,\"conversationOnly\":0,\"operatorLabel\":0,\"resumeCorrection\":0,\"resumeDirection\":1,\"resumeScopeExpansion\":0,\"resumeOverride\":0,\"resumeTakeover\":0,\"resumeAnswer\":0,\"OperatorOverrideRecorded\":0,\"RecordCorrected\":1,\"CriterionWaived\":0},\"source\":\"committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events\"},{\"workOrder\":\"WO-007\",\"total\":1,\"byKind\":{\"scopeExpand\":0,\"operatorOverride\":0,\"analysis\":0,\"conversationOnly\":0,\"operatorLabel\":0,\"resumeCorrection\":0,\"resumeDirection\":1,\"resumeScopeExpansion\":0,\"resumeOverride\":0,\"resumeTakeover\":0,\"resumeAnswer\":0,\"OperatorOverrideRecorded\":0,\"RecordCorrected\":0,\"CriterionWaived\":0},\"source\":\"committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events\"},{\"workOrder\":\"WO-013\",\"total\":3,\"byKind\":{\"scopeExpand\":0,\"operatorOverride\":0,\"analysis\":0,\"conversationOnly\":0,\"operatorLabel\":0,\"resumeCorrection\":1,\"resumeDirection\":1,\"resumeScopeExpansion\":1,\"resumeOverride\":0,\"resumeTakeover\":0,\"resumeAnswer\":0,\"OperatorOverrideRecorded\":0,\"RecordCorrected\":0,\"CriterionWaived\":0},\"source\":\"committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events\"},{\"workOrder\":\"WO-014\",\"total\":6,\"byKind\":{\"scopeExpand\":0,\"operatorOverride\":0,\"analysis\":0,\"conversationOnly\":0,\"operatorLabel\":0,\"resumeCorrection\":1,\"resumeDirection\":5,\"resumeScopeExpansion\":0,\"resumeOverride\":0,\"resumeTakeover\":0,\"resumeAnswer\":0,\"OperatorOverrideRecorded\":0,\"RecordCorrected\":0,\"CriterionWaived\":0},\"source\":\"committed decision dispatches (control prefixes, legacy operator labels and the operator step a lifecycle dispatch names) and control events\"}],\"metric\":\"operatorCorrections\",\"series\":[{\"workOrder\":\"WO-012\",\"value\":1,\"delta\":null},{\"workOrder\":\"WO-006\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-007\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-013\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-014\",\"value\":null,\"delta\":null}],\"indicators\":[{\"metric\":\"operatorCorrections\",\"series\":[{\"workOrder\":\"WO-012\",\"value\":1,\"delta\":null},{\"workOrder\":\"WO-006\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-007\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-013\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-014\",\"value\":null,\"delta\":null}]},{\"metric\":\"operatorDirections\",\"series\":[{\"workOrder\":\"WO-012\",\"value\":1,\"delta\":null},{\"workOrder\":\"WO-006\",\"value\":4,\"delta\":3},{\"workOrder\":\"WO-007\",\"value\":1,\"delta\":-3},{\"workOrder\":\"WO-013\",\"value\":3,\"delta\":2},{\"workOrder\":\"WO-014\",\"value\":6,\"delta\":3}]},{\"metric\":\"manualCloseoutSteps\",\"series\":[{\"workOrder\":\"WO-012\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-006\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-007\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-013\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-014\",\"value\":null,\"delta\":null}]},{\"metric\":\"emergencyPasses\",\"series\":[{\"workOrder\":\"WO-012\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-006\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-007\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-013\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-014\",\"value\":null,\"delta\":null}]}],\"worsening\":[],\"reopenCandidate\":false,\"planningCaptures\":[{\"pass\":\"planning-99f4ffe8f2227691\",\"date\":\"2026-10-26\",\"captures\":1},{\"pass\":\"planning-8cf1b240128e3b80\",\"date\":\"2026-10-25\",\"captures\":1},{\"pass\":\"planning-d693ddbce103291d\",\"date\":\"2026-10-24\",\"captures\":1},{\"pass\":\"planning-45059c186a40389b\",\"date\":\"2026-10-24\",\"captures\":1},{\"pass\":\"planning-668813faab47b0ee\",\"date\":\"2026-10-23\",\"captures\":1},{\"pass\":\"planning-24597b606f20e33d\",\"date\":\"2026-10-21\",\"captures\":1},{\"pass\":\"planning-fc1c0ec6bba3073a\",\"date\":\"2026-10-21\",\"captures\":1},{\"pass\":\"planning-56357ae66bd3a7f6\",\"date\":\"2026-10-20\",\"captures\":1},{\"pass\":\"planning-e0dd1f8a7a5b84af\",\"date\":\"2026-10-19\",\"captures\":1},{\"pass\":\"planning-14fefa7dc1ee9d3b\",\"date\":\"2026-10-18\",\"captures\":1},{\"pass\":\"planning-afc1740dd0afc954\",\"date\":\"2026-10-18\",\"captures\":1}]}"
+        },
+        {
+          "id": "docs/planning/cost-table.json#trap:drift-to-low-performance",
+          "text": "{\"id\":\"drift-to-low-performance\",\"signal\":\"Subject length, gate step count and cold-start byte series\",\"metric\":\"coldStartBytes\",\"series\":[{\"workOrder\":\"WO-012\",\"value\":29364,\"delta\":null},{\"workOrder\":\"WO-006\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-007\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-013\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-014\",\"value\":null,\"delta\":null}],\"indicators\":[{\"metric\":\"coldStartBytes\",\"series\":[{\"workOrder\":\"WO-012\",\"value\":29364,\"delta\":null},{\"workOrder\":\"WO-006\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-007\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-013\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-014\",\"value\":null,\"delta\":null}]},{\"metric\":\"subjectCharacters\",\"series\":[{\"workOrder\":\"WO-012\",\"value\":117,\"delta\":null},{\"workOrder\":\"WO-006\",\"value\":98,\"delta\":-19},{\"workOrder\":\"WO-007\",\"value\":123,\"delta\":25},{\"workOrder\":\"WO-013\",\"value\":71,\"delta\":-52},{\"workOrder\":\"WO-014\",\"value\":74,\"delta\":3}]},{\"metric\":\"gateStepCount\",\"series\":[{\"workOrder\":\"WO-012\",\"value\":7,\"delta\":null},{\"workOrder\":\"WO-006\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-007\",\"value\":7,\"delta\":null},{\"workOrder\":\"WO-013\",\"value\":7,\"delta\":0},{\"workOrder\":\"WO-014\",\"value\":7,\"delta\":0}]}],\"worsening\":[],\"reopenCandidate\":false,\"coldStart\":{\"comparisonEdition\":\"v0.3.3\",\"profiles\":[{\"role\":\"executor\",\"skillsRoot\":\".claude/skills\",\"path\":\".claude/skills/dotln-executor/SKILL.md\",\"skillBytes\":22955,\"bytes\":29978,\"previousBytes\":29364,\"previousCause\":null,\"delta\":614,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.executor\",\"verdict\":\"unset\"},{\"role\":\"verifier\",\"skillsRoot\":\".claude/skills\",\"path\":\".claude/skills/dotln-verifier/SKILL.md\",\"skillBytes\":20284,\"bytes\":27307,\"previousBytes\":26127,\"previousCause\":null,\"delta\":1180,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.verifier\",\"verdict\":\"unset\"},{\"role\":\"reviewer\",\"skillsRoot\":\".claude/skills\",\"path\":\".claude/skills/dotln-reviewer/SKILL.md\",\"skillBytes\":22712,\"bytes\":29735,\"previousBytes\":28950,\"previousCause\":null,\"delta\":785,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.reviewer\",\"verdict\":\"unset\"},{\"role\":\"release-close\",\"skillsRoot\":\".claude/skills\",\"path\":\".claude/skills/dotln-release-close/SKILL.md\",\"skillBytes\":11475,\"bytes\":18498,\"previousBytes\":17890,\"previousCause\":null,\"delta\":608,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.release-close\",\"verdict\":\"unset\"},{\"role\":\"planner\",\"skillsRoot\":\".claude/skills\",\"path\":\".claude/skills/dotln-planner/SKILL.md\",\"skillBytes\":12384,\"bytes\":19407,\"previousBytes\":18639,\"previousCause\":null,\"delta\":768,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.planner\",\"verdict\":\"unset\"},{\"role\":\"refuter\",\"skillsRoot\":\".claude/skills\",\"path\":\".claude/skills/dotln-refuter/SKILL.md\",\"skillBytes\":11198,\"bytes\":18221,\"previousBytes\":17613,\"previousCause\":null,\"delta\":608,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.refuter\",\"verdict\":\"unset\"},{\"role\":\"executor\",\"skillsRoot\":\".agents/skills\",\"path\":\".agents/skills/dotln-executor/SKILL.md\",\"skillBytes\":22955,\"bytes\":29978,\"previousBytes\":29364,\"previousCause\":null,\"delta\":614,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.executor\",\"verdict\":\"unset\"},{\"role\":\"verifier\",\"skillsRoot\":\".agents/skills\",\"path\":\".agents/skills/dotln-verifier/SKILL.md\",\"skillBytes\":20284,\"bytes\":27307,\"previousBytes\":26127,\"previousCause\":null,\"delta\":1180,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.verifier\",\"verdict\":\"unset\"},{\"role\":\"reviewer\",\"skillsRoot\":\".agents/skills\",\"path\":\".agents/skills/dotln-reviewer/SKILL.md\",\"skillBytes\":22712,\"bytes\":29735,\"previousBytes\":28950,\"previousCause\":null,\"delta\":785,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.reviewer\",\"verdict\":\"unset\"},{\"role\":\"release-close\",\"skillsRoot\":\".agents/skills\",\"path\":\".agents/skills/dotln-release-close/SKILL.md\",\"skillBytes\":11475,\"bytes\":18498,\"previousBytes\":17890,\"previousCause\":null,\"delta\":608,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.release-close\",\"verdict\":\"unset\"},{\"role\":\"planner\",\"skillsRoot\":\".agents/skills\",\"path\":\".agents/skills/dotln-planner/SKILL.md\",\"skillBytes\":12384,\"bytes\":19407,\"previousBytes\":18639,\"previousCause\":null,\"delta\":768,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.planner\",\"verdict\":\"unset\"},{\"role\":\"refuter\",\"skillsRoot\":\".agents/skills\",\"path\":\".agents/skills/dotln-refuter/SKILL.md\",\"skillBytes\":11198,\"bytes\":18221,\"previousBytes\":17613,\"previousCause\":null,\"delta\":608,\"ceiling\":null,\"lastAcceptance\":{\"date\":null,\"ceiling\":null,\"revision\":null,\"source\":null,\"bytes\":null,\"delta\":null,\"cause\":\"no-acceptance\"},\"metric\":\"coldStartBytes.refuter\",\"verdict\":\"unset\"}]}}"
+        },
+        {
+          "id": "docs/planning/cost-table.json#trap:policy-resistance",
+          "text": "{\"id\":\"policy-resistance\",\"signal\":\"Guard refusals, bypass tools and ad hoc scripts\",\"metric\":\"guardRefusals\",\"series\":[{\"workOrder\":\"WO-012\",\"value\":0,\"delta\":null},{\"workOrder\":\"WO-006\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-007\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-013\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-014\",\"value\":null,\"delta\":null}],\"indicators\":[{\"metric\":\"guardRefusals\",\"series\":[{\"workOrder\":\"WO-012\",\"value\":0,\"delta\":null},{\"workOrder\":\"WO-006\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-007\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-013\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-014\",\"value\":null,\"delta\":null}]},{\"metric\":\"bypassTools\",\"series\":[{\"workOrder\":\"WO-012\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-006\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-007\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-013\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-014\",\"value\":null,\"delta\":null}]},{\"metric\":\"adHocScripts\",\"series\":[{\"workOrder\":\"WO-012\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-006\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-007\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-013\",\"value\":null,\"delta\":null},{\"workOrder\":\"WO-014\",\"value\":null,\"delta\":null}]}],\"worsening\":[],\"reopenCandidate\":false}"
+        }
+      ],
+      "costEvidenceStatus": "current"
+    }
+  },
+  "episode": {
+    "kind": "direct-session",
+    "workerType": "dotln-worker",
+    "harness": "unknown",
+    "harnessVersion": "unknown",
+    "model": "unknown",
+    "effort": "unknown",
+    "settingsVerification": "unverified",
+    "profileId": "plan-refutation-v1",
+    "completedAt": "2026-10-26T13:46:45.477Z",
+    "resultHash": "sha256:67306512faef84b2269af054a63ac68433bcd3c239f905092bb60a1658126a27",
+    "judgmentBasis": "canonical-subject-and-protocol",
+    "independence": "session-attested",
+    "contextIsolation": "not-enforced",
+    "modelTools": "available",
+    "statement": "Plan refuter for one DotLn planning pass (identity Entropy Reducer, mask Contra-Auguste, lens architecture-and-semantics). I read exactly one file, the canonical prompt at <tmp>/refutation/prompt.json: the work order wo_plan_refuter at base f6a8d3b, the compiled subject (the goal and platform standard text, the undeclared critical path, the seven cost-table observations, the cost table with its first-verification fold, the seven judged orders WO-014, WO-019, WO-015, WO-016, WO-008, WO-017 and WO-018 with their objectives, cost lines, criteria and non-goals, the eight-order sequence and the empty deferrals), the output instructions, the plan-goal-review-v1 schema and the worker instructions. The subject's vision, roles and capability documents were unavailable, so no vision or role contradiction could be established. I parsed and printed that one file with local python3 in isolated mode and used one helper script in my session scratchpad to build and validate the result; I opened no repository file, ran no git, npm or node, wrote nothing inside a repository and spawned no agent. The host-attached session context also carried the instance's operating contract and a git status snapshot; I did not open either as a file, used the contract's clean-room and secrets wording only to phrase reopening observations for flagged findings, and did not rely on the git snapshot. Result: all seven orders aligned-with-findings, plan aligned-with-findings, 26 known-issue findings, 0 holds. Model as named by the host system prompt: claude-opus-5-5; no effort readback was available.",
+    "review": {
+      "scope": "pass",
+      "judgedOrderIds": [
+        "WO-014",
+        "WO-019",
+        "WO-015",
+        "WO-016",
+        "WO-008",
+        "WO-017",
+        "WO-018"
+      ],
+      "carried": [
+        {
+          "workOrderId": "WO-013",
+          "orderHash": "sha256:1d0502c3f625afd015f92fe62036fb6f75a73f9409aa900d4fd1e093d7670794",
+          "receiptId": "2026-10-25-planning-8cf1b240128e3b80-010",
+          "receiptHash": "sha256:031f5b3205efbcd7fd6163fe495f8120879c4e3ed061bd80e86d31ebd752e692"
+        }
+      ],
+      "dispatchedAt": "2026-10-26T13:29:51.161Z",
+      "durationMs": 1014316
+    }
+  },
+  "result": {
+    "schemaVersion": "plan-goal-review-v1",
+    "orders": [
+      {
+        "workOrderId": "WO-013",
+        "verdict": "aligned-with-findings",
+        "criticalPathAndNoOp": "Gate: the vision passage names the sub-app shell as a foundation element, and WO-013 is that element. It unblocks WO-014 and WO-016, which declare hard dependencies on it, and through them WO-015, WO-017 and WO-018. It also settles WO-006-D005 (one app, sub-apps behind a menu). NoOp in the records: the cost-table row has metrics null. The observed gap is the NoOp state: one nav link, one BasePaths member, no sub-app. If nothing changes, every sub-app order has to invent its own route and menu placement. Action wins at a small cost (2 to 4 hours, about 24 files, no dependency). Its own hard dependency on WO-007 is not supported by its design (finding), so its place behind WO-007 is merge ordering, not a gate.",
+        "systemTraps": "Policy resistance: it respects the type:ui lint by keeping routerLink in app.ts and projecting the items into a template, so no guard is fought. Tragedy of the commons: the smallest order of the horizon. It adds one e2e spec (axe plus three viewport widths) and Storybook entries that every later gate reruns; otherwise immaterial. Drift to low performance: none. It adds a convention and keeps both the root redirect and the board route. Escalation: it adds two reference documents and a convention that every later sub-app order must follow and cite. Acceptable, because it replaces per-order invention. Success to the successful: a second app is rejected on the operator's recorded decision, and a router-owning menu is rejected on the lint axis. Credible. Shifting the burden: it assumes the operator accepts three group names, and there is no rescue path. Rule beating: criterion 6's grep for 'control record' passes on any sentence containing the phrase, including one that says the opposite. Low consequence, because review reads the file. Seeking the wrong goal: the three menu groups (Scene, Machinery, Tools) do not match the four sub-apps in the vision passage (scene, machinery view, digital twin, side utilities). The convention's 'sub-app' (a feature library) also differs from the objective's 'sub-app' (a menu group) (finding).",
+        "removalBalance": "No. It removes nothing: the board keeps its route and the bare link becomes the menu. It adds about 24 files, two libraries, two documents and a convention. Net additive by design; no process command is added.",
+        "failureBehavior": "Degrades. The root redirect and the board route are unchanged and asserted, so if scene or machinery fails to lazy-load, the old app is still reachable. The empty Tools group renders an empty-state line instead of a dead route. A navigation error reaches WO-007's error store through ErrorHandler. No refusal path is introduced.",
+        "findings": [
+          {
+            "criterionId": "criterion:1",
+            "kind": "known-issue",
+            "reason": "The declared hard dependency on WO-007 cites 'the navigation store, the error surface and the persisted-state feature the shell and the arriving pages compose'. The design composes none of them: the menu template has no injection, the links stay routerLink in app.ts, and each arriving page has 'No facade, no store, no data'. The real coupling is file overlap, because WO-007 adds the notices container to libs/dotln/shell and app.ts. The stated reason is inaccurate, and it serializes a 2 to 4 hour order behind a 7 to 9 hour order even though the sequence format admits lane pairs.",
+            "evidence": null,
+            "reopenWhen": "WO-013's diff imports nothing from @dotln-angular/state, data-access or events, which would confirm the dependency is merge ordering only; or a later pass cites this dependency to block a lane pair."
+          },
+          {
+            "criterionId": "criterion:6",
+            "kind": "known-issue",
+            "reason": "'Sub-app' names two different units. The objective calls the three menu groups sub-apps (Scene, Machinery, Tools), while the convention written into the two documents defines a sub-app as a feature library that exports routes. The vision passage lists four sub-apps: the scene, the machinery view, the operator's digital twin and side utilities. In this horizon the twin, a feature library with its own BasePaths member, is filed under the Machinery group (WO-017). The toolbox catalog and the toy shelf, which the vision ties to the scene, live under Tools, the side utilities. The convention documents will encode this ambiguity for every later sub-app to follow.",
+            "evidence": null,
+            "reopenWhen": "WO-017 adds /twin under the Machinery group and the operator asks for a twin group, or the 'how a sub-app is added' steps in sub-apps.md differ from the steps WO-014, WO-017 or WO-018 actually take."
+          }
+        ]
+      },
+      {
+        "workOrderId": "WO-014",
+        "verdict": "aligned-with-findings",
+        "criticalPathAndNoOp": "The subject supplies no vision, roles or capability documents (standard: all unavailable) and no critical path (criticalPath: unavailable: docs/planning/critical-path-2026-09-08.md), so every order here is judged against the route the goal standard's mission paragraph names: registration, one witnessed scaffold order, then a foundation where a feature is added by convention (shared libraries, component taxonomy, events and stores, the sub-app shell, a legitimate client-side authentication and permission model). WO-014 closes none of those foundation gates. It is the first sandbox content order (the toolbox the game-AI scene is authored from) and the first use of WO-013's sub-app convention (BasePaths.Tools, the Tools menu item). Inside the horizon it unblocks WO-019, which joins over its data and rewrites its check, and through WO-019 the scene (WO-015) and the mining pipeline (WO-018). NoOp cost in the records: the order has already run (WO-019's Context bytes read 'the catalog library and the Tools feature at the base'). row:WO-014 records 14,946,102 ms elapsed (about 4.15 h, inside the Cost line's 3 to 5 h), 117,733,609 tokens (the Cost line said unknown until run), 5 attempts, 1 failed verification, 1 repair, 0 failed final reviews, 6 operator directions, machinery share 0.269 and a 28.2 s gate. NoOp now means not closing an order whose cost is sunk: it strands that spend and leaves WO-019 with no base. Action wins as completion; the open question is how much of it WO-019 keeps.",
+        "systemTraps": "Policy resistance: the order's central guard (an allow-list refusing definition, related, dotlnHooks and verified; a scrub; a negative fixture; the non-goal of copying any definition, relation or hook from the run) is reversed by the next order of the same horizon (WO-019 criterion 2 requires a non-empty definition on every row; criterion 8 requires the allow-list phrase to be gone). Two consecutive orders assert opposite invariants over the same eight data files. trap:policy-resistance has no guard-refusal, bypass or ad hoc script value for WO-014, so the record cannot show whether the guard was resisted while it ran. Tragedy of the commons: 117.7M tokens for 3,463 rows (about 34,000 tokens per row, order total) is the largest spend in the table, and part of it bought structure WO-019 deletes. Drift to low performance: subject 74 characters and 7 gate steps, flat against WO-013; no cold-start value for the order. Escalation: one refutation paid; the successor adds a join script and a second schema version rather than retiring the first fan-out's output. Success to the successful: the fan-out-then-scrub mechanism is replaced, not defended; no alternative is excluded for sunk investment. Shifting the burden: 6 operator directions (5 resume directions, 1 correction) is the top of the directions series (1, 4, 1, 3, 6); the trap's primary metric, corrections, is unavailable for WO-014 and worsening is empty, so no failure is established. Rule beating: criterion 5's 'no quarantine file was read' is each worker's own statement with only the harness's subagent count beside it and no read observation (WO-018 criterion 5 adds one); readAmplification and stopRefusals are null for WO-014. Seeking the wrong goal: machinery share fell from 0.560 (WO-013) to 0.269 and the gate from 632 s to 28 s, the right direction.",
+        "removalBalance": "No. The Cost line adds toolbox.ts, libs/shared/catalog with eight data files and a summary, tool-v0.schema.json, three catalog scripts, libs/features/tools, BasePaths.Tools, a menu item, two documents, about 40 source files and about 3,500 data rows, and says 'Removes nothing.' WO-019 later removes part of what this order adds (the scrub call, the with-definition fixture, the tool-list and tool-faces composites), so WO-014's residue after WO-019 is smaller than its own Cost line, but that removal is booked on WO-019.",
+        "failureBehavior": "Mostly degrades. A concept that cannot be typed is admitted as untyped with its reason rather than refused (criterion 4); the fan-out is checkpointed, so a failed worker resumes rather than restarting the run; an unknown path under /tools renders the not-found page with a link back to /board (criterion 6). The data checks (catalog:check, the with-definition fixture) fail closed, which is correct for a commit gate. One residue: the not-found page's home link is /board while WO-015 moves the root to /scene.",
+        "findings": [
+          {
+            "criterionId": "criterion:2",
+            "kind": "known-issue",
+            "reason": "Opposite invariants in consecutive orders. WO-014 criterion 2 and its non-goals keep definition, related, dotlnHooks and verified out of libs/shared/catalog/src/data; WO-019 criterion 2 requires every row to carry a non-empty definition and removes the scrub call and this fixture, and its criterion 8 requires the allow-list's own phrase gone. The horizon pays for a guard and for its removal one order apart. row:WO-014 records the order's whole spend, not the share that bought the guard, so the waste is inferred, not observed; this is not a hold.",
+            "evidence": null,
+            "reopenWhen": "WO-019 is deferred or split so that WO-014's allow-list is still in force when WO-015 starts (WO-015's inspector then cannot show a catalog definition and its criterion 1 is unmet by construction), or WO-019's final diff keeps part of WO-014's allow-list beside the join so both rules run over the same rows."
+          },
+          {
+            "criterionId": "criterion:5",
+            "kind": "known-issue",
+            "reason": "The quarantine claim rests on self-attestation: each worker's one-line statement that no quarantine file was read, with only the subagent count from the harness beside it. The evidence can pass without the behaviour being observed (rule beating). WO-018 criterion 5 shows the repair (the launchpad's own read observation, or 'unobserved', beside each statement); WO-014 has already run without it.",
+            "evidence": null,
+            "reopenWhen": "The harness journal for WO-014's session shows a read of a quarantine path by any listed worker, or WO-014's evidence README lists a worker whose statement is the only record for that claim when a journal row exists for its session."
+          },
+          {
+            "criterionId": "criterion:6",
+            "kind": "known-issue",
+            "reason": "Two meanings of home. Criterion 6 fixes the not-found page's way back as a link to /board; WO-015 moves the root redirect from /board to /scene. After WO-015 the not-found page and the root disagree about where the app starts, and nothing in WO-015's criteria re-points the link.",
+            "evidence": null,
+            "reopenWhen": "After WO-015 merges, /tools/nope (or any unknown path) still links to /board while the root lands on /scene."
+          }
+        ]
+      },
+      {
+        "workOrderId": "WO-019",
+        "verdict": "aligned-with-findings",
+        "criticalPathAndNoOp": "No declared critical path; against the mission's route WO-019 closes no foundation gate. It reworks WO-014's sandbox content into what the next product order needs: WO-015's Objective and criterion 1 require the inspector to show the catalog's definition of flocking, and WO-014's allow-list forbids definitions in the data, so WO-019 is a prerequisite that names its blocked outcome (the soldier scene reading a catalog that serves it, the steering, formation and objective tools typed). It also gives WO-018 the join and the v1 schema it extends. NoOp cost in the records: none recorded (the WO-019 row's metrics are null). Inferred NoOp: WO-014's allow-list stays, WO-015 criterion 1 cannot be met without reopening this order or loosening WO-015, and the catalog stays the label-value surface this order's Objective rejects. Action wins on the dependency; the evidence that would reopen the choice is WO-015's walkthrough reading definitions that did not come from this join.",
+        "systemTraps": "Policy resistance: the order is the reversal of WO-014's guard (allow-list, scrub call over catalog strings, with-definition fixture) and adds a missing-definition fixture pointing the other way; if the scrub also carried non-copyright protections (absolute paths, private terms), those go with it (finding). Tragedy of the commons: the join is a script, not a model fan-out, so regenerating 3,463 rows should cost a fraction of WO-014's 117.7M tokens (row:WO-014); unknown until run. Full definitions, relations and hooks on every row grow the lazy catalog data that every later bundle budget shares. Drift to low performance: criterion 7 holds the declared budgets; the risk is a budget raised to admit larger data rather than the data split (finding). Escalation: the LayoutSide or LayoutStrip pick adds an operator decision at the pull request and a removal step before final review. Success to the successful: the mission places the app's data in its own store served through its own API, yet the mining store and HTTP API (C1) stay deferred while the bundled JSON takes a second schema version. Shifting the burden: the pick is a designed decision, not a rescue; acceptance by walkthrough moves work to the verifier. Rule beating: walkthrough evidence is a file count (at least 9) and the layout test is a line count of the substring 'Layout' (prints 1); both can pass or fail apart from the behaviour (findings). Seeking the wrong goal: criterion 1 tests the operator's reading session itself, the outcome rather than a proxy, and requires the verifier to state from the page alone what two concepts are.",
+        "removalBalance": "No. It removes the tool-list and tool-faces composites, the with-definition.json negative fixture and the scrub call over catalog strings; it adds join-maps.mjs, catalog:join, the tool-v1 schema, a rebuilt catalog page (layout, shelf, contents, reading pane, faces sentence, search, history, mappers, facade, stories), events and persisted state, a missing-definition fixture, rewritten e2e, baselines, documents and translations: about 35 source files plus regenerated data that now carries full text per row. The removal is a guard and two composites; the addition is a reading surface and a larger dataset. It is the only order in the horizon whose removal is more than a placeholder page, and it reduces entropy only if the guard's non-copyright functions survive.",
+        "failureBehavior": "Partly. A relation whose target is absent has a null id and renders as text (criterion 4 checks only non-null ids), and a definition the run marked as the worker's own reading is labelled rather than hidden; both degrade. The check refuses any row without a definition and a place.chapter (criterion 2), so a map row the run left without a definition fails the join instead of falling back to WO-014's typed-only row: a refusal where the old behaviour admitted. The persisted history (last ten readings) has no stated spec for an unparseable value or an id the regenerated data no longer carries, although WO-015, WO-016 and WO-017 each state one. With the scrub call gone, a string it would have refused is admitted with no fallback.",
+        "findings": [
+          {
+            "criterionId": "criterion:8",
+            "kind": "known-issue",
+            "reason": "Flagged as suspect material for operator judgment. Criterion 8 requires docs/ai-reference/catalog-rules.md to state that the clean room does not govern the works the operator references, and the order commits the run's definitions, relations and hooks for six works that WO-014 kept out as intake and whose copying WO-014's non-goals forbade. A rules file read by the target's agents that scopes the clean room speaks to a floor my work order records as locked. Whether model-written definitions of these works' concepts are the owner's to publish is a provenance judgment for the operator, not a finding of fact here; WO-018, by contrast, records its public text's source and SHA-256. Not a hold: no vision passage id was supplied and no observation records a failure.",
+            "evidence": null,
+            "reopenWhen": "A committed definition or hook string in libs/shared/catalog/src/data reproduces twelve or more consecutive words of a source work's own text, or WO-019's decisions file records no operator ruling that the run's definitions are publishable and on what basis, or a target agent cites the catalog-rules sentence as permission to copy text from a referenced work."
+          },
+          {
+            "criterionId": "criterion:2",
+            "kind": "known-issue",
+            "reason": "Naive intervention on a guard with more than one function. Criterion 2 removes the scrub call over catalog strings (grep for assertScrubbed prints nothing) and WO-019's check keeps no stated rule for absolute paths, which WO-014's summary rule carried ('no absolute path'). The hooks are the map author's suggestions for DotLn and are the strings most likely to name local paths or private terms. If the scrub carried those checks, failure no longer degrades to the old behaviour; it removes it.",
+            "evidence": null,
+            "reopenWhen": "A committed string in libs/shared/catalog/src/data or the v1 catalog-summary.json contains an absolute path, a /Users/ prefix or a match against the launchpad's private local-terms list, or WO-019's final diff removes a path or terms check that assertScrubbed performed with no replacement in catalog:check."
+          },
+          {
+            "criterionId": "criterion:3",
+            "kind": "known-issue",
+            "reason": "The scene-tool contract is underspecified across the WO-019 to WO-015 seam. Criterion 3 types the aifg scene tools with five kinds (steer.blend, steer.priority, formation.twoLevel, formation.fixed, objective.set); WO-015's rail names seek, arrive, wander, separation, cohesion, velocity matching, flock, priority steering, wedge, line, column, two-level and fixed formation and slot roles; this order's own Objective has Arrive say that the soldier scene runs it. The visible text does not say which of the five kinds Arrive, Seek or Wander carry, and 'step 5' and 'step 8's floor' are not in the compiled subject.",
+            "evidence": null,
+            "reopenWhen": "WO-019's catalog:report lists the aifg scene tools and a behaviour WO-015's rail names (for example Arrive, Seek or Wander) has no typed catalog row with one of the five kinds, or WO-015's executor adds a TransformKind member without the recorded decision WO-014's rules require."
+          },
+          {
+            "criterionId": "criterion:6",
+            "kind": "known-issue",
+            "reason": "Rule beating by substring count. 'Only the picked layout remaining' is tested as grep -c 'Layout' over the stories file printing 1. A story title, import or comment containing 'Layout' fails a correct result; renaming the losing story or leaving its component outside the stories file passes an incorrect one. WO-015 criterion 7 states the same requirement for the chrome pick with no command at all, so the two sibling orders test one convention two ways.",
+            "evidence": null,
+            "reopenWhen": "At WO-019's final review the count is not 1 while only one layout remains, or is 1 while both layouts' components remain under libs/features/tools/src."
+          },
+          {
+            "criterionId": "criterion:1",
+            "kind": "known-issue",
+            "reason": "The acceptance-by-use criteria (this order and WO-015, WO-016, WO-008, WO-017, WO-018) prove the screenshots by file count (ls | wc -l at least 9 or 12). The dated steps and the verifier's own-words statement carry the real test; the count can be met by any files. The six walkthroughs also add at least 69 screenshot files under docs/evidence, a per-order growth no Cost line names.",
+            "evidence": null,
+            "reopenWhen": "A VER walkthrough directory reaches its count with files the VER report does not name as step screenshots, or the report names a screenshot the directory lacks, or the committed walkthrough bytes of one order exceed its code diff bytes."
+          },
+          {
+            "criterionId": "criterion:5",
+            "kind": "known-issue",
+            "reason": "Missing degrade path for persisted history. The last ten readings persist across a reload, but no criterion states what an unparseable stored value or a stored id absent from the regenerated data does; WO-015, WO-016 and WO-017 each carry such a spec. Regeneration by catalog:join is exactly the event that can orphan stored ids.",
+            "evidence": null,
+            "reopenWhen": "Seeding the history key with an unparseable value, or with an id the regenerated data lacks, leaves the catalog page empty or throwing instead of rendering the shelf with an empty or pruned history."
+          },
+          {
+            "criterionId": "criterion:7",
+            "kind": "known-issue",
+            "reason": "Drift risk in the data that ships. Every row now carries a full definition, relations, hooks and a place; criterion 7 keeps the declared budgets but nothing records the catalog chunk size against WO-014's recorded figure, and WO-018 adds another work with no budget criterion of its own. The easy repair under pressure is a raised budget, which normalizes a worse baseline.",
+            "evidence": null,
+            "reopenWhen": "WO-019's or WO-018's diff raises a declared budget, or WO-019's evidence records a lazy catalog chunk larger than WO-014's recorded size by more than the remaining budget headroom."
+          }
+        ]
+      },
+      {
+        "workOrderId": "WO-015",
+        "verdict": "aligned-with-findings",
+        "criticalPathAndNoOp": "No declared critical path. WO-015 closes no foundation gate on the mission's route, but it delivers the first named sandbox outcome (a scene for authoring game AI from the toolbox) and the pure scene engine every later scene reuses, and it changes a foundation convention: the component taxonomy gains the sentence admitting a wrapper that owns a browser drawing API (criterion 9). It unblocks the catalog's 'runs in the soldier scene' link (WO-019), The Twenty's built status on WO-018's shelf, and the commander scene WO-018 types tactics for. NoOp cost in the records: none (null metrics); two refutations paid on its text. Inferred NoOp: /scene keeps WO-013's arriving page, the root stays /board, and the catalog's typed tools have nowhere to run.",
+        "systemTraps": "Policy resistance: the interpreter's refusal of an unknown step kind is non-destructive (the next frame's hash and tick equal a run without the step) and the rail is checked against the interpreter's set, so guard and catalog agree inside the rail; outside it they can still disagree (finding). Tragedy of the commons: about 70 source files and 8 to 12 executor hours, with WO-016 and WO-008 the largest estimates in the horizon; 180 KB of executor context; the scene ships as a lazy chunk under declared budgets. Drift to low performance: 17 steps, the horizon's maximum with WO-016; the seeded-determinism and frame-hash specs set an explicit standard. Escalation: two refutations paid; the ChromeColumn or ChromeDrawer pick adds an operator decision and a removal at final review. Success to the successful: Canvas, Text and Null renderers behind a seam keep alternatives open; 3D is a stated non-goal, not an exclusion by investment. Shifting the burden: one designed operator pick; a twelve-screenshot walkthrough is verifier load. Rule beating: the canvas-ownership greps are structural and hard to satisfy without the intended seam; the walkthrough is a file count (see WO-019 criterion 1). Seeking the wrong goal: criterion 1 asks the verifier to state what cohesion radius, collisions and time to objective did at each equip, which is what the operator wants to learn.",
+        "removalBalance": "No. It removes WO-013's arriving page for /scene and moves the root redirect from /board to /scene; it adds libs/shared/scene-engine, the scene feature (page, layout, rail, inspector, text layer, canvas wrapper, log, trial compare, facade, store, clock, tokens), the field skin's token layer, four fixtures, a fixture check, two documents and a taxonomy sentence: about 70 source files. The removal is one placeholder page.",
+        "failureBehavior": "Degrades by stated design: an unknown step kind is refused with a reason and leaves frame and tick as if absent (criterion 2); an unparseable or older-shaped persisted value yields the idle twenty units (criterion 6); the Null renderer runs the feature under jsdom (criterion 3); under reduced motion the field is still until Step or Play. Unstated: /scene?tool=<id> for an id the catalog lacks or the interpreter refuses (criterion 5 covers only a valid id), and the root's new target against WO-014's not-found link to /board.",
+        "findings": [
+          {
+            "criterionId": "criterion:5",
+            "kind": "known-issue",
+            "reason": "Two sources of truth for one fact. Whether the soldier scene runs a tool is asserted in the catalog (WO-019's reading pane: 'the soldier scene runs it', with a link to /scene?tool=<id>) and decided by this order's interpreter set. Criterion 5 checks only rail entries against the interpreter; nothing checks the catalog's claim, and no criterion states what /scene?tool=<id> does for an id the interpreter refuses or the catalog lacks.",
+            "evidence": null,
+            "reopenWhen": "A catalog reading pane says the soldier scene runs a tool whose kind the interpreter refuses, or /scene?tool=<id> for such an id or an unknown id arrives with no tool chosen and no stated reason."
+          },
+          {
+            "criterionId": "criterion:7",
+            "kind": "known-issue",
+            "reason": "'Only the picked chrome remains at final review' has no command, while the sibling WO-019 tests its layout pick with a line count. The reviewer must judge removal by reading, and the convention for a stories-based operator pick is stated two different ways in consecutive orders.",
+            "evidence": null,
+            "reopenWhen": "At WO-015's final review both ChromeColumn and ChromeDrawer, or both chrome components, remain under libs/features/scene/src."
+          }
+        ]
+      },
+      {
+        "workOrderId": "WO-016",
+        "verdict": "aligned-with-findings",
+        "criticalPathAndNoOp": "No declared critical path. WO-016 closes no foundation gate; it delivers the mission's second named sandbox outcome (a view of DotLn's machinery where a change to an agent's mechanisms shows what changes in an example use case). It adds libs/shared/records and libs/shared/replay, which WO-017 names as inputs (its Context bytes read 'the records and replay libraries'; its twin.md records the replay library's scheduler), so it is the twin's prerequisite, though it names that blocked outcome only through WO-017's text. NoOp cost in the records: none (null metrics); four refutations paid (receipts 008 to 010 and this pass's). Inferred NoOp: /machinery keeps the arriving page and WO-017 must build its own record reader and virtual clock or wait.",
+        "systemTraps": "Policy resistance: the shelf refuses a drop whose appliesTo excludes the target and leaves the scene unchanged (criterion 2); the sink refuses a non-ignored directory, a foreign Origin or Host and bodies over 16 KB; neither undoes another order's guard. Tragedy of the commons: about 75 source files (the horizon's largest), 190 KB of executor context and 8 to 12 hours; the fixtures copy the platform's WO-221 and WO-226 segments and role-mechanisms.json copies the launchpad's role-stamp ids, so the app holds a snapshot of machinery the starter changes (criterion 3 already declines to write starter figures). Drift to low performance: 17 steps and ten criteria. Escalation: four refutations on unrun text, a fifth judgment here with no new observation; this pass's disposition should settle it until it runs. Success to the successful: four slots (executor, verifier, repairer, reviewer) follow today's lifecycle; planner, refuter and release-close are listed in role-mechanisms.json with no slot (finding). Shifting the burden: the shelf and the local sink are operator tools, not rescues. Rule beating: criterion 3's spec asserts the file against counts the same executor wrote, which proves consistency, not correctness (finding); the walkthrough is a file count. Seeking the wrong goal: the presentation-only band and the 'beats unchanged' caption keep the view from being read as a prediction, which serves the stated outcome.",
+        "removalBalance": "No. It removes WO-013's arriving page for /machinery; it adds machinery.ts, libs/shared/records (reader, folds, fixture pack, kit), libs/shared/replay, the machinery feature (page, strip, slots, cards, shelf, editor, facade, store), libs/features/machinery-data-access, a segment reducer, a record fixture check, an idea sink process with npm run idea-sink, three fixtures and two documents: about 75 source files.",
+        "failureBehavior": "Degrades: a failed sink post leaves the idea applied and persisted (criterion 6); an unparseable persisted value renders an empty shelf and the strip; an unknown record type becomes an unknown beat (criterion 2); a refused drop stays visible with its reason and changes nothing; production sets ideaSinkUrl to null, so the shipped build is browser-only (criterion 5). The sink fails closed, the right direction for a local writer.",
+        "findings": [
+          {
+            "criterionId": "criterion:5",
+            "kind": "known-issue",
+            "reason": "'The repository's ignored intake' does not say which repository. The sink refuses only a directory that is not Git-ignored, so it would accept the launchpad's ignored docs/intake/. The mission says the app informs the platform through GitHub issues, never by writing a control record; intake is not a control record, but a sink into the planner's raw material would be a second channel from app to platform beside the issue route WO-018 names.",
+            "evidence": null,
+            "reopenWhen": "The sink is configured, documented or run to write into a directory outside the DotLn-Angular checkout, in particular the launchpad's docs/intake/, or a planning pass cites an idea-sink line as intake."
+          },
+          {
+            "criterionId": "criterion:3",
+            "kind": "known-issue",
+            "reason": "Self-referential evidence. The spec asserts each role's id count in role-mechanisms.json against the counts the same executor recorded in its decisions file from the files it read; a wrong read produces a matching wrong file and a passing spec.",
+            "evidence": null,
+            "reopenWhen": "An independent count of the ids in a role's Origin stamp at the named starter differs from role-mechanisms.json while the spec passes."
+          },
+          {
+            "criterionId": "criterion:2",
+            "kind": "known-issue",
+            "reason": "Role taxonomy mismatch. The strip has four slots (executor, verifier, repairer, reviewer) and the operator figure; role-mechanisms.json lists six roles (executor, planner, refuter, release-close, reviewer, verifier); the repairer is the executor at resume: fix. A recorded row whose actor ran planner, refuter or release-close has no slot. The five-roles standard my work order names was not supplied (standard.roles and rolesTable empty, the UIFA roles document unavailable), so no role contradiction can be established.",
+            "evidence": null,
+            "reopenWhen": "A row in order-221.json or order-226.json is attributed to the planner, refuter or release-close role and the strip renders it as an unknown beat or drops it, or the UIFA roles document, once supplied, names a role the slots cannot hold."
+          },
+          {
+            "criterionId": "criterion:1",
+            "kind": "known-issue",
+            "reason": "The fixture check covers absolute paths and /Users/, but the kept actor field is the one most likely to carry a session id, host name or account identifier from the platform's records; the launchpad's secrets rule covers those as well.",
+            "evidence": null,
+            "reopenWhen": "An actor value in order-221.json or order-226.json carries a session id, host name or account identifier, or matches the launchpad's private local-terms list."
+          }
+        ]
+      },
+      {
+        "workOrderId": "WO-008",
+        "verdict": "aligned-with-findings",
+        "criticalPathAndNoOp": "The mission's route names this gate explicitly: 'a legitimate client-side authentication and permission model' is the last foundation element, and WO-008 is the only order in the horizon that closes a named critical-path gate. It also unblocks WO-017 (BasePaths.Twin maps to twin:read; WO-017's e2e and walkthrough sign in through this order's mocked provider). It is sequenced fifth, behind three sandbox feature orders; criterion 4 already absorbs that (Board, Scene, Machinery and Tools map to an empty permission list and their e2e run unchanged without a session), so the delay costs a retrofit, not a rework. Goal alignment grants no authority to reorder, so this is recorded, not acted on. NoOp cost in the records: no metrics (null); the Cost line records ten refutation receipts (001 to 010) plus this pass's, the largest refutation spend on any order, while the order has not run.",
+        "systemTraps": "Policy resistance: the storage rule (no token in any browser store) and the bearer-only-under-apiBaseUrl rule each carry their own check; the conflict is between the production-bundle exclusion (criterion 5) and the production walkthrough (criterion 8) (finding). Tragedy of the commons: the only order that adds a runtime dependency (one OpenID Connect client library) and a devDependency for signing (jose, with a key pair generated at mock start and never committed); about 60 files, 8 to 12 hours, 160 KB. Drift to low performance: the failure matrix is an explicit standard. Escalation: eleven judgments on unrun text is the escalation trap in this record; with no observed evidence changed for WO-008, this pass's disposition should settle it until it runs (finding). Success to the successful: code-with-PKCE behind a port, with the provider swap as configuration only, keeps alternatives open. Shifting the burden: the knob and cross-tab steps are verifier work; nothing depends on operator rescue. Rule beating: the JWT-shape scan plus the issued-token comparison closes the opaque-refresh-token bypass; the production grep for the mock's declared paths can fail a correct build or pass an incorrect one depending on how generic the paths are (finding). Seeking the wrong goal: authentication.md must say the server enforces authorization and client checks shape presentation only, which keeps the client model from posing as security.",
+        "removalBalance": "No. It adds libs/shared/auth with its kit, the mocked provider handlers, two event groups, guards, a permission directive, three routes and about 60 source files, one runtime dependency and one devDependency, and 'Removes nothing.' It is the horizon's largest new surface of external trust.",
+        "failureBehavior": "Degrades for public paths, refuses for protected ones, as intended: with auth at null the four public routes admit an anonymous visitor and /login renders the unavailable state (criterion 5); refresh failure and invalid tokens sign out to /login; two concurrent 401s produce one refresh. A protected route without a session refuses to /login or /denied; that refusal is the mechanism, not a regression, since no protected route existed before. The cost lands on WO-017: with auth null in a served build, /twin is unreachable.",
+        "findings": [
+          {
+            "criterionId": "criterion:8",
+            "kind": "known-issue",
+            "reason": "Criterion 8 requires the walkthrough 'in the served production build with the mocked provider', including the expiry and refresh-failure knobs; criterion 5 requires the production build to contain no mock provider code (its kid and every declared path absent from dist/apps/dotln/browser). The visible text does not say how the mock reaches a bundle that contains none of it (browser-level routing in the e2e driver, a separate local process, a non-null auth configuration in production). If the production configuration is the null-auth mode criterion 5 also tests, the walkthrough cannot sign in and criterion 8 is unmet by construction; WO-017 criterion 10 inherits the same question.",
+            "evidence": null,
+            "reopenWhen": "The WO-008 verifier cannot sign in on the served production build because its auth configuration is null or the mock is absent, or the walkthrough is run on a non-production configuration, or the evidence README does not record how the mocked provider reached the production bundle."
+          },
+          {
+            "criterionId": "criterion:5",
+            "kind": "known-issue",
+            "reason": "The production-bundle check greps for every path the mock's constants file declares. If those are standard OpenID Connect endpoint paths, the client library's own code or the discovery handling can contain the same strings, so the check fails a build with no mock code; if they are made unique to pass, the check proves only that those strings are absent.",
+            "evidence": null,
+            "reopenWhen": "A declared mock path (for example /token or /authorize) occurs in the bundled client library so the grep fails a mock-free build, or mock handler code ships under names the constants file does not declare."
+          },
+          {
+            "criterionId": "criterion:7",
+            "kind": "known-issue",
+            "reason": "Escalation in the record: ten refutation receipts plus this pass name the order, and its metrics are null. The platform standard says the refutation pass must be made worth its cost before a later pass pays it again, and the output rule says dispositions settle repairs without another judgment unless observed evidence changed. No observation in this subject concerns WO-008.",
+            "evidence": null,
+            "reopenWhen": "A further planning pass judges WO-008's text before WO-008 has a cost-table row with metrics, or a WO-008 text change cites no new observation."
+          }
+        ]
+      },
+      {
+        "workOrderId": "WO-017",
+        "verdict": "aligned-with-findings",
+        "criticalPathAndNoOp": "No declared critical path; WO-017 closes no foundation gate. It delivers the mission's third named sandbox outcome (the operator's own digital twin). It depends on WO-016 (records and replay libraries, the WO-221 fold whose gaps it repeats: 87.8, 109.9, 1.7, 1.4, 2.1, 18.2 and 5.9 minutes) and on WO-008 (twin:read, the mocked provider's claim). It unblocks the patience-lane toy on WO-018's shelf and, through the graduation route, a wait-policy issue to core. NoOp cost in the records: none (null metrics); four refutations paid. Inferred NoOp: the twin stays a design and nothing else in the horizon waits on it except a toy status.",
+        "systemTraps": "Policy resistance: 'old versions never deleted' is enforced by twin:check refusing a manifest with a removed id and refusing, not passing, when the base commit is absent; the guard that protects history also blocks a shallow checkout (finding). Tragedy of the commons: each variant is a lazy chunk and the registry only grows, so bundle budget and picker length grow without bound; about 55 files, 6 to 9 hours, 170 KB. Drift to low performance: judgment by results (virtual close, waiting minutes, early fires against the recorded 1,110.3 and 227.0 minutes) is an explicit standard. Escalation: four refutations on unrun text; a fifth here with no new observation. Success to the successful: the order refuses the easy metric (agreement with the operator's beats) rather than keeping it because it is cheap. Shifting the burden: a kept flip becomes a variant by exported TypeScript the operator commits, a designed authoring step. Rule beating: criterion 3's vocabulary grep (hit rate, hits/n, tolerance band) is passed by an agreement figure under another name, so the vm field-set spec is the real guard; criterion 8's grep -c 'results' is passed by almost any prose (finding). Seeking the wrong goal: the proxy is named and refused; what remains is semantic: a 'twin' judged never by fidelity is a policy laboratory seeded from the operator, which the docs should say.",
+        "removalBalance": "No. It adds libs/shared/twin-model (variants as RxJS, registry, results fold), the twin feature, a derivation script and fixture, the variant registry check, a route permission entry, a claim on the mock's default user and two documents, about 55 source files, and 'Removes nothing'; its rule that no variant is ever deleted makes removal structurally impossible within its scope.",
+        "failureBehavior": "Degrades in the app: an unparseable persisted value or an unknown variant yields the first registry entry with no flips (criterion 6). Refuses in two places: twin:check fails, naming the commit and the fetch, when the base commit is absent (criterion 4); and the route refuses anyone without twin:read, so in a served build with auth at null (WO-008's anonymous mode) the whole lane is unreachable rather than degrading to a read-only view.",
+        "findings": [
+          {
+            "criterionId": "criterion:7",
+            "kind": "known-issue",
+            "reason": "A sandbox toy behind the only permission in the horizon. BasePaths.Twin requires twin:read, which only the mocked provider's default user carries; WO-008 has no real provider (non-goal) and its null-auth mode admits only the public routes. The operator can reach the twin only where the mock runs, and the production walkthrough (criterion 10) inherits WO-008 criterion 8's open question.",
+            "evidence": null,
+            "reopenWhen": "The operator opens /twin on a served build whose auth configuration is null and cannot sign in, or WO-017's verifier cannot complete criterion 10's sign-in on the served production build."
+          },
+          {
+            "criterionId": "criterion:4",
+            "kind": "known-issue",
+            "reason": "A monotonic registry with a fail-closed history check. Variants are never deleted and each is a lazy chunk; twin:check needs the base commit and fails without it. In a shallow or rebased checkout the check refuses although nothing was removed.",
+            "evidence": null,
+            "reopenWhen": "twin:check fails in the target gate or a CI run because the base commit is absent from the checkout, or the variant chunks bring the production build within the declared budget's warning threshold."
+          },
+          {
+            "criterionId": "criterion:8",
+            "kind": "known-issue",
+            "reason": "grep -c 'results' over twin-rules.md at least 1 is met by nearly any sentence; it cannot show that the file states the twin is judged by results only.",
+            "evidence": null,
+            "reopenWhen": "twin-rules.md passes criterion 8 with 'results' only in a phrase unrelated to how the twin is judged, or states that agreement with the recorded beats is a criterion."
+          }
+        ]
+      },
+      {
+        "workOrderId": "WO-018",
+        "verdict": "aligned-with-findings",
+        "criticalPathAndNoOp": "No declared critical path; WO-018 closes no foundation gate. It is the first instance of the mission's data rule ('its data comes from public mining') and of 'every new idea lives there first as a toy': it mines a public-domain work, records its source and SHA-256, and gives the operator the shelf from which to pick the next toy, with a GitHub issue as the graduation route. It depends on WO-019 (join, v1 schema, rules) and reads WO-015 and WO-017 for built statuses. NoOp cost in the records: none (null metrics); two refutations paid. Inferred NoOp: the catalog keeps only the run's six works, the toys stay in the run's folder, and the next-toy decision has no surface.",
+        "systemTraps": "Policy resistance: check-map, toys:check and catalog:check fail closed and a toy naming an unknown tool id fails; they extend WO-019's rules rather than reversing them. Tragedy of the commons: two fan-outs of at most twelve workers with tokens unknown until run; the only observed reference is WO-014's 117,733,609-token total for a 3,463-row fan-out (row:WO-014), about 34,000 per row, so this order's spend should be compared with that figure when it lands (finding). Drift to low performance: the catalog grows by another work with no budget criterion in this order. Escalation: two fan-outs where WO-014 had one; per-worker records and the harness observation keep them inspectable. Success to the successful: the catalog pipeline is reused for a new work rather than rebuilt, the intended convention. Shifting the burden: the toy card routes the operator's decision through a GitHub issue, the route the mission names. Rule beating: criterion 5 closes WO-014's self-attestation gap by placing the launchpad's read observation (or 'unobserved') beside each worker's statement. Seeking the wrong goal: the shelf exists to decide the next toy, an operator-flow outcome; mining volume is not the measure.",
+        "removalBalance": "No. It adds two catalog data files, toy-v0.schema.json, toys.ts, toys.json with 25 records, the toy-source tool files, the toy shelf and toy page, map and toy checks, two document sections and about 32 source files plus about 300 data rows, and 'Removes nothing.'",
+        "failureBehavior": "Checks fail closed (check-map, toys:check, catalog:check), correct for data gates. In the app a toy's status field says designed, built, graduated or did not stick, so a toy whose scene does not exist reads as designed rather than breaking; if the patience lane's link opens /twin, it lands behind twin:read and inherits WO-017's refusal under null auth. Tool ids are checked at commit time only; no runtime degrade is stated for a toy whose tool later leaves the catalog.",
+        "findings": [
+          {
+            "criterionId": "criterion:5",
+            "kind": "known-issue",
+            "reason": "Unknown cost is unknown, not a hold; but the one observed fan-out (WO-014) spent 117,733,609 tokens as an order total, and this order runs two fan-outs (mapping a whole text, then typing about 300 rows) plus six new toy designs.",
+            "evidence": null,
+            "reopenWhen": "WO-018's per-worker token records, summed with the executor's, exceed WO-014's order total, or exceed about 34,000 tokens per committed row."
+          },
+          {
+            "criterionId": "criterion:4",
+            "kind": "known-issue",
+            "reason": "The run's nineteen toys are carried 'in full' from toys.jsonl at the run's folder, and the rules file is to say a toy enters with its full design. This raises the same provenance question as WO-019 criterion 8 for run material committed as the app's data; here the content is the run's own designs rather than a book's, so it is lower weight. Flagged for operator judgment, not held.",
+            "evidence": null,
+            "reopenWhen": "A run-origin record in toys.json reproduces text of a referenced work rather than the run's own design, or WO-018's decisions file records no operator ruling that the run's toy designs are the owner's to publish."
+          },
+          {
+            "criterionId": "criterion:6",
+            "kind": "known-issue",
+            "reason": "No bundle criterion. WO-014 criterion 7 and WO-019 criterion 7 hold the build budgets; this order adds a work's map and tools to the shipped catalog data with no production-build or budget criterion of its own.",
+            "evidence": null,
+            "reopenWhen": "The production build after WO-018 shows a catalog chunk over budget, or WO-018's diff raises a declared budget."
+          },
+          {
+            "criterionId": "criterion:3",
+            "kind": "known-issue",
+            "reason": "'Store' carries three meanings in the horizon: the app's own store served through its own API (the mission; deferred as the mining store and HTTP API, candidate C1, in WO-014's and WO-019's non-goals), the committed catalog JSON this order's title calls 'the app's own store', and the feature state stores (facade and store) every feature adds. Calling bundled JSON the store lets the deferral read as done.",
+            "evidence": null,
+            "reopenWhen": "Candidate C1 is planned and must migrate or duplicate the committed catalog JSON, or a later order or receipt cites WO-018 as having delivered the app's own store or API."
+          }
+        ]
+      }
+    ],
+    "planVerdict": "aligned-with-findings",
+    "holdReasons": []
+  },
+  "holds": [],
+  "dispositions": [],
+  "localTerms": {
+    "status": "present"
+  },
+  "receiptHash": "sha256:d2ba48db6f0dbb12fb615c3d8681e4e65bcf5feafde2bb7b9f00495b9c0eabb6"
+}

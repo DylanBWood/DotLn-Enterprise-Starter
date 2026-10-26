@@ -58,7 +58,7 @@ draft publish; FINAL-001 accepted the order on 2026-10-26 with every
 criterion met, fixed four in-surface items, re-gated the reviewed commits
 `23b39aef` and `d487a807`, recorded the missing draft and restored the cap
 (D025 to D028); the final publish pushed the records commit `0090ffd5`
-and opened pull request #7 ready on `feat/toolbox-catalog` the same day.
+and opened pull request #7 ready on `feat/toolbox-catalog` the same day; the operator merged it (`1c3a4ff24e38d179d0fd1ad910bc6719c2740045`, 2026-10-26) and closed it as `DotLn Angular v0.4.0` (Release published 2026-10-26T12:34:52Z); WO-013 had closed as `DotLn Angular v0.3.0` (Release published 2026-10-25T22:42:09Z at `83184879`). On 2026-10-26 the operator judged the app's pages hollow; the planning pass of that day struck a clean-room rule the 2026-10-24 pass had recorded as the operator's (it came from a prompt core's session drafted), wrote WS-001 rules 23 to 25 (the clean room's scope, acceptance by use, the look briefed and judged), filed WO-019 (the catalog as something to read, at `1c3a4ff2`), rewrote WO-015 and WO-018 and amended WO-016, WO-017 and WO-008 (`docs/planning/acceptance-by-use-2026-10-26.md`).
 The 2026-10-24 planning pass restated the app's subject on the
 operator's decisions (one app with sub-apps behind a menu, not wired to
 core, its data from public mining into its own store; WS-001 §The app and
@@ -397,9 +397,7 @@ no host-qualification claim.
   functions only, with runtime surface checks and compiler assertions.
 
 WO-007 adds stores, MSW handlers and interceptors; WO-013 adds the sub-app menu
-and arriving routes; WO-014 adds the catalog and Tools browser. Guards remain
-WO-008; the scene engine, records and replay libraries, twin model and toy shelf
-are WO-015 to WO-018's. WO-014's reviewed commits `23b39aef` and `d487a807`
+and arriving routes; WO-014 adds the catalog and Tools browser, which WO-019 rebuilds as a reading surface over the run's definitions, relations and hooks. Guards remain WO-008; the scene engine, records and replay libraries, twin model and toy shelf are WO-015 to WO-018's. WO-014's reviewed commits `23b39aef` and `d487a807`
 are the `Checked` revision above; its evidence and decisions record the
 fan-out, the failed and passing verifications, the repair and the review.
 

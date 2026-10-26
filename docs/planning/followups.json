@@ -2868,6 +2868,14 @@
           "reopenWhen": "WO-013 is withdrawn and a successor is filed, or a later pass treats its WO-007 dependency as functional composition.",
           "targets": [],
           "at": "2026-10-25T21:51:45.513Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-26 planning pass (docs/planning/acceptance-by-use-2026-10-26.md) §3: the run-many form is written in every order this pass files or amends (WO-019, WO-015, WO-018); WO-008 and WO-014 carried it since 2026-10-25; the dependency restatement stays the 2026-10-25 pass's C1 (FUP-2138dd6781c01e55).",
+          "reopenWhen": "An order is filed or amended with the two-project form again.",
+          "targets": [],
+          "at": "2026-10-26T13:27:45.456Z"
         }
       ]
     },
@@ -2926,6 +2934,14 @@
             "WO-014"
           ],
           "at": "2026-10-25T21:51:45.520Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-26 planning pass (docs/planning/acceptance-by-use-2026-10-26.md) §3: WO-014 shipped the wildcard route, the translated not-found page with its link to /board, the routes spec and the e2e case, merged as DotLn-Angular #7 (1c3a4ff2).",
+          "reopenWhen": "A lazy child's own not-found handling conflicts with the wildcard route.",
+          "targets": [],
+          "at": "2026-10-26T13:27:45.450Z"
         }
       ]
     },
@@ -3128,6 +3144,14 @@
           "reopenWhen": "The next planning pass considers the WO-014 handoff and representative app-to-skill/support artifacts.",
           "targets": [],
           "at": "2026-10-26T00:14:09.764Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-26 planning pass (docs/planning/acceptance-by-use-2026-10-26.md) D12: the catalog's content on the page (WO-019: definitions, relations, hooks and analogs readable per tool) is the representation the handoff asked for, and the operator's play in the scene and the machinery view is the exploration; no cross-area mapping pass of its own is filed, and the authoring trace is recorded as the toy shelf's graduation route (WO-018) and candidate C4 of 2026-10-24.",
+          "reopenWhen": "The operator asks for a cross-area mapping pass or for one discovery traced from a scene to a skill, support or composition, or the hooks prove unreadable on the catalog page.",
+          "targets": [],
+          "at": "2026-10-26T13:27:45.401Z"
         }
       ]
     },
@@ -3270,6 +3294,14 @@
           "reopenWhen": "The next planning pass shapes WO-014 successors, core revises target content screening, or a changed target file encounters a private-term match.",
           "targets": [],
           "at": "2026-10-26T02:04:55.356Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-26 planning pass (docs/planning/acceptance-by-use-2026-10-26.md) D3 and D12: the untyped-share and title-overlap conditions and the request for target file-content screening rested on the clean-room reading of the catalog's reference material, which the operator struck on 2026-10-26 (the books and ideas they reference lie outside the clean room); WO-019 removes the allow-list and the scrub over catalog strings and the screening request is withdrawn.",
+          "reopenWhen": "The operator names material of theirs that the clean room should cover in the catalog.",
+          "targets": [],
+          "at": "2026-10-26T13:27:45.410Z"
         }
       ]
     },
@@ -3294,6 +3326,14 @@
           "reopenWhen": "The next planning pass maps these fork-owned interaction requirements or an upstream release documents the supported extension contract.",
           "targets": [],
           "at": "2026-10-26T02:04:55.363Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-26 planning pass (docs/planning/acceptance-by-use-2026-10-26.md) D4 and D12: the reusable guidance is carried by instance-owned text that survives kit updates (WS-001 rules 24 and 25, the orders, the operator record and the target's own documents); the kit's role text is core's, so §11 item 2 of the pass asks core for an instance-owned role duty with acceptance by use as the first instance; candidate C2 of the pass holds a self order if core declines.",
+          "reopenWhen": "Core answers §11 item 2 of the 2026-10-26 pass, or a verifier records a use criterion met without a walkthrough.",
+          "targets": [],
+          "at": "2026-10-26T13:27:45.416Z"
         }
       ]
     },
@@ -3318,6 +3358,14 @@
           "reopenWhen": "The next planning pass schedules the defect, or an order changes shell translation readiness, board placeholders or footer geometry.",
           "targets": [],
           "at": "2026-10-26T02:04:55.370Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-26 planning pass (docs/planning/acceptance-by-use-2026-10-26.md) D12 and §10 C1: the shift lives in the shell's translated line boxes and the board's loading geometry; the operator accepted the scene first with the look briefed inside the toy orders, so the shell and the board take the design direction, and this repair, in the order that next touches them.",
+          "reopenWhen": "WO-015 merges and the operator says the shell or the board is next, or a toy page measures the same shift.",
+          "targets": [],
+          "at": "2026-10-26T13:27:45.423Z"
         }
       ]
     },
@@ -3342,6 +3390,14 @@
           "reopenWhen": "An initial-bundle input from @angular/aria/menu or @angular/cdk overlay appears in a production build while check:bundle passes, or an order edits tools/scripts/check-bundle.mjs.",
           "targets": [],
           "at": "2026-10-26T03:19:52.994Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-26 planning pass (docs/planning/acceptance-by-use-2026-10-26.md) D6: WO-019 step 9 extends check-bundle.mjs to refuse the Angular Aria menu and the CDK overlay in the initial graph and criterion 7 proves it with a tooling test.",
+          "reopenWhen": "WO-019's executor finds the refusal cannot be expressed without a false positive on an eager consumer the shell legitimately has.",
+          "targets": [],
+          "at": "2026-10-26T13:27:45.430Z"
         }
       ]
     },
@@ -3366,6 +3422,14 @@
           "reopenWhen": "A planning pass edits docs/workstreams/WS-001-dotln-angular.md.",
           "targets": [],
           "at": "2026-10-26T03:19:52.986Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-26 planning pass (docs/planning/acceptance-by-use-2026-10-26.md) D12: WS-001 rule 13 now names the workspace-tools project's lint target (WO-014 renamed the tools project); the three in-surface items were fixed at WO-014's FINAL-001 (D026).",
+          "reopenWhen": "A later rename leaves the workstream naming a project that does not exist.",
+          "targets": [],
+          "at": "2026-10-26T13:27:45.436Z"
         }
       ]
     },
@@ -3390,6 +3454,110 @@
           "reopenWhen": "The next planning pass reads this row, or another target order reaches final review without a draft pull request.",
           "targets": [],
           "at": "2026-10-26T03:19:53.001Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-26 planning pass (docs/planning/acceptance-by-use-2026-10-26.md) D12: for the fork, every open order's known issues name the session that records verification-result pass as the one that runs the draft publish (WS-001 rule 20), and §11 item 3 asks core to print the command or refuse the event until a draft head is recorded.",
+          "reopenWhen": "A verifier records pass without running the draft publish again, or core answers §11 item 3.",
+          "targets": [],
+          "at": "2026-10-26T13:27:45.443Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-dfb896b07eb669e5",
+      "key": "candidate:docs/planning/acceptance-by-use-2026-10-26.md#candidates-not-filed-with-their-reopening-conditions-section-10::053a8450be16c1e64be2751551acc97ea313189b6857d0402d78d8acf4c02dd2",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ad6ac29be5105624440d6e70716f4f165bae6b64ae224b9ffc4785e0e1d019c0",
+          "ref": "docs/planning/acceptance-by-use-2026-10-26.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C1 The shell's and the board's look under the design direction, with WO-014-D020's cold-load shift repaired in the same order: the shell's header, menu and footer under the type scale and palettes,…",
+          "summary": "- **C1 The shell's and the board's look under the design direction, with WO-014-D020's cold-load shift repaired in the same order: the shell's header, menu and footer under the type scale and palettes, and the board either over a recorded fixture whose sources are available or rebuilt as a reading surface of a recorded order.** Not filed: the operator accepted the scene first and the look briefed inside the toy orders; the shell is touched by every sub-app order through its menu item and takes the direction then. Reopen when WO-015 merges and the operator says the shell or the board is next, or when the operator picks neither candidate in two consecutive pull requests.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C1 of the 2026-10-26 planning document (docs/planning/acceptance-by-use-2026-10-26.md): the shell's and the board's look under the design direction with WO-014-D020's cold-load shift repaired in the same order; the operator accepted the scene first and every sub-app order touches the shell's menu and takes the direction then.",
+          "reopenWhen": "WO-015 merges and the operator says the shell or the board is next, or the operator picks neither candidate layout in two consecutive pull requests.",
+          "targets": [],
+          "at": "2026-10-26T13:27:45.462Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-357da592f1bc545d",
+      "key": "candidate:docs/planning/acceptance-by-use-2026-10-26.md#candidates-not-filed-with-their-reopening-conditions-section-10::64ae3b6f2da48eac7e5a2f8954853d0d50d89fa5cbd844b1b65ebaa8bea30c18",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d6bf81c846295b349da40f21ddd051491c5b75fa3863419b42e039e04551ade9",
+          "ref": "docs/planning/acceptance-by-use-2026-10-26.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C4 The catalog's worker's-reading rows checked against the books, where the operator owns the book.",
+          "summary": "- **C4 The catalog's worker's-reading rows checked against the books, where the operator owns the book.** Not filed: the reading surface marks them and the operator reads them; checking is a research pass the operator runs, not an order. Reopen when the operator finds a definition wrong enough to matter and asks.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C4 of the 2026-10-26 planning document (docs/planning/acceptance-by-use-2026-10-26.md): the catalog's worker's-reading rows checked against the books the operator owns; the reading surface marks them and the operator reads them.",
+          "reopenWhen": "The operator finds a definition wrong enough to matter and asks for the check.",
+          "targets": [],
+          "at": "2026-10-26T13:27:45.469Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6855f3bdf797428a",
+      "key": "candidate:docs/planning/acceptance-by-use-2026-10-26.md#candidates-not-filed-with-their-reopening-conditions-section-10::a18a5ac3b978c9ddfaeb45e14db43d65abd49776629bf739d2164d319415bdac",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "91245aed1142fb8887b1803ac5454ba7bcbb12375648ada2d3c53060c213ce27",
+          "ref": "docs/planning/acceptance-by-use-2026-10-26.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C2 A self order carrying an instance-owned verifier, refuter and reviewer duty for acceptance by use, if core declines to carry one in the kit.",
+          "summary": "- **C2 A self order carrying an instance-owned verifier, refuter and reviewer duty for acceptance by use, if core declines to carry one in the kit.** Not filed: the duty binds today through the order text, the workstream and the operator record; whether the kit's role text can carry it is §11 item 2. Reopen when core answers, or when a verifier records a use criterion met with no walkthrough.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C2 of the 2026-10-26 planning document (docs/planning/acceptance-by-use-2026-10-26.md): a self order carrying an instance-owned verifier, refuter and reviewer duty for acceptance by use if core declines to carry one in the kit; the duty binds today through the order text, the workstream and the operator record.",
+          "reopenWhen": "Core answers §11 item 2 of the 2026-10-26 pass, or a verifier records a use criterion met with no walkthrough.",
+          "targets": [],
+          "at": "2026-10-26T13:27:45.475Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c8ff21340f2adc0a",
+      "key": "candidate:docs/planning/acceptance-by-use-2026-10-26.md#candidates-not-filed-with-their-reopening-conditions-section-10::c7c6a42dad0dddabfdca178ed934622f3fc0810fa1493401f536cc0064ed3196",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "fdaf42ca663d5d6ea968d224c9839d89daf96c3b3a2308d41b7cc2781fd7697a",
+          "ref": "docs/planning/acceptance-by-use-2026-10-26.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C3 A fork document or lint check that refuses a definition list or the key-value list composite in a feature's templates, so rule 24's last sentence is mechanical.",
+          "summary": "- **C3 A fork document or lint check that refuses a definition list or the key-value list composite in a feature's templates, so rule 24's last sentence is mechanical.** Not filed: WO-019, WO-015 and WO-018 each carry the grep as a criterion; a shared check is worth its own order when a third feature ships one. Reopen when a page ships a label-value list past a use criterion, or when three orders carry the same grep.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Candidate C3 of the 2026-10-26 planning document (docs/planning/acceptance-by-use-2026-10-26.md): a fork check refusing a definition list or the key-value list composite in a feature's templates; WO-019, WO-015 and WO-018 each carry the grep as a criterion.",
+          "reopenWhen": "A page ships a label-value list past a use criterion, or three orders carry the same grep.",
+          "targets": [],
+          "at": "2026-10-26T13:27:45.481Z"
         }
       ]
     }
