@@ -1,0 +1,28 @@
+Catalog: 3463 tools; 3463 mapped rows; 11 maps; 8 checkpoints.
+work: aifg=768, eip=288, geb=573, poeaa=455, rxjs=742, tt=637
+kind: analysis=489, background=1010, behaviour=646, metric=58, mode=184, relationship=172, rule=488, sceneElement=360, sceneType=56
+transformKind: channel.policy=90, formation.fixed=1, formation.twoLevel=2, ground.frag=2, ground.influence=6, level.ring=6, level.zoom=3, path.cost=5, squad.form=1, steer.blend=3, steer.priority=2
+status: background=1428, typed=121, untyped=1914
+aifg — units-on-terrain; typed shortfall: 0
+  aifg-a:144 | Weighted blending | steer.blend
+  aifg-a:145 | Flocking | steer.blend
+  aifg-a:149 | Priority steering | steer.priority
+eip — channels; typed shortfall: 0
+  eip:101 | Filter whole messages | channel.policy
+  eip:105 | Copy to a recipient set | channel.policy
+  eip:120 | Restore message sequence order | channel.policy
+geb — levels; typed shortfall: 0
+  geb1:13 | Drawing Hands | level.ring
+  geb1:51 | Jumping out of the system | level.zoom
+  geb2:174 | Self-engulfing television | level.ring
+poeaa — channels; typed shortfall: 0
+  poeaa:196 | Synchronous versus asynchronous distribution | channel.policy
+  poeaa:251 | Batched writes | channel.policy
+  poeaa:329 | Observer synchronisation | channel.policy
+rxjs — marbles; typed shortfall: 0
+  rxc:135 | concat | channel.policy
+  rxc:137 | merge | channel.policy
+  rxc:139 | race | channel.policy
+tt — teams; typed shortfall: 1
+  tt1:215 | Seven-to-nine maximum effective team size | squad.form
+  tt1:319 | Team API request quotas and throttling | channel.policy

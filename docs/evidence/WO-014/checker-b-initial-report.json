@@ -1,0 +1,224 @@
+{
+  "label": "checker-b",
+  "seed": "catalog-checker-b-v0",
+  "reviewedCount": 40,
+  "statement": "Reviewed only classifier-contract.md and checker-b-sample.json; no quarantine file was read. No sampled tool supplied an optional analog.",
+  "findings": [
+    {
+      "id": "geb2:201",
+      "batch": "geb",
+      "issue": "The claimed cross-level return is absent from the named directional information-flow concept.",
+      "disposition": "untyped",
+      "reason": "Central dogma supplies no product-to-instruction return edge; loop depth alone cannot establish a ring."
+    },
+    {
+      "id": "rxp:148",
+      "batch": "rxjs-patterns",
+      "issue": "The parameters implement a bounded replay remedy rather than the named unbounded-replay anti-pattern.",
+      "disposition": "untyped",
+      "reason": "A finite history limit implements bounded replay, not replay without a buffer-size bound."
+    }
+  ],
+  "judgments": [
+    {
+      "id": "aifg-a:144",
+      "pass": true,
+      "reason": "Named seek, avoidance and separation weights change the combined acceleration and resulting unit paths."
+    },
+    {
+      "id": "aifg-a:145",
+      "pass": true,
+      "reason": "Separation, cohesion and velocity weights alter neighbour spacing and heading agreement for the flock."
+    },
+    {
+      "id": "aifg-a:149",
+      "pass": true,
+      "reason": "Explicit steering ranks and an acceleration threshold change which group supplies motion and when it switches."
+    },
+    {
+      "id": "aifg-a:174",
+      "pass": true,
+      "reason": "Slot spacing changes fixed target positions, formation width and measurable member-to-slot error."
+    },
+    {
+      "id": "aifg-a:177",
+      "pass": true,
+      "reason": "Spacing, anchor speed and lag limit control moving slot targets and visible anchor-to-member distances."
+    },
+    {
+      "id": "aifg-a:253",
+      "pass": true,
+      "reason": "Travel, danger and visibility costs change selected region costs and therefore route choice and total cost."
+    },
+    {
+      "id": "aifg-b:22",
+      "pass": true,
+      "reason": "Source strength and radius alter the terrain influence field and the resulting controlled or contested areas."
+    },
+    {
+      "id": "aifg-b:23",
+      "pass": true,
+      "reason": "The decay exponent and source strength reshape influence contours and the distance at which control persists."
+    },
+    {
+      "id": "aifg-b:26",
+      "pass": true,
+      "reason": "A finite radius changes which terrain regions receive influence and where the field ends."
+    },
+    {
+      "id": "aifg-b:277",
+      "pass": true,
+      "reason": "A tick delay directly moves notification arrivals later and changes pending notification counts."
+    },
+    {
+      "id": "aifg-b:354",
+      "pass": true,
+      "reason": "Slot spacing and moving-anchor speed change member trajectories, formation error and arrival spread."
+    },
+    {
+      "id": "aifg-b:48",
+      "pass": true,
+      "reason": "Danger and exposure weights alter tactical route costs, producing observable route and risk changes."
+    },
+    {
+      "id": "eip:101",
+      "pass": true,
+      "reason": "A numeric selector threshold directly admits or drops complete unit messages at the channel."
+    },
+    {
+      "id": "eip:105",
+      "pass": true,
+      "reason": "Recipient count changes the numbered delivery set, producing a measurable number of message copies."
+    },
+    {
+      "id": "eip:120",
+      "pass": true,
+      "reason": "The next sequence value and finite buffer control which reordered messages can leave consecutively."
+    },
+    {
+      "id": "eip:227",
+      "pass": true,
+      "reason": "Polling interval and batch limit change pickup times and the number of queued messages received per turn."
+    },
+    {
+      "id": "eip:273",
+      "pass": true,
+      "reason": "Lease duration bounds notification delivery in time while subscriber count changes its recipient set."
+    },
+    {
+      "id": "eip:66",
+      "pass": true,
+      "reason": "The type count defines numbered matching routes, making type-based channel delivery visible."
+    },
+    {
+      "id": "geb1:13",
+      "pass": true,
+      "reason": "The stated reciprocal creation relation is a closed represented path; exposed depth changes its visible levels."
+    },
+    {
+      "id": "geb1:51",
+      "pass": true,
+      "reason": "Description level switches the visible representation between individual rules and the whole system."
+    },
+    {
+      "id": "geb2:174",
+      "pass": true,
+      "reason": "Capture-to-display feedback provides an actual represented return path whose exposed depth can change."
+    },
+    {
+      "id": "geb2:201",
+      "pass": false,
+      "reason": "Central dogma does not establish a product-to-instruction return edge; loop depth cannot create that relation."
+    },
+    {
+      "id": "geb2:311",
+      "pass": true,
+      "reason": "The specified three creator relations close a represented return path; loop depth controls its exposure."
+    },
+    {
+      "id": "geb2:336",
+      "pass": true,
+      "reason": "Description level changes the visible dialogue, narrator or viewer representation directly."
+    },
+    {
+      "id": "poeaa:196",
+      "pass": true,
+      "reason": "Await-reply and in-flight limits alter sender blocking, queued requests and reply completion timing."
+    },
+    {
+      "id": "poeaa:251",
+      "pass": true,
+      "reason": "Batch size and flush interval alter how command messages leave the queue and how long they wait."
+    },
+    {
+      "id": "poeaa:329",
+      "pass": true,
+      "reason": "Subscriber count and notification delay change actual notification recipients and arrival times."
+    },
+    {
+      "id": "rxc:135",
+      "pass": true,
+      "reason": "A single active input with completion-gated pending inputs produces sequential, input-ordered message delivery."
+    },
+    {
+      "id": "rxc:137",
+      "pass": true,
+      "reason": "The active-input limit changes concurrent routes and pending inputs while open inputs deliver on arrival."
+    },
+    {
+      "id": "rxc:139",
+      "pass": true,
+      "reason": "The stated first-emission rule and one-winner limit select one delivery route and close losing inputs."
+    },
+    {
+      "id": "rxc:174",
+      "pass": true,
+      "reason": "The sampling period controls delivery ticks for the latest new message and changes delivery count and latency."
+    },
+    {
+      "id": "rxc:18",
+      "pass": true,
+      "reason": "Setting delivery delay to zero makes delivery occur in the sending step, directly changing message timing."
+    },
+    {
+      "id": "rxc:204",
+      "pass": true,
+      "reason": "The stated first-emission rule and one-winner limit select one delivery route and cancel the others."
+    },
+    {
+      "id": "rxp:148",
+      "pass": false,
+      "reason": "A history limit of 1 to 20 implements bounded replay, not the named absence of a buffer-size bound."
+    },
+    {
+      "id": "rxp:182",
+      "pass": true,
+      "reason": "The explicit adjacent-equality suppression policy drops repeated payloads and delivers changed values."
+    },
+    {
+      "id": "rxp:245",
+      "pass": true,
+      "reason": "The accepted numeric type code filters real message deliveries and counts rejected types."
+    },
+    {
+      "id": "rxp:70",
+      "pass": true,
+      "reason": "One in-flight delivery plus FIFO queues writes until completion and preserves delivery order."
+    },
+    {
+      "id": "rxp:85",
+      "pass": true,
+      "reason": "Window length and leading/trailing flags directly control immediate, suppressed and boundary deliveries."
+    },
+    {
+      "id": "tt1:215",
+      "pass": true,
+      "reason": "A size of seven to nine creates an actual squad membership set; it does not claim to measure effectiveness."
+    },
+    {
+      "id": "tt1:319",
+      "pass": true,
+      "reason": "The per-tick message quota changes admitted deliveries and the remaining queue depth."
+    }
+  ]
+}

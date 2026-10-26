@@ -1,0 +1,209 @@
+{
+  "label": "checker-a",
+  "seed": "catalog-checker-a-v0",
+  "reviewedCount": 40,
+  "statement": "Reviewed all 40 current typed tools across all eight batches using only classifier-contract.md and the final checker-a-sample.json; no quarantine file was read. All 14 sampled optional analogs use actual listed roles and useful concrete correspondences. This bounded sample does not claim exhaustive analog review.",
+  "findings": [],
+  "judgments": [
+    {
+      "id": "aifg-a:144",
+      "pass": true,
+      "reason": "Seek, avoidance and separation weights change combined acceleration and the selected units' trajectories."
+    },
+    {
+      "id": "aifg-a:145",
+      "pass": true,
+      "reason": "Separation, cohesion and velocity-match weights alter flock spacing, centroid movement and heading variance."
+    },
+    {
+      "id": "aifg-a:149",
+      "pass": true,
+      "reason": "Steering ranks and an acceleration threshold select the active significant steering group, changing movement and switches."
+    },
+    {
+      "id": "aifg-a:151",
+      "pass": true,
+      "reason": "Seek precedes wander; the acceleration threshold makes fallback activate near equilibrium and changes stalled steps."
+    },
+    {
+      "id": "aifg-a:174",
+      "pass": true,
+      "reason": "Slot spacing changes fixed slot positions and formation width for the selected squad, with measurable slot error."
+    },
+    {
+      "id": "aifg-a:253",
+      "pass": true,
+      "reason": "Travel, danger and visibility costs reweight selected regions and can change the chosen route and route cost."
+    },
+    {
+      "id": "aifg-b:22",
+      "pass": true,
+      "reason": "Source strength and radius change the influence field around selected units and the resulting control frontier."
+    },
+    {
+      "id": "aifg-b:23",
+      "pass": true,
+      "reason": "A distance-decay exponent changes influence falloff, while source strength changes its magnitude and reach."
+    },
+    {
+      "id": "aifg-b:26",
+      "pass": true,
+      "reason": "The influence radius changes the field boundary and the number of terrain regions affected by selected sources."
+    },
+    {
+      "id": "aifg-b:30",
+      "pass": true,
+      "reason": "A terrain cost multiplier reweights edges through selected regions and can divert unit routes."
+    },
+    {
+      "id": "aifg-b:354",
+      "pass": true,
+      "reason": "Anchor speed moves the formation reference while slot spacing sets subordinate positions, changing trajectories and formation error."
+    },
+    {
+      "id": "aifg-b:49",
+      "pass": true,
+      "reason": "Distance, danger and exposure weights change edge costs and the routes selected from those costs."
+    },
+    {
+      "id": "eip:101",
+      "pass": true,
+      "reason": "A numeric selector threshold admits or drops whole unit messages, visibly changing delivery counts."
+    },
+    {
+      "id": "eip:105",
+      "pass": true,
+      "reason": "Recipient count controls copies routed to a numbered receiving set, changing deliveries and copy count."
+    },
+    {
+      "id": "eip:120",
+      "pass": true,
+      "reason": "The next sequence number gates release from a bounded reorder buffer, making consecutive delivery observable."
+    },
+    {
+      "id": "eip:123",
+      "pass": true,
+      "reason": "The send window caps unacknowledged progress, changing outstanding messages and sender blocking time."
+    },
+    {
+      "id": "eip:228",
+      "pass": true,
+      "reason": "Pool size and per-performer capacity route received work to available performers, changing listener blocking and backlog."
+    },
+    {
+      "id": "eip:66",
+      "pass": true,
+      "reason": "The type count defines numbered type-specific routes; message type determines its receiving channel and mismatch count."
+    },
+    {
+      "id": "geb1:13",
+      "pass": true,
+      "reason": "Loop depth exposes the stated reciprocal creator-created path across levels. A reviewer can concretely inspect reciprocal component ownership."
+    },
+    {
+      "id": "geb1:51",
+      "pass": true,
+      "reason": "Description level switches between rule steps and whole-system detail. A repairer can inspect enclosing rules when local fixes stall."
+    },
+    {
+      "id": "geb2:174",
+      "pass": true,
+      "reason": "Loop depth exposes the stated capture-display feedback path. A reviewer can detect monitored output returning as monitored input."
+    },
+    {
+      "id": "geb2:197",
+      "pass": true,
+      "reason": "Loop depth exposes the stated code-to-editor return path. A reviewer can trace generated tooling that edits its generating description."
+    },
+    {
+      "id": "geb2:336",
+      "pass": true,
+      "reason": "Description level changes the displayed narrative frame. An operator can move stalled agent discussion to the enclosing task decision."
+    },
+    {
+      "id": "geb2:50",
+      "pass": true,
+      "reason": "Magnification changes visible symbol groupings. An operator can use this scale shift to explain different interpretations of shared evidence."
+    },
+    {
+      "id": "poeaa:196",
+      "pass": true,
+      "reason": "Await-reply mode and in-flight capacity change whether senders wait while unit messages and replies are delivered."
+    },
+    {
+      "id": "poeaa:251",
+      "pass": true,
+      "reason": "Batch size and flush interval change when queued command messages are released together and their waiting time."
+    },
+    {
+      "id": "poeaa:329",
+      "pass": true,
+      "reason": "Subscriber count and notification delay change which units receive notifications and when delivery occurs."
+    },
+    {
+      "id": "rxc:135",
+      "pass": true,
+      "reason": "One completion-gated active input serializes queued messages. Executor and planner correspondence is sequencing dependent mutations after prior closure."
+    },
+    {
+      "id": "rxc:137",
+      "pass": true,
+      "reason": "Input capacity permits concurrent routes and queues excess inputs. Planner and executor correspondence is collecting independent reports within a cap."
+    },
+    {
+      "id": "rxc:139",
+      "pass": true,
+      "reason": "The stated first-emitter policy keeps one route and closes rivals. An operator can similarly choose a responsive read-only provider and cancel duplicates."
+    },
+    {
+      "id": "rxc:190",
+      "pass": true,
+      "reason": "A message limit closes the route after the chosen count. Verifier and operator correspondence is bounding exploratory feed consumption."
+    },
+    {
+      "id": "rxc:224",
+      "pass": true,
+      "reason": "One active input and continue-after-error advance the queue through failures. An executor can continue independent inspections while separately recording failures."
+    },
+    {
+      "id": "rxc:235",
+      "pass": true,
+      "reason": "Silence timeout switches delivery to a designated fallback. A repairer can similarly switch a stalled read-only query and retain the timeout record."
+    },
+    {
+      "id": "rxp:182",
+      "pass": true,
+      "reason": "The duplicate-suppression flag filters adjacent equal accepted payloads while changed payloads continue."
+    },
+    {
+      "id": "rxp:245",
+      "pass": true,
+      "reason": "The accepted numeric message type changes which unit messages are routed and which are rejected."
+    },
+    {
+      "id": "rxp:68",
+      "pass": true,
+      "reason": "A single in-flight delivery and drop-while-busy policy discard arrivals until acknowledgement frees the route."
+    },
+    {
+      "id": "rxp:88",
+      "pass": true,
+      "reason": "A time window and message limit flush queued messages as batches; the empty-batch flag suppresses empty deliveries."
+    },
+    {
+      "id": "rxp:90",
+      "pass": true,
+      "reason": "Pool capacity bounds active work messages and FIFO queues the rest; acknowledgements free slots for visibly pending work."
+    },
+    {
+      "id": "tt1:215",
+      "pass": true,
+      "reason": "Squad size forms visible membership of 7\u20139 units. Operator and planner correspondence is an explicit worker cap with measured coordination cost."
+    },
+    {
+      "id": "tt1:319",
+      "pass": true,
+      "reason": "Messages per tick changes channel admission and backlog. Operator and planner correspondence is limiting repeated requests and status traffic."
+    }
+  ]
+}

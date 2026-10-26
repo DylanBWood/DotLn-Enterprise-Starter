@@ -11,6 +11,11 @@ changes only
 when the operator says so or a pass records a new direction with its date.
 There is one copy; no harness keeps its own.
 
+Read [reusable implementation guidance](implementation-guidance.md) for the
+operator's directions preserved across WO-014's execution, verification and
+repair. The operator explicitly requested this record on 2026-10-26; it applies
+to relevant future work within each order's scope and authority.
+
 ## Who the operator is
 
 The operator is the sole user of this launchpad and of the repositories it

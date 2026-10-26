@@ -1,0 +1,46 @@
+{
+  "label": "critic-recheck",
+  "rowCount": 5,
+  "verdict": "pass",
+  "statement": "I read only reviews/critic-corrections.json for this targeted recheck. No quarantine file was read. I retained the original critic report and did not reread the broad samples, repository files, raw maps, books, external sources, or use subagents.",
+  "findings": [
+    {
+      "id": "critic-01",
+      "verdict": "resolved",
+      "rows": [
+        "rxc:203"
+      ],
+      "assessment": "The typed effect now activates every selected source together and interleaves arriving messages. present-input-count describes how many sources are present; it is no longer an active-source cap. The pending queue and adjustable concurrency policy are absent. This resolves the identified mismatch while retaining an observable channel.policy toy effect."
+    },
+    {
+      "id": "critic-02",
+      "verdict": "resolved",
+      "rows": [
+        "geb1:1"
+      ],
+      "assessment": "The generic purpose-setting analog has been omitted and the background classification retained. The row no longer asserts the unsupported strange-loop correspondence."
+    },
+    {
+      "id": "critic-03",
+      "verdict": "resolved",
+      "rows": [
+        "geb2:25",
+        "geb2:108"
+      ],
+      "assessment": "Both rows remain explicitly untyped. Operating system now names resource owners, waiting tasks and protection refusals with corresponding metrics. Composition of procedures now names calls and returns, input/output contract satisfaction and dependency paths with corresponding metrics. These distinguish the concepts and preserve the useful existing analogs without claiming implemented effects."
+    },
+    {
+      "id": "critic-04",
+      "verdict": "resolved",
+      "rows": [
+        "rxp:140"
+      ],
+      "assessment": "The title now limits its claim to no manual unsubscribe after normal completion. This removes the prior unrestricted claim about finite streams while retaining background status."
+    }
+  ],
+  "remainingFindings": [],
+  "limitations": [
+    "This is a targeted review of five corrected rows against four original findings, not a new broad catalog review or runtime execution test.",
+    "The parent reported that official installed RxJS source confirms mergeWith has no concurrency parameter; I did not independently read that source during this restricted recheck."
+  ]
+}

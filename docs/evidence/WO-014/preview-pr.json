@@ -1,0 +1,29 @@
+{
+  "capturedAt": "2026-10-26T03:09:00Z",
+  "pullRequest": null,
+  "draft": {
+    "exists": false,
+    "observation": "No draft pull request exists for this order. gh pr list --repo DylanBWood/DotLn-Angular --state all --head wo-014 and --head feat/toolbox-catalog both return []; the target has no refs/dotln/draft/WO-014 ref; git ls-remote --heads origin lists only main at 83184879358a30a60596aea983d587ed5681ea9d; gh run list for feat/toolbox-catalog returns []; this file did not exist when the final review was dispatched.",
+    "expectedBy": "the session that records verification-result pass runs the verified-phase draft publish (the operator's standing preference of 2026-10-18, D5, and the order's step 15 through WO-007's steps 15 to 17); the order's known issues make the draft and its workflow runs a final-review obligation read from this file, never a criterion.",
+    "whatHappened": "VER-001 recorded fail on 2026-10-26T00:46Z and ran no draft publish, as a failed verification does not. VER-002 recorded pass at 2026-10-26T02:46Z and wrote that the draft pull request remains the final review's obligation and that its session publishes nothing (VER-002.md, Known issues and carry-ins); no draft publish was attempted, so no hook admission, host decision or workflow run exists to record.",
+    "consequence": "The operator had no draft to read before dispatching this final review, and no automated reviewer or CI run exists for the branch before it. The final publish opens the pull request ready rather than reusing a draft; its CI runs on the pushed head and the operator reads the code there before merging.",
+    "disposition": "WO-014-D027: proceed to the final publish without running the draft form in final review; route the missed step to planning so the verified-phase draft becomes observable at verification-result pass."
+  },
+  "workflowRuns": [],
+  "reviewThreads": [],
+  "reviews": [],
+  "issueComments": [],
+  "automatedReview": "none could run: no pull request existed before the final publish.",
+  "operatorItems": {
+    "source": "the operator's dispatch message of 2026-10-25 that opened FINAL-001 was the bare final-review phrase; it carried no note, and no pull request exists to carry a comment or review",
+    "capture": null,
+    "captureSha256": null,
+    "count": 0
+  },
+  "routing": [],
+  "finalReviewRepairs": [
+    "three hygiene items boarded by VER-002 (WO-014-D024): a blank line in apps/dotln-e2e/src/catalog.spec.ts, the literal ellipsis in tools.catalog.loading in en.json and the feature's test-kit copy, and DotlnFilterMenu named in the menu entry point's README",
+    "one defect met by this review: a hidden file in libs/shared/catalog/src/data made the catalog check refuse the directory; the check now ignores hidden entries and the merge test covers it"
+  ],
+  "finalPublish": "recorded in host-qualification.md after it runs"
+}

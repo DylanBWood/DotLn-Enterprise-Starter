@@ -1,0 +1,209 @@
+{
+  "label": "checker-b",
+  "seed": "catalog-checker-b-v0",
+  "reviewedCount": 40,
+  "statement": "Reviewed only classifier-contract.md and the final checker-b-sample.json; no quarantine file was read. All 40 sampled transforms and 13 sampled analogs were reviewed; this is not an exhaustive analog review.",
+  "findings": [],
+  "judgments": [
+    {
+      "id": "aifg-a:144",
+      "pass": true,
+      "reason": "Named seek, avoidance and separation weights change combined acceleration and observable unit paths."
+    },
+    {
+      "id": "aifg-a:145",
+      "pass": true,
+      "reason": "Separation, cohesion and velocity weights change neighbour spacing and heading agreement within the flock."
+    },
+    {
+      "id": "aifg-a:149",
+      "pass": true,
+      "reason": "Steering ranks and an acceleration threshold change the active motion group and its switching behaviour."
+    },
+    {
+      "id": "aifg-a:174",
+      "pass": true,
+      "reason": "Slot spacing changes fixed target positions, formation width and measurable member-to-slot error."
+    },
+    {
+      "id": "aifg-a:177",
+      "pass": true,
+      "reason": "Spacing, anchor speed and lag limit control moving slot targets and visible anchor-to-member distances."
+    },
+    {
+      "id": "aifg-a:253",
+      "pass": true,
+      "reason": "Travel, danger and visibility costs change selected region costs, route choice and total route cost."
+    },
+    {
+      "id": "aifg-b:22",
+      "pass": true,
+      "reason": "Source strength and radius reshape the terrain influence field and its controlled or contested areas."
+    },
+    {
+      "id": "aifg-b:23",
+      "pass": true,
+      "reason": "The decay exponent and source strength change influence contours and the reach of terrain control."
+    },
+    {
+      "id": "aifg-b:26",
+      "pass": true,
+      "reason": "A finite radius changes which terrain regions receive influence and where the field stops."
+    },
+    {
+      "id": "aifg-b:277",
+      "pass": true,
+      "reason": "A tick delay directly changes notification arrival times and pending notification counts."
+    },
+    {
+      "id": "aifg-b:354",
+      "pass": true,
+      "reason": "Slot spacing and moving-anchor speed change member trajectories, formation error and arrival spread."
+    },
+    {
+      "id": "aifg-b:48",
+      "pass": true,
+      "reason": "Danger and exposure weights alter tactical route costs, producing visible route and risk changes."
+    },
+    {
+      "id": "eip:101",
+      "pass": true,
+      "reason": "The numeric selector threshold directly admits or drops complete unit messages at the channel."
+    },
+    {
+      "id": "eip:105",
+      "pass": true,
+      "reason": "Recipient count changes the numbered delivery set and the measurable number of message copies."
+    },
+    {
+      "id": "eip:120",
+      "pass": true,
+      "reason": "The next sequence value and finite buffer control which reordered messages leave consecutively."
+    },
+    {
+      "id": "eip:227",
+      "pass": true,
+      "reason": "Polling interval and batch limit change pickup times and how many queued messages arrive per turn."
+    },
+    {
+      "id": "eip:273",
+      "pass": true,
+      "reason": "Lease duration bounds notification delivery in time while subscriber count changes its recipient set."
+    },
+    {
+      "id": "eip:66",
+      "pass": true,
+      "reason": "The type count defines numbered matching routes, making type-based channel delivery observable."
+    },
+    {
+      "id": "geb1:13",
+      "pass": true,
+      "reason": "Loop depth exposes the stated reciprocal creation path. A reviewer checking mutually defining ownership is a concrete correspondence."
+    },
+    {
+      "id": "geb1:51",
+      "pass": true,
+      "reason": "Description level switches rule-step and whole-system views. A repairer escalating stalled local fixes to governing rules is a useful application."
+    },
+    {
+      "id": "geb2:174",
+      "pass": true,
+      "reason": "Capture-to-display feedback supplies a real represented return path. Reviewer checks for monitoring output feeding its input match that loop."
+    },
+    {
+      "id": "geb2:306",
+      "pass": true,
+      "reason": "Loop depth exposes the stated reciprocal creation path. Reviewer checks for mutually dependent foundations give a concrete application."
+    },
+    {
+      "id": "geb2:311",
+      "pass": true,
+      "reason": "The three stated creator relations form a represented return path. Operator checks for circular approval authority correspond to that cycle."
+    },
+    {
+      "id": "geb2:336",
+      "pass": true,
+      "reason": "Description level moves among dialogue, narrator and viewer views. The operator can similarly move stalled discussion to its enclosing goal."
+    },
+    {
+      "id": "poeaa:196",
+      "pass": true,
+      "reason": "Await-reply and in-flight limits change sender blocking, queued requests and reply-completion timing."
+    },
+    {
+      "id": "poeaa:251",
+      "pass": true,
+      "reason": "Batch size and flush interval change how command messages leave the queue and how long they wait."
+    },
+    {
+      "id": "poeaa:329",
+      "pass": true,
+      "reason": "Subscriber count and notification delay change actual notification recipients and arrival times."
+    },
+    {
+      "id": "rxc:135",
+      "pass": true,
+      "reason": "One active input and completion-gated pending inputs preserve sequence. Executor and planner ordering of dependent mutations is a concrete counterpart."
+    },
+    {
+      "id": "rxc:137",
+      "pass": true,
+      "reason": "The active-input limit changes concurrent routes and pending inputs. Executor and planner collection of bounded independent reports matches it."
+    },
+    {
+      "id": "rxc:139",
+      "pass": true,
+      "reason": "First emission and the one-winner limit select one route and close losers. An operator choosing one responsive read-only provider is a concrete use."
+    },
+    {
+      "id": "rxc:174",
+      "pass": true,
+      "reason": "The sampling period controls latest-message delivery ticks and latency. Cadenced operator status updates use the same practical selection rule."
+    },
+    {
+      "id": "rxc:18",
+      "pass": true,
+      "reason": "Zero delay delivers in the sending step. Executor and verifier checks for callbacks finishing during startup address the same timing boundary."
+    },
+    {
+      "id": "rxc:204",
+      "pass": true,
+      "reason": "The stated first-emission rule and one-winner limit select one delivery route and cancel the others."
+    },
+    {
+      "id": "rxp:182",
+      "pass": true,
+      "reason": "The explicit adjacent-equality policy drops repeated payloads while delivering changed values."
+    },
+    {
+      "id": "rxp:245",
+      "pass": true,
+      "reason": "The accepted numeric type code directly filters message deliveries and counts rejected types."
+    },
+    {
+      "id": "rxp:68",
+      "pass": true,
+      "reason": "One in-flight delivery and drop-while-busy discard new arrivals until completion, visibly preventing overlapping submissions."
+    },
+    {
+      "id": "rxp:70",
+      "pass": true,
+      "reason": "One in-flight delivery plus FIFO queues writes until completion and preserves their delivery order."
+    },
+    {
+      "id": "rxp:85",
+      "pass": true,
+      "reason": "Window length and leading/trailing flags directly control immediate, suppressed and boundary deliveries."
+    },
+    {
+      "id": "tt1:215",
+      "pass": true,
+      "reason": "The size parameter creates actual squad membership without claiming effectiveness. Operator and planner worker caps are a useful bounded analogy."
+    },
+    {
+      "id": "tt1:319",
+      "pass": true,
+      "reason": "The per-tick quota changes admitted deliveries and queue depth. Operator and planner limits on request traffic give a concrete shared-capacity analogy."
+    }
+  ]
+}

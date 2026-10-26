@@ -1,0 +1,173 @@
+{
+  "schema": "menu-keyboard-failure-v1",
+  "environment": {
+    "browser": "156.0.8078.4",
+    "node": "v26.9.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "logicalCpus": 16,
+    "server": "loopback, precompressed gzip, no service worker",
+    "cache": "new context per journey; warm journey preloads catalog in that context"
+  },
+  "buildStatsSha256": "4890046db5bb188f0c39da368f6f6dac9537f402f9bf55899d1a8ae14f365ab7",
+  "failures": [
+    {
+      "profile": "constrained",
+      "journey": "warm-catalog",
+      "index": 1,
+      "message": "expect(locator).toBeFocused() failed",
+      "focus": {
+        "active": "objective.set",
+        "hovered": [
+          "formation.fixed"
+        ],
+        "trace": [
+          {
+            "type": "pointermove",
+            "x": 81.83999633789062,
+            "y": 600.25,
+            "target": "BUTTON",
+            "text": "Reset filters",
+            "inWrapper": false
+          },
+          {
+            "type": "keydown",
+            "key": "Enter",
+            "target": "BUTTON",
+            "text": "Scene type",
+            "inWrapper": true
+          },
+          {
+            "type": "keydown",
+            "key": "Home",
+            "target": "BUTTON",
+            "text": "All",
+            "inWrapper": true
+          },
+          {
+            "type": "keydown",
+            "key": "ArrowDown",
+            "target": "BUTTON",
+            "text": "All",
+            "inWrapper": true
+          },
+          {
+            "type": "keydown",
+            "key": "ArrowDown",
+            "target": "BUTTON",
+            "text": "units-on-terrain",
+            "inWrapper": true
+          },
+          {
+            "type": "keydown",
+            "key": "ArrowDown",
+            "target": "BUTTON",
+            "text": "pipeline",
+            "inWrapper": true
+          },
+          {
+            "type": "keydown",
+            "key": "Enter",
+            "target": "BUTTON",
+            "text": "channels",
+            "inWrapper": true
+          },
+          {
+            "type": "pointermove",
+            "x": 81.83999633789062,
+            "y": 600.25,
+            "target": "BUTTON",
+            "text": "Reset filters",
+            "inWrapper": false
+          },
+          {
+            "type": "keydown",
+            "key": "Enter",
+            "target": "BUTTON",
+            "text": "Transform kind",
+            "inWrapper": true
+          },
+          {
+            "type": "mouseover",
+            "x": 81,
+            "y": 600,
+            "target": "BUTTON",
+            "text": "steer.blend",
+            "inWrapper": true
+          },
+          {
+            "type": "keydown",
+            "key": "Home",
+            "target": "BUTTON",
+            "text": "steer.blend",
+            "inWrapper": true
+          },
+          {
+            "type": "keydown",
+            "key": "ArrowDown",
+            "target": "BUTTON",
+            "text": "All",
+            "inWrapper": true
+          },
+          {
+            "type": "keydown",
+            "key": "ArrowDown",
+            "target": "BUTTON",
+            "text": "steer.blend",
+            "inWrapper": true
+          },
+          {
+            "type": "keydown",
+            "key": "ArrowDown",
+            "target": "BUTTON",
+            "text": "steer.priority",
+            "inWrapper": true
+          },
+          {
+            "type": "keydown",
+            "key": "ArrowDown",
+            "target": "BUTTON",
+            "text": "formation.twoLevel",
+            "inWrapper": true
+          },
+          {
+            "type": "keydown",
+            "key": "ArrowDown",
+            "target": "BUTTON",
+            "text": "formation.fixed",
+            "inWrapper": true
+          },
+          {
+            "type": "keydown",
+            "key": "ArrowDown",
+            "target": "BUTTON",
+            "text": "objective.set",
+            "inWrapper": true
+          },
+          {
+            "type": "keydown",
+            "key": "ArrowDown",
+            "target": "BUTTON",
+            "text": "squad.form",
+            "inWrapper": true
+          },
+          {
+            "type": "mouseover",
+            "x": 81,
+            "y": 600,
+            "target": "BUTTON",
+            "text": "formation.fixed",
+            "inWrapper": true
+          },
+          {
+            "type": "keydown",
+            "key": "ArrowDown",
+            "target": "BUTTON",
+            "text": "formation.fixed",
+            "inWrapper": true
+          }
+        ]
+      }
+    }
+  ]
+}

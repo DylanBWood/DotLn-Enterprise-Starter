@@ -2,11 +2,12 @@
 
 **Class:** `angular-nx-monorepo`
 **Base branch:** `main`
-**Checked:** `99a30befa150e5d77a64259013e62b9d0372270e` (WO-013's reviewed
-commit of 2026-10-25, the verified draft commit its final review accepted
-without a change, over the base `2ab4f28501628cf95dd0102c42440fd7de9f8055`,
-WO-007's merge commit; WO-013 adds no dependency, so the versions below are
-unchanged from WO-007's reviewed commit `db4d648d`).
+**Checked:** `d487a8075f28bb9d456b549c77e1cb211238839a` (WO-014's second
+reviewed commit of 2026-10-26, the hidden-file fix over its reviewed feature
+commit `23b39aef39ce8f17407d9f21f30fb33eaba5e20e`, over the base
+`83184879358a30a60596aea983d587ed5681ea9d`, WO-013's merge commit; WO-014 adds
+no dependency, so the versions below are unchanged from WO-013's reviewed
+commit `99a30bef`).
 Node 26.9.0, npm 11.19.1, Nx 23.3.0, Angular 22.2.3, TypeScript 6.0.3 and
 Vitest 5.0.5 (with its UI and coverage packages, aligned from 4.1.12 by WO-007
 for MSW 3) were observed, with Transloco 8.4.0, Ramda 0.32.0, Ramda Adjunct
@@ -43,7 +44,21 @@ D017). VER-003 reproduced the corrected lint and republished #6 at the same
 tree, and FINAL-003 accepted the order on 2026-10-25 with every criterion
 met and no new finding, its unit and browser suites rerun uncached at
 `99a30bef` (WO-013-D018, D019). The final publish pushed that commit and the
-records commit `61cf1ae9` over the draft and marked #6 ready the same day. The 2026-10-24 planning pass restated the app's subject on the
+records commit `61cf1ae9` over the draft and marked #6 ready the same day,
+and WO-013 merged as #6 (`83184879`) on 2026-10-25. WO-014 activated the
+same day at the provisional base and fast-forwarded to that merge
+(WO-014-D001); its twelve-worker fan-out typed the 3,463 rows under the
+operator's cap of 40 and the criterion 3 amendment (D002, D006); VER-001
+failed criterion 7 on an avoidable initial-bundle growth from 495.40 kB to
+530.37 kB (WO-014-D011); the repair of 2026-10-26 moved the menu stack to the
+lazy Tools route, curated the utility exports and added the bundle check and
+the sampler under the operator's bounded additions (D016 to D022); VER-002
+passed at tree `da7780d7` with the initial bundle at 376.91 kB and ran no
+draft publish; FINAL-001 accepted the order on 2026-10-26 with every
+criterion met, fixed four in-surface items, re-gated the reviewed commits
+`23b39aef` and `d487a807`, recorded the missing draft and restored the cap
+(D025 to D028); the final publish opens the pull request ready on
+`feat/toolbox-catalog`. The 2026-10-24 planning pass restated the app's subject on the
 operator's decisions (one app with sub-apps behind a menu, not wired to
 core, its data from public mining into its own store; WS-001 §The app and
 its sub-apps), moved WO-007's board route to the app's own API with
@@ -93,7 +108,7 @@ and literal argument handling, `npm run typecheck:e2e` for the NodeNext
 Playwright files, and `npm run boards` to print visible boards.
 
 WO-005 adds `env:prime`, `i18n:check`, `check:templates`, `check:tokens`,
-`check:kits` and `typecheck:foundations`. The `tools` project's uncached `lint`
+`check:kits` and `typecheck:foundations`. The `workspace-tools` project's uncached `lint`
 target runs the three structural checks, translation extraction, foundation
 compiler checks, negative lint fixtures and tooling tests, so the declared
 gate exercises them through its existing lint command. WO-006 adds
@@ -358,10 +373,34 @@ no host-qualification claim.
 - Component catalog: `.storybook/`, component-local stories, and
   `docs/dev-reference/workspace/storybook.md`.
 
+- Catalog contract: `libs/shared/models/src/lib/toolbox.ts` and the closed
+  `tool-v0` schema in `libs/shared/catalog/src/schema/`. Eight allow-listed
+  checkpoints supply 3,463 rows; the loader imports each work lazily and exposes
+  pure filters, an explicit provider and a test kit through its public seam.
+- Tools routes: `libs/features/tools/src/lib/tools.routes.ts`; `/tools` lists
+  utilities and `/tools/catalog` composes five menu filters, a paged tool list
+  and details through an event-backed facade. The final app wildcard renders a
+  translated not-found page with a board link.
+- Concept mapping: `docs/dev-reference/architecture/concept-mapping.md` records
+  the UIFA engineer's exploration purpose, cross-area metaphors, diagnostic
+  mappings, RxJS modelling and candidate graduation to platform behavior.
+  Typed status measures the current toy contract, not conceptual usefulness.
+- Menu composition: `@dotln-angular/ui/menu` keeps menu behavior and its small
+  controlled filter composite on the lazy Tools path; overlay providers are
+  supplied there instead of through the eager UI provider.
+- Performance: `npm run check:bundle` asserts route placement and reports package
+  attribution; `npm run perf:sample` records controlled local journeys. The
+  target's performance guide distinguishes local evidence from field Core Web
+  Vitals and assigns ordinary calibration to the implementing session.
+- Curated utilities: the house R/RA entry points expose application-used
+  functions only, with runtime surface checks and compiler assertions.
+
 WO-007 adds stores, MSW handlers and interceptors; WO-013 adds the sub-app menu
-and arriving routes. Guards remain WO-008; the catalog, the scene engine, the
-records and replay libraries, the twin model and the toy shelf are WO-014 to
-WO-018's.
+and arriving routes; WO-014 adds the catalog and Tools browser. Guards remain
+WO-008; the scene engine, records and replay libraries, twin model and toy shelf
+are WO-015 to WO-018's. WO-014's reviewed commits `23b39aef` and `d487a807`
+are the `Checked` revision above; its evidence and decisions record the
+fan-out, the failed and passing verifications, the repair and the review.
 
 ## Upstream references
 

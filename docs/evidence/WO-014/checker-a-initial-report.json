@@ -1,0 +1,217 @@
+{
+  "label": "checker-a",
+  "seed": "catalog-checker-a-v0",
+  "reviewedCount": 40,
+  "statement": "Reviewed all 40 sampled typed tools across all eight batches using only classifier-contract.md and checker-a-sample.json; no quarantine file was read. No sampled tool contains an optional analog.",
+  "findings": [
+    {
+      "id": "rxp:148",
+      "batch": "rxjs-patterns",
+      "issue": "Bounded retention substitutes a remedy for the named unbounded replay anti-pattern.",
+      "disposition": "untyped",
+      "reason": "Finite history-limit models bounded replay, not the named absence of a buffer limit."
+    }
+  ],
+  "judgments": [
+    {
+      "id": "aifg-a:144",
+      "pass": true,
+      "reason": "Named seek, avoidance and separation weights change combined acceleration and the selected units' trajectories."
+    },
+    {
+      "id": "aifg-a:145",
+      "pass": true,
+      "reason": "Separation, cohesion and velocity-match weights alter flock spacing, centroid movement and heading variance."
+    },
+    {
+      "id": "aifg-a:149",
+      "pass": true,
+      "reason": "Steering ranks and an acceleration threshold select the active significant steering group, changing movement and switches."
+    },
+    {
+      "id": "aifg-a:151",
+      "pass": true,
+      "reason": "Seek precedes wander; the acceleration threshold makes the fallback activate near equilibrium and changes stalled steps."
+    },
+    {
+      "id": "aifg-a:174",
+      "pass": true,
+      "reason": "Slot spacing changes fixed slot positions and formation width for the selected squad, with measurable slot error."
+    },
+    {
+      "id": "aifg-a:253",
+      "pass": true,
+      "reason": "Travel, danger and visibility costs reweight selected regions and can change the chosen route and route cost."
+    },
+    {
+      "id": "aifg-b:22",
+      "pass": true,
+      "reason": "Source strength and radius change the influence field around selected units and the resulting control frontier."
+    },
+    {
+      "id": "aifg-b:23",
+      "pass": true,
+      "reason": "A distance-decay exponent changes influence falloff, while source strength changes its magnitude and reach."
+    },
+    {
+      "id": "aifg-b:26",
+      "pass": true,
+      "reason": "The influence radius changes the field boundary and the number of terrain regions affected by selected sources."
+    },
+    {
+      "id": "aifg-b:30",
+      "pass": true,
+      "reason": "A terrain cost multiplier reweights edges through selected regions and can divert unit routes."
+    },
+    {
+      "id": "aifg-b:354",
+      "pass": true,
+      "reason": "Anchor speed moves the formation reference while slot spacing sets subordinate positions, changing trajectories and formation error."
+    },
+    {
+      "id": "aifg-b:49",
+      "pass": true,
+      "reason": "Distance, danger and exposure weights change edge costs and the routes selected from those costs."
+    },
+    {
+      "id": "eip:101",
+      "pass": true,
+      "reason": "A numeric selector threshold admits or drops whole unit messages, visibly changing delivery counts."
+    },
+    {
+      "id": "eip:105",
+      "pass": true,
+      "reason": "Recipient count controls copies routed to a numbered receiving set, changing deliveries and copy count."
+    },
+    {
+      "id": "eip:120",
+      "pass": true,
+      "reason": "The next sequence number gates release from a bounded reorder buffer, making consecutive delivery observable."
+    },
+    {
+      "id": "eip:123",
+      "pass": true,
+      "reason": "The send window caps unacknowledged progress, changing outstanding messages and sender blocking time."
+    },
+    {
+      "id": "eip:228",
+      "pass": true,
+      "reason": "Pool size and per-performer capacity route received work to available performers, changing listener blocking and backlog."
+    },
+    {
+      "id": "eip:66",
+      "pass": true,
+      "reason": "The type count defines numbered type-specific routes; message type determines its receiving channel and mismatch count."
+    },
+    {
+      "id": "geb1:13",
+      "pass": true,
+      "reason": "The stated reciprocal creator-created relation supplies a closed path across levels; loop depth controls its visible traversal."
+    },
+    {
+      "id": "geb1:51",
+      "pass": true,
+      "reason": "Description level switches visible rule steps and whole-system detail, directly changing the displayed level."
+    },
+    {
+      "id": "geb2:174",
+      "pass": true,
+      "reason": "The stated capture-display feedback supplies a real representation loop; loop depth changes its visible traversal."
+    },
+    {
+      "id": "geb2:197",
+      "pass": true,
+      "reason": "The stated code-to-editor return supplies a closed cross-level path; loop depth changes how much of it is exposed."
+    },
+    {
+      "id": "geb2:336",
+      "pass": true,
+      "reason": "Description level changes which nested conversation, narrator or viewer frame is displayed."
+    },
+    {
+      "id": "geb2:50",
+      "pass": true,
+      "reason": "Magnification level changes visible symbol groupings and therefore the displayed level of description."
+    },
+    {
+      "id": "poeaa:196",
+      "pass": true,
+      "reason": "Await-reply mode and in-flight capacity change whether senders wait while unit messages and replies are delivered."
+    },
+    {
+      "id": "poeaa:251",
+      "pass": true,
+      "reason": "Batch size and flush interval change when queued command messages are released together and their waiting time."
+    },
+    {
+      "id": "poeaa:329",
+      "pass": true,
+      "reason": "Subscriber count and notification delay change which units receive notifications and when delivery occurs."
+    },
+    {
+      "id": "rxc:135",
+      "pass": true,
+      "reason": "A single active input with completion-gated succession serializes queued inputs and preserves their message order."
+    },
+    {
+      "id": "rxc:137",
+      "pass": true,
+      "reason": "Active-input capacity permits concurrent routes and queues excess inputs, changing interleaving and delivery latency."
+    },
+    {
+      "id": "rxc:139",
+      "pass": true,
+      "reason": "The stated first-emitter routing rule retains one winning input and closes competing routes, changing cancellations."
+    },
+    {
+      "id": "rxc:190",
+      "pass": true,
+      "reason": "The delivery limit passes the first configured number of messages and then closes the route."
+    },
+    {
+      "id": "rxc:224",
+      "pass": true,
+      "reason": "One active input plus continue-after-error advances queued inputs on completion or failure while suppressing failure forwarding."
+    },
+    {
+      "id": "rxc:235",
+      "pass": true,
+      "reason": "A silence timeout switches delivery to the designated fallback input, changing timeout and fallback delivery counts."
+    },
+    {
+      "id": "rxp:148",
+      "pass": false,
+      "reason": "A finite history limit and bounded suffix implement bounded replay, contradicting the named absence of a buffer size."
+    },
+    {
+      "id": "rxp:182",
+      "pass": true,
+      "reason": "The duplicate-suppression flag filters adjacent equal accepted payloads while changed payloads continue."
+    },
+    {
+      "id": "rxp:245",
+      "pass": true,
+      "reason": "The accepted numeric message type changes which unit messages are routed and which are rejected."
+    },
+    {
+      "id": "rxp:68",
+      "pass": true,
+      "reason": "A single in-flight delivery and drop-while-busy policy discard arrivals until acknowledgement frees the route."
+    },
+    {
+      "id": "rxp:88",
+      "pass": true,
+      "reason": "A time window and message limit flush queued messages as batches; the empty-batch flag suppresses empty deliveries."
+    },
+    {
+      "id": "tt1:215",
+      "pass": true,
+      "reason": "Forming a squad from 7\u20139 selected units implements the size limit as visible squad membership and size."
+    },
+    {
+      "id": "tt1:319",
+      "pass": true,
+      "reason": "Messages per tick limits admissions on the selected channel, changing delivery throughput and queued backlog."
+    }
+  ]
+}

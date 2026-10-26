@@ -1,0 +1,137 @@
+{
+  "schema": "wo014-repair-preflight-v1",
+  "repository": "dotln-angular",
+  "commands": [
+    {
+      "command": "npx nx format:check",
+      "startedAt": "2026-10-26T01:57:03.959Z",
+      "durationMs": 1537,
+      "exitCode": 0
+    },
+    {
+      "command": "npx nx run-many -t lint test build --output-style=static",
+      "startedAt": "2026-10-26T01:57:05.497Z",
+      "durationMs": 86046,
+      "exitCode": 0
+    },
+    {
+      "command": "npm run lint:fixtures",
+      "startedAt": "2026-10-26T01:58:31.543Z",
+      "durationMs": 3902,
+      "exitCode": 0
+    },
+    {
+      "command": "npm run lint:components",
+      "startedAt": "2026-10-26T01:58:35.446Z",
+      "durationMs": 322,
+      "exitCode": 0
+    },
+    {
+      "command": "npm run lint:hygiene",
+      "startedAt": "2026-10-26T01:58:35.768Z",
+      "durationMs": 303,
+      "exitCode": 0
+    },
+    {
+      "command": "npm run check:fixtures",
+      "startedAt": "2026-10-26T01:58:36.071Z",
+      "durationMs": 626,
+      "exitCode": 0
+    },
+    {
+      "command": "npm run catalog:check",
+      "startedAt": "2026-10-26T01:58:36.697Z",
+      "durationMs": 344,
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:tooling",
+      "startedAt": "2026-10-26T01:58:37.041Z",
+      "durationMs": 1655,
+      "exitCode": 0
+    },
+    {
+      "command": "npm run i18n:check",
+      "startedAt": "2026-10-26T01:58:38.696Z",
+      "durationMs": 782,
+      "exitCode": 0
+    },
+    {
+      "command": "npm run check:bundle",
+      "startedAt": "2026-10-26T01:58:39.478Z",
+      "durationMs": 3947,
+      "exitCode": 0
+    },
+    {
+      "command": "npm run typecheck:foundations",
+      "startedAt": "2026-10-26T01:58:43.426Z",
+      "durationMs": 23497,
+      "exitCode": 0
+    },
+    {
+      "command": "npm run typecheck:e2e",
+      "startedAt": "2026-10-26T01:59:06.924Z",
+      "durationMs": 699,
+      "exitCode": 0
+    },
+    {
+      "command": "npx nx test tools --skip-nx-cache --output-style=static",
+      "startedAt": "2026-10-26T01:59:07.623Z",
+      "durationMs": 3709,
+      "exitCode": 0
+    },
+    {
+      "command": "npm run perf:sample",
+      "startedAt": "2026-10-26T01:59:11.332Z",
+      "durationMs": 99393,
+      "exitCode": 0
+    },
+    {
+      "command": "npx nx e2e dotln-e2e --skip-nx-cache --output-style=static",
+      "startedAt": "2026-10-26T02:00:50.727Z",
+      "durationMs": 47768,
+      "exitCode": 0
+    }
+  ],
+  "bounded": {
+    "durationMs": 274588,
+    "peakFootprintBytes": 2644895904,
+    "peakRssBytes": 2933964800,
+    "memoryBudgetBytes": 3221225472,
+    "exitCode": 0
+  },
+  "browserTests": 76,
+  "performanceSamples": 30,
+  "launchpadDocumentPreflight": {
+    "checkId": "npm run test:docs",
+    "gateSelection": "document",
+    "treeHash": "dbb919e2b2750932636e35ac8b338b3137cfe773",
+    "codeIdentity": "dbd80775eda0b78bb08729662389d78c2905051201848699f91eb04b1adbc897",
+    "instanceInputDigest": "sha256:c64b8ef1f63d5008a29d7c03bf08c6ffc05afe3a39e8a06ee141228ec4845faf",
+    "executionMode": "fresh",
+    "executed": true,
+    "exitCode": 0,
+    "durationMs": 17563,
+    "evidenceRef": "host-gate:dbd80775eda0b78bb08729662389d78c2905051201848699f91eb04b1adbc897:npm run test:docs",
+    "recordedAt": "2026-10-26T02:07:21.485Z",
+    "identityUnchanged": true,
+    "buildOutputUnchanged": true,
+    "requiredSuites": [
+      "kit-verify",
+      "format",
+      "configuration-root",
+      "registrations",
+      "declarations",
+      "generated",
+      "host",
+      "license-surfaces",
+      "docs-check",
+      "harness-context",
+      "plan-refutation-current",
+      "plan",
+      "reader-profiles",
+      "entropy"
+    ],
+    "unrunSuites": []
+  }
+}
