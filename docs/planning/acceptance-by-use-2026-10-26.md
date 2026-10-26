@@ -13,11 +13,7 @@ never theirs; the acceptance of every order in this workstream must change
 permanently from checks on the record to use of the page; and the books,
 films and ideas they reference for this app have nothing to do with the
 clean room. They asked for the whole picture in clear terms, their goal as
-the session reads it, the fix and the road, and said go at 12:58Z. The
-messages are captured verbatim in ignored intake
-(`docs/intake/notes/planning-2026-10-26.md`, SHA-256
-`9ec78ddbc267936d59fc7fe88b4a8b9c8d42d4692979db31be5129c817fd72a6`), a
-sibling record and never a source to copy from.
+the session reads it, the fix and the road, and said go at 12:58Z. The messages are captured verbatim in ignored intake (`docs/intake/notes/planning-2026-10-26.md`, SHA-256 `9ec78ddbc267936d59fc7fe88b4a8b9c8d42d4692979db31be5129c817fd72a6`), a sibling record and never a source to copy from; two later messages, sent while the pass filed its first receipt (an aside on the standard the app is held to, and an observation on the refutation receipts' trap paragraphs, taken up in §4 and §11), are in the addendum capture `planning-2026-10-26-addendum.md`, SHA-256 `c5127d9f728739f75ed5884987002c02abd3b9ca9734833fdd37d64dd3e93884`.
 
 This document is planner synthesis of that capture; this instance's records
 (the ten previous planning documents and their receipts, WS-001, the
@@ -43,9 +39,7 @@ three, writes three house rules, corrects the operator record, activates
 nothing, publishes nothing in the target and never merges. Its refutation is
 the pass's independent verification (§14).
 
-Fan-out plan, stated before the first spawn: one refuter, no research
-workers, no descendants; the 20-admission cap leaves 19. The dispatch line
-named no Fable worker, so the refuter is the default `dotln-worker`.
+Fan-out plan, stated before the first spawn: one refuter, no research workers, no descendants; the 20-admission cap leaves 19. The dispatch line named no Fable worker, so the refuter is the default `dotln-worker`. The same worker was resumed once to repair its statement's formatting (an absolute path the receipt helper refuses), which rerolled nothing.
 
 ## 2. Entry observations
 
@@ -96,6 +90,7 @@ cold-load shift) and the carried candidates stay with their conditions.
 | The "three tools per work" rail rule | present in the two drafted prompts (entries 5 and 8), absent from the operator's own statement (entry 9), which says a tool rail from the catalog; WO-015 carried it as a floor | the 2026-10-24 capture; WO-015 before this pass |
 | Receipt 010 | thirty-one known issues over six orders and no hold, left for the pass that next amends them | `docs/planning/refutations/` receipt 010 |
 | The kit's screen on criteria | product 07 refuses a criterion that requires a deterministic reading of natural language or free-form Markdown (the sentence-count case); it admits method criteria whose artifacts and labels are checkable and whose judgment is the verifier's | product 07 §An order carries an Execution plan; §Experiments |
+| The receipts' trap paragraphs | the operator, reading receipt 011, found the same sentence on WO-013's policy resistance they had read in receipts 008, 009 and 010: WO-013's text was unchanged, so the kit carried its judgment by hash and printed it again in each receipt (one occurrence in each of the four); beyond that, the schema requires per order a `systemTraps` paragraph of at least one character and the work order asks how all eight traps apply, so every order's paragraph runs 1,200 to 1,800 characters and opens the same way, which the operator read as the instrument for detecting rule beating producing it (a form filled to length) | `grep -c` over the four receipts; receipt 011's JSON; the addendum capture |
 
 ## 5. The operator's direction, synthesized
 
@@ -341,10 +336,7 @@ where the decision is to act, and the observation that reopens it.
   Source: the operator's standing preference for a paste-ready prompt; D2,
   D4, D12. Rejected: a GitHub issue on the platform (the paste stays the
   route until WO-193). Reopen: WO-193 lands.
-- **D16 No research worker is spawned; one refuter judges the pass's
-  subject (WO-019, the rewritten WO-015 and WO-018, the amended WO-016,
-  WO-017 and WO-008, and the sequence), as the default `dotln-worker`,
-  because the dispatch line named no Fable worker.** Source: the kit's
+- **D16 No research worker is spawned; one fresh default `dotln-worker` refuter judges the pass's subject (WO-019, the rewritten WO-015 and WO-018, the amended WO-016, WO-017 and WO-008, and the sequence), because the dispatch line named no Fable worker.** Source: the kit's
   worker pins; the dispatch line; the operator's research run read directly
   at the files the orders name (the 2026-10-24 pass's D17 stands). Rejected:
   `dotln-worker-fable` (not named); research workers over the run (the
@@ -360,12 +352,8 @@ where the decision is to act, and the observation that reopens it.
   wants), and the kit's product documents carry no instance ceiling.**
   Source: the purpose block; `doc-ceilings.json`. Reopen: a pass edits the
   purpose.
-- **D19 WO-014's release close is the operator's dispatch on `main` and this
-  pass does not run it; the workstream's delivery state records the merge
-  and the pending close.** Source: the operator record's lifecycle entry;
-  canonical status. Rejected: closing from the planning branch (a planning
-  branch is document-only). Reopen: the close reports a changed delivery
-  state this document should carry.
+- **D19 WO-014's release close is the operator's dispatch on `main` and this pass does not run it; the workstream's delivery state records the merge and the pending close.** Source: the operator record's lifecycle entry; canonical status. Rejected: closing from the planning branch (a planning branch is document-only). Reopen: the close reports a changed delivery state this document should carry.
+- **D20 Receipt 011's twenty-six known issues are carried to the pass before each order activates, with this pass's answer to each written in §9.2, because the kit admits one judgment per pass and binds a text change only to a hold's disposition, and receipt 011 holds nothing.** The pass first amended the six orders to answer the findings and asked for a second judgment; the plan check refused the changed bytes (no text-bound disposition exists for a known issue) and the refute command refused a second judgment without changed observed evidence, so the orders were restored to their judged bytes and the answers moved here. The items that matter before WO-019 is verified are its executor's to meet within authority (the hygiene grep, the degrade path, the two layout components, the chunk sizes recorded, the operator's ruling recorded); the two walkthrough criteria that name the wrong build (WO-008, WO-017) are three and five orders away. Source: receipt 011; product 07 (one judgment per planning pass; criterion repairs use their text-bound disposition); the kit's refusals observed in this session. Rejected: a second judgment (refused by the kit, and its rule is sound: a judgment is paid once per pass); an override (no hold exists to override). NoOp cost: none beyond the next pass's amendment, which it pays anyway. Reopen: WO-019's verifier judges criterion 6's substring count unmet while one layout remains, which is the case this pass tried to prevent.
 
 Immaterial lenses for the document-only writes (orders, workstream,
 profile, operator record, register, ledger): the same as the previous
@@ -451,7 +439,99 @@ What the operator sees after each order lands (rule 24's table):
 
 ### 9.2 Known issues from this pass's receipt, by order
 
-Recorded after the refutation files (§14).
+The refutation (receipt 011, §14) returned `aligned-with-findings` on every
+order and for the plan with twenty-six known issues and no hold. The kit
+admits one judgment per pass and binds only hold dispositions to text
+changes, so the six judged orders stay at their judged bytes and the pass
+before each order activates amends them for these and pays its refutation
+then (D20); an executor who activates an order before that amendment meets
+each inside the order's authority and records it in the decisions file. The
+answers this pass gives are listed here so nothing is re-derived; the
+receipt's reopening observations are on the receipt.
+
+- **WO-014** (closed; its text is bound). (a) Criterion 2's invariant is the
+  opposite of WO-019's: by design, a closed order's criteria describe its
+  own tree and WO-019 supersedes the layout on the operator's direction;
+  WO-019's known issues say so at its next amendment. (b) Criterion 5's
+  quarantine claim is self-attested: WO-014 has run, its evidence README is
+  its record, and WO-018 carries the launchpad's read observation beside
+  each statement. (c) Criterion 6's not-found link points home to `/board`
+  while WO-015 moves the root to `/scene`: WO-015's next amendment
+  re-points the link in its step 11 and its e2e, and its executor does so
+  within authority if it activates first.
+- **WO-019** (the next order; its executor meets these within authority and
+  records them). (a) Criterion 8 asks whether the run's definitions are the
+  owner's to publish: the operator ruled on 2026-10-26 that the works they
+  reference, the run's maps of them and the designs cut from them lie
+  outside the clean room (capture SHA-256 `9ec78ddb…`; WS-001 rule 23);
+  the executor records that ruling in the decisions file at activation, and
+  the next amendment names it in the known issues. (b) Criterion 2 removes
+  the scrub and keeps no rule against a path on this machine in the data:
+  the join carries the row's fields and never a path, and the executor adds
+  one hygiene grep (`/Users/`, `/home/`, a drive letter) to the check as
+  bounded cleanup; the next amendment writes it into criterion 2. (c)
+  Criterion 3's seam with WO-015 is `TransformKind` plus `ParamSpec`: a
+  behaviour is a tool whose kind and parameters select the term (a
+  `steer.blend` tool with one weighted term is seek, arrive, separation,
+  velocity matching or wander; a `formation.twoLevel` tool's pattern
+  parameter is wedge, line or column), WO-015's `tool-mapper` reads nothing
+  else, and the reading pane and the rail read the same `sceneTools` list;
+  the next amendment states it in the typing bullet. (d) Criterion 6 tests
+  the layout pick by a substring count: the executor builds the two
+  candidates as two layout components under `layouts/` so that one directory
+  remains, and the next amendment replaces the count with a directory count,
+  the convention WO-015 then shares. (e) Criterion 1 proves the screenshots
+  by file count: the walkthrough names each screenshot by step and width,
+  and the next amendment ties the count to the names. (f) Criterion 5 has no
+  degrade path for the persisted history: the store ignores a value that
+  fails to parse and prunes an id the regenerated data lacks, and a spec
+  asserts it; the next amendment writes the spec into criterion 2. (g)
+  Criterion 7 holds the budgets while the data grows: the executor records
+  each catalog chunk's size beside WO-014's figure in the evidence README and
+  raises no budget; the next amendment says so.
+- **WO-015.** (a) Criterion 5's two sources of truth: one list, `sceneTools`,
+  and `/scene?tool=<id>` for a refused or unknown id arrives with no tool
+  chosen and a notice naming why; the next amendment adds both to the design
+  and the e2e. (b) Criterion 7's chrome pick: two layout components and a
+  directory count, as WO-019.
+- **WO-016.** (a) Criterion 5's sink would accept the launchpad's ignored
+  intake: it refuses a directory outside the Git root of the checkout it
+  runs from. (b) Criterion 3's self-referential count: the verifier recounts
+  the ids in each role's Origin stamp independently and records the recount
+  beside the spec's. (c) Criterion 2's role mismatch: a row whose actor ran
+  as planner, refuter or release-close is an `unknown`-slot beat naming the
+  role, never dropped. (d) Criterion 1's actor field: the reducer's scrub
+  also fails a run of 32 or more hexadecimal characters and a UUID shape.
+- **WO-008.** (a) Criterion 8's walkthrough names the production build while
+  criterion 5 keeps the mock out of it: the walkthrough runs on the served
+  `mocked` configuration build (WO-007's configuration for e2e and play),
+  the production grep stays, and the next amendment says so in criterion 8
+  and step 10; the same fix for WO-017's criterion 10. (b) Criterion 5's
+  path grep would fail on endpoint paths the client library legitimately
+  contains: the mock's modules carry one marker string (`dotln-mock-idp`)
+  and the grep targets it and the key identifier. (c) Criterion 7's
+  escalation (eleven receipts on unrun text): recorded; no further text
+  change to WO-008 without a new observation, which the next amendment's
+  two clauses above are.
+- **WO-017.** (a) Criterion 7's twin behind the only permission on a build
+  with no provider: WO-008's provider question, carried there; the
+  walkthrough runs on the `mocked` configuration (criterion 10). (b)
+  Criterion 4's `twin:check` on a shallow checkout: it names the fetch and
+  the gate's clone is full, carried. (c) Criterion 8's `grep -c "results"`:
+  the next amendment names the two phrases that matter, "judged by results"
+  and "never by agreement".
+- **WO-018.** (a) Criterion 5's unknown fan-out cost: the executor stops the
+  fan-out with a decision if the per-worker totals, summed with its own, pass
+  WO-014's recorded order total. (b) Criterion 4's provenance of the run's
+  toy designs: the operator's ruling, recorded at activation as WO-019 does.
+  (c) Criterion 6 has no bundle criterion: the next amendment adds the
+  production build within the declared budgets and the chunk sizes beside
+  WO-019's. (d) Criterion 3's three meanings of "store": the committed data
+  the app ships, the mining store that stays candidate C1, and the feature
+  stores; the next amendment names them in the known issues.
+
+The planning document itself is not a judged order, so the two observations
+the operator sent while the receipt was filed are recorded in §4 and §11.
 
 ## Candidates not filed, with their reopening conditions (section 10)
 
@@ -513,7 +593,9 @@ planning: observations and requests from the DotLn-Enterprise-Starter fork (dyla
 
 3. The verified-phase draft publish is unobservable at verification-result pass. WO-014's verifier recorded pass and published nothing; the operator had no draft to read before dispatching final review and no CI run existed for the branch before it (WO-014-D027, FINAL-001 F1). Ask: at verification-result pass on a target order, print the draft publish command the verifier's session is to run, or refuse the event until a draft head is recorded, whichever your design prefers; the fork's orders name the verifier's session as the one that runs it meanwhile. A convenience.
 
-4. Confirmations and acknowledgements: WO-014 merged as DotLn-Angular #7 on 2026-10-26 and its records as the fork's #31; its release close is the operator's next dispatch. The fork took no update this pass (upstream unchanged since v0.99.0). The 2026-10-25 block's items stand; WO-013's fix, verification and final review ran under v0.97.1 and v0.99.0 and the one-commit lint range was observed. Nothing else is asked of core for the DotLn-Angular work: the fork filed WO-019 (the catalog as something to read), rewrote WO-015 and WO-018 and amended WO-016, WO-017 and WO-008 from the operator's direction and its own receipt 010.
+4. The refutation receipts read as a form filled to length. The operator, reading the fork's receipt 011, met the same sentence on WO-013's policy resistance for the fourth time (receipts 008 to 011; WO-013 was carried by hash each time and its judgment printed again), and saw that every order's systemTraps paragraph runs 1,200 to 1,800 characters and opens with the same trap, because plan-goal-review-v1 requires a non-empty paragraph per order and the refuter's work order asks how all eight traps apply. Their reading: the instrument for detecting rule beating is producing it. Asks: (a) render a carried order as a reference to the receipt that judged it rather than reprinting its paragraphs; (b) make the trap judgment structured, per trap an observed, not-observed or not-applicable value with a reason only when observed, so a refuter writes substance where there is some and nothing where there is none; (c) the same for criticalPathAndNoOp, removalBalance and failureBehavior where the answer is unchanged from the previous receipt on the same text. The fork keeps paying the refutation as the kit defines it meanwhile. A convenience with a real cost in reading time.
+
+5. Confirmations and acknowledgements: WO-014 merged as DotLn-Angular #7 on 2026-10-26 and its records as the fork's #31; its release close is the operator's next dispatch. The fork took no update this pass (upstream unchanged since v0.99.0). The 2026-10-25 block's items stand; WO-013's fix, verification and final review ran under v0.97.1 and v0.99.0 and the one-commit lint range was observed. Nothing else is asked of core for the DotLn-Angular work: the fork filed WO-019 (the catalog as something to read), rewrote WO-015 and WO-018 and amended WO-016, WO-017 and WO-008 from the operator's direction and its own receipt 010.
 ```
 
 ## 12. Write-backs
@@ -572,8 +654,7 @@ aim as read at entry and as the operator accepted it in the written
 picture: the corrections recorded at their source, the next four orders
 specified as experiences and judged by use, and a road the operator can see.
 
-Cost: no research workers; one refuter (§14 records its worker time,
-tokens and tool uses and the dispatch-to-file wall-clock); the reads of the
+Cost: no research workers; one refuter, resumed once for a formatting repair (§14 records its worker time, tokens and tool uses and the dispatch-to-file wall-clock); the reads of the
 target's data and baselines, the capture and the run's design files under a
 minute of task time each; `plan start`, `failures` and `conditions` under
 two seconds; `npm run meta -- --plan-cost` records the table after the
@@ -588,4 +669,73 @@ recorded here when they ran: `npm run meta`, `npm run plan -- followups
 `node scripts/lineage.mjs index`, `node scripts/docs-check.mjs`,
 `npm run publication:check`, `npm run plan -- check`, `npm run test:docs`.
 The results, the commits, the refutation and the session cost are recorded
-below after each ran.
+below as they ran.
+
+Results on the subject before its commit: `npm run meta` no budget breach
+(WO-014 tokens 117,733,609; first verification failed in 2 of the last 8
+closed orders; 0 reopen candidates; unset limits unset); `followups --sync`
+minted the four rows of §10 (C1 `FUP-dfb896b07eb669e5`, C2
+`FUP-6855f3bdf797428a`, C3 `FUP-c8ff21340f2adc0a`, C4
+`FUP-357da592f1bc545d`; revision `2f1818d4…`); `--apply` took the thirteen
+dispositions of §8 in one batch from the contained ignored request file
+`docs/intake/followups-apply-2026-10-26.json` (eight settled, five deferred;
+revision `6c359482…`); `work-orders index` regenerated both pages with the
+WO-019 card and the member graph (`--check` PASS on both); `lineage index`
+regenerated; `docs-check` PASS (1 product document at 2,095 non-exempt bytes
+under the 2,305 ceiling; 39 declared historical link occurrences; the one
+pre-existing advisory on WO-003-D003); `publication:check` reporting no
+editions declared; `npm run test:docs` on the uncommitted subject 12 passed
+and the two plan tasks failed only because WO-019 was not yet committed;
+`plan check` after the subject commit needing a receipt for the new dated
+heading. The subject parser wants the field spelled `**Objective:**`
+exactly, so the three orders that had carried the label "Objective (the
+operator's session)" were respelled before the commit, the session's wording
+moved after the colon.
+
+Commits: the subject `60def4c` (fifteen files: WO-019, the five amended or
+rewritten orders, the sequence, WS-001, the profile, the operator record, the
+ledger and its index, the register, the index page and this document), the
+cost table `f6a8d3b`, the receipt `ab5f6b9` (the helper's commit), then the
+commit that carries §9.2, §4's last row, §11 item 4 and this section, and a
+cost-table refresh.
+
+Refutation: one fresh `dotln-worker` (the default type; the dispatch line
+named no Fable worker), spawned in the background with only the canonical
+prompt the helper printed (`npm run plan -- refute`, pass scope, 108,490
+bytes: the identity, mask and lens, the work order, the compiled subject,
+the output instructions, the result schema and the worker instructions) and
+the instruction to return the frozen JSON and a one-line statement. It read
+that one file and nothing else, judged WO-014, WO-019, WO-015, WO-016,
+WO-008, WO-017 and WO-018 (WO-013 carried by hash), and returned
+`aligned-with-findings` on every order and for the plan, with twenty-six
+known issues (§9.2) and no hold: the subject supplied no vision passage id,
+the critical path was undeclared, and no cost-table trap showed worsening.
+Worker time 682 s, 151,654 worker tokens, 13 tool uses on the judgment. The
+receipt helper refused the first filing because the statement named the
+prompt file by its absolute path; the same worker was resumed once to replace
+the path with a placeholder (16 s, about 1,600 more tokens, 2 tool uses),
+the judgment untouched, and the second filing succeeded. Receipt
+`2026-10-26-planning-99f4ffe8f2227691-011` (`docs/planning/refutations/`),
+worker type `dotln-worker`, scope `pass`, 1,014,316 ms from the dispatch
+marker (13:30:13Z) to the file (16.9 minutes, the repair included), judged
+subject `sha256:4ed6059a…` equal to the committed and workspace subjects;
+the gate after it: 11 receipts, 11 passes, no advisory. Dispositions: none
+needed (no hold). The pass then amended the six orders to answer the
+findings and asked for a second judgment; `plan check` refused the changed
+bytes ("changed Cost declaration has no text-bound disposition", then
+"existing work-order bytes changed") and `plan refute` refused a second
+judgment ("one judgment per pass; dispositions settle repairs, and another
+judgment requires changed observed evidence"); the six orders were restored
+byte for byte to the receipt's commit, the answers moved to §9.2, and D20
+records the decision.
+
+Session cost at the handoff (`node scripts/harness.mjs usage`, source
+`claude-transcript-message-usage`, scope `dispatch`) is recorded in the
+pull request's body and the handoff; one subagent of the cap of 20, 19
+remaining. The dispatch-to-branch wall-clock: the operator's dispatch at
+12:40Z, their go-ahead at 12:58Z, the branch at 13:02Z, the subject commit
+at about 13:25Z, the receipt at 13:46Z.
+
+`npm run test:docs` after the receipt, on the tree that carries this
+section, is reported in the pull request together with the final
+`plan check`.
