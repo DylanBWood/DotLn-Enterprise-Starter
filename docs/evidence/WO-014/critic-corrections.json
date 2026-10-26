@@ -1,0 +1,171 @@
+{
+  "tools": [
+    {
+      "id": "rxc:203",
+      "work": "rxjs",
+      "title": "mergeWith",
+      "rowType": "tool",
+      "classifiedBy": "classifier-rxjs-core",
+      "provenance": "map",
+      "map": {
+        "file": "rxjs-core.jsonl",
+        "line": 203,
+        "sha256": "c8e2acd0ad804b15bf86db47d58f7a2d041c391ed7e74ad2df615c9ba69d52fb"
+      },
+      "kind": "behaviour",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels",
+          "marbles"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 2,
+          "max": 20
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "present-input-count",
+              "unit": "channels",
+              "default": 4,
+              "min": 2,
+              "max": 20
+            }
+          ]
+        },
+        "observable": [
+          "All selected input channels are active together; unit messages interleave as they arrive.",
+          "Input count sets how many source channels are present."
+        ],
+        "toyMetric": [
+          "active-input-count",
+          "delivered-message-count",
+          "arrival-order-violation-count"
+        ]
+      }
+    },
+    {
+      "id": "rxp:140",
+      "work": "rxjs",
+      "title": "No manual unsubscribe after normal completion",
+      "rowType": "concept",
+      "classifiedBy": "classifier-rxjs-patterns",
+      "provenance": "map",
+      "map": {
+        "file": "rxjs-patterns.jsonl",
+        "line": 140,
+        "sha256": "7a3cd3b794d277f07dcd94c5625b8e1046d61f1c8ab9bd8685b2a8052dd69d84"
+      },
+      "kind": "background",
+      "status": "background"
+    },
+    {
+      "id": "geb1:1",
+      "work": "geb",
+      "title": "The book's real subject: the self as a strange loop",
+      "rowType": "principle",
+      "classifiedBy": "classifier-geb",
+      "provenance": "map",
+      "map": {
+        "file": "geb-map-part-1.jsonl",
+        "line": 1,
+        "sha256": "41f4e58e581b4df80861e11cc5fc2a9c51c02b8061ce80d511703e9b446a71dc"
+      },
+      "kind": "background",
+      "status": "background"
+    },
+    {
+      "id": "geb2:108",
+      "work": "geb",
+      "title": "Composition of procedures",
+      "rowType": "technique",
+      "classifiedBy": "classifier-geb",
+      "provenance": "map",
+      "map": {
+        "file": "geb-map-part-2.jsonl",
+        "line": 108,
+        "sha256": "d1acbd4f0cd5ee6de7cdeccf1847287d50a4d3778146f74ab8279580373f7f05"
+      },
+      "kind": "rule",
+      "status": "untyped",
+      "faces": {
+        "scene": [
+          "builds"
+        ],
+        "selection": {
+          "target": "scene",
+          "min": 1,
+          "max": 1
+        },
+        "transform": {
+          "kind": "untyped",
+          "reason": "No procedure definition, call, composition, or hidden-body execution model is defined."
+        },
+        "observable": [
+          "A candidate model would show calls entering and returning across procedure boundaries.",
+          "A candidate model would show whether each output satisfies the next procedure input contract.",
+          "A candidate model would show dependency paths linking composed procedures."
+        ],
+        "toyMetric": [
+          "procedure-call-count",
+          "contract-violation-count",
+          "dependency-path-count"
+        ]
+      },
+      "analog": {
+        "roles": [
+          "verifier"
+        ],
+        "clause": "Check assumptions at each procedure boundary before relying on end-to-end composition."
+      }
+    },
+    {
+      "id": "geb2:25",
+      "work": "geb",
+      "title": "Operating system",
+      "rowType": "tool",
+      "classifiedBy": "classifier-geb",
+      "provenance": "map",
+      "map": {
+        "file": "geb-map-part-2.jsonl",
+        "line": 25,
+        "sha256": "d1acbd4f0cd5ee6de7cdeccf1847287d50a4d3778146f74ab8279580373f7f05"
+      },
+      "kind": "mode",
+      "status": "untyped",
+      "faces": {
+        "scene": [
+          "builds"
+        ],
+        "selection": {
+          "target": "scene",
+          "min": 1,
+          "max": 1
+        },
+        "transform": {
+          "kind": "untyped",
+          "reason": "No task scheduler, protection model, or operating-system state is defined."
+        },
+        "observable": [
+          "A candidate model would show which task owns each shared resource.",
+          "A candidate model would show tasks waiting for execution or resource access.",
+          "A candidate model would show refused operations at a protection boundary."
+        ],
+        "toyMetric": [
+          "owned-resource-count",
+          "waiting-task-count",
+          "protection-refusal-count"
+        ]
+      },
+      "analog": {
+        "roles": [
+          "planner"
+        ],
+        "clause": "Centralize shared resource and protection policy instead of scattering it across user tasks."
+      }
+    }
+  ]
+}

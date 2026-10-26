@@ -668,6 +668,14 @@
           "reopenWhen": "A hook-admitted target publish is denied by the host classifier, or the next planning pass rules on the registration trust entry.",
           "targets": [],
           "at": "2026-10-25T22:34:40.818Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-014's one target publish call (the FINAL-001 final publish of 2026-10-26, which opened DotLn-Angular #7 ready at the records commit 0090ffd5; no draft publish ran for this order) ran the node-spelled helper from the launchpad root, was admitted by the hook with a registeredTargetAdmission row and allowed by the host without a prompt; no PermissionDenied row was recorded (docs/evidence/WO-014/host-qualification.md). An observation for the planning pass that rules on the registration trust entry, not that ruling.",
+          "reopenWhen": "A hook-admitted target publish is denied by the host classifier, or the next planning pass rules on the registration trust entry.",
+          "targets": [],
+          "at": "2026-10-26T03:25:35.810Z"
         }
       ]
     },
@@ -3096,6 +3104,292 @@
           "reopenWhen": "The pre-review commit lint refuses a later target order on commits already merged on its base.",
           "targets": [],
           "at": "2026-10-25T22:34:40.811Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c5936c588840e1da",
+      "key": "decision:docs/evidence/WO-014/decisions.md#wo-014-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fcad1f5cbe3faf72f78f4d284e705b8374ce96b94cdf68e8e9ea3d0452f19dfe",
+          "ref": "docs/evidence/WO-014/decisions.md#wo-014-d010",
+          "title": "WO-014-D010: Plan a targeted cross-area mapping pass and trace one discovery through app exploration, a primary skill or support, composition and any common IR target; settle artifact ownership and…",
+          "summary": "{ \"id\": \"WO-014-D010\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: next\", \"decision\": \"Preserve the operator clarification as reusable concept-mapping guidance and a planning handoff: explore ideas through understandable representations, retain transferable relationships and evidence, and consider graduation into primary skills, supports and compositions that may compile to common IR.\", \"evidence\": [ \"The operator explicitly described cross-area metaphors, diagnostic system traps, repeated RxJS modelling of arbitrary phenomena, UIFA engineering, representational isomorphism, musical variations and feedback into platform behavior.\", \"The operator pointed to core product documents 13-uifa-roles",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-014-D010 and planning-handoff.md retain the operator direction. This order delivers the catalog and reusable mapping method; a later planning pass should select the targeted exploration and assign artifact ownership across repositories.",
+          "reopenWhen": "The next planning pass considers the WO-014 handoff and representative app-to-skill/support artifacts.",
+          "targets": [],
+          "at": "2026-10-26T00:14:09.764Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-df20232a7bdc9125",
+      "key": "decision:docs/evidence/WO-014/decisions.md#wo-014-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3c8bbb4f89fc3be62c38cb52ca42fc0aefdc5ee7364e46ae42ebf9f24ae0747e",
+          "ref": "docs/evidence/WO-014/decisions.md#wo-014-d011",
+          "title": "WO-014-D011: Repair rule: code that only a lazy route uses stays out of the initial chunk. Record the production initial total and its per-package attribution before and after the repair, against the…",
+          "summary": "{ \"id\": \"WO-014-D011\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail VER-001 on criterion 7. The production initial bundle grows from 495.40 kB to 530.37 kB raw (127.10 kB to 135.06 kB estimated transfer) and exceeds the declared 500 kB initial budget. The overrun is avoidable: the menu wrapper, the Angular Aria menu and further CDK overlay code that only the lazy Tools route uses now ship in a shared chunk that main imports statically, so every first screen pays for them. The failure rests on that avoidable inefficiency, not on the threshold itself.\", \"evidence\": [ \"Verifier's uncached npx nx build dotln --configuration=production on the subject tree 42956188: exit 0",
+          "missing": false
+        },
+        {
+          "hash": "2c1b49e48aa5acedc13db5047fc45c4370aefa09f04eb39b043fd6411ac05e2d",
+          "ref": "docs/evidence/WO-014/decisions.md#wo-014-d011",
+          "title": "WO-014-D011: Repair rule: code that only a lazy route uses stays out of the initial chunk. Record the production initial total and its per-package attribution before and after the repair, against the…",
+          "summary": "{ \"id\": \"WO-014-D011\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: verify\", \"decision\": \"Fail VER-001 on criterion 7. The production initial bundle grows from 495.40 kB to 530.37 kB raw (127.10 kB to 135.06 kB estimated transfer) and exceeds the declared 500 kB initial budget. The overrun is avoidable: the menu wrapper, the Angular Aria menu and further CDK overlay code that only the lazy Tools route uses now ship in a shared chunk that main imports statically, so every first screen pays for them. The failure rests on that avoidable inefficiency, not on the threshold itself.\", \"evidence\": [ \"Verifier's uncached npx nx build dotln --configuration=production on the subject tree 42956188: exit 0",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-014 repair D017/D018: menu secondary entry and scoped overlay providers remove the lazy dependency leak; curated typed utilities further reduce initial output to 376913 bytes. Matched base/candidate comparisons, transitive graph tests, browser loading assertions and the amended preflight pass; repair.md and bundle-comparison.json retain the evidence.",
+          "reopenWhen": "A future build leaks route-only code into the initial graph or requires another menu request after Tools arrives.",
+          "targets": [],
+          "at": "2026-10-26T02:04:55.328Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f0c5551d18747994",
+      "key": "decision:docs/evidence/WO-014/decisions.md#wo-014-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2bc3fc7569a005d9ae575bbcd5792cd1e4e8c7742bd874e6e79132f16adaa2bb",
+          "ref": "docs/evidence/WO-014/decisions.md#wo-014-d012",
+          "title": "WO-014-D012: Planning: when a production build's initial total grows or reports a budget warning, the executor's preflight records per-package attribution against the base and either removes the…",
+          "summary": "{ \"id\": \"WO-014-D012\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: verify\", \"decision\": \"Board catching initial-bundle growth at preflight, as the operator directed ('nip it in the bud early and often'), without turning budget warnings into automatic failures.\", \"evidence\": [ \"The executor's preflight and both target gates saw the budget warning, which the evidence README disclosed, and the regression first surfaced as a failure at verification.\", \"The operator rejected a rule that fails an overrun that is the most efficient arrangement.\" ], \"rejected\": [ { \"option\": \"Make the gate fail on any budget warning\", \"reason\": \"It fails a justified overrun, the lose-lose outcome the operator named.\"",
+          "missing": false
+        },
+        {
+          "hash": "e86dd3a7f54a79e2e9661f3f2c9afcd0b3766ee3f9b4727b62fb7d37434c28fe",
+          "ref": "docs/evidence/WO-014/decisions.md#wo-014-d012",
+          "title": "WO-014-D012: Planning: when a production build's initial total grows or reports a budget warning, the executor's preflight records per-package attribution against the base and either removes the…",
+          "summary": "{ \"id\": \"WO-014-D012\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: verify\", \"decision\": \"Board catching initial-bundle growth at preflight, as the operator directed during this verification (paraphrased: catch inefficiency early and often), without turning budget warnings into automatic failures.\", \"evidence\": [ \"The executor's preflight and both target gates saw the budget warning, which the evidence README disclosed, and the regression first surfaced as a failure at verification.\", \"The operator rejected a rule that fails an overrun that is the most efficient arrangement.\" ], \"rejected\": [ { \"option\": \"Make the gate fail on any budget warning\", \"reason\": \"It fails a justified overrun, the l",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "The operator authorized applying this duty now. D016/D019 add bundle attribution and a graph check to preflight/CI, performance sampling and a source-linked calibration policy, plus mandatory reusable operator guidance. Comparisons are an implementing-session responsibility and no byte limit changed.",
+          "reopenWhen": "Future implementation guidance omits attribution on growth or turns ordinary calibration into automatic threshold increases or operator escalation.",
+          "targets": [],
+          "at": "2026-10-26T02:04:55.336Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a23760458bd57683",
+      "key": "decision:docs/evidence/WO-014/decisions.md#wo-014-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b1ea601239836b8c74f44c0299d2ef5a5e79562c98aa7892555062fe4a93eacf",
+          "ref": "docs/evidence/WO-014/decisions.md#wo-014-d013",
+          "title": "WO-014-D013: Restore subagentCap to 20 in the records the final review publishes, or at the next order's activation, unless the operator authorizes a higher cap again.",
+          "summary": "{ \"id\": \"WO-014-D013\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: verify\", \"decision\": \"Board the launchpad subagent cap. docs/control/budgets.json now reads subagentCap 40 for this order (D002), and nothing restores 20 when the order merges.\", \"evidence\": [ \"git diff docs/control/budgets.json changes subagentCap from 20 to 40. D002 records the operator's raise for this work order and says the next order should restore 20 unless separately authorized.\", \"The verifier's usage readback reports cap 40 for this session.\" ], \"rejected\": [ { \"option\": \"Restore 20 during verification\", \"reason\": \"The operator's raise covers this order, including its fix and final review, and the verifier does not e",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The authorized cap of 40 continues through this order. Final review must restore 20 in the published records, or the next activation must do so unless separately authorized; the repair handoff carries that obligation.",
+          "reopenWhen": "WO-014 final review prepares the records for publication, or the next work order activates.",
+          "targets": [],
+          "at": "2026-10-26T02:04:55.343Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Settled by WO-014's final review on 2026-10-26 (FINAL-001, WO-014-D026): docs/control/budgets.json reads subagentCap 20 again in the records this review publishes; the operator's raise to 40 covered this order's fan-out, repair and review only (D002).",
+          "reopenWhen": "Another order activates while the cap reads above 20 without a recorded operator authorization.",
+          "targets": [],
+          "at": "2026-10-26T03:19:52.979Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6e526536f51d0c72",
+      "key": "decision:docs/evidence/WO-014/decisions.md#wo-014-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "458c15d7cc96beb1b1718072e41a8a425c9c83d9050647f643eb3ad2a06515e1",
+          "ref": "docs/evidence/WO-014/decisions.md#wo-014-d014",
+          "title": "WO-014-D014: In the next repair of the declared surfaces or in WO-018: derive the work filter's options from the loader or the summary instead of a literal list, and restore the literal characters in…",
+          "summary": "{ \"id\": \"WO-014-D014\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: verify\", \"decision\": \"Board two maintainability items in the declared surfaces; neither breaks a criterion. First, catalog-page.ts line 55 repeats the six work slugs, which the loader's chunk map already lists, so the Art of War work needs a feature edit beside its loader entry. Second, the change rewrites three unrelated en.json values from literal characters to \\\\u escapes, with identical parsed text.\", \"evidence\": [ \"libs/features/tools/src/lib/containers/catalog-page/catalog-page.ts:55 filters the work options with a literal six-slug array; libs/shared/catalog/src/lib/catalog-loader.ts declares the same six works as chunk ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "D018 and completed adjacent-0002 derive work options from the full loaded catalog and restore the three literal translation characters. A later-work regression, i18n check and uncached browser suite pass, recorded in repair.md and repair-preflight.json.",
+          "reopenWhen": "Adding a work requires editing a second feature list, or unrelated translation text is rewritten again.",
+          "targets": [],
+          "at": "2026-10-26T02:04:55.350Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ceaf0a88a6cf39da",
+      "key": "decision:docs/evidence/WO-014/decisions.md#wo-014-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4cc30ee9f3c6429d63621f0fa2f08a2ddf76c7d6997d04d847e48a0fd85e2671",
+          "ref": "docs/evidence/WO-014/decisions.md#wo-014-d015",
+          "title": "WO-014-D015: Planning: weigh the receipt's untyped-share and title-overlap conditions for WO-014's successors. Core or kit: screen a registered target's changed file contents against the private…",
+          "summary": "{ \"id\": \"WO-014-D015\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: verify\", \"decision\": \"Report two reopening conditions of planning receipt 2026-10-25-planning-8cf1b240128e3b80-010 that the shipped data meets, and board one launchpad screening gap. Criteria 2 and 4 stay met as written.\", \"evidence\": [ \"Receipt known issue on criterion 4: 1,914 of the 3,463 rows (55.3%) are untyped, above half. The commonest reason covers 38 untyped rows, under a tenth, and kind distinguishes sceneElement (360) and metric (58), so the other two parts of that condition do not hold.\", \"Receipt known issue on criterion 2: the verifier's overlap probe compared every committed string with the run's definition, rel",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Keep both planning receipt conditions and the target-content screening gap with their owners. The catalog remains 55.3 percent untyped with honest status and shortfall semantics; neither criterion is silently weakened. The planning handoff retains the successor assessment and core/kit screening request.",
+          "reopenWhen": "The next planning pass shapes WO-014 successors, core revises target content screening, or a changed target file encounters a private-term match.",
+          "targets": [],
+          "at": "2026-10-26T02:04:55.356Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-ea16db0faba5126e",
+      "key": "decision:docs/evidence/WO-014/decisions.md#wo-014-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f3c2258faa73fbf52f372a64d8744e755918e8fbe10cfeec2af3009e7a2fb899",
+          "ref": "docs/evidence/WO-014/decisions.md#wo-014-d019",
+          "title": "WO-014-D019: Next planning: map reusable operator guidance to existing supports or supported instance-owned interactions. Inspect the extension mechanism beyond the Contributor interface. If missing,…",
+          "summary": "{ \"date\": \"2026-10-26\", \"dispatch\": \"resume: fix; operator directions during repair\", \"id\": \"WO-014-D019\", \"decision\": \"Preserve all reusable instruction categories in docs/operator/implementation-guidance.md, linked from the mandatory operator record, and concrete performance/type duties in target references. Apply existing Tinkerer duties now; route any missing fork interaction mechanism through planning and a paste-ready core request.\", \"evidence\": [ \"The operator record synthesizes earlier executor/verifier decisions and the three direction captures, distinguishing permanent preferences from the one-order cap and accepted criterion amendment.\", \"One authorized read-only worker, codex-spa",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "D019's reusable guidance is filed and linked from the mandatory operator record. The next planning pass will investigate supported instance interaction extensions beyond the inspected Contributor interface; planning-handoff.md already supplies the paste-ready platform request if the mechanism is absent.",
+          "reopenWhen": "The next planning pass maps these fork-owned interaction requirements or an upstream release documents the supported extension contract.",
+          "targets": [],
+          "at": "2026-10-26T02:04:55.363Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-cc72e6b187cbb0ab",
+      "key": "decision:docs/evidence/WO-014/decisions.md#wo-014-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f069bf320a6fd61fcf2d8697d2026ae7a4f466ca295ea789dd2b765674eb0e66",
+          "ref": "docs/evidence/WO-014/decisions.md#wo-014-d020",
+          "title": "WO-014-D020: Plan a shared loading-layout repair: reserve translated shell line boxes and stable board loading geometry, compare with justified primary-language preloading, and retain cold…",
+          "summary": "{ \"date\": \"2026-10-26\", \"dispatch\": \"resume: fix; operator directions during repair\", \"id\": \"WO-014-D020\", \"decision\": \"Retain observed cold-load layout shifts as a concrete follow-up, without claiming a Core Web Vitals pass. Keep local timings diagnostic. Repair of shared translation readiness and board loading geometry requires a focused change with visual and failure-state coverage beyond the catalog/menu repair.\", \"evidence\": [ \"Two pilot batches pass all six scripted journey/profile combinations. Layout-shift attribution identifies navigation/main/brand/footer as translated text arrives, plus board loading geometry and footer movement as data replaces the skeleton.\", \"The second pilot r",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "D020 and adjacent-0003 diagnose cold shared translation/loading geometry. All 30 samples pass behavior assertions but retain cold-load CLS above the local diagnostic goal. Schedule the recorded geometry versus locale-preload comparison with ready-time, visual and error-state coverage.",
+          "reopenWhen": "The next planning pass schedules the defect, or an order changes shell translation readiness, board placeholders or footer geometry.",
+          "targets": [],
+          "at": "2026-10-26T02:04:55.370Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-5e0a2f662a416a4c",
+      "key": "decision:docs/evidence/WO-014/decisions.md#wo-014-d023",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "26f2a630e4eb2da379543ada42b0b1639f56f221aebbf41e37e0bfb408feccce",
+          "ref": "docs/evidence/WO-014/decisions.md#wo-014-d023",
+          "title": "WO-014-D023: Next order that edits tools/scripts/check-bundle.mjs or adds a route-only overlay consumer: refuse the menu's route-only dependency set (the Aria menu and list chunks, the CDK overlay…",
+          "summary": "{ \"id\": \"WO-014-D023\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: verify\", \"decision\": \"Board a scope gap in the new bundle check; it breaks no criterion. check-bundle.mjs proves the repair's placement by refusing three source sets in the initial graph: menu.ts, libs/shared/catalog and libs/features/tools. It does not refuse the menu's route-only dependencies, the Angular Aria menu and the CDK overlay, when another eager consumer imports them. Because the initial total is now 376.91 kB against the 500 kB warning budget, such a regression would pass both the check and the build budget unseen.\", \"evidence\": [ \"VER-002's uncached production build at target tree da7780d7: Initial total 376.91 kB",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "VER-002's G1 (WO-014-D023): the bundle check refuses the menu wrapper, the catalog and the Tools feature in the initial graph but not the menu's route-only dependencies when another eager consumer imports them. The final review left check-bundle.mjs as verified; the repair rule stays with the next order that edits the check or adds a route-only overlay consumer.",
+          "reopenWhen": "An initial-bundle input from @angular/aria/menu or @angular/cdk overlay appears in a production build while check:bundle passes, or an order edits tools/scripts/check-bundle.mjs.",
+          "targets": [],
+          "at": "2026-10-26T03:19:52.994Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-d03ddc0e7d6681a8",
+      "key": "decision:docs/evidence/WO-014/decisions.md#wo-014-d024",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ae946136fdb276e7a8f8d16a9ae034e7259444386c164e8d9931653ce72e957b",
+          "ref": "docs/evidence/WO-014/decisions.md#wo-014-d024",
+          "title": "WO-014-D024: Final review of WO-014, or the next repair of these surfaces: add the blank line at catalog.spec.ts:166 so dotln-e2e lint reports no warning, write the ellipsis in tools.catalog.loading…",
+          "summary": "{ \"id\": \"WO-014-D024\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: verify\", \"decision\": \"Board four small hygiene items in this order's own new or changed text; none breaks a criterion or a behavior main had. First, the new apps/dotln-e2e/src/catalog.spec.ts carries a new lint warning at line 166. Second, the new key tools.catalog.loading in en.json uses a \\\\u2026 escape, contrary to D014's rule to keep literal characters. Third, the tools project's rename to workspace-tools leaves WS-001 house rule text naming tools:lint. Fourth, the @dotln-angular/ui/menu README names DotlnMenu and MenuOption but not DotlnFilterMenu, which the entry point also exports.\", \"evidence\": [ \"VER-002's uncached np",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-014's final review fixed three of the four items in the reviewed commit 23b39aef (the blank line at catalog.spec.ts, the literal ellipsis in tools.catalog.loading in en.json and the feature's test-kit copy, and DotlnFilterMenu in the menu entry point's README; FINAL-001, WO-014-D026). The remaining item, WS-001 house-rule text naming tools:lint for the project now named workspace-tools, stays with the planning pass that next edits WS-001, as D024 routes it.",
+          "reopenWhen": "A planning pass edits docs/workstreams/WS-001-dotln-angular.md.",
+          "targets": [],
+          "at": "2026-10-26T03:19:52.986Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-e6309e0d159b3f8a",
+      "key": "decision:docs/evidence/WO-014/decisions.md#wo-014-d027",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d4bda848048de54af0731fe59e5cf2d2a14932e49bc4719be441966c468f6699",
+          "ref": "docs/evidence/WO-014/decisions.md#wo-014-d027",
+          "title": "WO-014-D027: Planning: make the verified-phase draft publish observable at verification-result pass for a target order, through the verifier role's completion duties or a kit prompt that names the…",
+          "summary": "{ \"id\": \"WO-014-D027\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: final review\", \"decision\": \"Record that no draft pull request exists for this order and proceed to the final publish, which opens the pull request ready; do not run the draft form during final review. The verified-phase draft publish is the step the session that records verification-result pass runs (the operator's standing preference of 2026-10-18, D5; the order's step 15 through WO-007's steps 15 to 17). VER-002 recorded pass and wrote that its session publishes nothing, so the operator had no draft to read before dispatching this review and no CI run exists for the branch before it. The safe default: the final publish's pul",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "WO-014's final review found no draft pull request for the order: the session that recorded VER-002's pass did not run the verified-phase draft publish, so the operator had no draft to read before dispatching final review (FINAL-001 F1, WO-014-D027). The final publish opens the pull request ready; the planning pass decides how the draft becomes observable at verification-result pass.",
+          "reopenWhen": "The next planning pass reads this row, or another target order reaches final review without a draft pull request.",
+          "targets": [],
+          "at": "2026-10-26T03:19:53.001Z"
         }
       ]
     }

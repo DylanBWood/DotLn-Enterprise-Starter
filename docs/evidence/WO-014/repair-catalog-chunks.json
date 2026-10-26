@@ -1,0 +1,67 @@
+{
+  "configuration": "production",
+  "recordedAt": "2026-10-26T02:03:51.471Z",
+  "initialRawBytes": 376913,
+  "initialEstimatedTransferKB": 102.65,
+  "warningKB": 500,
+  "errorKB": 1000,
+  "comparison": "All eight chunk names, emitted bytes and SHA-256 hashes equal the initial execution record; final production metadata and emitted files both checked.",
+  "chunks": [
+    {
+      "batch": "tt",
+      "file": "chunk-BVthtYgh.js",
+      "rawBytes": 349921,
+      "estimatedTransfer": "34.47 kB",
+      "sha256": "64808d0740eadb869f094a1c9e3f44fe7c5f30638603d84fce6797c051271fc1"
+    },
+    {
+      "batch": "geb",
+      "file": "chunk-D9PW1xf7.js",
+      "rawBytes": 287557,
+      "estimatedTransfer": "26.65 kB",
+      "sha256": "d351ae5caabe066a4f9c7f842858cf1ed95114d3606c201b137c53a75f3f346f"
+    },
+    {
+      "batch": "rxjs-core",
+      "file": "chunk-DzV0er0_.js",
+      "rawBytes": 252295,
+      "estimatedTransfer": "25.08 kB",
+      "sha256": "b5349315ba38826d4c5c7afc145b6ed809237a876807fe78441d1b1ecd00ae4e"
+    },
+    {
+      "batch": "poeaa",
+      "file": "chunk-cy6MiSF2.js",
+      "rawBytes": 214208,
+      "estimatedTransfer": "10.84 kB",
+      "sha256": "8185f22a407ade31ca8fab010e1e4cdc579231cdb1e3c8a15535838be72548d6"
+    },
+    {
+      "batch": "aifg-b",
+      "file": "chunk-ExEp_Qyr.js",
+      "rawBytes": 196597,
+      "estimatedTransfer": "16.30 kB",
+      "sha256": "d2535ee0dc895f756a208e5a7d99e19aab9f6071d64d5603a58ccb1aaa983eb3"
+    },
+    {
+      "batch": "aifg-a",
+      "file": "chunk-CAspABmX.js",
+      "rawBytes": 172100,
+      "estimatedTransfer": "14.74 kB",
+      "sha256": "e7fdaebfb55f6d82a71575ae43d8d97979a8c59ae8855de75f5863330dcd0556"
+    },
+    {
+      "batch": "eip",
+      "file": "chunk-B533tzjP.js",
+      "rawBytes": 144319,
+      "estimatedTransfer": "15.42 kB",
+      "sha256": "bb5c48736f04bad0d62b157e148214e04ee9faf7a65b964f7405095d8e594af6"
+    },
+    {
+      "batch": "rxjs-patterns",
+      "file": "chunk-C0rFL-So.js",
+      "rawBytes": 141944,
+      "estimatedTransfer": "16.15 kB",
+      "sha256": "c623a2b66818195d175599cdb62171cf52396ca10f4146236b4448e37c1d86b5"
+    }
+  ]
+}

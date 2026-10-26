@@ -1,0 +1,2012 @@
+{
+  "label": "checker-a",
+  "seed": "catalog-checker-a-v0",
+  "protocol": "First up to three typed ids per batch, then seeded SHA-256 ranking filled round-robin across batches.",
+  "checkpointDigests": {
+    "aifg-a": "4cb2e2e297039b45c4d8bf12cfdf6cb845cd5e54e34d5cb63e9b4c08f65aa751",
+    "aifg-b": "9af39ff648bd4019284d989fc6da6cfcc248235efd855cd6bbca9db297b2d694",
+    "eip": "0d9cff5cf7bb7759f17bd519ea1a44ca42b10e029e542feb09688e71acf77b0f",
+    "geb": "a276ed5ade5c75922e69a75be5c4b8b42cd887a7e50f81410c31b80c45cc8837",
+    "poeaa": "6936921cda8d19e26f4de4a930f8d7f4986ab064a691e224dfc196ef6d3847e6",
+    "rxjs-core": "7f80162edcb2e0cb3cce2bd13d968e6bd440e28b9b7df7dd86d62a445f778f63",
+    "rxjs-patterns": "c7e0fd892628c92b1cd93d0a2e1781542578ae4c5606c67d722c079249a5cf4f",
+    "tt": "87f4ec31b21a6a932aca8fab1749720f5adb2fc0bd6d04c63ac0603c34075fc1"
+  },
+  "counts": {
+    "aifg-a": 6,
+    "aifg-b": 6,
+    "eip": 6,
+    "geb": 6,
+    "poeaa": 3,
+    "rxjs-core": 6,
+    "rxjs-patterns": 5,
+    "tt": 2
+  },
+  "tools": [
+    {
+      "id": "aifg-a:144",
+      "work": "aifg",
+      "title": "Weighted blending",
+      "rowType": "algorithm",
+      "classifiedBy": "classifier-aifg-a",
+      "provenance": "map",
+      "map": {
+        "file": "ai-for-games-3e-part-a.jsonl",
+        "line": 144,
+        "sha256": "5252167b924021b26a4ed2d9e9df5beee78b374dbd60089565ff2cde34f7d870"
+      },
+      "status": "typed",
+      "kind": "behaviour",
+      "faces": {
+        "scene": [
+          "units-on-terrain"
+        ],
+        "selection": {
+          "target": "unit",
+          "min": 1,
+          "max": 20
+        },
+        "transform": {
+          "kind": "steer.blend",
+          "params": [
+            {
+              "name": "seek-weight",
+              "unit": "weight",
+              "default": 1,
+              "min": 0,
+              "max": 5
+            },
+            {
+              "name": "avoidance-weight",
+              "unit": "weight",
+              "default": 2,
+              "min": 0,
+              "max": 5
+            },
+            {
+              "name": "separation-weight",
+              "unit": "weight",
+              "default": 1,
+              "min": 0,
+              "max": 5
+            }
+          ]
+        },
+        "observable": [
+          "unit-trajectories",
+          "net-acceleration"
+        ],
+        "toyMetric": [
+          "arrival-rate",
+          "minimum-separation"
+        ]
+      }
+    },
+    {
+      "id": "aifg-a:145",
+      "work": "aifg",
+      "title": "Flocking",
+      "rowType": "pattern",
+      "classifiedBy": "classifier-aifg-a",
+      "provenance": "map",
+      "map": {
+        "file": "ai-for-games-3e-part-a.jsonl",
+        "line": 145,
+        "sha256": "5252167b924021b26a4ed2d9e9df5beee78b374dbd60089565ff2cde34f7d870"
+      },
+      "status": "typed",
+      "kind": "behaviour",
+      "faces": {
+        "scene": [
+          "units-on-terrain"
+        ],
+        "selection": {
+          "target": "unit",
+          "min": 2,
+          "max": 20
+        },
+        "transform": {
+          "kind": "steer.blend",
+          "params": [
+            {
+              "name": "separation-weight",
+              "unit": "weight",
+              "default": 2,
+              "min": 0,
+              "max": 5
+            },
+            {
+              "name": "cohesion-weight",
+              "unit": "weight",
+              "default": 1,
+              "min": 0,
+              "max": 5
+            },
+            {
+              "name": "velocity-match-weight",
+              "unit": "weight",
+              "default": 1,
+              "min": 0,
+              "max": 5
+            }
+          ]
+        },
+        "observable": [
+          "flock-centroid",
+          "heading-spread"
+        ],
+        "toyMetric": [
+          "mean-neighbour-distance",
+          "velocity-variance"
+        ]
+      }
+    },
+    {
+      "id": "aifg-a:149",
+      "work": "aifg",
+      "title": "Priority steering",
+      "rowType": "algorithm",
+      "classifiedBy": "classifier-aifg-a",
+      "provenance": "map",
+      "map": {
+        "file": "ai-for-games-3e-part-a.jsonl",
+        "line": 149,
+        "sha256": "5252167b924021b26a4ed2d9e9df5beee78b374dbd60089565ff2cde34f7d870"
+      },
+      "status": "typed",
+      "kind": "behaviour",
+      "faces": {
+        "scene": [
+          "units-on-terrain"
+        ],
+        "selection": {
+          "target": "unit",
+          "min": 1,
+          "max": 20
+        },
+        "transform": {
+          "kind": "steer.priority",
+          "params": [
+            {
+              "name": "avoidance-priority",
+              "unit": "rank",
+              "default": 1,
+              "min": 1,
+              "max": 3
+            },
+            {
+              "name": "separation-priority",
+              "unit": "rank",
+              "default": 2,
+              "min": 1,
+              "max": 3
+            },
+            {
+              "name": "seek-priority",
+              "unit": "rank",
+              "default": 3,
+              "min": 1,
+              "max": 3
+            },
+            {
+              "name": "epsilon",
+              "unit": "acceleration",
+              "default": 0.1,
+              "min": 0,
+              "max": 1
+            }
+          ]
+        },
+        "observable": [
+          "active-steering-group",
+          "unit-trajectories"
+        ],
+        "toyMetric": [
+          "collision-count",
+          "priority-switch-count"
+        ]
+      }
+    },
+    {
+      "id": "aifg-a:151",
+      "work": "aifg",
+      "title": "Equilibrium fallback",
+      "rowType": "technique",
+      "classifiedBy": "classifier-aifg-a",
+      "provenance": "map",
+      "map": {
+        "file": "ai-for-games-3e-part-a.jsonl",
+        "line": 151,
+        "sha256": "5252167b924021b26a4ed2d9e9df5beee78b374dbd60089565ff2cde34f7d870"
+      },
+      "status": "typed",
+      "kind": "rule",
+      "faces": {
+        "scene": [
+          "units-on-terrain"
+        ],
+        "selection": {
+          "target": "unit",
+          "min": 1,
+          "max": 20
+        },
+        "transform": {
+          "kind": "steer.priority",
+          "params": [
+            {
+              "name": "seek-priority",
+              "unit": "rank",
+              "default": 1,
+              "min": 1,
+              "max": 2
+            },
+            {
+              "name": "wander-priority",
+              "unit": "rank",
+              "default": 2,
+              "min": 1,
+              "max": 2
+            },
+            {
+              "name": "epsilon",
+              "unit": "acceleration",
+              "default": 0.1,
+              "min": 0,
+              "max": 1
+            }
+          ]
+        },
+        "observable": [
+          "fallback-activation",
+          "net-acceleration"
+        ],
+        "toyMetric": [
+          "fallback-step-count",
+          "stalled-steps"
+        ]
+      }
+    },
+    {
+      "id": "aifg-a:174",
+      "work": "aifg",
+      "title": "Fixed formations",
+      "rowType": "pattern",
+      "classifiedBy": "classifier-aifg-a",
+      "provenance": "map",
+      "map": {
+        "file": "ai-for-games-3e-part-a.jsonl",
+        "line": 174,
+        "sha256": "5252167b924021b26a4ed2d9e9df5beee78b374dbd60089565ff2cde34f7d870"
+      },
+      "status": "typed",
+      "kind": "behaviour",
+      "faces": {
+        "scene": [
+          "units-on-terrain",
+          "teams"
+        ],
+        "selection": {
+          "target": "squad",
+          "min": 1,
+          "max": 1
+        },
+        "transform": {
+          "kind": "formation.fixed",
+          "params": [
+            {
+              "name": "slot-spacing",
+              "unit": "distance",
+              "default": 2,
+              "min": 0.5,
+              "max": 8
+            }
+          ]
+        },
+        "observable": [
+          "assigned-slots",
+          "formation-shape"
+        ],
+        "toyMetric": [
+          "mean-slot-error",
+          "formation-width"
+        ]
+      }
+    },
+    {
+      "id": "aifg-a:253",
+      "work": "aifg",
+      "title": "Cost functions",
+      "rowType": "concept",
+      "classifiedBy": "classifier-aifg-a",
+      "provenance": "map",
+      "map": {
+        "file": "ai-for-games-3e-part-a.jsonl",
+        "line": 253,
+        "sha256": "5252167b924021b26a4ed2d9e9df5beee78b374dbd60089565ff2cde34f7d870"
+      },
+      "status": "typed",
+      "kind": "rule",
+      "faces": {
+        "scene": [
+          "units-on-terrain"
+        ],
+        "selection": {
+          "target": "region",
+          "min": 1,
+          "max": 20
+        },
+        "transform": {
+          "kind": "path.cost",
+          "params": [
+            {
+              "name": "travel-cost",
+              "unit": "cost-per-distance",
+              "default": 1,
+              "min": 0,
+              "max": 10
+            },
+            {
+              "name": "danger-cost",
+              "unit": "cost",
+              "default": 3,
+              "min": 0,
+              "max": 20
+            },
+            {
+              "name": "visibility-cost",
+              "unit": "cost",
+              "default": 1,
+              "min": 0,
+              "max": 20
+            }
+          ]
+        },
+        "observable": [
+          "region-costs",
+          "chosen-route"
+        ],
+        "toyMetric": [
+          "route-cost",
+          "route-danger",
+          "route-length"
+        ]
+      }
+    },
+    {
+      "id": "aifg-b:22",
+      "work": "aifg",
+      "title": "Simple influence map",
+      "rowType": "data-structure",
+      "classifiedBy": "classifier-aifg-b",
+      "provenance": "map",
+      "map": {
+        "file": "ai-for-games-3e-part-b.jsonl",
+        "line": 22,
+        "sha256": "ebc3793e94fd84a008775c061851ebf849b9669477dfdfdefdb3a8a9880434b3"
+      },
+      "kind": "analysis",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "units-on-terrain"
+        ],
+        "selection": {
+          "target": "unit",
+          "min": 1,
+          "max": 20
+        },
+        "transform": {
+          "kind": "ground.influence",
+          "params": [
+            {
+              "name": "source-strength",
+              "unit": "influence",
+              "default": 1,
+              "min": 0,
+              "max": 10
+            },
+            {
+              "name": "radius",
+              "unit": "terrain-units",
+              "default": 5,
+              "min": 1,
+              "max": 20
+            }
+          ]
+        },
+        "observable": [
+          "influence-field",
+          "control-frontier"
+        ],
+        "toyMetric": [
+          "controlled-area",
+          "contested-area"
+        ]
+      }
+    },
+    {
+      "id": "aifg-b:23",
+      "work": "aifg",
+      "title": "Influence decay function",
+      "rowType": "concept",
+      "classifiedBy": "classifier-aifg-b",
+      "provenance": "map",
+      "map": {
+        "file": "ai-for-games-3e-part-b.jsonl",
+        "line": 23,
+        "sha256": "ebc3793e94fd84a008775c061851ebf849b9669477dfdfdefdb3a8a9880434b3"
+      },
+      "kind": "rule",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "units-on-terrain"
+        ],
+        "selection": {
+          "target": "unit",
+          "min": 1,
+          "max": 20
+        },
+        "transform": {
+          "kind": "ground.influence",
+          "params": [
+            {
+              "name": "distance-decay-exponent",
+              "unit": "ratio",
+              "default": 1,
+              "min": 0.25,
+              "max": 4
+            },
+            {
+              "name": "source-strength",
+              "unit": "influence",
+              "default": 1,
+              "min": 0,
+              "max": 10
+            }
+          ]
+        },
+        "observable": [
+          "influence-contours",
+          "control-frontier"
+        ],
+        "toyMetric": [
+          "influence-reach",
+          "controlled-area"
+        ]
+      }
+    },
+    {
+      "id": "aifg-b:26",
+      "work": "aifg",
+      "title": "Limited influence radius",
+      "rowType": "trade-off",
+      "classifiedBy": "classifier-aifg-b",
+      "provenance": "map",
+      "map": {
+        "file": "ai-for-games-3e-part-b.jsonl",
+        "line": 26,
+        "sha256": "ebc3793e94fd84a008775c061851ebf849b9669477dfdfdefdb3a8a9880434b3"
+      },
+      "kind": "rule",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "units-on-terrain"
+        ],
+        "selection": {
+          "target": "unit",
+          "min": 1,
+          "max": 20
+        },
+        "transform": {
+          "kind": "ground.influence",
+          "params": [
+            {
+              "name": "radius",
+              "unit": "terrain-units",
+              "default": 5,
+              "min": 1,
+              "max": 20
+            }
+          ]
+        },
+        "observable": [
+          "influence-boundary",
+          "influence-field"
+        ],
+        "toyMetric": [
+          "affected-region-count",
+          "field-update-cost"
+        ]
+      }
+    },
+    {
+      "id": "aifg-b:30",
+      "work": "aifg",
+      "title": "Terrain difficulty map",
+      "rowType": "data-structure",
+      "classifiedBy": "classifier-aifg-b",
+      "provenance": "map",
+      "map": {
+        "file": "ai-for-games-3e-part-b.jsonl",
+        "line": 30,
+        "sha256": "ebc3793e94fd84a008775c061851ebf849b9669477dfdfdefdb3a8a9880434b3"
+      },
+      "kind": "analysis",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "units-on-terrain"
+        ],
+        "selection": {
+          "target": "region",
+          "min": 1,
+          "max": 20
+        },
+        "transform": {
+          "kind": "path.cost",
+          "params": [
+            {
+              "name": "terrain-cost-multiplier",
+              "unit": "ratio",
+              "default": 2,
+              "min": 0.1,
+              "max": 10
+            }
+          ]
+        },
+        "observable": [
+          "edge-costs",
+          "chosen-routes"
+        ],
+        "toyMetric": [
+          "route-cost",
+          "terrain-crossings"
+        ]
+      }
+    },
+    {
+      "id": "aifg-b:354",
+      "work": "aifg",
+      "title": "Group movement",
+      "rowType": "technique",
+      "classifiedBy": "classifier-aifg-b",
+      "provenance": "map",
+      "map": {
+        "file": "ai-for-games-3e-part-b.jsonl",
+        "line": 354,
+        "sha256": "ebc3793e94fd84a008775c061851ebf849b9669477dfdfdefdb3a8a9880434b3"
+      },
+      "kind": "behaviour",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "units-on-terrain",
+          "teams"
+        ],
+        "selection": {
+          "target": "squad",
+          "min": 1,
+          "max": 1
+        },
+        "transform": {
+          "kind": "formation.twoLevel",
+          "params": [
+            {
+              "name": "slot-spacing",
+              "unit": "terrain-units",
+              "default": 1.5,
+              "min": 0.5,
+              "max": 5
+            },
+            {
+              "name": "anchor-speed",
+              "unit": "terrain-units-per-tick",
+              "default": 1,
+              "min": 0,
+              "max": 5
+            }
+          ]
+        },
+        "observable": [
+          "moving-anchor",
+          "slot-markers",
+          "unit-trajectories"
+        ],
+        "toyMetric": [
+          "formation-error",
+          "arrival-spread"
+        ]
+      }
+    },
+    {
+      "id": "aifg-b:49",
+      "work": "aifg",
+      "title": "The cost function",
+      "rowType": "concept",
+      "classifiedBy": "classifier-aifg-b",
+      "provenance": "map",
+      "map": {
+        "file": "ai-for-games-3e-part-b.jsonl",
+        "line": 49,
+        "sha256": "ebc3793e94fd84a008775c061851ebf849b9669477dfdfdefdb3a8a9880434b3"
+      },
+      "kind": "rule",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "units-on-terrain"
+        ],
+        "selection": {
+          "target": "region",
+          "min": 1,
+          "max": 20
+        },
+        "transform": {
+          "kind": "path.cost",
+          "params": [
+            {
+              "name": "distance-weight",
+              "unit": "cost-per-distance",
+              "default": 1,
+              "min": 0.1,
+              "max": 10
+            },
+            {
+              "name": "danger-weight",
+              "unit": "cost-per-danger",
+              "default": 2,
+              "min": 0,
+              "max": 10
+            },
+            {
+              "name": "exposure-weight",
+              "unit": "cost-per-exposure",
+              "default": 1,
+              "min": 0,
+              "max": 10
+            }
+          ]
+        },
+        "observable": [
+          "edge-cost-breakdown",
+          "chosen-routes"
+        ],
+        "toyMetric": [
+          "route-cost",
+          "minimum-edge-cost"
+        ]
+      }
+    },
+    {
+      "id": "eip:101",
+      "work": "eip",
+      "title": "Filter whole messages",
+      "rowType": "pattern",
+      "classifiedBy": "classifier-eip",
+      "provenance": "map",
+      "map": {
+        "file": "enterprise-integration-patterns.jsonl",
+        "line": 101,
+        "sha256": "53bcf751d362b920b638f1673d4312ccc0d5d474b116e684cb6b51cae33e9d2b"
+      },
+      "kind": "rule",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 1,
+          "max": 20
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "selector-threshold",
+              "unit": "message-value",
+              "default": 10,
+              "min": 0,
+              "max": 20
+            }
+          ]
+        },
+        "observable": [
+          "Only messages whose numeric selector meets the threshold continue."
+        ],
+        "toyMetric": [
+          "passed-messages",
+          "dropped-messages"
+        ]
+      }
+    },
+    {
+      "id": "eip:105",
+      "work": "eip",
+      "title": "Copy to a recipient set",
+      "rowType": "pattern",
+      "classifiedBy": "classifier-eip",
+      "provenance": "map",
+      "map": {
+        "file": "enterprise-integration-patterns.jsonl",
+        "line": 105,
+        "sha256": "53bcf751d362b920b638f1673d4312ccc0d5d474b116e684cb6b51cae33e9d2b"
+      },
+      "kind": "rule",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 1,
+          "max": 20
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "recipient-count",
+              "unit": "units",
+              "default": 5,
+              "min": 1,
+              "max": 20
+            }
+          ]
+        },
+        "observable": [
+          "A message reaches every member of a numbered recipient set."
+        ],
+        "toyMetric": [
+          "recipient-deliveries",
+          "message-copy-count"
+        ]
+      }
+    },
+    {
+      "id": "eip:120",
+      "work": "eip",
+      "title": "Restore message sequence order",
+      "rowType": "pattern",
+      "classifiedBy": "classifier-eip",
+      "provenance": "map",
+      "map": {
+        "file": "enterprise-integration-patterns.jsonl",
+        "line": 120,
+        "sha256": "53bcf751d362b920b638f1673d4312ccc0d5d474b116e684cb6b51cae33e9d2b"
+      },
+      "kind": "rule",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 1,
+          "max": 20
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "next-sequence",
+              "unit": "sequence-number",
+              "default": 1,
+              "min": 1,
+              "max": 20
+            },
+            {
+              "name": "buffer-capacity",
+              "unit": "messages",
+              "default": 20,
+              "min": 1,
+              "max": 200
+            }
+          ]
+        },
+        "observable": [
+          "Buffered messages leave in consecutive order after reordered arrival."
+        ],
+        "toyMetric": [
+          "out-of-order-releases",
+          "buffered-messages"
+        ]
+      }
+    },
+    {
+      "id": "eip:123",
+      "work": "eip",
+      "title": "Acknowledged sliding send window",
+      "rowType": "technique",
+      "classifiedBy": "classifier-eip",
+      "provenance": "map",
+      "map": {
+        "file": "enterprise-integration-patterns.jsonl",
+        "line": 123,
+        "sha256": "53bcf751d362b920b638f1673d4312ccc0d5d474b116e684cb6b51cae33e9d2b"
+      },
+      "kind": "rule",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 1,
+          "max": 20
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "send-window",
+              "unit": "messages",
+              "default": 5,
+              "min": 1,
+              "max": 20
+            }
+          ]
+        },
+        "observable": [
+          "A sender cannot advance more than the allowed window beyond acknowledged progress."
+        ],
+        "toyMetric": [
+          "inflight-messages",
+          "blocked-send-ticks"
+        ]
+      }
+    },
+    {
+      "id": "eip:228",
+      "work": "eip",
+      "title": "Free a listener with pooled message performers",
+      "rowType": "technique",
+      "classifiedBy": "classifier-eip",
+      "provenance": "map",
+      "map": {
+        "file": "enterprise-integration-patterns.jsonl",
+        "line": 228,
+        "sha256": "53bcf751d362b920b638f1673d4312ccc0d5d474b116e684cb6b51cae33e9d2b"
+      },
+      "kind": "behaviour",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 1,
+          "max": 20
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "performer-count",
+              "unit": "units",
+              "default": 4,
+              "min": 1,
+              "max": 20
+            },
+            {
+              "name": "performer-inflight-limit",
+              "unit": "messages",
+              "default": 1,
+              "min": 1,
+              "max": 20
+            }
+          ]
+        },
+        "observable": [
+          "A listener immediately hands work to an available performer and resumes receiving."
+        ],
+        "toyMetric": [
+          "listener-blocked-ticks",
+          "performer-backlog"
+        ]
+      }
+    },
+    {
+      "id": "eip:66",
+      "work": "eip",
+      "title": "Separate channels by message type",
+      "rowType": "pattern",
+      "classifiedBy": "classifier-eip",
+      "provenance": "map",
+      "map": {
+        "file": "enterprise-integration-patterns.jsonl",
+        "line": 66,
+        "sha256": "53bcf751d362b920b638f1673d4312ccc0d5d474b116e684cb6b51cae33e9d2b"
+      },
+      "kind": "rule",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 1,
+          "max": 20
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "data-type-count",
+              "unit": "types",
+              "default": 4,
+              "min": 1,
+              "max": 20
+            }
+          ]
+        },
+        "observable": [
+          "Messages route to the channel matching their numbered data type."
+        ],
+        "toyMetric": [
+          "type-mismatches",
+          "typed-channel-count"
+        ]
+      }
+    },
+    {
+      "id": "geb1:13",
+      "work": "geb",
+      "title": "Drawing Hands",
+      "rowType": "concept",
+      "classifiedBy": "classifier-geb",
+      "provenance": "map",
+      "map": {
+        "file": "geb-map-part-1.jsonl",
+        "line": 13,
+        "sha256": "41f4e58e581b4df80861e11cc5fc2a9c51c02b8061ce80d511703e9b446a71dc"
+      },
+      "kind": "relationship",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "levels"
+        ],
+        "selection": {
+          "target": "scene",
+          "min": 1,
+          "max": 1
+        },
+        "transform": {
+          "kind": "level.ring",
+          "params": [
+            {
+              "name": "loop-depth",
+              "unit": "levels",
+              "default": 2,
+              "min": 2,
+              "max": 20
+            }
+          ]
+        },
+        "observable": [
+          "A reciprocal creation relation closes a displayed path across levels."
+        ],
+        "toyMetric": [
+          "cross-level-return-count",
+          "visible-loop-depth"
+        ]
+      }
+    },
+    {
+      "id": "geb1:51",
+      "work": "geb",
+      "title": "Jumping out of the system",
+      "rowType": "technique",
+      "classifiedBy": "classifier-geb",
+      "provenance": "map",
+      "map": {
+        "file": "geb-map-part-1.jsonl",
+        "line": 51,
+        "sha256": "41f4e58e581b4df80861e11cc5fc2a9c51c02b8061ce80d511703e9b446a71dc"
+      },
+      "kind": "mode",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "levels"
+        ],
+        "selection": {
+          "target": "scene",
+          "min": 1,
+          "max": 1
+        },
+        "transform": {
+          "kind": "level.zoom",
+          "params": [
+            {
+              "name": "description-level",
+              "unit": "levels",
+              "default": 1,
+              "min": 0,
+              "max": 2
+            }
+          ]
+        },
+        "observable": [
+          "The display switches between individual rule steps and a whole-system view."
+        ],
+        "toyMetric": [
+          "visible-description-level"
+        ]
+      }
+    },
+    {
+      "id": "geb2:174",
+      "work": "geb",
+      "title": "Self-engulfing television",
+      "rowType": "concept",
+      "classifiedBy": "classifier-geb",
+      "provenance": "map",
+      "map": {
+        "file": "geb-map-part-2.jsonl",
+        "line": 174,
+        "sha256": "d1acbd4f0cd5ee6de7cdeccf1847287d50a4d3778146f74ab8279580373f7f05"
+      },
+      "kind": "relationship",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "levels"
+        ],
+        "selection": {
+          "target": "scene",
+          "min": 1,
+          "max": 1
+        },
+        "transform": {
+          "kind": "level.ring",
+          "params": [
+            {
+              "name": "loop-depth",
+              "unit": "levels",
+              "default": 4,
+              "min": 2,
+              "max": 20
+            }
+          ]
+        },
+        "observable": [
+          "Capture and display links close into a visible path across representation levels."
+        ],
+        "toyMetric": [
+          "cross-level-return-count",
+          "visible-loop-depth"
+        ]
+      }
+    },
+    {
+      "id": "geb2:197",
+      "work": "geb",
+      "title": "Central Dogma of Typogenetics",
+      "rowType": "principle",
+      "classifiedBy": "classifier-geb",
+      "provenance": "map",
+      "map": {
+        "file": "geb-map-part-2.jsonl",
+        "line": 197,
+        "sha256": "d1acbd4f0cd5ee6de7cdeccf1847287d50a4d3778146f74ab8279580373f7f05"
+      },
+      "kind": "relationship",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "levels"
+        ],
+        "selection": {
+          "target": "scene",
+          "min": 1,
+          "max": 1
+        },
+        "transform": {
+          "kind": "level.ring",
+          "params": [
+            {
+              "name": "loop-depth",
+              "unit": "levels",
+              "default": 2,
+              "min": 2,
+              "max": 20
+            }
+          ]
+        },
+        "observable": [
+          "A code-to-editor path returns to its originating code level."
+        ],
+        "toyMetric": [
+          "cross-level-return-count",
+          "visible-loop-depth"
+        ]
+      }
+    },
+    {
+      "id": "geb2:336",
+      "work": "geb",
+      "title": "Stepping out of the dialogue (final jootsing)",
+      "rowType": "technique",
+      "classifiedBy": "classifier-geb",
+      "provenance": "map",
+      "map": {
+        "file": "geb-map-part-2.jsonl",
+        "line": 336,
+        "sha256": "d1acbd4f0cd5ee6de7cdeccf1847287d50a4d3778146f74ab8279580373f7f05"
+      },
+      "kind": "mode",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "levels"
+        ],
+        "selection": {
+          "target": "scene",
+          "min": 1,
+          "max": 1
+        },
+        "transform": {
+          "kind": "level.zoom",
+          "params": [
+            {
+              "name": "description-level",
+              "unit": "levels",
+              "default": 1,
+              "min": 0,
+              "max": 2
+            }
+          ]
+        },
+        "observable": [
+          "The display moves outward from conversation to narrator and viewer levels."
+        ],
+        "toyMetric": [
+          "visible-description-level"
+        ]
+      }
+    },
+    {
+      "id": "geb2:50",
+      "work": "geb",
+      "title": "HOLISM/REDUCTIONISM/MU figure",
+      "rowType": "concept",
+      "classifiedBy": "classifier-geb",
+      "provenance": "map",
+      "map": {
+        "file": "geb-map-part-2.jsonl",
+        "line": 50,
+        "sha256": "d1acbd4f0cd5ee6de7cdeccf1847287d50a4d3778146f74ab8279580373f7f05"
+      },
+      "kind": "mode",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "levels"
+        ],
+        "selection": {
+          "target": "scene",
+          "min": 1,
+          "max": 1
+        },
+        "transform": {
+          "kind": "level.zoom",
+          "params": [
+            {
+              "name": "magnification-level",
+              "unit": "levels",
+              "default": 1,
+              "min": 0,
+              "max": 2
+            }
+          ]
+        },
+        "observable": [
+          "Different symbol groupings become visible as the displayed scale changes."
+        ],
+        "toyMetric": [
+          "visible-description-level"
+        ]
+      }
+    },
+    {
+      "id": "poeaa:196",
+      "work": "poeaa",
+      "title": "Synchronous versus asynchronous distribution",
+      "rowType": "trade-off",
+      "classifiedBy": "classifier-poeaa",
+      "provenance": "map",
+      "map": {
+        "file": "poeaa.jsonl",
+        "line": 196,
+        "sha256": "216fd5eaad7da111367ee23a136fd60283cf67185b950fade0983ea7d48ae468"
+      },
+      "kind": "mode",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 1,
+          "max": 1
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "await-reply",
+              "unit": "flag",
+              "default": 0,
+              "min": 0,
+              "max": 1
+            },
+            {
+              "name": "inflight-limit",
+              "unit": "messages",
+              "default": 20,
+              "min": 1,
+              "max": 20
+            }
+          ]
+        },
+        "observable": [
+          "queued-messages",
+          "waiting-senders",
+          "delivered-replies"
+        ],
+        "toyMetric": [
+          "completed-message-count",
+          "sender-wait-ticks"
+        ]
+      }
+    },
+    {
+      "id": "poeaa:251",
+      "work": "poeaa",
+      "title": "Batched writes",
+      "rowType": "technique",
+      "classifiedBy": "classifier-poeaa",
+      "provenance": "map",
+      "map": {
+        "file": "poeaa.jsonl",
+        "line": 251,
+        "sha256": "216fd5eaad7da111367ee23a136fd60283cf67185b950fade0983ea7d48ae468"
+      },
+      "kind": "behaviour",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels",
+          "pipeline"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 1,
+          "max": 1
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "batch-size",
+              "unit": "messages",
+              "default": 5,
+              "min": 1,
+              "max": 20
+            },
+            {
+              "name": "flush-interval",
+              "unit": "ticks",
+              "default": 2,
+              "min": 1,
+              "max": 20
+            }
+          ]
+        },
+        "observable": [
+          "pending-command-messages",
+          "delivered-message-batches"
+        ],
+        "toyMetric": [
+          "transport-round-trip-count",
+          "message-wait-ticks"
+        ]
+      }
+    },
+    {
+      "id": "poeaa:329",
+      "work": "poeaa",
+      "title": "Observer synchronisation",
+      "rowType": "technique",
+      "classifiedBy": "classifier-poeaa",
+      "provenance": "map",
+      "map": {
+        "file": "poeaa.jsonl",
+        "line": 329,
+        "sha256": "216fd5eaad7da111367ee23a136fd60283cf67185b950fade0983ea7d48ae468"
+      },
+      "kind": "behaviour",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 1,
+          "max": 1
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "subscriber-count",
+              "unit": "units",
+              "default": 3,
+              "min": 1,
+              "max": 19
+            },
+            {
+              "name": "notification-delay",
+              "unit": "ticks",
+              "default": 0,
+              "min": 0,
+              "max": 20
+            }
+          ]
+        },
+        "observable": [
+          "notification-recipients",
+          "delivered-notifications"
+        ],
+        "toyMetric": [
+          "notified-recipient-count",
+          "notification-delay-ticks"
+        ]
+      }
+    },
+    {
+      "id": "rxc:135",
+      "work": "rxjs",
+      "title": "concat",
+      "rowType": "tool",
+      "classifiedBy": "classifier-rxjs-core",
+      "provenance": "map",
+      "map": {
+        "file": "rxjs-core.jsonl",
+        "line": 135,
+        "sha256": "c8e2acd0ad804b15bf86db47d58f7a2d041c391ed7e74ad2df615c9ba69d52fb"
+      },
+      "kind": "behaviour",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels",
+          "marbles"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 2,
+          "max": 20
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "active-input-limit",
+              "unit": "channels",
+              "default": 1,
+              "min": 1,
+              "max": 1
+            }
+          ]
+        },
+        "observable": [
+          "Input channels open one at a time; pending channels wait until the active channel closes.",
+          "Unit messages preserve input-channel order."
+        ],
+        "toyMetric": [
+          "active-input-count",
+          "queued-input-count",
+          "order-violation-count"
+        ]
+      }
+    },
+    {
+      "id": "rxc:137",
+      "work": "rxjs",
+      "title": "merge",
+      "rowType": "tool",
+      "classifiedBy": "classifier-rxjs-core",
+      "provenance": "map",
+      "map": {
+        "file": "rxjs-core.jsonl",
+        "line": 137,
+        "sha256": "c8e2acd0ad804b15bf86db47d58f7a2d041c391ed7e74ad2df615c9ba69d52fb"
+      },
+      "kind": "behaviour",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels",
+          "marbles"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 2,
+          "max": 20
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "active-input-limit",
+              "unit": "channels",
+              "default": 4,
+              "min": 1,
+              "max": 20
+            }
+          ]
+        },
+        "observable": [
+          "Open input channels deliver unit messages in arrival order.",
+          "Inputs beyond the concurrency limit wait in the pending queue."
+        ],
+        "toyMetric": [
+          "active-input-count",
+          "queued-input-count",
+          "delivery-latency-ms"
+        ]
+      }
+    },
+    {
+      "id": "rxc:139",
+      "work": "rxjs",
+      "title": "race",
+      "rowType": "tool",
+      "classifiedBy": "classifier-rxjs-core",
+      "provenance": "map",
+      "map": {
+        "file": "rxjs-core.jsonl",
+        "line": 139,
+        "sha256": "c8e2acd0ad804b15bf86db47d58f7a2d041c391ed7e74ad2df615c9ba69d52fb"
+      },
+      "kind": "mode",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels",
+          "marbles"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 2,
+          "max": 20
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "winning-input-count",
+              "unit": "channels",
+              "default": 1,
+              "min": 1,
+              "max": 1
+            }
+          ]
+        },
+        "observable": [
+          "The first input channel to emit becomes the sole delivery route; other input routes close."
+        ],
+        "toyMetric": [
+          "cancelled-input-count",
+          "winning-input-count"
+        ]
+      }
+    },
+    {
+      "id": "rxc:190",
+      "work": "rxjs",
+      "title": "take",
+      "rowType": "tool",
+      "classifiedBy": "classifier-rxjs-core",
+      "provenance": "map",
+      "map": {
+        "file": "rxjs-core.jsonl",
+        "line": 190,
+        "sha256": "c8e2acd0ad804b15bf86db47d58f7a2d041c391ed7e74ad2df615c9ba69d52fb"
+      },
+      "kind": "behaviour",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels",
+          "marbles"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 1,
+          "max": 20
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "delivery-limit",
+              "unit": "messages",
+              "default": 5,
+              "min": 0,
+              "max": 20
+            }
+          ]
+        },
+        "observable": [
+          "The first configured number of unit messages passes, then the input route closes."
+        ],
+        "toyMetric": [
+          "delivered-message-count",
+          "route-close-count"
+        ]
+      }
+    },
+    {
+      "id": "rxc:224",
+      "work": "rxjs",
+      "title": "onErrorResumeNextWith",
+      "rowType": "tool",
+      "classifiedBy": "classifier-rxjs-core",
+      "provenance": "map",
+      "map": {
+        "file": "rxjs-core.jsonl",
+        "line": 224,
+        "sha256": "c8e2acd0ad804b15bf86db47d58f7a2d041c391ed7e74ad2df615c9ba69d52fb"
+      },
+      "kind": "behaviour",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels",
+          "marbles"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 2,
+          "max": 20
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "active-input-limit",
+              "unit": "channels",
+              "default": 1,
+              "min": 1,
+              "max": 1
+            },
+            {
+              "name": "continue-after-error",
+              "unit": "boolean",
+              "default": 1,
+              "min": 1,
+              "max": 1
+            }
+          ]
+        },
+        "observable": [
+          "Delivery moves to the next queued input after either completion or failure.",
+          "Input failure notices are suppressed while later unit messages continue."
+        ],
+        "toyMetric": [
+          "continued-input-count",
+          "forwarded-error-count"
+        ]
+      }
+    },
+    {
+      "id": "rxc:235",
+      "work": "rxjs",
+      "title": "timeoutWith (deprecated)",
+      "rowType": "tool",
+      "classifiedBy": "classifier-rxjs-core",
+      "provenance": "map",
+      "map": {
+        "file": "rxjs-core.jsonl",
+        "line": 235,
+        "sha256": "c8e2acd0ad804b15bf86db47d58f7a2d041c391ed7e74ad2df615c9ba69d52fb"
+      },
+      "kind": "behaviour",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels",
+          "marbles"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 2,
+          "max": 20
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "silence-timeout",
+              "unit": "ms",
+              "default": 100,
+              "min": 1,
+              "max": 2000
+            }
+          ]
+        },
+        "observable": [
+          "When the active route times out, unit-message delivery switches to the designated fallback input channel."
+        ],
+        "toyMetric": [
+          "timeout-count",
+          "fallback-delivery-count"
+        ]
+      }
+    },
+    {
+      "id": "rxp:148",
+      "work": "rxjs",
+      "title": "ReplaySubject without a buffer size",
+      "rowType": "anti-pattern",
+      "classifiedBy": "classifier-rxjs-patterns",
+      "provenance": "map",
+      "map": {
+        "file": "rxjs-patterns.jsonl",
+        "line": 148,
+        "sha256": "7a3cd3b794d277f07dcd94c5625b8e1046d61f1c8ab9bd8685b2a8052dd69d84"
+      },
+      "kind": "rule",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels",
+          "marbles"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 1,
+          "max": 20
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "history-limit",
+              "unit": "messages",
+              "default": 5,
+              "min": 1,
+              "max": 20
+            },
+            {
+              "name": "replay-history",
+              "unit": "boolean",
+              "default": 1,
+              "min": 1,
+              "max": 1
+            }
+          ]
+        },
+        "observable": [
+          "The channel retains only a bounded suffix of delivered message history.",
+          "A newly joined receiver gets that suffix in its original order."
+        ],
+        "toyMetric": [
+          "retained-messages",
+          "evicted-messages",
+          "replayed-messages"
+        ]
+      }
+    },
+    {
+      "id": "rxp:182",
+      "work": "rxjs",
+      "title": "distinctUntilChanged at derivation boundaries",
+      "rowType": "technique",
+      "classifiedBy": "classifier-rxjs-patterns",
+      "provenance": "map",
+      "map": {
+        "file": "rxjs-patterns.jsonl",
+        "line": 182,
+        "sha256": "7a3cd3b794d277f07dcd94c5625b8e1046d61f1c8ab9bd8685b2a8052dd69d84"
+      },
+      "kind": "rule",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels",
+          "marbles"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 1,
+          "max": 20
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "suppress-adjacent-equal-payloads",
+              "unit": "boolean",
+              "default": 1,
+              "min": 1,
+              "max": 1
+            }
+          ]
+        },
+        "observable": [
+          "A message equal to the preceding accepted payload is suppressed.",
+          "A changed payload is delivered and becomes the next comparison value."
+        ],
+        "toyMetric": [
+          "delivered-messages",
+          "suppressed-duplicates"
+        ]
+      }
+    },
+    {
+      "id": "rxp:245",
+      "work": "rxjs",
+      "title": "ofType",
+      "rowType": "tool",
+      "classifiedBy": "classifier-rxjs-patterns",
+      "provenance": "map",
+      "map": {
+        "file": "rxjs-patterns.jsonl",
+        "line": 245,
+        "sha256": "7a3cd3b794d277f07dcd94c5625b8e1046d61f1c8ab9bd8685b2a8052dd69d84"
+      },
+      "kind": "rule",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels",
+          "marbles"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 1,
+          "max": 20
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "accepted-type",
+              "unit": "message-type-code",
+              "default": 1,
+              "min": 0,
+              "max": 19
+            }
+          ]
+        },
+        "observable": [
+          "Only messages carrying the selected type code reach the receiving units.",
+          "Messages with other type codes are rejected by the route filter."
+        ],
+        "toyMetric": [
+          "matched-deliveries",
+          "type-rejections"
+        ]
+      }
+    },
+    {
+      "id": "rxp:68",
+      "work": "rxjs",
+      "title": "Submit button: exhaustMap",
+      "rowType": "pattern",
+      "classifiedBy": "classifier-rxjs-patterns",
+      "provenance": "map",
+      "map": {
+        "file": "rxjs-patterns.jsonl",
+        "line": 68,
+        "sha256": "7a3cd3b794d277f07dcd94c5625b8e1046d61f1c8ab9bd8685b2a8052dd69d84"
+      },
+      "kind": "behaviour",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels",
+          "marbles"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 1,
+          "max": 20
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "max-in-flight",
+              "unit": "messages",
+              "default": 1,
+              "min": 1,
+              "max": 1
+            },
+            {
+              "name": "drop-while-busy",
+              "unit": "boolean",
+              "default": 1,
+              "min": 1,
+              "max": 1
+            }
+          ]
+        },
+        "observable": [
+          "While one delivery awaits acknowledgement, new incoming messages are discarded.",
+          "A later message is accepted after the active delivery finishes."
+        ],
+        "toyMetric": [
+          "in-flight-messages",
+          "dropped-messages",
+          "delivered-messages"
+        ]
+      }
+    },
+    {
+      "id": "rxp:88",
+      "work": "rxjs",
+      "title": "Batching: bufferTime and bufferCount",
+      "rowType": "pattern",
+      "classifiedBy": "classifier-rxjs-patterns",
+      "provenance": "map",
+      "map": {
+        "file": "rxjs-patterns.jsonl",
+        "line": 88,
+        "sha256": "7a3cd3b794d277f07dcd94c5625b8e1046d61f1c8ab9bd8685b2a8052dd69d84"
+      },
+      "kind": "behaviour",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels",
+          "pipeline"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 1,
+          "max": 20
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "flush-interval",
+              "unit": "toy-ticks",
+              "default": 4,
+              "min": 1,
+              "max": 20
+            },
+            {
+              "name": "batch-limit",
+              "unit": "messages",
+              "default": 5,
+              "min": 1,
+              "max": 20
+            },
+            {
+              "name": "skip-empty-batches",
+              "unit": "boolean",
+              "default": 1,
+              "min": 1,
+              "max": 1
+            }
+          ]
+        },
+        "observable": [
+          "Queued messages are released together when the time window ends or the batch limit is reached.",
+          "An empty queue produces no delivery batch."
+        ],
+        "toyMetric": [
+          "batch-size",
+          "delivered-batches",
+          "pending-messages"
+        ]
+      }
+    },
+    {
+      "id": "tt1:215",
+      "work": "tt",
+      "title": "Seven-to-nine maximum effective team size",
+      "rowType": "principle",
+      "classifiedBy": "classifier-tt",
+      "provenance": "map",
+      "map": {
+        "file": "map-part-1.jsonl",
+        "line": 215,
+        "sha256": "53ffa503be3aaebb03b06b265679d8a3bb2b98aeb375fa7e24a80d41b37c8308"
+      },
+      "kind": "rule",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "teams"
+        ],
+        "selection": {
+          "target": "unit",
+          "min": 7,
+          "max": 9
+        },
+        "transform": {
+          "kind": "squad.form",
+          "params": [
+            {
+              "name": "squad-size",
+              "unit": "units",
+              "default": 8,
+              "min": 7,
+              "max": 9
+            }
+          ]
+        },
+        "observable": [
+          "squad-membership",
+          "squad-size"
+        ],
+        "toyMetric": [
+          "squad-size"
+        ]
+      }
+    },
+    {
+      "id": "tt1:319",
+      "work": "tt",
+      "title": "Team API request quotas and throttling",
+      "rowType": "pattern",
+      "classifiedBy": "classifier-tt",
+      "provenance": "map",
+      "map": {
+        "file": "map-part-1.jsonl",
+        "line": 319,
+        "sha256": "53ffa503be3aaebb03b06b265679d8a3bb2b98aeb375fa7e24a80d41b37c8308"
+      },
+      "kind": "rule",
+      "status": "typed",
+      "faces": {
+        "scene": [
+          "channels"
+        ],
+        "selection": {
+          "target": "channel",
+          "min": 1,
+          "max": 1
+        },
+        "transform": {
+          "kind": "channel.policy",
+          "params": [
+            {
+              "name": "max-messages-per-tick",
+              "unit": "messages-per-tick",
+              "default": 2,
+              "min": 0,
+              "max": 20
+            }
+          ]
+        },
+        "observable": [
+          "admitted-messages",
+          "queued-messages"
+        ],
+        "toyMetric": [
+          "delivered-message-count",
+          "queue-depth"
+        ]
+      }
+    }
+  ]
+}

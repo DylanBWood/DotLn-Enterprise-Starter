@@ -1,0 +1,25 @@
+{
+  "checkId": "npm test",
+  "gateSelection": "review",
+  "treeHash": "cb0cb0138c03ce6c28bbe138bbe626e2e518dec6",
+  "codeIdentity": "dbd80775eda0b78bb08729662389d78c2905051201848699f91eb04b1adbc897",
+  "instanceInputDigest": "sha256:c64b8ef1f63d5008a29d7c03bf08c6ffc05afe3a39e8a06ee141228ec4845faf",
+  "executionMode": "fresh",
+  "executed": true,
+  "exitCode": 0,
+  "durationMs": 14547,
+  "evidenceRef": "host-gate:dbd80775eda0b78bb08729662389d78c2905051201848699f91eb04b1adbc897:npm test",
+  "recordedAt": "2026-10-26T02:11:34.659Z",
+  "identityUnchanged": true,
+  "buildOutputUnchanged": true,
+  "requiredSuites": [
+    "kit-verify",
+    "format",
+    "configuration-root",
+    "registrations",
+    "declarations",
+    "generated",
+    "host"
+  ],
+  "unrunSuites": []
+}

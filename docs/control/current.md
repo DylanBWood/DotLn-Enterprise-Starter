@@ -1,24 +1,24 @@
 # Current control state
 
-## WO-013
+## WO-014
 
-- Work order: WO-013
-- Work-order path: docs/work-orders/WO-013-sub-app-shell-and-menu.md
+- Work order: WO-014
+- Work-order path: docs/work-orders/WO-014-toolbox-catalog-pipeline.md
 - Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4
 - Phase: closed
-- Latest verification: VER-003
-- Verification path: dotln-angular@61cf1ae9e8434bd73d1bbd89c16850996a9e7e27:docs/dotln/verifications/WO-013/VER-003.md
+- Latest verification: VER-002
+- Verification path: dotln-angular@0090ffd5d33998f64bb330827414acb98c05ef46:docs/dotln/verifications/WO-014/VER-002.md
 - Latest verdict: pass
-- Final review: FINAL-003
-- Final-review path: dotln-angular@61cf1ae9e8434bd73d1bbd89c16850996a9e7e27:docs/dotln/final-reviews/WO-013/FINAL-003.md
-- Latest attestation: harness claude-code; version 2.1.310; model claude-opus-5-5; effort xhigh; source claude-session-readback; account not-applicable
+- Final review: FINAL-001
+- Final-review path: dotln-angular@0090ffd5d33998f64bb330827414acb98c05ef46:docs/dotln/final-reviews/WO-014/FINAL-001.md
+- Latest attestation: harness claude-code; version 2.1.310; model claude-fable-5-1; effort xhigh; source claude-session-readback; account not-applicable
 - Effort drift: max -> xhigh
-- Latest recordedAt: 2026-10-25T22:29:52.403Z
-- Elapsed implementation: 2315742 ms
-- Elapsed verification: 590807 ms
-- Elapsed finalReview: 954804 ms
-- Elapsed repair: 665958 ms
-- Latest checkpoint: 8fedfbecd2491c4ab5e12b6d3f35f11834b4f338 (restore: `git checkout refs/dotln/checkpoint/WO-013/23 -- .`)
+- Latest recordedAt: 2026-10-26T03:22:12.720Z
+- Elapsed implementation: 5613482 ms
+- Elapsed verification: 999453 ms
+- Elapsed repair: 5313036 ms
+- Elapsed finalReview: 1973093 ms
+- Latest checkpoint: ad657289893ea9d634642692cc2e4060688de935 (restore: `git checkout refs/dotln/checkpoint/WO-014/12 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct, override-record
 

@@ -184,6 +184,76 @@
       "reason": "missing file",
       "count": 1,
       "note": "WO-013's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-013/ by target-records (TargetRecordsCommitted, 2026-10-25); the launchpad record keeps its original link; declared by WO-013's final review (FINAL-003, 2026-10-25) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-014/README.md",
+      "href": "decisions.md",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-014's decisions.md, VER-001.md, VER-002.md and FINAL-001.md moved into DotLn-Angular's docs/dotln/ by target-records (TargetRecordsCommitted, 2026-10-26, records commit 0090ffd5); the launchpad record keeps its original link; declared by WO-014's final review (FINAL-001, 2026-10-26) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-014/handoff.md",
+      "href": "../../verifications/WO-014/VER-001.md",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-014's decisions.md, VER-001.md, VER-002.md and FINAL-001.md moved into DotLn-Angular's docs/dotln/ by target-records (TargetRecordsCommitted, 2026-10-26, records commit 0090ffd5); the launchpad record keeps its original link; declared by WO-014's final review (FINAL-001, 2026-10-26) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-014/host-qualification.md",
+      "href": "decisions.md#wo-014-d025",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-014's decisions.md, VER-001.md, VER-002.md and FINAL-001.md moved into DotLn-Angular's docs/dotln/ by target-records (TargetRecordsCommitted, 2026-10-26, records commit 0090ffd5); the launchpad record keeps its original link; declared by WO-014's final review (FINAL-001, 2026-10-26) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-014/host-qualification.md",
+      "href": "decisions.md#wo-014-d024",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-014's decisions.md, VER-001.md, VER-002.md and FINAL-001.md moved into DotLn-Angular's docs/dotln/ by target-records (TargetRecordsCommitted, 2026-10-26, records commit 0090ffd5); the launchpad record keeps its original link; declared by WO-014's final review (FINAL-001, 2026-10-26) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-014/host-qualification.md",
+      "href": "decisions.md#wo-014-d028",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-014's decisions.md, VER-001.md, VER-002.md and FINAL-001.md moved into DotLn-Angular's docs/dotln/ by target-records (TargetRecordsCommitted, 2026-10-26, records commit 0090ffd5); the launchpad record keeps its original link; declared by WO-014's final review (FINAL-001, 2026-10-26) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-014/host-qualification.md",
+      "href": "decisions.md#wo-014-d027",
+      "reason": "missing file",
+      "count": 2,
+      "note": "WO-014's decisions.md, VER-001.md, VER-002.md and FINAL-001.md moved into DotLn-Angular's docs/dotln/ by target-records (TargetRecordsCommitted, 2026-10-26, records commit 0090ffd5); the launchpad record keeps its original link; declared by WO-014's final review (FINAL-001, 2026-10-26) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/operator/implementation-guidance.md",
+      "href": "../evidence/WO-014/decisions.md",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-014's decisions.md, VER-001.md, VER-002.md and FINAL-001.md moved into DotLn-Angular's docs/dotln/ by target-records (TargetRecordsCommitted, 2026-10-26, records commit 0090ffd5); the launchpad record keeps its original link; declared by WO-014's final review (FINAL-001, 2026-10-26) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/work-orders/WO-014-toolbox-catalog-pipeline.md",
+      "href": "../evidence/WO-014/decisions.md#wo-014-d006",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-014's decisions.md, VER-001.md, VER-002.md and FINAL-001.md moved into DotLn-Angular's docs/dotln/ by target-records (TargetRecordsCommitted, 2026-10-26, records commit 0090ffd5); the launchpad record keeps its original link; declared by WO-014's final review (FINAL-001, 2026-10-26) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/work-orders/WO-014-toolbox-catalog-pipeline.md",
+      "href": "../evidence/WO-014/decisions.md#wo-014-d016",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-014's decisions.md, VER-001.md, VER-002.md and FINAL-001.md moved into DotLn-Angular's docs/dotln/ by target-records (TargetRecordsCommitted, 2026-10-26, records commit 0090ffd5); the launchpad record keeps its original link; declared by WO-014's final review (FINAL-001, 2026-10-26) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-014/host-qualification.md",
+      "href": "decisions.md#wo-014-d026",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-014's decisions.md moved into DotLn-Angular's docs/dotln/evidence/WO-014/ by target-records (TargetRecordsCommitted, 2026-10-26, records commit 0090ffd5); the final publish section of host-qualification.md, written after the move, keeps the record's local link form; declared by WO-014's final review (FINAL-001, 2026-10-26) before the records publish, so the records branch and main stay green."
     }
   ],
   "homePaths": {

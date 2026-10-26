@@ -1,0 +1,44 @@
+{
+  "label": "critic",
+  "rowCount": 120,
+  "statement": "I reviewed the summary and all 120 distinct sampled rows (40 typed, 40 untyped, 40 background), plus the separately designated geb1:1 executor concern. No quarantine file was read. I read only synthesis/catalog-summary.json and reviews/critic-samples.json; I did not read raw maps, verify books, perform external research, run Git, write repository files, or use other agents.",
+  "findings": [
+    {
+      "id": "critic-01",
+      "severity": "medium",
+      "issue": "rxc:203 (mergeWith) presents an adjustable active-input limit and a queue of inputs beyond that limit as the typed correspondence. This appears to borrow bounded-merge behavior: mergeWith merges its supplied sources concurrently rather than admitting them through a configurable concurrency queue. Selecting more than four sources under the default therefore demonstrates an added policy that the row does not identify as a toy extension.",
+      "recommendedDisposition": "Revise the toy to keep all selected mergeWith inputs active and make interleaved deliveries observable, or explicitly name the concurrency queue as an added composition and preserve an honest unbounded-merge correspondence. If the closed transform cannot express that effect, mark this row untyped rather than attributing the queue to mergeWith. The separate rxp:89 concurrency-limits pattern remains a defensible home for the bounded policy."
+    },
+    {
+      "id": "critic-02",
+      "severity": "medium",
+      "issue": "geb1:1, the openly designated executor concern, is well founded. Stating the system purpose at task entry is useful general guidance, but the clause does not identify a self-model, a passage between representation levels, or a return relation. It supplies no concrete correspondence to the self as a strange loop.",
+      "recommendedDisposition": "Keep the background status and replace the analog with a specific diagnostic that names the represented self or role description, the behavior or interpretation it governs, and the path returning to that same description across levels. Alternatively omit the analog rather than present generic purpose-setting as the strange-loop correspondence."
+    },
+    {
+      "id": "critic-03",
+      "severity": "low",
+      "issue": "geb2:25 (Operating system) and geb2:108 (Composition of procedures) have identical candidate observables about symbolic states and permitted changes, plus the same rewrite-step-count metric. These are too generic to distinguish the concepts. Their own untyped reasons and analog clauses are more concrete: the first concerns shared resources and protection, and the second concerns calls, composition and boundary assumptions.",
+      "recommendedDisposition": "Retain both untyped statuses and their useful analogs. Give geb2:25 candidate observables such as resource ownership, waiting tasks and rejected protected operations; give geb2:108 candidate observables such as call boundaries, input/output assumptions and dependency paths. Use metrics tied to those observations, or omit a metric until one is defensible. No new executable primitive is required to make these conceptual descriptions honest."
+    },
+    {
+      "id": "critic-04",
+      "severity": "low",
+      "issue": "rxp:140 is exposed only as the unqualified title Finite streams need nothing. As a standalone catalog entry it does not say what is unnecessary or under what completion conditions. A reader could interpret it as ruling out early cancellation or other lifecycle work, although the apparent intended claim concerns teardown after normal completion.",
+      "recommendedDisposition": "Add a bounded explanatory clause, or qualify the catalog display title while preserving source provenance: a subscription that has completed normally needs no later manual unsubscription, while cancellation before completion can still matter. Keep the background status. Treat this as a catalog-scope clarification, not a claim that the source text itself is wrong."
+    }
+  ],
+  "limitations": [
+    "The 120 sampled rows are not a semantic verification of all 3463 catalog rows. The extra executor concern is not counted in rowCount.",
+    "Source titles and representations were assessed only from the admitted samples. No books, raw maps, quarantine files, external documentation, or runtime implementations were consulted; the apparent mergeWith mismatch is for executor disposition against the admitted source.",
+    "Summary arithmetic was checked, but map hashes, source completeness, title fidelity and unobserved firstThree rows were not independently verified.",
+    "Typed status was assessed as a defensible, observable proposed toy correspondence in the listed transform family. This review does not claim that a transform has been implemented or executed, or that toy metrics establish human or organizational benefits."
+  ],
+  "summaryJudgment": {
+    "judgment": "The sample supports a useful catalog with localized revisions, subject to the executor disposition of these findings. It does not support a claim that every catalog mapping has been independently verified.",
+    "summaryConsistency": "Map-row, work, kind and status totals all equal 3463; transform-kind counts sum to the 121 typed rows. The samples contain 120 distinct IDs in three 40-row groups.",
+    "primaryScenesAndShortfalls": "No sampled evidence establishes that the recommended primary scenes are misleading. They should remain recommendations rather than exclusive applicability claims. Team Topologies honestly lists two typed examples and a shortfall of one, consistent with the operator allowance of up to three examples plus explicit shortfalls.",
+    "usefulnessAndStatus": "Useful diagnostic applications can remain background or untyped. In particular, the sampled ownership cycles, observer feedback, coordination limits, cognitive-load bounds, lifecycle choices and end-to-end ownership analogs have defensible concrete correspondences across app, code, agent, process and human concerns. No rejection was based solely on the target domain being metaphorical or already applied.",
+    "typedScope": "Most sampled typed faces describe an observable limited toy effect without asserting the full source-domain implementation. Simple squad-size and level-cycle effects can be retained with their limited meaning; the review does not require simulated team effectiveness or a literal implementation of a book concept."
+  }
+}

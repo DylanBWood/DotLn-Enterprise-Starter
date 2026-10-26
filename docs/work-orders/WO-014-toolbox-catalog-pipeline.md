@@ -51,6 +51,24 @@ checkers' observability rule, the base clause and receipt 008's known issues.
 Amended by the 2026-10-25 pass ([planning document](../planning/standard-pass-v0-99-0-2026-10-25.md)
 §6 D5): the not-found route WO-013-D007 boards for the first order that
 changes `app.routes.ts`, and the multi-project check form of WO-013-D005.
+Amended during execution on 2026-10-25 by explicit operator direction
+([WO-014-D006](../evidence/WO-014/decisions.md#wo-014-d006)): criterion 3
+admits up to three typed examples with an explicit shortfall, preserving the
+closed transform contract. The operator also clarified that useful metaphors
+and diagnostic applications of system traps belong in catalog guidance;
+exhaustive cross-area mapping may be a targeted follow-up.
+
+Amended during repair on 2026-10-26 by explicit operator direction
+([WO-014-D016](../evidence/WO-014/decisions.md#wo-014-d016)): preserve the
+acceptance criteria and extend the repair with bundle attribution and regression
+checks, evidence-led performance calibration guidance and a local sampler, a
+small reusable filter composite and selector pipeline, curated utility exports
+with runtime/type contracts, and reusable operator guidance across this order.
+Native-operation spelling changes alone do not satisfy the composition aim.
+Missing fork-specific interaction support goes to the next planning pass and,
+if needed, its paste-ready request for a core update. No runtime integration is
+added by this amendment.
+
 **Depends on:** WO-013 merged (hard: the sub-app menu's Tools group and the
 grouping convention; the base above is provisional: since starter v0.96.1 (core WO-230) the target publish describes the change from the merge base of the subject and the target's `main` and names the activation base beside it, so activation on this base publishes right; the planning pass that runs after WO-013 merges may set it to that merge commit, and none is required to (the 2026-10-24 second pass, D4)).
 **Workstream:** WS-001
@@ -219,6 +237,14 @@ the catalog library with its kit; the three scripts and the two npm scripts;
 the Tools feature with its route, pages and stories; the menu item; the two
 documents; `docs/evidence/WO-014/` with the fan-out record.
 
+Repair additions (D016): the menu secondary entry point and route-local overlay
+providers; bundle graph/browser regressions and package attribution; curated
+Ramda/Ramda Adjunct exports; a controlled filter-menu composite and composable
+selectors; the local browser sampler and performance policy; the operator's
+reusable guidance and planning/core-request handoff. The declared budgets stay
+unchanged; routine future calibration uses recorded evidence rather than an
+automatic operator escalation or threshold increase.
+
 **Execution plan:**
 
 1. Base guard and activation as WO-005 step 1, for WO-014; read `node
@@ -246,7 +272,8 @@ documents; `docs/evidence/WO-014/` with the fan-out record.
 7. Dispatch the two sampling checkers; rerun the named ids per batch; merge.
    Check: every checker finding has a disposition in the decisions file.
 8. Dispatch the synthesizer; write `catalog-summary.json`. Check:
-   `npm run catalog:report` prints six works with three typed tools each.
+   `npm run catalog:report` prints six works with up to three typed tools each
+   and explicit shortfalls (criterion 3 as amended by the operator).
 9. Dispatch the critic; dispose its findings in the decisions file. Check:
    the evidence README lists twelve or fewer workers with their statements.
 10. `CatalogLoader`, filters, `provideCatalog()`, `CatalogToken`, the test
@@ -282,8 +309,13 @@ documents; `docs/evidence/WO-014/` with the fan-out record.
 `npx nx run-many -t lint test build`, `npm run lint:fixtures`,
 `npm run lint:components`, `npm run lint:hygiene`, `npm run check:fixtures`,
 `npm run catalog:check`, `npm run test:tooling`, `npm run i18n:check`,
+`npm run check:bundle`, `npm run typecheck:foundations`,
 `npx nx e2e dotln-e2e`; in the launchpad order worktree `npm run test:docs`;
 then the target gate plain and review once each.
+
+For this repair, also run `npm run perf:sample` and retain all five local samples
+per journey/profile, their environment and limitations. Timing data starts as
+diagnostic evidence; the structural and scripted behavior assertions block.
 
 **Acceptance criteria (all required)**
 
@@ -294,8 +326,11 @@ then the target gate plain and review once each.
    exits nonzero, and `grep -rlE '"(definition|related|dotlnHooks|verified)"' libs/shared/catalog/src/data`
    prints nothing.
 3. `npm run catalog:report` exits 0 and prints, for each of the six works,
-   a scene type and three tools whose transform kind is a member of
-   `TransformKind` (a spec asserts the same over `catalog-summary.json`).
+   a primary scene type and up to three tools whose transform kind is a member
+   of `TransformKind`. It records the shortfall from three explicitly. A spec
+   asserts the valid typed examples and the correctly computed shortfall over
+   `catalog-summary.json`. Each example retains its own applicable scene types;
+   the work's primary scene is a recommendation, not a constraint on every example.
 4. Every row's `status` is `typed`, `untyped` or `background`; every `typed`
    row's `transform.kind` is a member of `TransformKind`; every `untyped` row
    carries a non-empty `reason`; a spec iterates every data file and asserts

@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-25T23:19:39.571Z",
+  "scope": "Synthetic Chromium DOM insertion and layout, same representative row, five samples per arm; not an Angular end-to-end timing.",
+  "choice": "50 rows per page",
+  "results": [
+    {
+      "rows": 50,
+      "elements": 550,
+      "medianMs": 1.2
+    },
+    {
+      "rows": 3463,
+      "elements": 38093,
+      "medianMs": 87
+    }
+  ]
+}

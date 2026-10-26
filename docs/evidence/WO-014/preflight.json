@@ -1,0 +1,87 @@
+{
+  "schema": "wo014-preflight-v1",
+  "repository": "dotln-angular",
+  "commands": [
+    {
+      "command": "npx nx format:check",
+      "startedAt": "2026-10-26T00:06:13.372072+00:00",
+      "durationMs": 1530,
+      "exitCode": 0
+    },
+    {
+      "command": "npx nx run-many -t lint test build",
+      "startedAt": "2026-10-26T00:06:14.902880+00:00",
+      "durationMs": 96110,
+      "exitCode": 0
+    },
+    {
+      "command": "npm run lint:fixtures",
+      "startedAt": "2026-10-26T00:07:51.013718+00:00",
+      "durationMs": 3626,
+      "exitCode": 0
+    },
+    {
+      "command": "npm run lint:components",
+      "startedAt": "2026-10-26T00:07:54.640128+00:00",
+      "durationMs": 415,
+      "exitCode": 0
+    },
+    {
+      "command": "npm run lint:hygiene",
+      "startedAt": "2026-10-26T00:07:55.054970+00:00",
+      "durationMs": 394,
+      "exitCode": 0
+    },
+    {
+      "command": "npm run check:fixtures",
+      "startedAt": "2026-10-26T00:07:55.449374+00:00",
+      "durationMs": 716,
+      "exitCode": 0
+    },
+    {
+      "command": "npm run catalog:check",
+      "startedAt": "2026-10-26T00:07:56.165793+00:00",
+      "durationMs": 419,
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:tooling",
+      "startedAt": "2026-10-26T00:07:56.585184+00:00",
+      "durationMs": 1709,
+      "exitCode": 0
+    },
+    {
+      "command": "npm run i18n:check",
+      "startedAt": "2026-10-26T00:07:58.294197+00:00",
+      "durationMs": 826,
+      "exitCode": 0
+    },
+    {
+      "command": "npx nx e2e dotln-e2e",
+      "startedAt": "2026-10-26T00:07:59.120075+00:00",
+      "durationMs": 42309,
+      "exitCode": 0
+    },
+    {
+      "command": "npx nx build dotln --configuration=production",
+      "startedAt": "2026-10-26T00:08:41.429828+00:00",
+      "durationMs": 547,
+      "exitCode": 0
+    },
+    {
+      "command": "npm run catalog:report",
+      "startedAt": "2026-10-26T00:08:41.976887+00:00",
+      "durationMs": 429,
+      "exitCode": 0
+    }
+  ],
+  "launchpadDocumentPreflight": {
+    "command": "npm run test:docs",
+    "recordedAt": "2026-10-26T00:16:32.324Z",
+    "durationMs": 16665,
+    "exitCode": 0,
+    "suiteCount": 14,
+    "identityUnchanged": true,
+    "treeHash": "7fb5864bed6a9a047fcee00908fb25cea3d082d0"
+  }
+}
