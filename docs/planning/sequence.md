@@ -10,6 +10,8 @@ pair run one at a time.
 
 - WO-014 — The toolbox catalog pipeline
 
+- WO-019 — The catalog as something to read
+
 - WO-015 — The soldier scene
 
 - WO-016 — The machinery view

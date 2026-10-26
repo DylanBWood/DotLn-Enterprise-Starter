@@ -19,8 +19,7 @@ Removes nothing. Wall-clock: about 8 to 12 hours of executor work plus the
 fixed cycle; unknown until run. Context bytes: WS-001 house rule 17, the
 events and state documents, the client library's documentation, this order,
 about 160 KB. Commands added in the target: none. Tokens: unknown until run.
-Steps: 15. Re-mints: none. Refutations paid: nine receipts (001 to 009) name
-this order, the last two judging the amended text.
+Steps: 15. Re-mints: none. Refutations paid: ten receipts (001 to 010) name this order, and the 2026-10-26 pass's receipt judges this text.
 **Nomination provenance:** the 2026-10-18 angular-workstream planning pass
 ([planning document](../planning/angular-workstream-2026-10-18.md) §5 and §8),
 on the operator's direction of 2026-10-17 (ignored intake capture, SHA-256
@@ -59,8 +58,7 @@ issued tokens, the signing key never committed, the provider swap not
 exercised). Amended by the 2026-10-25 pass ([planning document](../planning/standard-pass-v0-99-0-2026-10-25.md)
 §6 D4): receipt 009's known issues (the storage grep's scope, the public
 sub-app routes and the gated `/account` page, a production build without a
-provider, `jose` as a development dependency, the refutations paid) and the
-multi-project check form of WO-013-D005.
+provider, `jose` as a development dependency, the refutations paid) and the multi-project check form of WO-013-D005. Amended by the 2026-10-26 pass ([planning document](../planning/acceptance-by-use-2026-10-26.md) §6 D9): rule 24's acceptance-by-use criterion (criterion 8) and the walkthrough, and receipt 010's items: the at-rest probe covers IndexedDB, Cache Storage and cookies as well as web storage (its item (b)), and the matrix gains a page reload during a session (c).
 **Workstream:** WS-001
 
 <!-- dotln-dependencies:start -->
@@ -175,8 +173,7 @@ gated sub-app.
   (reject, sign out, `errorEvents.security`); clock skew within and beyond
   tolerance; two concurrent `401`s (one refresh); callback without `state`
   match (reject); redirect loop (stop after two); sign-out in another tab;
-  permission denied on route (redirect to `/denied`); permission revoked on
-  refresh (element hidden on next render).
+  permission denied on route (redirect to `/denied`); permission revoked on refresh (element hidden on next render); a page reload during a session (the session is re-established through the provider's silent path or the operator is returned to `/login` with `returnTo`, and either way no token is at rest).
 - Documents: `docs/dev-reference/security/authentication.md` (flow diagrams
   in text, storage rules and why, the matrix, how to swap the provider, and
   the statement that the server enforces authorization while client checks
@@ -226,8 +223,7 @@ provider; the matrix tests; the two documents; `docs/evidence/WO-008/`.
    exits 0 and the production bundle contains no `mock-idp` string
    (`grep -rc "mock-idp" dist/apps/dotln/browser | grep -v ":0"` prints
    nothing).
-10. The e2e matrix in `dotln-e2e` using the knobs. Check: `npx nx e2e dotln-e2e`
-    exits 0.
+10. The e2e matrix in `dotln-e2e` using the knobs; then the walkthrough: the executor performs the Objective's session in the served production build, saves one screenshot per step at 360, 768 and 1440 under `docs/evidence/WO-008/walkthrough/` and writes `docs/evidence/WO-008/walkthrough.md` with the dated steps. Check: `npx nx e2e dotln-e2e` exits 0 and the walkthrough files exist.
 11. Documents and `conventions.md` (house rule 17). Check: files exist;
     `npm run i18n:check` exits 0.
 12. Gate plain and review. Check: passing rows, no mutation.
@@ -274,9 +270,7 @@ then the target gate plain and review once each.
    this order adds or changes
    (`git diff --name-only $(git merge-base HEAD origin/main)..HEAD -- apps/dotln/src`)
    prints nothing; `grep -rc "console.log" libs/shared/auth/src --include='*.ts' | grep -v ":0"`
-   prints nothing; and an e2e step after the sign-in reads every key of
-   `localStorage` and `sessionStorage` and asserts that no value matches the
-   JWT shape (three dot-separated base64url segments) and that no value
+   prints nothing; and an e2e step after the sign-in reads every key of `localStorage` and `sessionStorage`, every object store of every IndexedDB database, every Cache Storage entry and every cookie, and asserts that no value matches the JWT shape (three dot-separated base64url segments) and that no value
    equals or contains any token the mocked provider issued in that session
    (the handlers keep the tokens they issued behind a test-only knob the e2e
    reads), which covers opaque refresh tokens and the client library's own
@@ -289,17 +283,14 @@ then the target gate plain and review once each.
    `invalid_grant`, expired-then-refresh-then-replay, refresh failure to
    sign-out, invalid signature, wrong audience, skew within and beyond
    tolerance, two concurrent `401`s producing one refresh request (asserted
-   through the MSW handler's call count), `state` mismatch, redirect loop
-   stop, cross-tab sign-out.
+   through the MSW handler's call count), `state` mismatch, redirect loop stop, cross-tab sign-out, page reload during a session.
 4. `core` exports `routePermissions` covering every `BasePaths` member
    (a spec asserts the record's keys equal the enum's values and that
    `Board`, `Scene`, `Machinery` and `Tools` map to an empty list), guards
    use it, the `board`, `scene`, `machinery` and `catalog` e2e specs run
    unchanged without a session, and `npx nx e2e dotln-e2e` includes: sign in
    through the mocked provider and land on `returnTo` at `/account`;
-   `/account` as the `denied` user redirecting to `/denied`; an
-   element hidden by `*dotlnHasPermission` for a user without the permission;
-   token expiry during use followed by a transparent refresh; refresh failure
+   `/account` as the `denied` user redirecting to `/denied`; an element hidden by `*dotlnHasPermission` for a user without the permission; a reload at `/account` keeping the session or returning to `/login` with `returnTo`; token expiry during use followed by a transparent refresh; refresh failure
    returning to `/login`.
 5. The production build contains no mock provider code:
    `npx nx build dotln --configuration=production` exits 0, and for the
@@ -319,11 +310,10 @@ then the target gate plain and review once each.
    is at least 1), and `docs/ai-reference/auth-rules.md` exists.
 7. `node scripts/target-gate.mjs WO-008 --review` records a passing row for
    every declared command with no tracked-byte mutation, and
-   `npm run test:docs` passes in the launchpad order worktree; the Preflight
-   line ran before the first full gate.
+   `npm run test:docs` passes in the launchpad order worktree; the Preflight line ran before the first full gate.
+8. **Use (WS-001 rule 24).** The verifier performs the Objective's session in the served production build with the mocked provider: open `/account` anonymously and be sent to `/login`; sign in and land back on `/account` with the claims readable; reload and keep the session or be returned to `/login` with `returnTo`; sign in as the `denied` user and land on `/denied`; drive the expiry knob and watch a request succeed through a transparent refresh; drive the refresh-failure knob and land on `/login`; open a second tab, sign out there and watch the first tab follow. The VER report carries a `## Walkthrough` section with the dated steps and names the screenshots at 360, 768 and 1440 under `docs/evidence/WO-008/walkthrough/` (`ls docs/evidence/WO-008/walkthrough | wc -l` prints at least 12), and states in the verifier's own words what each page said at each step. The criterion is met only when every step completed and that statement is present.
 
-**Evidence gate:** the gate rows, the recorded command outputs and
-`docs/evidence/WO-008/README.md`.
+**Evidence gate:** the gate rows, the recorded command outputs, `docs/evidence/WO-008/README.md`, and `docs/evidence/WO-008/walkthrough.md` with its screenshots.
 
 **Known issues and carry-ins:** The base line is provisional and publishes right under starter v0.96.1 (the merge-base publish of core WO-230; WO-013's fix dispatch is its first use in this fork); a pass may set it to the predecessor's merge commit. Starter v0.94.0 (update #23 of 2026-10-24) carries
 core's fix for the plan gate's moved-record reader, so criterion 7's

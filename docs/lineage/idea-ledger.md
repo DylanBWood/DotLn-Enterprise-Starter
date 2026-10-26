@@ -4,6 +4,20 @@ Statuses: `adopted`, `preserved`, `raw`, `superseded`, `transformed`, `rejected`
 
 Insert this instance's dated sessions below, newest first.
 
+## 2026-10-26 — planning pass: acceptance by use, the clean room's scope and the catalog as something to read (operator dispatch of 2026-10-26)
+
+Dispatch: a `planning:` request opened on the state of the DotLn-Angular app
+after WO-014's merge, followed by the operator's corrections (the rule the
+2026-10-24 pass recorded as theirs was never theirs; the books, films and
+ideas they reference lie outside the clean room; acceptance by use is
+permanent for the workstream) and their go-ahead, captured verbatim in
+ignored intake (`docs/intake/notes/planning-2026-10-26.md`, SHA-256
+`9ec78ddbc267936d59fc7fe88b4a8b9c8d42d4692979db31be5129c817fd72a6`). The
+record is [the planning document](../planning/acceptance-by-use-2026-10-26.md);
+this heading registers the pass for the plan tooling. No idea is ledgered:
+the pass was not an ideation dispatch, and the directions it received are
+recorded in WS-001 rules 23 to 25 and the operator record.
+
 ## 2026-10-25 — planning pass: the standard pass on starter v0.99.0 (the update first, core's answer to the fork's two questions, WO-013's second refusal and its route, the receipt-009 amendments) (operator dispatch of 2026-10-25)
 
 Dispatch: a `planning:` request for a standard pass with the latest upstream

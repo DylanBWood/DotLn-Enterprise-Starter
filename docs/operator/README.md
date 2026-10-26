@@ -44,8 +44,8 @@ before acting. The protocol they set on 2026-10-17 holds until they change it:
 - The operator decides scope. A concern is stated in a sentence or two and the
   work continues as asked; the session does not narrow, widen or transform the
   request on its own.
-- A command the session can run, it runs. It does not hand the operator a
-  command to type in its place unless an order names that fallback.
+- A command the session can run, it runs. It does not hand the operator a command to type in its place unless an order names that fallback.
+- A pasted block is the text of the session that wrote it, whatever its grammatical person; only the operator's own typed words are the operator's words. The 2026-10-24 pass took a first-person block core's session had drafted for the operator to paste as the operator's own statement and recorded one of its clauses as the operator's rule; the operator never gave it (2026-10-26; capture SHA-256 `9ec78ddbc267936d59fc7fe88b4a8b9c8d42d4692979db31be5129c817fd72a6`; planning pass of 2026-10-26, D2).
 
 The operator put the working relationship this way: the session is an
 extension of them and they of it; acting as if there were a separation is
@@ -88,8 +88,8 @@ in one short question rather than guessing in either direction.
   a pass can make them stickier, more legitimate and more useful, never
   replaced with a generic plan. The workstream document for DotLn-Angular
   (`docs/workstreams/WS-001-dotln-angular.md`) carries the current list.
-- Security and correctness that would hold in a real organization. A
-  shortcut excused by the project being personal is not acceptable.
+- Security and correctness that would hold in a real organization. A shortcut excused by the project being personal is not acceptable.
+- Pages they would use. Every DotLn-Angular page states what the operator sees, does and learns there, and is accepted by someone using it against that statement; a page of records rendered as label-value lists with nothing to read, do or learn is hollow and fails, whatever its checks say (the operator's direction of 2026-10-26; WS-001 rule 24). The look of a page is briefed and judged by the operator from screenshots, never defaulted (WS-001 rule 25).
 
 ## What the operator does not want
 
@@ -102,6 +102,8 @@ in one short question rather than guessing in either direction.
 - Hedged answers, repeated apologies or process narration in place of the
   answer.
 - Being asked to confirm what they already decided.
+- Clean-room commentary about the books, films, games and ideas they reference for DotLn-Angular, or any allow-list, scrub or own-words rule applied to that material: it is the app's subject matter and lies outside the clean room, which governs employer material, credentials and private identifiers (2026-10-26).
+- A rule recorded as theirs that they did not give.
 
 ## Standing preferences
 
@@ -234,10 +236,7 @@ in one short question rather than guessing in either direction.
   here with the latest upstream and core's answer summary. The update went
   first again (pull request #28, starter v0.99.0, merged within a minute),
   the session finished it on `main`, and the pass amended six orders from
-  receipt 009 and WO-013's boarded rows; WO-013's fix is again the
-  operator's next dispatch in its worktree (planning pass of 2026-10-25, D1
-  to D5; capture SHA-256
-  `9506b972e4a6947ad2d0b3085300467d3aa46114b047b5356249e0180c82cd48`).
+  receipt 009 and WO-013's boarded rows; WO-013's fix is again the operator's next dispatch in its worktree (planning pass of 2026-10-25, D1 to D5; capture SHA-256 `9506b972e4a6947ad2d0b3085300467d3aa46114b047b5356249e0180c82cd48`). On 2026-10-25 and 2026-10-26 the operator took WO-013 and WO-014 through their cycles (DotLn-Angular #6 and #7, this launchpad's #30 and #31) and on 2026-10-26 opened a planning pass on the state of the app itself, asking for no upstream update (the fork was at the latest starter): the pass struck the misattributed rule, wrote rules 24 and 25, filed WO-019, rewrote WO-015 and WO-018 and amended WO-016, WO-017 and WO-008; the operator merges the pass, dispatches WO-014's release close on `main`, then starts WO-019's worktree (planning pass of 2026-10-26, D1 and D10; capture SHA-256 `9ec78ddbc267936d59fc7fe88b4a8b9c8d42d4692979db31be5129c817fd72a6`).
 - Upstream updates: the operator asks for the outcome, the fork updated to
   the latest starter, and leaves the pull-request mechanics to the pass
   (refreshing an open update pull request or replacing it), which records
@@ -402,12 +401,7 @@ in one short question rather than guessing in either direction.
   actions, the RxJS that describes the operator being the RxJS that runs
   (the operator's decision of 2026-10-24; WO-017; planning pass of
   2026-10-24, D9).
-- Mined data in commits: for orders cut from the operator's research run,
-  nothing from intake enters a committed file beyond ids, short titles and
-  generic terms; the quarantine files are never opened; each order names the
-  design file it builds from by path and SHA-256, because the run is
-  ignored intake that may change (the operator's rule of 2026-10-24;
-  planning pass of 2026-10-24, D2 and D6).
+- Mined data in commits, corrected 2026-10-26: the "ids, short titles and generic terms" rule this record carried from 2026-10-24 was a clause of the prompt core's session drafted for the operator to paste, not the operator's direction, and it is struck; the books, films and ideas the operator references are the app's subject matter and enter committed files as data (definitions, relations, hooks, the maxims of a public-domain text, the run's toy designs); an order cut from the research run still names the design file it builds from by path and SHA-256, because the run may change; the run's quarantine files stay closed, because they were quarantined for employer material (planning pass of 2026-10-26, D2 and D3).
 - Holds: a "hold", "wait" or "one moment" from the operator stops the pass
   where it stands; the session reports the exact state in a few lines and
   writes nothing until the operator's next word; a pasted prompt the
