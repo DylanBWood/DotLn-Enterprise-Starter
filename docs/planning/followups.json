@@ -668,6 +668,14 @@
           "reopenWhen": "A hook-admitted target publish is denied by the host classifier, or the next planning pass rules on the registration trust entry.",
           "targets": [],
           "at": "2026-10-25T22:34:40.818Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "deferred",
+          "reason": "WO-014's one target publish call (the FINAL-001 final publish of 2026-10-26, which opened DotLn-Angular #7 ready at the records commit 0090ffd5; no draft publish ran for this order) ran the node-spelled helper from the launchpad root, was admitted by the hook with a registeredTargetAdmission row and allowed by the host without a prompt; no PermissionDenied row was recorded (docs/evidence/WO-014/host-qualification.md). An observation for the planning pass that rules on the registration trust entry, not that ruling.",
+          "reopenWhen": "A hook-admitted target publish is denied by the host classifier, or the next planning pass rules on the registration trust entry.",
+          "targets": [],
+          "at": "2026-10-26T03:25:35.810Z"
         }
       ]
     },

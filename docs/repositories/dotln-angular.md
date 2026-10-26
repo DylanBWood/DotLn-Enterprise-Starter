@@ -57,8 +57,9 @@ passed at tree `da7780d7` with the initial bundle at 376.91 kB and ran no
 draft publish; FINAL-001 accepted the order on 2026-10-26 with every
 criterion met, fixed four in-surface items, re-gated the reviewed commits
 `23b39aef` and `d487a807`, recorded the missing draft and restored the cap
-(D025 to D028); the final publish opens the pull request ready on
-`feat/toolbox-catalog`. The 2026-10-24 planning pass restated the app's subject on the
+(D025 to D028); the final publish pushed the records commit `0090ffd5`
+and opened pull request #7 ready on `feat/toolbox-catalog` the same day.
+The 2026-10-24 planning pass restated the app's subject on the
 operator's decisions (one app with sub-apps behind a menu, not wired to
 core, its data from public mining into its own store; WS-001 §The app and
 its sub-apps), moved WO-007's board route to the app's own API with
