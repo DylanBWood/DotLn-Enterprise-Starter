@@ -4,6 +4,20 @@ Statuses: `adopted`, `preserved`, `raw`, `superseded`, `transformed`, `rejected`
 
 Insert this instance's dated sessions below, newest first.
 
+## 2026-10-28 — planning pass: the standard pass on starter v0.100.0 (the update first, core's answers of 2026-10-27, WO-019's live record and the operator's corrected comparison procedure, the receipt-011 amendments) (operator dispatch of 2026-10-28)
+
+Dispatch: a `planning:` request for a standard pass with the latest upstream
+carrying core's answers of 2026-10-27 to this fork's block of 2026-10-25,
+with update #33 (starter v0.100.0) opened first and still pending when the
+planning branch opened, captured verbatim in ignored intake
+(`docs/intake/notes/planning-2026-10-28.md`, SHA-256
+`1ea98adaa85b099e0f5f6c6f844e14856d739225540cc42c5bbac4b964f93cc9`). The
+record is [the planning document](../planning/standard-pass-v0-100-0-2026-10-28.md);
+this heading registers the pass for the plan tooling. No idea is ledgered:
+the pass was not an ideation dispatch; the operator's ideas of 2026-10-26
+(the concept study and the comparison method) are ledgered by WO-019's own
+session in its worktree and reach this ledger when its records merge.
+
 ## 2026-10-26 — planning pass: acceptance by use, the clean room's scope and the catalog as something to read (operator dispatch of 2026-10-26)
 
 Dispatch: a `planning:` request opened on the state of the DotLn-Angular app

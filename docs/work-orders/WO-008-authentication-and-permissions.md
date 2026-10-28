@@ -19,7 +19,7 @@ Removes nothing. Wall-clock: about 8 to 12 hours of executor work plus the
 fixed cycle; unknown until run. Context bytes: WS-001 house rule 17, the
 events and state documents, the client library's documentation, this order,
 about 160 KB. Commands added in the target: none. Tokens: unknown until run.
-Steps: 15. Re-mints: none. Refutations paid: ten receipts (001 to 010) name this order, and the 2026-10-26 pass's receipt judges this text.
+Steps: 15. Re-mints: none. Refutations paid: eleven receipts (001 to 011) name this order, and the 2026-10-28 pass's receipt judges this text.
 **Nomination provenance:** the 2026-10-18 angular-workstream planning pass
 ([planning document](../planning/angular-workstream-2026-10-18.md) §5 and §8),
 on the operator's direction of 2026-10-17 (ignored intake capture, SHA-256
@@ -58,7 +58,7 @@ issued tokens, the signing key never committed, the provider swap not
 exercised). Amended by the 2026-10-25 pass ([planning document](../planning/standard-pass-v0-99-0-2026-10-25.md)
 §6 D4): receipt 009's known issues (the storage grep's scope, the public
 sub-app routes and the gated `/account` page, a production build without a
-provider, `jose` as a development dependency, the refutations paid) and the multi-project check form of WO-013-D005. Amended by the 2026-10-26 pass ([planning document](../planning/acceptance-by-use-2026-10-26.md) §6 D9): rule 24's acceptance-by-use criterion (criterion 8) and the walkthrough, and receipt 010's items: the at-rest probe covers IndexedDB, Cache Storage and cookies as well as web storage (its item (b)), and the matrix gains a page reload during a session (c).
+provider, `jose` as a development dependency, the refutations paid) and the multi-project check form of WO-013-D005. Amended by the 2026-10-26 pass ([planning document](../planning/acceptance-by-use-2026-10-26.md) §6 D9): rule 24's acceptance-by-use criterion (criterion 8) and the walkthrough, and receipt 010's items: the at-rest probe covers IndexedDB, Cache Storage and cookies as well as web storage (its item (b)), and the matrix gains a page reload during a session (c). Amended by the 2026-10-28 pass ([planning document](../planning/standard-pass-v0-100-0-2026-10-28.md) §6 D6 and D14): receipt 011's items (the walkthrough and the e2e run on the served `mocked` configuration build while criterion 5's production grep stands, its item (a); criterion 5 greps the mock's one marker string and the key identifier rather than endpoint paths, (b)), the `/account` page as prose rather than a key-value list (WS-001 rule 24 and G6), and a one-line design brief under rule 25.
 **Workstream:** WS-001
 
 <!-- dotln-dependencies:start -->
@@ -158,14 +158,32 @@ gated sub-app.
   secret scanning has nothing to match (the `kid` is a label, not a key); the handlers expose knobs (`expiresInSeconds`,
   `failNextRefresh`, `invalidSignature`, `skewSeconds`) through a test-only
   header so e2e can drive the matrix. The mocked endpoint paths live in one
-  constants file under `testing/idp/` so the bundle check can list them.
+  constants file under `testing/idp/`, and every module of the mock carries
+  the one marker string `dotln-mock-idp`, so criterion 5's production grep
+  targets that marker and the key identifier rather than endpoint paths a
+  client library legitimately contains.
 - Routes: `/login` (anonymous shell page with the sign-in button; with
   `auth` at `null` it shows the unavailable state naming the missing
   configuration instead of the button, and the public sub-apps stay
-  reachable), `/auth/callback`, `/denied`, `/account` (the signed-in user's
-  claims and permissions as a key-value list; the gated surface the matrix
-  drives), `/mock-idp/login` (development only, excluded from production
-  builds by environment); `BasePaths` gains them.
+  reachable), `/auth/callback`, `/denied`, `/account` (what the signed-in
+  operator reads about their session: who is signed in, what they may do,
+  one sentence per permission, and when the session expires, as prose in
+  the catalog's measure and never a label-value grid, because WS-001 rule 24
+  fails a page of records rendered that way and G6 never defaults to it; the
+  gated surface the matrix drives), `/mock-idp/login` (development only,
+  excluded from production builds by environment); `BasePaths` gains them.
+- **Design brief** (WS-001 rule 25): the login, denied and account pages use
+  the shell's type scale and the catalog's measure; the login page is one
+  sentence and one button, the denied page one sentence naming the missing
+  permission and a way back, the account page the prose above; nothing
+  animated at rest. The comparison runs as the operator's eye doctor test
+  (rule 25 as revised on 2026-10-28): the first pair is the account page
+  with the permissions first and the session's expiry and sign-out last,
+  against the session's expiry and sign-out first; both rendered at 1440 and
+  360 during execution, A then B with the round named; the preference makes
+  the next pair until the operator says the process is done; the rejected
+  implementation leaves the code when its round is decided, its screenshots
+  and the decisions file the history; nothing is relitigated for this order.
 - Failure matrix, each a unit spec and, where the UI changes, an e2e test:
   network timeout on token exchange; `exchangeFailure` with `invalid_grant`;
   expired access token on request (refresh once, replay); refresh failure
@@ -223,7 +241,7 @@ provider; the matrix tests; the two documents; `docs/evidence/WO-008/`.
    exits 0 and the production bundle contains no `mock-idp` string
    (`grep -rc "mock-idp" dist/apps/dotln/browser | grep -v ":0"` prints
    nothing).
-10. The e2e matrix in `dotln-e2e` using the knobs; then the walkthrough: the executor performs the Objective's session in the served production build, saves one screenshot per step at 360, 768 and 1440 under `docs/evidence/WO-008/walkthrough/` and writes `docs/evidence/WO-008/walkthrough.md` with the dated steps. Check: `npx nx e2e dotln-e2e` exits 0 and the walkthrough files exist.
+10. The e2e matrix in `dotln-e2e` using the knobs; then the walkthrough: the executor performs the Objective's session in the served `mocked` configuration build (WO-007's configuration for e2e and play; the production build, which criterion 5 keeps free of the mock, has no provider to sign in to), saves one screenshot per step at 360, 768 and 1440 under `docs/evidence/WO-008/walkthrough/` and writes `docs/evidence/WO-008/walkthrough.md` with the dated steps. Check: `npx nx e2e dotln-e2e` exits 0 and the walkthrough files exist.
 11. Documents and `conventions.md` (house rule 17). Check: files exist;
     `npm run i18n:check` exits 0.
 12. Gate plain and review. Check: passing rows, no mutation.
@@ -294,10 +312,12 @@ then the target gate plain and review once each.
    returning to `/login`.
 5. The production build contains no mock provider code:
    `npx nx build dotln --configuration=production` exits 0, and for the
-   development signing key's identifier (the `kid` constant) and for every
-   path the mocked provider's constants file declares (both listed in the
-   evidence README), `grep -rl "<value>" dist/apps/dotln/browser` prints
-   nothing; the bearer token is attached only to requests under
+   development signing key's identifier (the `kid` constant) and for the
+   mock's marker string `dotln-mock-idp` (both listed in the evidence
+   README), `grep -rl "<value>" dist/apps/dotln/browser` prints nothing (the
+   mock's endpoint paths are not grepped, because a client library
+   legitimately contains such paths; every mock module carries the marker
+   instead); the bearer token is attached only to requests under
    `apiBaseUrl` (a spec asserts a request to another origin carries no
    `Authorization` header); `jose` is listed under `devDependencies` and not
    under `dependencies` (the step 2 check prints nothing); and with `auth` at
@@ -311,7 +331,7 @@ then the target gate plain and review once each.
 7. `node scripts/target-gate.mjs WO-008 --review` records a passing row for
    every declared command with no tracked-byte mutation, and
    `npm run test:docs` passes in the launchpad order worktree; the Preflight line ran before the first full gate.
-8. **Use (WS-001 rule 24).** The verifier performs the Objective's session in the served production build with the mocked provider: open `/account` anonymously and be sent to `/login`; sign in and land back on `/account` with the claims readable; reload and keep the session or be returned to `/login` with `returnTo`; sign in as the `denied` user and land on `/denied`; drive the expiry knob and watch a request succeed through a transparent refresh; drive the refresh-failure knob and land on `/login`; open a second tab, sign out there and watch the first tab follow. The VER report carries a `## Walkthrough` section with the dated steps and names the screenshots at 360, 768 and 1440 under `docs/evidence/WO-008/walkthrough/` (`ls docs/evidence/WO-008/walkthrough | wc -l` prints at least 12), and states in the verifier's own words what each page said at each step. The criterion is met only when every step completed and that statement is present.
+8. **Use (WS-001 rule 24).** The verifier performs the Objective's session in the served `mocked` configuration build (criterion 5 keeps the mock out of the production build, so the walkthrough runs on the configuration that carries it): open `/account` anonymously and be sent to `/login`; sign in and land back on `/account` and read, as prose, who is signed in, what they may do and when the session expires (`grep -rlE "<dl|dotln-key-value-list" libs/shared/auth/src apps/dotln/src/app` prints nothing); reload and keep the session or be returned to `/login` with `returnTo`; sign in as the `denied` user and land on `/denied`; drive the expiry knob and watch a request succeed through a transparent refresh; drive the refresh-failure knob and land on `/login`; open a second tab, sign out there and watch the first tab follow. The VER report carries a `## Walkthrough` section with the dated steps and names the screenshots at 360, 768 and 1440 under `docs/evidence/WO-008/walkthrough/` (`ls docs/evidence/WO-008/walkthrough | wc -l` prints at least 12), and states in the verifier's own words what each page said at each step. The criterion is met only when every step completed and that statement is present.
 
 **Evidence gate:** the gate rows, the recorded command outputs, `docs/evidence/WO-008/README.md`, and `docs/evidence/WO-008/walkthrough.md` with its screenshots.
 
@@ -335,7 +355,16 @@ the public sub-apps and shows the unavailable state at `/login`, with `jose`
 in `devDependencies` (criterion 5); step 7 uses the `run-many` form. WO-007's
 `StorageToken` binds the real `localStorage` inside
 `libs/shared/data-access`, so criterion 1's grep over `libs/shared/auth/src`
-and `apps/dotln/src` stays clean by construction. The client library is
+and `apps/dotln/src` stays clean by construction. From receipt 011 (the
+2026-10-26 pass's refutation), carried into this text by the 2026-10-28
+pass: the walkthrough and the e2e run on the served `mocked` configuration
+build while criterion 5's production grep stands (its item (a)); criterion 5
+greps the mock's marker string and the key identifier, not endpoint paths
+(b); eleven receipts have named this order before its activation, and its
+text changes again only on a new observation, which these two clauses and
+the account page's form are (c). The account page reads as prose because
+rule 24 fails a page of label-value lists, and the order carries a one-line
+brief under rule 25 (the 2026-10-28 pass, D14). The client library is
 chosen at step 2 with a recorded decision; signature verification is the API's duty and is stated, not
 implemented, on the client; a real provider is a later member. This order
 activates only on a launchpad whose starter carries core WO-221's `--draft`
@@ -352,6 +381,7 @@ added by the 2026-10-23 pass under starter v0.91.0.
 multi-factor flows; user management screens; social login.
 
 **Operator-review assumptions:** the operator accepts an established OpenID
-Connect client library behind the port rather than hand-rolled flows, and
-reads the one draft pull request before final review, which the final
-publish reuses.
+Connect client library behind the port rather than hand-rolled flows,
+accepts the account page as prose and may open a comparison round on any of
+the three pages (rule 25), and reads the one draft pull request before final
+review, which the final publish reuses.

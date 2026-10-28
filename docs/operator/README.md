@@ -46,6 +46,22 @@ before acting. The protocol they set on 2026-10-17 holds until they change it:
   request on its own.
 - A command the session can run, it runs. It does not hand the operator a command to type in its place unless an order names that fallback.
 - A pasted block is the text of the session that wrote it, whatever its grammatical person; only the operator's own typed words are the operator's words. The 2026-10-24 pass took a first-person block core's session had drafted for the operator to paste as the operator's own statement and recorded one of its clauses as the operator's rule; the operator never gave it (2026-10-26; capture SHA-256 `9ec78ddbc267936d59fc7fe88b4a8b9c8d42d4692979db31be5129c817fd72a6`; planning pass of 2026-10-26, D2).
+- Design comparisons are the operator's eye doctor test (their words of
+  2026-10-26 to WO-019's executor; capture in that worktree's ignored intake,
+  SHA-256 `5742f0a794ee937eba3573e29fa99c18df074f293a583b0fbbb2ab55826cade4`,
+  entry 1; WO-019-D003): the session shows two rendered choices, the
+  operator's preference makes the next pair, and the rounds continue until
+  the operator says the process is done; a preferred candidate is never
+  acceptance; an Elo or other ranking may assist and never supplies the
+  stop. The operator corrected the method three more times that day: one
+  independent variable per pair (D009); A before B, with the round named in
+  the question and both captions (D008, D012); content, usability and
+  usefulness before cosmetic polish (D012); and, for WO-019, a rejected
+  implementation leaves the code when its round is decided and decided
+  choices are not relitigated (D014). The executor's reading of an order's
+  two candidates as a single later screenshot choice was the miss the
+  operator called out; WS-001 rule 25 reads the corrected method since the
+  planning pass of 2026-10-28 (D4).
 
 The operator put the working relationship this way: the session is an
 extension of them and they of it; acting as if there were a separation is
@@ -90,6 +106,14 @@ in one short question rather than guessing in either direction.
   (`docs/workstreams/WS-001-dotln-angular.md`) carries the current list.
 - Security and correctness that would hold in a real organization. A shortcut excused by the project being personal is not acceptable.
 - Pages they would use. Every DotLn-Angular page states what the operator sees, does and learns there, and is accepted by someone using it against that statement; a page of records rendered as label-value lists with nothing to read, do or learn is hollow and fails, whatever its checks say (the operator's direction of 2026-10-26; WS-001 rule 24). The look of a page is briefed and judged by the operator from screenshots, never defaulted (WS-001 rule 25).
+- Depth in every concept of the catalog: when they drill into a concept they
+  want to know everything about it from several sides (images and
+  animations, RxJS and ordinary pseudocode, implementations elsewhere and in
+  other references), the vision the work trends toward without every
+  representation in every order (their words of 2026-10-26 in WO-019,
+  capture SHA-256 `5742f0a7…`, entries 3 and 4; WO-019-D005 and the product
+  document `docs/product/concept-study.md` in WO-019's worktree; planning
+  pass of 2026-10-28, D5).
 
 ## What the operator does not want
 
@@ -236,7 +260,7 @@ in one short question rather than guessing in either direction.
   here with the latest upstream and core's answer summary. The update went
   first again (pull request #28, starter v0.99.0, merged within a minute),
   the session finished it on `main`, and the pass amended six orders from
-  receipt 009 and WO-013's boarded rows; WO-013's fix is again the operator's next dispatch in its worktree (planning pass of 2026-10-25, D1 to D5; capture SHA-256 `9506b972e4a6947ad2d0b3085300467d3aa46114b047b5356249e0180c82cd48`). On 2026-10-25 and 2026-10-26 the operator took WO-013 and WO-014 through their cycles (DotLn-Angular #6 and #7, this launchpad's #30 and #31) and on 2026-10-26 opened a planning pass on the state of the app itself, asking for no upstream update (the fork was at the latest starter): the pass struck the misattributed rule, wrote rules 24 and 25, filed WO-019, rewrote WO-015 and WO-018 and amended WO-016, WO-017 and WO-008. The operator had already closed WO-014 as `DotLn Angular v0.4.0` at 12:34Z, six minutes before the dispatch; the pass recorded the close as pending from an unfetched target clone and the launchpad's projection, which never carries a target close, and corrected itself the same day when the operator said so: a target order's close is read from the target's tags and Releases after a fetch, never from `resume status`. The operator merges the pass and starts WO-019's worktree (planning pass of 2026-10-26, D1, D10 and D19; capture SHA-256 `9ec78ddbc267936d59fc7fe88b4a8b9c8d42d4692979db31be5129c817fd72a6`).
+  receipt 009 and WO-013's boarded rows; WO-013's fix is again the operator's next dispatch in its worktree (planning pass of 2026-10-25, D1 to D5; capture SHA-256 `9506b972e4a6947ad2d0b3085300467d3aa46114b047b5356249e0180c82cd48`). On 2026-10-25 and 2026-10-26 the operator took WO-013 and WO-014 through their cycles (DotLn-Angular #6 and #7, this launchpad's #30 and #31) and on 2026-10-26 opened a planning pass on the state of the app itself, asking for no upstream update (the fork was at the latest starter): the pass struck the misattributed rule, wrote rules 24 and 25, filed WO-019, rewrote WO-015 and WO-018 and amended WO-016, WO-017 and WO-008. The operator had already closed WO-014 as `DotLn Angular v0.4.0` at 12:34Z, six minutes before the dispatch; the pass recorded the close as pending from an unfetched target clone and the launchpad's projection, which never carries a target close, and corrected itself the same day when the operator said so: a target order's close is read from the target's tags and Releases after a fetch, never from `resume status`. The operator merges the pass and starts WO-019's worktree (planning pass of 2026-10-26, D1, D10 and D19; capture SHA-256 `9ec78ddbc267936d59fc7fe88b4a8b9c8d42d4692979db31be5129c817fd72a6`). On 2026-10-26 the operator merged #32, started WO-019's worktree, dispatched `resume: next` and ran twenty-two comparison rounds with its executor, gave the depth direction and an `ideation:` dispatch inside that execution (WO-019-D005), and paused it at about 20:47Z with the round-22 pair prepared and unasked (`docs/evidence/WO-019/pause.md` in the worktree); a pause is a hold, and the executor wrote the exact resume point. On 2026-10-28 the operator opened a standard pass with the latest upstream and core's answers of 2026-10-27: the pass prepared the update first again (pull request #33, starter v0.100.0, opened ready at 04:34Z) and, when the operator had not merged it three hours later, opened its planning branch from the pre-update `main` rather than wait, with #33 first in merge order and the finish on `main` to follow the merge; the pass recorded the two directions of 2026-10-26, revised rule 25, amended WO-015, WO-016, WO-008, WO-017 and WO-018 from receipt 011 and left WO-019 to the operator's resume, which integrates `main` first under the v0.100.0 executor text (planning pass of 2026-10-28, D1 and D3 to D6; capture SHA-256 `1ea98adaa85b099e0f5f6c6f844e14856d739225540cc42c5bbac4b964f93cc9`).
 - Upstream updates: the operator asks for the outcome, the fork updated to
   the latest starter, and leaves the pull-request mechanics to the pass
   (refreshing an open update pull request or replacing it), which records
