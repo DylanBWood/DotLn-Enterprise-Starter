@@ -3776,6 +3776,30 @@
           "at": "2026-10-28T19:43:05.939Z"
         }
       ]
+    },
+    {
+      "id": "FUP-6176e828bc3f8b7c",
+      "key": "candidate:docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10::2b60ba709ac88c2e89b2344b0946a60304c938be8b9d5e135726b200f7695e28",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b582702576be213d8cd91c6feb0715de3b4b367e87509065f028730434739159",
+          "ref": "docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C4 The rest of the operator record cut to its standing rules: the Upstream updates, Releases, Manual steps, Review and Research bullets each carry a rule and the dated history of how it was arrived…",
+          "summary": "- **C4 The rest of the operator record cut to its standing rules: the Upstream updates, Releases, Manual steps, Review and Research bullets each carry a rule and the dated history of how it was arrived at (the Standing preferences section measured 3,756 words on `main` before this pass cut `Pace:`); the history belongs to the planning documents the bullets already cite, and every role reads the record at every session start.** Not done in this pass beyond `Pace:` and the tone section: those bullets carry decisions with their provenance, and what a session must still see there is the operator's call. Reopen when the operator asks for the record cut to its rules, or the next planning pass meas",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) §10 C4 and D9: the operator struck the record's per-pass diary and its tone section on 2026-10-28; the pass cut Pace: to its rule and left the other history-carrying bullets (Upstream updates, Releases, Manual steps, Review, Research), which carry decisions with their provenance, for the operator's word on what a session must still see.",
+          "reopenWhen": "The operator asks for the operator record cut to its standing rules, or a planning pass measures the record's cold-start cost against the roles' budgets.",
+          "targets": [],
+          "at": "2026-10-28T19:49:10.978Z"
+        }
+      ]
     }
   ]
 }

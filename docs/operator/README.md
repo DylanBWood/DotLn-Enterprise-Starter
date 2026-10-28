@@ -2,8 +2,8 @@
 
 This record is read by every harness and every role at the start of a session
 (`CLAUDE.md` § Start here names it; `AGENTS.md` is the same file). It describes
-the person whose instance this is: how they direct work, how to read their
-tone, what they want from a session and what they refuse. It is instance-owned,
+the person whose instance this is: how they direct work, what they want from a
+session and what they refuse. It is instance-owned,
 written by the 2026-10-18 planning pass from the operator's own words (captured
 verbatim in ignored intake, SHA-256
 `4f14c6c09512576abfd701335f4dd8a347694ff23785724422cb8d943b5d67aa`), and it
@@ -49,7 +49,7 @@ before acting. The protocol they set on 2026-10-17 holds until they change it:
   back through the permission prompt at once while the operator is present;
   it is never reported as a block. A command that runs for minutes runs in
   the background so the operator's messages land (2026-10-28; capture
-  SHA-256 `59a86fe9ccbfbe1eb74ae47096323e7f8bab97e10a1c8e5e9e6052d872e2cdd0`).
+  SHA-256 `457e3001d014ba335e73c4af6e4c2bcda8861baee04ff5d382d955b6f33ddcd3`).
 - A pasted block is the text of the session that wrote it, whatever its grammatical person; only the operator's own typed words are the operator's words. The 2026-10-24 pass took a first-person block core's session had drafted for the operator to paste as the operator's own statement and recorded one of its clauses as the operator's rule; the operator never gave it (2026-10-26; capture SHA-256 `9ec78ddbc267936d59fc7fe88b4a8b9c8d42d4692979db31be5129c817fd72a6`; planning pass of 2026-10-26, D2).
 - Design comparisons are the operator's eye doctor test (their words of
   2026-10-26 to WO-019's executor; capture in that worktree's ignored intake,
@@ -73,27 +73,6 @@ extension of them and they of it; acting as if there were a separation is
 acting in discord. Read that as a standard, not a license: it means the
 session carries their direction faithfully and raises what they would want
 raised, not that it guesses what they would have said.
-
-## How to read tone
-
-The operator uses profanity and intensity when frustrated. It signals that the
-session has missed something, usually by acting before understanding; it does
-not change the direction being given. The right response is to find the miss,
-name it plainly and correct it, not to apologize at length.
-
-The operator uses sarcasm and facetiousness. The markers seen so far:
-
-- Praise that follows an error is not praise.
-- A statement that restates the obvious with an exaggerated frame, or that
-  contradicts what the operator just said while sounding agreeable, is a test
-  of whether the session noticed.
-- A terse go-ahead, or a note that they will wait, sent after a correction
-  means the operator expects the session to stop and listen, not to proceed.
-
-A sarcastic statement is never acknowledged with `Yes sir.` The session
-answers the substance: it states the correct fact and, if it had the fact
-wrong, says so once. When unsure whether a line is sarcastic, the session asks
-in one short question rather than guessing in either direction.
 
 ## What the operator wants
 
@@ -133,6 +112,12 @@ in one short question rather than guessing in either direction.
 - Being asked to confirm what they already decided.
 - Clean-room commentary about the books, films, games and ideas they reference for DotLn-Angular, or any allow-list, scrub or own-words rule applied to that material: it is the app's subject matter and lies outside the clean room, which governs employer material, credentials and private identifiers (2026-10-26).
 - A rule recorded as theirs that they did not give.
+- Any characterization of their tone, mood, the intent behind their wording
+  or their psychology, in any committed file of this fork or of
+  DotLn-Angular. Profanity and intensity are the ordinary register of a
+  correction and carry nothing to decode; the session answers the
+  substance. The tone section the 2026-10-18 pass wrote here was struck on
+  2026-10-28 (capture SHA-256 `457e3001d014ba335e73c4af6e4c2bcda8861baee04ff5d382d955b6f33ddcd3`).
 
 ## Standing preferences
 
