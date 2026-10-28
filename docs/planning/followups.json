@@ -3558,6 +3558,14 @@
           "reopenWhen": "Core answers §11 item 2 of the 2026-10-26 pass, or a verifier records a use criterion met with no walkthrough.",
           "targets": [],
           "at": "2026-10-26T13:27:45.475Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) D6 and §7: core answered §11 item 2 of the 2026-10-26 pass on 2026-10-28: no supported route adds duty text to a generated role today; an instance owns its support switches, its grants file and its hostRules, and the order text, the workstream rule and the operator record are the designed carriers of a duty, all three of which this fork already uses (WS-001 rule 24, the orders' use criteria, the operator record); the extension contract is core's candidate 8, deferred with its reopening conditions, so core neither declined nor carried the duty.",
+          "reopenWhen": "A starter release carries an instance role-extension contract (core's candidate 8), or a verifier records a use criterion met with no walkthrough; the pass that reads either weighs the self order again.",
+          "targets": [],
+          "at": "2026-10-28T19:43:05.906Z"
         }
       ]
     },
@@ -3654,6 +3662,14 @@
           "reopenWhen": "An update of this fork refuses or conflicts on .gitignore or docs/control/budgets.json, or core answers §11 item 2 of the 2026-10-28 pass.",
           "targets": [],
           "at": "2026-10-28T07:39:03.097Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) D6, §4 and §7: core allocated the ask of the morning pass's §11 item 2 to its WO-207 as a carry-in (candidate 6); v0.101.0's preview again declared no instance action while the Git merge carried README.md (the registered-target paragraph), the third template-derived instance file in two releases after .gitignore and budgets.json, merged here only because the fork never edited it; reported to core again in this pass's §11 item 1.",
+          "reopenWhen": "A starter release carries core's WO-207 (the preview or update --finish then names a derived instance file), or an update of this fork refuses or conflicts on an instance file the preview did not name.",
+          "targets": [],
+          "at": "2026-10-28T19:43:05.914Z"
         }
       ]
     },
@@ -3678,6 +3694,212 @@
           "reopenWhen": "A starter release carries core's WO-234; the pass that takes it reads the fork's attended comparison sessions against the dispatch bound and the budgets file's new keys before the first stop.",
           "targets": [],
           "at": "2026-10-28T07:39:03.085Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) D6 and §7: core answered item 4a on 2026-10-28: WO-234 as filed counts an attended session the same as an unattended one, because the bound is elapsed wall clock from the dispatch start; idle time is its criterion-1 known issue the executor decides and records; accept-overrun is legal in active and the other named phases with no stop required first, scoped to the order and phase, and an acceptance recorded ahead of the stop extends the bound ahead of it; the fork's attended case is recorded on WO-234's row as evidence. Not yet shipped; recorded for the pass that takes it.",
+          "reopenWhen": "A starter release carries core's WO-234; the pass that takes it reads the fork's attended comparison sessions against the dispatch bound and the budgets file's keys, and records the acceptance route (accept-overrun ahead of the stop) before the operator's first attended session under the bound.",
+          "targets": [],
+          "at": "2026-10-28T19:43:05.922Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c85b18619ccecfcf",
+      "key": "candidate:docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10::42a1760de37556f4b8bbc3df876b81cdfe1245b15899b19b5627fbffe53b155d",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "138a4de91928bf16d2b697890876539e321e591792fc336e2907be36a72f84d4",
+          "ref": "docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C3 The hook latency under the grant: about 180 ms more per judged executor outside write (core's D029, one resume status spawn per judging hook), paid most in the fork's attended comparison sessions,…",
+          "summary": "- **C3 The hook latency under the grant: about 180 ms more per judged executor outside write (core's D029, one `resume status` spawn per judging hook), paid most in the fork's attended comparison sessions, where an executor edits the target many times a round.** Not an order: core boarded it; the fork has no measurement of its own. Reopen when WO-019's executor or a later order's records the latency as a cost in its decisions or usage, or when a starter release carries core's follow-up.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) §10 C3: v0.101.0's notes board about 180 ms more per judged executor outside write (core's D029, one resume status spawn per judging hook), paid most in the fork's attended comparison sessions; core boarded it and the fork has no measurement of its own.",
+          "reopenWhen": "WO-019's executor or a later order's records the latency as a cost in its decisions or usage readback, or a starter release carries core's follow-up on D029.",
+          "targets": [],
+          "at": "2026-10-28T19:43:05.950Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-64d1967b092ea18a",
+      "key": "candidate:docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10::a5014aea124d1f4043fc59babcb04df17faa9f5a0110929627728ebe031063d7",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "fad93b78548e2b2012a0591ff42765cd21c9f7a6f79911813cc1ccfcef653953",
+          "ref": "docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C1 The closed-journal retention window for this fork: when a starter release carries core's WO-237, docs/control/budgets.json (never edited since export) takes the kit template's seed of 720 hours…",
+          "summary": "- **C1 The `closed-journal` retention window for this fork: when a starter release carries core's WO-237, `docs/control/budgets.json` (never edited since export) takes the kit template's seed of 720 hours through the Git merge, a closed order's session journals, state and gate index move into main's retained lane at release close, and `plan failures` counts its denials and interventions from there; the operator may set the window to `null` to keep the journals forever.** Not an order: the mechanism is core's and not yet shipped; nothing of this fork's changes until the release. Reopen when a starter release carries WO-237; the pass that takes it names the seed in its update pull request and ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) §10 C1 and §7: core's WO-237 (filed fourth, not yet shipped) moves a closed order's session journals, state and gate index into main's retained lane under a closed-journal class seeded at 720 hours; this fork's budgets file, never edited since export, takes the seed through the Git merge when a starter release carries it, and the window is the operator's to set (null keeps the journals forever).",
+          "reopenWhen": "A starter release carries core's WO-237; the pass that takes it names the seed in its update pull request and records the window the operator chooses.",
+          "targets": [],
+          "at": "2026-10-28T19:43:05.931Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0f93f0e36b664163",
+      "key": "candidate:docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10::baf9099f2e89fcc32117336e16358a2fe9a2999a5084eb4020408b458429ac5a",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "024b39546fa4c9e3fb4fbd2626c174b3df67c7bfb6e9305e12f962944c0c8a35",
+          "ref": "docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C2 The field report to core on the target-worktree grant's first use: WO-019's executor's first Edit into the target after #35 merges and the worktree re-emits, journaled granted with kind…",
+          "summary": "- **C2 The field report to core on the target-worktree grant's first use: WO-019's executor's first Edit into the target after #35 merges and the worktree re-emits, journaled `granted` with kind `target-worktree`, its authority, the order and the phase, or refused with the cause named; core's verification ran no live session against a real target, so this is the grant's first field observation.** Not an order: it is the next block's item, written from the executor's record and a count over the worktree's journal, never a printed row. Reopen when WO-019's executor records the first target write after the update, or its records merge; the pass that follows carries the report in its §11.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) §10 C2, D3 and §11 item 2: core's verification of WO-236 ran no live session against a real target, so WO-019's executor's first Edit into its target after update #35 merges and the worktree re-emits is the grant's first field observation; the next pass reports it to core from the executor's record and a count over the worktree's journal, never a printed row.",
+          "reopenWhen": "WO-019's executor records the first target write after the update (granted with kind target-worktree and its authority, or refused with the cause named), or WO-019's records merge; the pass that follows carries the report in its requests to core.",
+          "targets": [],
+          "at": "2026-10-28T19:43:05.939Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-6176e828bc3f8b7c",
+      "key": "candidate:docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10::2b60ba709ac88c2e89b2344b0946a60304c938be8b9d5e135726b200f7695e28",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b582702576be213d8cd91c6feb0715de3b4b367e87509065f028730434739159",
+          "ref": "docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C4 The rest of the operator record cut to its standing rules: the Upstream updates, Releases, Manual steps, Review and Research bullets each carry a rule and the dated history of how it was arrived…",
+          "summary": "- **C4 The rest of the operator record cut to its standing rules: the Upstream updates, Releases, Manual steps, Review and Research bullets each carry a rule and the dated history of how it was arrived at (the Standing preferences section measured 3,756 words on `main` before this pass cut `Pace:`); the history belongs to the planning documents the bullets already cite, and every role reads the record at every session start.** Not done in this pass beyond `Pace:` and the tone section: those bullets carry decisions with their provenance, and what a session must still see there is the operator's call. Reopen when the operator asks for the record cut to its rules, or the next planning pass meas",
+          "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C4 The rest of the operator record cut to its standing rules: the Upstream updates, Releases, Manual steps, Review and Research bullets each carry a rule and the dated history of how it was arrived…",
+          "summary": "- **C4 The rest of the operator record cut to its standing rules: the Upstream updates, Releases, Manual steps, Review and Research bullets each carry a rule and the dated history of how it was arrived at (the Standing preferences section measured 3,756 words on `main` before this pass cut `Pace:`); the history belongs to the planning documents the bullets already cite, and every role reads the record at every session start.** Not done in this pass beyond `Pace:` and the tone section: those bullets carry decisions with their provenance, and what a session must still see there is the operator's call. Reopen when the operator asks for the record cut to its rules, or the next planning pass meas",
+          "missing": true
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) §10 C4 and D9: the operator struck the record's per-pass diary and its tone section on 2026-10-28; the pass cut Pace: to its rule and left the other history-carrying bullets (Upstream updates, Releases, Manual steps, Review, Research), which carry decisions with their provenance, for the operator's word on what a session must still see.",
+          "reopenWhen": "The operator asks for the operator record cut to its standing rules, or a planning pass measures the record's cold-start cost against the roles' budgets.",
+          "targets": [],
+          "at": "2026-10-28T19:49:10.978Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) D9: the candidate's heading was rewritten to say it was done, which moved this row to needs-review at source revision 2; the operator directed the whole operator record reviewed (message 9, capture SHA-256 457e3001d014ba335e73c4af6e4c2bcda8861baee04ff5d382d955b6f33ddcd3) and the pass rewrote it as standing directions only in the same pass, so the candidate is done; the re-minted row FUP-2b5000e52ced8cb7 is settled for the same reason.",
+          "reopenWhen": "A direction the rewrite dropped is named by the operator or found by a role; the next pass restores it as a rule with its date and capture.",
+          "targets": [],
+          "at": "2026-10-28T19:54:09.296Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2b5000e52ced8cb7",
+      "key": "candidate:docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10::fe9c1fb345878558aa00081a6eb5121d40c1deff3416e1742706fff72ebc24b5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e1ad3f8057aa7aec6988817a9a1c45c14d6a1b443e6654307f2ba504caceee32",
+          "ref": "docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C4 The rest of the operator record cut to its standing rules.",
+          "summary": "- **C4 The rest of the operator record cut to its standing rules.** Minted when the pass had cut only `Pace:`; done in this same pass on the operator's message 9 (D9), so its row is settled. Reopen: never as a candidate; a dropped direction is reported to the next pass.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) §10 C4 and D9: re-minted when the candidate heading was rewritten to say it was done; the operator directed the whole operator record reviewed (message 9) and the pass rewrote it as standing directions only in the same pass; the earlier row FUP-6176e828bc3f8b7c is settled for the same reason.",
+          "reopenWhen": "A direction the rewrite dropped is named by the operator or found by a role; the next pass restores it as a rule with its date and capture.",
+          "targets": [],
+          "at": "2026-10-28T19:52:43.832Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-358df39e6e339cdf",
+      "key": "candidate:docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10::2cc731cd46e906f94d03cf42c5a1801bd2a9c21f4ee3ff0e4b12ca1c9a6df17e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "117b7d86a6263799ad8f507015427e3cf2b06295bf8bbbdd9ba0e06be9922c0b",
+          "ref": "docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C5 A mechanical guard on the operator record: a fork-owned check in the document gate that fails npm run test:docs when docs/operator/README.md grows past a bound set by planning or carries…",
+          "summary": "- **C5 A mechanical guard on the operator record: a fork-owned check in the document gate that fails `npm run test:docs` when `docs/operator/README.md` grows past a bound set by planning or carries dated-narrative patterns (pull-request numbers, clock times, merged, closed as), plus `refuse:` entries on the operator's private terms list for the vocabulary of characterization, which `harness check` and the document gate already refuse in committed text (`scripts/lib/terms.mjs`).** Not filed: the operator asked what stops a future pass and had not directed the guard when the pass closed; the terms entries are theirs to make, the check is code and needs a self order, and the kit route is asked ",
+          "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C5 A mechanical guard on the operator record: a fork-owned check in the document gate that fails npm run test:docs when docs/operator/README.md grows past a bound set by planning or carries…",
+          "summary": "- **C5 A mechanical guard on the operator record: a fork-owned check in the document gate that fails `npm run test:docs` when `docs/operator/README.md` grows past a bound set by planning or carries dated-narrative patterns (pull-request numbers, clock times, merged, closed as), plus `refuse:` entries on the operator's private terms list for the vocabulary of characterization, which `harness check` and the document gate already refuse in committed text (`scripts/lib/terms.mjs`).** Not filed: the operator asked what stops a future pass and had not directed the guard when the pass closed; the terms entries are theirs to make, the check is code and needs a self order, and the kit route is asked ",
+          "missing": true
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) §10 C5 and the direction ledger row 10: the operator asked what stops a future pass from re-accreting the operator record; nothing mechanical does today (doc-ceilings admits product documents only; the private terms list refuses tokens in committed text); the guard needs the operator's terms entries, a self order for a fork check, or a kit route asked of core (§11 item 7); no direction when the pass closed.",
+          "reopenWhen": "The operator directs the guard (terms entries, a self order for the check, or both), or a planning pass finds docs/operator/README.md grown past 20 KB or carrying a dated account of a day.",
+          "targets": [],
+          "at": "2026-10-28T20:02:16.650Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) D13 and the direction ledger row 11: the operator rejected a deny list of words and a byte or pattern check on the operator record as the opposite of what they want and not useful; the guard is the planning contract (product 07 and the generated planner role), asked of core as §11 item 7; the fork's record states the rule itself and every role reads it.",
+          "reopenWhen": "Never as this candidate; core's answer to §11 item 7 of the second 2026-10-28 pass is the next reading.",
+          "targets": [],
+          "at": "2026-10-28T20:03:51.699Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-a2d1907d243db0ef",
+      "key": "candidate:docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10::2c623293ac551dbf2ceaf662dbb9da66157fdff48564b214913791a9d664aecf",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "eee4daf1aa8e724aa1d237e4e165904795a006ac0f01c4578d9f844a97d6b466",
+          "ref": "docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C5 A mechanical guard on the operator record (a fork-owned byte or dated-narrative check in the document gate, and refuse: entries on the private terms list for the vocabulary of characterization).",
+          "summary": "- **C5 A mechanical guard on the operator record (a fork-owned byte or dated-narrative check in the document gate, and `refuse:` entries on the private terms list for the vocabulary of characterization).** Declined on the operator's word of 20:01Z: a deny list of words is the opposite of what they want and would not be useful, and a size or pattern check polices a proxy; the guard is the planning contract (D13, §11 item 7). Reopen: never as this candidate; core's answer to item 7 is the next reading.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) D13: re-minted when the C5 heading was rewritten to record its decline; the operator rejected a deny list of words and a byte or pattern check on the operator record (message 11), and the guard is the planning contract asked of core as §11 item 7; the earlier row FUP-358df39e6e339cdf is declined for the same reason.",
+          "reopenWhen": "Never as this candidate; core's answer to §11 item 7 of the second 2026-10-28 pass is the next reading.",
+          "targets": [],
+          "at": "2026-10-28T20:04:38.710Z"
         }
       ]
     }
