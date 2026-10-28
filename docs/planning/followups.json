@@ -3892,7 +3892,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) D13: re-minted when the C5 heading was rewritten to record its decline; the operator rejected a deny list of words and a byte or pattern check on the operator record (message 11), and the guard is the planning contract asked of core as §11 item 7; the earlier row FUP-358df39e6e339cdf is declined for the same reason.",
+          "reopenWhen": "Never as this candidate; core's answer to §11 item 7 of the second 2026-10-28 pass is the next reading.",
+          "targets": [],
+          "at": "2026-10-28T20:04:38.710Z"
+        }
+      ]
     }
   ]
 }
