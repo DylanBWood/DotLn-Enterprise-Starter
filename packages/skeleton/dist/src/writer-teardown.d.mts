@@ -4,9 +4,12 @@
  * @template T
  * @param {string} root
  * @param {() => T} operation
+ * @param {{repository?: string}} [options]
  * @returns {T}
  */
-export declare function withWriterRegistration<T>(root: string, operation: () => T): T;
+export declare function withWriterRegistration<T>(root: string, operation: () => T, { repository }?: {
+    repository?: string;
+}): T;
 /** Teardown excludes every registration attempt. Coordination lives outside
  * the subject so removing the subject cannot remove a lock or lease.
  * Abandoned locks or leases refuse; no process identity is guessed.

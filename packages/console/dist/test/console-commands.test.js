@@ -1,8 +1,9 @@
+import { createFixtureRoot, removeTemporaryPath as rmSync, } from "@dotln/skeleton/dist/src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { chmodSync, cpSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync, } from "node:fs";
+import { chmodSync, cpSync, existsSync, readFileSync, readdirSync, statSync, writeFileSync, } from "node:fs";
 import { request as httpRequest } from "node:http";
 import { connect as netConnect } from "node:net";
 import { tmpdir } from "node:os";
@@ -58,7 +59,7 @@ const readOnly = (cwd) => {
         evidence: ["resolved-worktree"],
     });
 };
-const temporary = (label) => mkdtempSync(join(tmpdir(), `dotln-wo115-${label}-`));
+const temporary = (label) => createFixtureRoot(join(tmpdir(), `dotln-wo115-${label}-`));
 const sha256 = (value) => createHash("sha256").update(value).digest("hex");
 const logOf = (store) => existsSync(join(store, "events.jsonl"))
     ? readFileSync(join(store, "events.jsonl"), "utf8")

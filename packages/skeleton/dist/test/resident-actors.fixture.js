@@ -1,5 +1,6 @@
+import { createFixtureRoot, removeTemporaryPath as rmSync, } from "../src/temporary-roots.js";
 import { execFileSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync, } from "node:fs";
+import { mkdirSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { sourceChangeProfile } from "../src/source-change-environment.js";
@@ -8,7 +9,7 @@ import { decodeResidentConfiguration } from "../src/resident-state.js";
 import { prepareSourceObjectStore } from "../src/source-change-worktree.js";
 import { fixtureObjectEnvironment } from "./source-change-fixture.js";
 export function actorFixture(kind = "writer") {
-    const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-resident-actors-")));
+    const root = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-resident-actors-")));
     const launchpad = join(root, "launchpad"), parent = join(root, "trees"), cwd = join(parent, "writer");
     mkdirSync(launchpad);
     mkdirSync(parent);

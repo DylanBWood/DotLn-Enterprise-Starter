@@ -1,6 +1,7 @@
+import { createFixtureRoot, removeTemporaryPath as rmSync, } from "../src/temporary-roots.js";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync, } from "node:fs";
+import { mkdirSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { buildMissionCheckRequest } from "../src/mission-check-host.js";
@@ -44,7 +45,7 @@ const DECISIONS = `# WO-999 decisions
 \`\`\`
 `;
 export function missionFixture(options = {}) {
-    const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-mission-")));
+    const root = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-mission-")));
     const work = join(root, "work");
     mkdirSync(work);
     const git = (...args) => execFileSync("git", ["-c", "core.hooksPath=/dev/null", "-c", "commit.gpgsign=false", ...args], {

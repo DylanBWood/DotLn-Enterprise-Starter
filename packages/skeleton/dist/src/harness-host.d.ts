@@ -201,6 +201,10 @@ export declare function seedHarnessWriter(root: string, writer: HarnessWriter): 
 export declare function harnessWriterView(root: string): HarnessWriterView;
 /** Lifecycle dispatches reserve before they can append a control event. */
 export declare function reserveCodexDispatchWriter(root: string, sessionId: string): HarnessWriterView;
+/** A command aimed at a sibling worktree uses that worktree's writer lock.
+ * An existing reservation of this session survives the command; a temporary
+ * command reservation is released even when integration needs continuation. */
+export declare function withHarnessCommandWriter<T>(root: string, sessionId: string, operation: () => Promise<T>): Promise<T>;
 export declare const harnessSubject: typeof gateTreeHash;
 export declare function harnessOutputs(root: string, since?: string): readonly {
     path: string;
@@ -542,7 +546,7 @@ export declare const harnessSessionScratch: (sessionId: string) => string;
  * existing real directory the session user owns is used as it is. Anything
  * else is one advisory naming the path and the cause, never a refusal.
  */
-export declare function ensureHarnessSessionScratch(sessionId: string): {
+export declare function ensureHarnessSessionScratch(sessionId: string, root?: string): {
     readonly path: string;
     readonly advisory?: string;
 };
@@ -569,6 +573,12 @@ export declare function runCommitMessageHook(config: Pick<HookConfig, "compilerP
 }, boundary: typeof feedbackBoundary): Promise<void>;
 /** Release only this session's reservation, after the host has observed completion. */
 export declare function releaseHarnessWriter(root: string, input: HarnessInput): void;
+/** Completion may tear down only this dispatch's roots, after its writer and
+ * observed background work have ended. A failed observation preserves them.
+ */
+export declare function pruneCompletedHarnessSession(root: string, sessionId: string, { dispatchEnded }?: {
+    dispatchEnded?: boolean;
+}): string;
 /**
  * Operator-facing release from outside a governed session. The liveness
  * decision, the retirement and the recorded event describe one observed

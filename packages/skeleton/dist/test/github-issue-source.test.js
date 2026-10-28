@@ -1,5 +1,6 @@
+import { createFixtureRoot, removeTemporaryPath as rmSync, } from "../src/temporary-roots.js";
 import assert from "node:assert/strict";
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, symlinkSync, writeFileSync, } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, readFileSync, readdirSync, statSync, symlinkSync, writeFileSync, } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -47,7 +48,7 @@ if (operation === 'IssueSource') {
 } else process.exit(64);
 `;
 function replay(t) {
-    const root = mkdtempSync(join(tmpdir(), "dotln-issue-source-"));
+    const root = createFixtureRoot(join(tmpdir(), "dotln-issue-source-"));
     const bin = join(root, "bin");
     mkdirSync(bin);
     writeFileSync(join(bin, "gh"), fakeGh);

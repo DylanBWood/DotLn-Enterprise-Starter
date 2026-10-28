@@ -1,4 +1,5 @@
-import { copyFileSync, existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync, } from "node:fs";
+import { createWorkerCapture, promoteTemporaryRoot, removeTemporaryPath as rmSync, } from "./temporary-roots.js";
+import { copyFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -18,7 +19,7 @@ export async function runPlanRefutation(subject, transport, model, effort, now =
         throw new WorkerFailure("profile-refused");
     // Empty scratch cwd prevents project startup files from adding planner context.
     // The inherited transports disable all model tools and user config/memories.
-    const cwd = mkdtempSync(join(tmpdir(), "dotln-plan-refuter-"));
+    const cwd = createWorkerCapture(join(tmpdir(), "dotln-plan-refuter-"));
     let dispatch;
     let preserveScratch = false;
     try {
@@ -75,13 +76,16 @@ export async function runPlanRefutation(subject, transport, model, effort, now =
             let retained;
             try {
                 mkdirSync(retentionDirectory, { recursive: true, mode: 0o700 });
-                retained = mkdtempSync(join(retentionDirectory, "rejected-"));
+                retained = createWorkerCapture(join(retentionDirectory, "rejected-"));
                 for (const name of ["result.json", "statement.txt", "wire.jsonl"])
                     if (existsSync(join(cwd, name)))
                         copyFileSync(join(cwd, name), join(retained, name));
+                // The diagnostic lane owns these files beyond this host's session.
+                promoteTemporaryRoot(retained);
                 preserveScratch = false;
             }
             catch {
+                promoteTemporaryRoot(cwd);
                 throw new WorkerFailure("transport-failed", `retention lane unavailable; rejected output remains at ${cwd}`);
             }
             throw new WorkerFailure(error instanceof WorkerFailure ? error.code : "invalid-result", `${error instanceof WorkerFailure ? (error.detail ?? error.code) : "plan return rejected"}; rejected result and statement retained at ${retained}`);
