@@ -260,7 +260,7 @@ in one short question rather than guessing in either direction.
   here with the latest upstream and core's answer summary. The update went
   first again (pull request #28, starter v0.99.0, merged within a minute),
   the session finished it on `main`, and the pass amended six orders from
-  receipt 009 and WO-013's boarded rows; WO-013's fix is again the operator's next dispatch in its worktree (planning pass of 2026-10-25, D1 to D5; capture SHA-256 `9506b972e4a6947ad2d0b3085300467d3aa46114b047b5356249e0180c82cd48`). On 2026-10-25 and 2026-10-26 the operator took WO-013 and WO-014 through their cycles (DotLn-Angular #6 and #7, this launchpad's #30 and #31) and on 2026-10-26 opened a planning pass on the state of the app itself, asking for no upstream update (the fork was at the latest starter): the pass struck the misattributed rule, wrote rules 24 and 25, filed WO-019, rewrote WO-015 and WO-018 and amended WO-016, WO-017 and WO-008. The operator had already closed WO-014 as `DotLn Angular v0.4.0` at 12:34Z, six minutes before the dispatch; the pass recorded the close as pending from an unfetched target clone and the launchpad's projection, which never carries a target close, and corrected itself the same day when the operator said so: a target order's close is read from the target's tags and Releases after a fetch, never from `resume status`. The operator merges the pass and starts WO-019's worktree (planning pass of 2026-10-26, D1, D10 and D19; capture SHA-256 `9ec78ddbc267936d59fc7fe88b4a8b9c8d42d4692979db31be5129c817fd72a6`). On 2026-10-26 the operator merged #32, started WO-019's worktree, dispatched `resume: next` and ran twenty-two comparison rounds with its executor, gave the depth direction and an `ideation:` dispatch inside that execution (WO-019-D005), and paused it at about 20:47Z with the round-22 pair prepared and unasked (`docs/evidence/WO-019/pause.md` in the worktree); a pause is a hold, and the executor wrote the exact resume point. On 2026-10-28 the operator opened a standard pass with the latest upstream and core's answers of 2026-10-27: the pass prepared the update first again (pull request #33, starter v0.100.0, opened ready at 04:34Z) and, when the operator had not merged it three hours later, opened its planning branch from the pre-update `main` rather than wait, with #33 first in merge order and the finish on `main` to follow the merge; the pass recorded the two directions of 2026-10-26, revised rule 25, amended WO-015, WO-016, WO-008, WO-017 and WO-018 from receipt 011 and left WO-019 to the operator's resume; nothing integrates `main` on its own: the v0.100.0 text admits the integrate helper during `active` and has the executor run it before the complete handoff run when `main` moved, or when the operator asks (the pass's handoff first said the executor integrates `main` first at the resume, which the operator corrected on 2026-10-28; planning pass of 2026-10-28, D1 and D3 to D6; capture SHA-256 `1ea98adaa85b099e0f5f6c6f844e14856d739225540cc42c5bbac4b964f93cc9`). The operator merged #33 at 12:42Z on their return; the session finished it on `main` and merged `main` into the pass's branch before the operator merged the pass.
+  receipt 009 and WO-013's boarded rows; WO-013's fix is again the operator's next dispatch in its worktree (planning pass of 2026-10-25, D1 to D5; capture SHA-256 `9506b972e4a6947ad2d0b3085300467d3aa46114b047b5356249e0180c82cd48`). On 2026-10-25 and 2026-10-26 the operator took WO-013 and WO-014 through their cycles (DotLn-Angular #6 and #7, this launchpad's #30 and #31) and on 2026-10-26 opened a planning pass on the state of the app itself, asking for no upstream update (the fork was at the latest starter): the pass struck the misattributed rule, wrote rules 24 and 25, filed WO-019, rewrote WO-015 and WO-018 and amended WO-016, WO-017 and WO-008. The operator had already closed WO-014 as `DotLn Angular v0.4.0` at 12:34Z, six minutes before the dispatch; the pass recorded the close as pending from an unfetched target clone and the launchpad's projection, which never carries a target close, and corrected itself the same day when the operator said so: a target order's close is read from the target's tags and Releases after a fetch, never from `resume status`. The operator merges the pass and starts WO-019's worktree (planning pass of 2026-10-26, D1, D10 and D19; capture SHA-256 `9ec78ddbc267936d59fc7fe88b4a8b9c8d42d4692979db31be5129c817fd72a6`). On 2026-10-26 the operator merged #32, started WO-019's worktree, dispatched `resume: next` and ran twenty-two comparison rounds with its executor, gave the depth direction and an `ideation:` dispatch inside that execution (WO-019-D005), and paused it at about 20:47Z with the round-22 pair prepared and unasked (`docs/evidence/WO-019/pause.md` in the worktree); a pause is a hold, and the executor wrote the exact resume point. On 2026-10-28 the operator opened a standard pass with the latest upstream and core's answers of 2026-10-27: the pass prepared the update first again (pull request #33, starter v0.100.0, opened ready at 04:34Z) and, when the operator had not merged it three hours later, opened its planning branch from the pre-update `main` rather than wait, with #33 first in merge order and the finish on `main` to follow the merge; the pass recorded the two directions of 2026-10-26, revised rule 25, amended WO-015, WO-016, WO-008, WO-017 and WO-018 from receipt 011 and left WO-019 to the operator's resume; nothing integrates `main` on its own: the v0.100.0 text admits the integrate helper during `active` and has the executor run it before the complete handoff run when `main` moved, or when the operator asks (the pass's handoff first said the executor integrates `main` first at the resume, which the operator corrected on 2026-10-28; planning pass of 2026-10-28, D1 and D3 to D6; capture SHA-256 `1ea98adaa85b099e0f5f6c6f844e14856d739225540cc42c5bbac4b964f93cc9`). The operator merged #33 at 12:42Z on their return; the session finished it on `main` and merged `main` into the pass's branch before the operator merged the pass (#34, merged 12:53Z). Later that day the operator resumed WO-019 under Claude Code with a scope expansion to integrate `main` (WO-019-D022); the executor's first Edit into the target worktree was refused by the kit's fifth refusal at 13:12Z, and the operator opened a planning pass in core at 13:22Z carrying the blocker, which core filed first as WO-236 and shipped as v0.101.0 at 18:55Z; at 19:12Z the operator opened the second standard pass of the day with the latest upstream and core's answers. That pass prepared update #35 first, misread one host permission refusal of its push as a block and locked the session behind a foreground command until the operator intervened, then pushed on their word, opened #35 at 19:31Z and went on from the pre-update `main` with #35 first in merge order (second planning pass of 2026-10-28, D1; capture SHA-256 `59a86fe9ccbfbe1eb74ae47096323e7f8bab97e10a1c8e5e9e6052d872e2cdd0`).
 - Upstream updates: the operator asks for the outcome, the fork updated to
   the latest starter, and leaves the pull-request mechanics to the pass
   (refreshing an open update pull request or replacing it), which records
@@ -278,7 +278,12 @@ in one short question rather than guessing in either direction.
   after the pull request opened and after the pass had filed from the
   pre-update `main` (its D1); the operator merges, the session finishes
   (planning passes of 2026-10-23, D1, 2026-10-24, D1, 2026-10-25, D1, and
-  2026-10-28, D1).
+  2026-10-28, D1). The second 2026-10-28 pass prepared #35 (starter
+  v0.101.0) the same way; a host permission refusal of a push is put back
+  through the permission prompt at once while the operator is present,
+  never reported as a block, and a command that runs for minutes runs in
+  the background so the operator's messages land (second planning pass of
+  2026-10-28, D1 and D12).
   A repair a kit release's Read-before-upgrading names for this fork (the
   workstream field v0.96.0 requires on WO-011 and WO-012) is made on the
   update branch so the branch merges green; where the plan gate binds a
@@ -340,7 +345,16 @@ in one short question rather than guessing in either direction.
   that does not runs the default `dotln-worker` (claude-opus-5-5, xhigh);
   the receipt records the worker type. The 2026-10-23 and 2026-10-24
   dispatches did not name it (planning passes of 2026-10-23, D14, and
-  2026-10-24, D16).
+  2026-10-24, D16). The operator runs WO-019's execution under Claude Code
+  (from 2026-10-26), the first Claude Code executor dispatch on a target
+  order in either repository; WO-004 to WO-014 ran their implementations
+  under Codex. On 2026-10-28 the kit's fifth refusal refused that
+  executor's first Edit into the target, because no grant kind resolved a
+  registered target; starter v0.101.0 (core WO-236) gives the executor role
+  the `target-worktree` grant, resolved from the launchpad's registry at
+  each judged write while the order is active or repairing, and `worktree
+  start` prints the Claude Code launch line (second planning pass of
+  2026-10-28, D3).
 - Speed and efficiency: no dedicated leanness passes; speed and efficiency
   are first-party in every decision and never the goal; throughput first,
   in the sense of the Theory of Constraints (the operator's direction of
@@ -435,6 +449,19 @@ in one short question rather than guessing in either direction.
   operator withdraws stays in the capture and is not acted on; the
   operator's own statement binds over a prompt another session wrote for
   them (2026-10-24; planning pass of 2026-10-24, D2).
+- A closed order's record: on 2026-10-28, in core's planning session, the
+  operator said that losing the logs of earlier orders' worktrees at their
+  close is bad, that worktrees should likely be kept fourteen to thirty
+  days, and that the pass should check the assumption (core's capture,
+  SHA-256 `a7f2260e8e0377a737e2141692f1f4cda28c71c052b0fd0dd1fc79c5cd16a5e1`;
+  core's pass of 2026-10-28, its section on the journal question). Core
+  verified the concern and corrected the unit: the journals are the record
+  and are kilobytes, the worktrees gigabytes of regenerable material; its
+  WO-237 moves a closed order's session journals, state and gate index into
+  main's retained lane under a `closed-journal` class seeded at 720 hours,
+  which the operator may set to `null`. This fork's budgets file takes the
+  seed through the Git merge when a starter release carries it; the window
+  is the operator's to set (second planning pass of 2026-10-28, D9).
 - Addressing: "you" and "sir" in dialogue; third person in records. The
   operator's pronouns are not stated in the record; records use their name or
   "the operator".

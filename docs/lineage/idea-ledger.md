@@ -4,6 +4,21 @@ Statuses: `adopted`, `preserved`, `raw`, `superseded`, `transformed`, `rejected`
 
 Insert this instance's dated sessions below, newest first.
 
+## 2026-10-28 — planning pass: the second standard pass of the day, on starter v0.101.0 (the update first, core's answers of 2026-10-28, WO-019's refused target write and its route after the update, three register rows re-disposed) (operator dispatch of 2026-10-28, second)
+
+Dispatch: a `planning:` request for a standard pass with the latest upstream
+carrying core's answers of 2026-10-28 to this fork's blocker block, its
+v0.100.0-pass block and its block of 2026-10-26, with update #35 (starter
+v0.101.0) opened first and still pending when the planning branch opened,
+captured verbatim in ignored intake
+(`docs/intake/notes/planning-2026-10-28-second.md`, SHA-256
+`59a86fe9ccbfbe1eb74ae47096323e7f8bab97e10a1c8e5e9e6052d872e2cdd0`). The
+record is [the planning document](../planning/standard-pass-v0-101-0-2026-10-28.md);
+this heading registers the pass for the plan tooling. No idea is ledgered:
+the pass was not an ideation dispatch, and the operator's direction of the
+day on a closed order's journals was given in core's session and is
+recorded in the operator record with core's capture digest.
+
 ## 2026-10-28 — planning pass: the standard pass on starter v0.100.0 (the update first, core's answers of 2026-10-27, WO-019's live record and the operator's corrected comparison procedure, the receipt-011 amendments) (operator dispatch of 2026-10-28)
 
 Dispatch: a `planning:` request for a standard pass with the latest upstream
