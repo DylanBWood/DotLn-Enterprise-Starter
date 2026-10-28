@@ -3805,6 +3805,14 @@
           "reopenWhen": "The operator asks for the operator record cut to its standing rules, or a planning pass measures the record's cold-start cost against the roles' budgets.",
           "targets": [],
           "at": "2026-10-28T19:49:10.978Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) D9: the candidate's heading was rewritten to say it was done, which moved this row to needs-review at source revision 2; the operator directed the whole operator record reviewed (message 9, capture SHA-256 457e3001d014ba335e73c4af6e4c2bcda8861baee04ff5d382d955b6f33ddcd3) and the pass rewrote it as standing directions only in the same pass, so the candidate is done; the re-minted row FUP-2b5000e52ced8cb7 is settled for the same reason.",
+          "reopenWhen": "A direction the rewrite dropped is named by the operator or found by a role; the next pass restores it as a rule with its date and capture.",
+          "targets": [],
+          "at": "2026-10-28T19:54:09.296Z"
         }
       ]
     },
