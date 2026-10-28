@@ -1,12 +1,13 @@
+import { createFixtureRoot, removeTemporaryPath as rmSync, } from "../src/temporary-roots.js";
 import test from "node:test";
 import { execFileSync } from "node:child_process";
 import assert from "node:assert/strict";
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync, } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { currentEvidence, evidenceArgs, evidenceSourceContent, sameEvidenceSourceContent, writeEvidenceFile, } from "../src/evidence-editions.mjs";
 test("current evidence follows one manifest, independent of active order; explicit historical pins survive", () => {
-    const root = mkdtempSync(join(tmpdir(), "dotln-evidence-edition-"));
+    const root = createFixtureRoot(join(tmpdir(), "dotln-evidence-edition-"));
     try {
         mkdirSync(join(root, "docs/evidence"), { recursive: true });
         const select = (workOrder, revision) => writeFileSync(join(root, "docs/evidence/current.json"), JSON.stringify({
@@ -48,7 +49,7 @@ test("current evidence follows one manifest, independent of active order; explic
     }
 });
 test("repair revisions preserve the original artifact and verification evidence", () => {
-    const root = mkdtempSync(join(tmpdir(), "dotln-evidence-repair-"));
+    const root = createFixtureRoot(join(tmpdir(), "dotln-evidence-repair-"));
     try {
         mkdirSync(join(root, "docs/evidence"), { recursive: true });
         const editions = {
@@ -178,7 +179,7 @@ test("WO-070 the build-free Beacon workspace is a component whose release labels
     assert.equal(lock("0.2.0"), lock("0.1.0"));
 });
 test("immutable evidence admits a component-only bump while source, external dependency, and evidence changes invalidate", () => {
-    const root = mkdtempSync(join(tmpdir(), "dotln-evidence-content-"));
+    const root = createFixtureRoot(join(tmpdir(), "dotln-evidence-content-"));
     const git = (...args) => execFileSync("git", args, { cwd: root, stdio: "pipe" });
     const write = (path, value) => {
         mkdirSync(dirname(join(root, path)), { recursive: true });

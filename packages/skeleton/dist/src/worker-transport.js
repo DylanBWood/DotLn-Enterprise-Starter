@@ -1,8 +1,9 @@
+import { createWorkerCapture, assignTemporaryProcess, removeTemporaryPath as rmSync, } from "./temporary-roots.js";
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import { observedExecFileSync as execFileSync } from "./gate-deadlines.mjs";
 import { startDeadline } from "./gate-deadlines.mjs";
-import { accessSync, chmodSync, closeSync, constants, existsSync, fstatSync, lstatSync, mkdirSync, mkdtempSync, openSync, readdirSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync, } from "node:fs";
+import { accessSync, chmodSync, closeSync, constants, existsSync, fstatSync, lstatSync, mkdirSync, openSync, readdirSync, readFileSync, realpathSync, symlinkSync, writeFileSync, } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { feedbackClaudeSettings } from "./loadouts/feedback.js";
@@ -20,7 +21,7 @@ export { normalizeWorkerEffort };
 /** No shell interpolation; raw harness output is private, bounded and discarded. */
 export const runWorkerProcess = (launch) => {
     const observation = startDeadline("worker-transport:process", launch.timeoutMs);
-    const capture = mkdtempSync(join(tmpdir(), "dotln-worker-output-"));
+    const capture = createWorkerCapture(join(tmpdir(), "dotln-worker-output-"));
     const file = join(capture, "stdout");
     const fd = openSync(file, "wx", 0o600);
     const grouped = process.platform !== "win32" &&
@@ -45,6 +46,10 @@ export const runWorkerProcess = (launch) => {
             }
             : (launch.env ?? process.env),
         ...(grouped ? { detached: true } : {}),
+    });
+    child.once("spawn", () => {
+        if (child.pid)
+            assignTemporaryProcess(capture, child.pid);
     });
     let live = false;
     let settled = false;
@@ -385,7 +390,7 @@ export function startCodexEpisode(env = process.env) {
     const before = configDigests(config);
     let home;
     try {
-        home = mkdtempSync(join(tmpdir(), `dotln-codex-home-${process.pid}-`));
+        home = createWorkerCapture(join(tmpdir(), `dotln-codex-home-${process.pid}-`));
     }
     catch {
         throw new WorkerFailure("profile-refused", "isolated Codex home");
@@ -1030,7 +1035,7 @@ class CliWorkOrderTransport {
             process.stderr.write(`DotLn advisory: ${binary} CLI ${this.harnessVersion} is outside the recorded version observation ${observedVersion}; launch continues.\n`);
     }
     dispatch(request, now, options) {
-        const schemaDirectory = mkdtempSync(join(tmpdir(), "dotln-worker-schema-"));
+        const schemaDirectory = createWorkerCapture(join(tmpdir(), "dotln-worker-schema-"));
         let episode;
         try {
             const schemaPath = join(schemaDirectory, "result.json");

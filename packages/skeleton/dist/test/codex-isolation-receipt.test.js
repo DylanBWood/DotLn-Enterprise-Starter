@@ -1,6 +1,7 @@
+import { createFixtureRoot, removeTemporaryPath as rmSync, } from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { chmodSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync, } from "node:fs";
+import { chmodSync, mkdirSync, readFileSync, realpathSync, writeFileSync, } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -73,7 +74,7 @@ async function fixtureReceipt(root) {
 }
 test("[document] WO-159 AC4 a fixture receipt passes; unequal pairs and other forgeries fail the receipt check", async () => {
     const { validateReceipt } = await receiptTools();
-    const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-codex-receipt-test-")));
+    const root = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-codex-receipt-test-")));
     try {
         const receipt = await fixtureReceipt(root);
         assert.doesNotThrow(() => validateReceipt(receipt));
@@ -228,7 +229,7 @@ test("[document] WO-159 AC4 a fixture receipt passes; unequal pairs and other fo
 });
 test("[document] WO-159 AC4 the verification host's own episode record builds a valid receipt", async () => {
     const { trustCensus, observeLogin, buildReceipt, validateReceipt, matchSharedStream, } = await receiptTools();
-    const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-codex-receipt-test-")));
+    const root = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-codex-receipt-test-")));
     try {
         const { env, login, transport } = operator(root, "verification-cli.mjs");
         const before = trustCensus(env);

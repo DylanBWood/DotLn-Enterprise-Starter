@@ -1,7 +1,8 @@
+import { createFixtureRoot, removeTemporaryPath as rmSync, } from "../src/temporary-roots.js";
 import test, { before, after } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, writeFileSync, } from "node:fs";
+import { readFileSync, readdirSync, realpathSync, writeFileSync, } from "node:fs";
 import { tmpdir } from "node:os";
 import { delimiter, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -31,7 +32,7 @@ function verificationReactor(state, event) {
 }
 const roots = [];
 const temporary = () => {
-    const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-verification-test-")));
+    const root = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-verification-test-")));
     roots.push(root);
     return root;
 };

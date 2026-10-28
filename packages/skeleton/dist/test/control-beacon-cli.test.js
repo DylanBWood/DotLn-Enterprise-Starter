@@ -1,7 +1,8 @@
+import { createFixtureRoot, removeTemporaryPath as rmSync, } from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { chmodSync, cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync, } from "node:fs";
+import { chmodSync, cpSync, existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, symlinkSync, writeFileSync, } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -9,7 +10,7 @@ import { decodeLog } from "@dotln/kernel";
 import { controlBeaconAddress, controlBeaconDirectory, } from "@dotln/beacons/control-beacon-fs.mjs";
 import { replayBeaconSweep } from "../src/beacon-observe.js";
 test("WO-021 agent constellation CLI persists permission/refusal and one metadata perception through the reactor", (t) => {
-    const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-beacon-cli-")));
+    const root = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-beacon-cli-")));
     t.after(() => rmSync(root, { recursive: true, force: true }));
     const repository = fileURLToPath(new URL("../../../../", import.meta.url));
     const run = (file, args) => spawnSync(file, args, { cwd: root, encoding: "utf8" });

@@ -1,6 +1,7 @@
+import { createFixtureRoot, removeTemporaryPath as rmSync, } from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, writeFileSync, existsSync, rmSync, realpathSync, symlinkSync, cpSync, mkdirSync, readdirSync, readlinkSync, lstatSync, unlinkSync, } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, realpathSync, symlinkSync, cpSync, mkdirSync, readdirSync, readlinkSync, lstatSync, unlinkSync, } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -62,7 +63,7 @@ async function until(check, timeout = 4000) {
     assert.fail("fixture condition timed out");
 }
 test("WO-068 recorded clock drives all phases; replay ignores ambient clock; return cancels; idle needs a fresh edge", async (t) => {
-    const directory = mkdtempSync(join(tmpdir(), "dotln-resident-"));
+    const directory = createFixtureRoot(join(tmpdir(), "dotln-resident-"));
     let at = 0;
     const host = new ResidentHost({
         directory,
@@ -116,7 +117,7 @@ test("WO-068 recorded clock drives all phases; replay ignores ambient clock; ret
     t.diagnostic(`dispatches=${events(host.store, "ScriptEpisodeDispatched").length}; replay byte-identical; expired→return→absence rearmed`);
 });
 test("resident NoOp identity survives replay and distinguishes phase and rearm", async (t) => {
-    const directory = mkdtempSync(join(tmpdir(), "dotln-noop-"));
+    const directory = createFixtureRoot(join(tmpdir(), "dotln-noop-"));
     t.after(() => rmSync(directory, { recursive: true, force: true }));
     let at = 0;
     const options = {
@@ -167,7 +168,7 @@ test("resident NoOp identity survives replay and distinguishes phase and rearm",
 });
 test("WO-068 in-flight kill and finish obey return precedence and reject stale advancement", async (t) => {
     for (const disposition of ["kill", "finish"]) {
-        const directory = mkdtempSync(join(tmpdir(), "dotln-return-"));
+        const directory = createFixtureRoot(join(tmpdir(), "dotln-return-"));
         t.after(() => rmSync(directory, { recursive: true, force: true }));
         const config = configuration(directory);
         config.graph = {
@@ -230,7 +231,7 @@ test("WO-068 envelope, scope and runtime capability refusals never spawn; unavai
         "capability",
         "unavailable",
     ]) {
-        const directory = mkdtempSync(join(tmpdir(), "dotln-refusal-"));
+        const directory = createFixtureRoot(join(tmpdir(), "dotln-refusal-"));
         t.after(() => rmSync(directory, { recursive: true, force: true }));
         const config = configuration(directory);
         if (condition === "effect")
@@ -274,7 +275,7 @@ test("WO-068 envelope, scope and runtime capability refusals never spawn; unavai
     }
 });
 test("WO-068 two once invocations produce byte-identical events to two loop ticks", async (t) => {
-    const directory = mkdtempSync(join(tmpdir(), "dotln-once-"));
+    const directory = createFixtureRoot(join(tmpdir(), "dotln-once-"));
     t.after(() => rmSync(directory, { recursive: true, force: true }));
     const config = configuration(directory);
     const logs = [];
@@ -316,7 +317,7 @@ test("WO-068 two once invocations produce byte-identical events to two loop tick
     assert.equal(logs[0], logs[1]);
 });
 test("WO-068 malformed saved evidence refuses before append/reclaim; presence rejects symlink stores", async (t) => {
-    const directory = mkdtempSync(join(tmpdir(), "dotln-decode-"));
+    const directory = createFixtureRoot(join(tmpdir(), "dotln-decode-"));
     t.after(() => rmSync(directory, { recursive: true, force: true }));
     const store = new ResidentStore(join(directory, "store"));
     await assert.rejects(store.transaction((tx) => tx.append("ScriptEpisodeObserved", { verified: true })), /precedes configuration/u);
@@ -351,7 +352,7 @@ test("WO-068 malformed saved evidence refuses before append/reclaim; presence re
     assert.equal(store.read(), before);
 });
 test("WO-068 inspected restart records lost once and cannot reuse dispatched identity", async (t) => {
-    const directory = mkdtempSync(join(tmpdir(), "dotln-lost-"));
+    const directory = createFixtureRoot(join(tmpdir(), "dotln-lost-"));
     t.after(() => rmSync(directory, { recursive: true, force: true }));
     let at = 0;
     const options = {
@@ -401,7 +402,7 @@ test("WO-068 native script uses exact argv/cwd, clears inherited env, verifies o
         return;
     }
     assert.equal(unavailable, null, "native script fixture needs an outside-sandbox runner");
-    const directory = mkdtempSync(join(tmpdir(), "dotln-script-"));
+    const directory = createFixtureRoot(join(tmpdir(), "dotln-script-"));
     t.after(() => rmSync(directory, { recursive: true, force: true }));
     const text = JSON.stringify({
         cwd: realpathSync(directory),
@@ -485,7 +486,7 @@ test("[document] WO-068 fresh CLI once and presence commands; SIGKILL recovery a
         return;
     }
     assert.equal(scriptAvailability(), null);
-    const directory = mkdtempSync(join(tmpdir(), "dotln-process-"));
+    const directory = createFixtureRoot(join(tmpdir(), "dotln-process-"));
     t.after(() => rmSync(directory, { recursive: true, force: true }));
     const config = configuration(directory);
     // Real-clock CLI policy uses the same table with a long live expiry/deadline.
@@ -619,9 +620,9 @@ function crashInput(directory, target, mode, label, stop, at) {
         directory,
         target,
         mode,
-        trace: `${directory}-${label}.trace`,
-        pause: `${directory}-${label}.pause`,
-        resume: `${directory}-${label}.resume`,
+        trace: join(directory, `${label}.trace`),
+        pause: join(directory, `${label}.pause`),
+        resume: join(directory, `${label}.resume`),
         ...(stop === undefined ? {} : { stop }),
         ...(at === undefined ? {} : { at }),
     };
@@ -733,7 +734,7 @@ async function killLockProcess(input, cell) {
     }
 }
 test("WO-186 a cancelled matrix cell reaps its paused fixture child before teardown", async (t) => {
-    const directory = mkdtempSync(join(tmpdir(), "dotln-lock-cancel-"));
+    const directory = createFixtureRoot(join(tmpdir(), "dotln-lock-cancel-"));
     const controller = new AbortController();
     const cell = {
         signal: controller.signal,
@@ -778,7 +779,7 @@ const lockMatrixFixture = process
     ? JSON.parse(process.env.DOTLN_LOCK_MATRIX_FIXTURE)
     : null;
 test("WO-143 once and loop restart at every acquisition filesystem boundary, including killed reclaimers", { concurrency: 4 }, async (t) => {
-    const root = mkdtempSync(join(tmpdir(), "dotln-lock-matrix-"));
+    const root = createFixtureRoot(join(tmpdir(), "dotln-lock-matrix-"));
     t.after(() => rmSync(root, { recursive: true, force: true }));
     const template = join(root, "template");
     let prefix = "";
@@ -800,7 +801,7 @@ test("WO-143 once and loop restart at every acquisition filesystem boundary, inc
             await Promise.all(children.pending);
         });
         const { mode, scope, reclaim, label } = cell;
-        const cellRoot = mkdtempSync(join(root, `${label}-`));
+        const cellRoot = createFixtureRoot(join(root, `${label}-`));
         const make = (label) => {
             const directory = join(cellRoot, label);
             cpSync(template, directory, { recursive: true });
@@ -876,7 +877,7 @@ test("WO-173 a lock-matrix cell that exceeds its own deadline fails by name whil
     assert.match(run.stdout, /test timed out after 150ms/);
 });
 test("WO-143 thirty consecutive kill/restart rounds remain openable on once and loop paths", { timeout: 60000 }, async (t) => {
-    const root = mkdtempSync(join(tmpdir(), "dotln-lock-rounds-"));
+    const root = createFixtureRoot(join(tmpdir(), "dotln-lock-rounds-"));
     t.after(() => rmSync(root, { recursive: true, force: true }));
     for (const mode of ["once", "loop"]) {
         const directory = join(root, mode);
@@ -925,7 +926,7 @@ function storeSnapshot(directory) {
     return values;
 }
 test("WO-143 live, unreadable and legacy guards refuse unchanged; released locks remain compatible", async (t) => {
-    const root = mkdtempSync(join(tmpdir(), "dotln-guard-refusal-"));
+    const root = createFixtureRoot(join(tmpdir(), "dotln-guard-refusal-"));
     t.after(() => rmSync(root, { recursive: true, force: true }));
     for (const fault of [
         "live",
@@ -1003,7 +1004,7 @@ test("WO-143 live, unreadable and legacy guards refuse unchanged; released locks
     assert.equal(inspected, false, "mutable log must not be inspected before excluding its live writer");
 });
 test("WO-143 malformed resident state preserves dead append guard and lock before reclaim", async (t) => {
-    const root = mkdtempSync(join(tmpdir(), "dotln-guard-inspection-"));
+    const root = createFixtureRoot(join(tmpdir(), "dotln-guard-inspection-"));
     t.after(() => rmSync(root, { recursive: true, force: true }));
     await seedFlight(root);
     const target = join(root, ".resident-append");
@@ -1017,7 +1018,7 @@ test("WO-143 malformed resident state preserves dead append guard and lock befor
     assertDeadPid(pid);
 });
 test("WO-143 killed actors drain without further polling lock acquisitions", async (t) => {
-    const directory = mkdtempSync(join(tmpdir(), "dotln-killed-poll-"));
+    const directory = createFixtureRoot(join(tmpdir(), "dotln-killed-poll-"));
     t.after(() => rmSync(directory, { recursive: true, force: true }));
     let at = 0;
     let killed = false;
@@ -1069,7 +1070,7 @@ test("WO-143 killed actors drain without further polling lock acquisitions", asy
     }
 });
 test("WO-143 concurrent dead-guard starts publish exactly one reclaim claim", async (t) => {
-    const root = mkdtempSync(join(tmpdir(), "dotln-guard-contenders-"));
+    const root = createFixtureRoot(join(tmpdir(), "dotln-guard-contenders-"));
     t.after(() => rmSync(root, { recursive: true, force: true }));
     const directory = join(root, "store");
     mkdirSync(directory);
@@ -1128,7 +1129,7 @@ function workerPeer(directory, control, points, operation = "acquire") {
     };
 }
 test("WO-147 a lock released between observation and read is re-inspected under the guard", async (t) => {
-    const root = mkdtempSync(join(tmpdir(), "dotln-lock-contention-"));
+    const root = createFixtureRoot(join(tmpdir(), "dotln-lock-contention-"));
     t.after(() => rmSync(root, { recursive: true, force: true }));
     const peers = [];
     t.after(async () => {
@@ -1160,7 +1161,7 @@ test("WO-147 a lock released between observation and read is re-inspected under 
     t.diagnostic("direct acquisition and resident transaction both survive holder release after observed host.lock; prior event bytes unchanged");
 });
 test("WO-147 retirement probe tolerates a delayed claim present when recursive cleanup begins", async (t) => {
-    const root = mkdtempSync(join(tmpdir(), "dotln-lock-retirement-probe-"));
+    const root = createFixtureRoot(join(tmpdir(), "dotln-lock-retirement-probe-"));
     t.after(() => rmSync(root, { recursive: true, force: true }));
     const attempts = 20;
     let reproduced = 0;
@@ -1215,7 +1216,7 @@ test("WO-147 retirement probe tolerates a delayed claim present when recursive c
     t.diagnostic(`${attempts} attempts paused retirement before rmSync with a delayed successor claim present; ENOTEMPTY inference not reproduced`);
 });
 test("WO-143 a delayed claimant cannot unlink a successor through a retired target", async (t) => {
-    const root = mkdtempSync(join(tmpdir(), "dotln-guard-generation-"));
+    const root = createFixtureRoot(join(tmpdir(), "dotln-guard-generation-"));
     t.after(() => rmSync(root, { recursive: true, force: true }));
     const directory = join(root, "store");
     mkdirSync(directory);
@@ -1265,7 +1266,7 @@ test("WO-143 a delayed claimant cannot unlink a successor through a retired targ
     t.diagnostic("delayed old-target claim refused after canonical identity changed; successor retained ownership");
 });
 test("WO-143 once and loop recover kills during a running episode's polling acquisition", { timeout: 60000 }, async (t) => {
-    const root = mkdtempSync(join(tmpdir(), "dotln-poll-crash-"));
+    const root = createFixtureRoot(join(tmpdir(), "dotln-poll-crash-"));
     t.after(() => rmSync(root, { recursive: true, force: true }));
     const template = join(root, "template");
     mkdirSync(template);

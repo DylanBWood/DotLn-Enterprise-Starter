@@ -1,9 +1,10 @@
+import { createFixtureRoot, removeTemporaryPath as rmSync, } from "../src/temporary-roots.js";
 import test from "node:test";
 import { prepareSourceObjectStore, sourceObjectEnvironment, } from "../src/source-change-worktree.js";
 import { fixtureObjectEnvironment } from "./source-change-fixture.js";
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import { existsSync, chmodSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync, } from "node:fs";
+import { existsSync, chmodSync, mkdirSync, readFileSync, realpathSync, symlinkSync, writeFileSync, } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -52,7 +53,7 @@ const git = (cwd, ...args) => execFileSync("git", ["-c", "core.hooksPath=/dev/nu
     },
 }).trim();
 function scratch() {
-    const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-writer-test-")));
+    const root = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-writer-test-")));
     const launchpad = join(root, "launchpad");
     const parent = join(root, "trees");
     const cwd = join(parent, "writer");
@@ -425,7 +426,7 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
                     assert.ok(grants.includes(`${JSON.stringify(path)}=${JSON.stringify(mode)}`), `${path} ${mode}`);
                 // Codex's helper aliases live under the episode home; only that
                 // directory is granted, never the home and its credentials.
-                const home = realpathSync(mkdtempSync(join(tmpdir(), "dotln-codex-home-test-")));
+                const home = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-codex-home-test-")));
                 try {
                     const withHome = canonicalWorkerArgs("codex-cli-exec", s.request, "/schema.json", "0.154.0", home).find((arg) => arg.startsWith("permissions.dotln-writer.filesystem="));
                     assert.ok(withHome.includes(`${JSON.stringify(join(home, "tmp", "arg0"))}="read"`));
@@ -467,7 +468,7 @@ test("WO-051 C-W2/C-W3/C-W8/C-W9 and X-W1/X-W2/X-W8 canonical writer shapes", ()
                     assert.ok(path !== "/" && !`${homedir()}/`.startsWith(`${path}/`), `${path} never covers the home directory`);
                 // A main checkout's gitdir holds the shared hooks and config; one
                 // that passes the mount checks is still refused its grants.
-                const main = realpathSync(mkdtempSync(join(s.request.profile.worktreeParent, "main-")));
+                const main = realpathSync(createFixtureRoot(join(s.request.profile.worktreeParent, "main-")));
                 try {
                     execFileSync("git", ["init", "--quiet"], { cwd: main });
                     writeFileSync(join(main, "message.txt"), "Synthetic\n");

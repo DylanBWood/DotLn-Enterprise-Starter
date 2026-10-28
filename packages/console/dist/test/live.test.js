@@ -1,7 +1,8 @@
+import { createFixtureRoot, removeTemporaryPath as rmSync, } from "@dotln/skeleton/dist/src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { mkdirSync, mkdtempSync, readFileSync, writeFileSync, rmSync, existsSync, renameSync, unlinkSync, } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync, existsSync, renameSync, unlinkSync, } from "node:fs";
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -25,7 +26,7 @@ const until = async (check) => {
     assert.fail("live observation timed out");
 };
 const host = async (t) => {
-    const directory = mkdtempSync(join(tmpdir(), "dotln-live-"));
+    const directory = createFixtureRoot(join(tmpdir(), "dotln-live-"));
     const indexPath = join(directory, "index.md");
     writeFileSync(indexPath, index);
     const resident = new ResidentHost({
@@ -193,7 +194,7 @@ test("WO-117 literal input, serial commands, EOF and invalid input", { timeout: 
 });
 test("WO-117 signals abort active invocation and contract fetches", { timeout: 10000 }, async (t) => {
     for (const line of ['["skeleton.compiled-diff"]', ":commands"]) {
-        const directory = mkdtempSync(join(tmpdir(), "dotln-live-abort-"));
+        const directory = createFixtureRoot(join(tmpdir(), "dotln-live-abort-"));
         let accepted = false;
         const server = createServer((_req, res) => {
             accepted = true;
@@ -256,7 +257,7 @@ test("WO-117 idle clock samples do not repaint and compact audit fields cannot f
     writeFileSync(join(directory, "events.jsonl"), original);
 });
 test("WO-117 generic payloads and inherited names cannot stop refresh", async (t) => {
-    const directory = mkdtempSync(join(tmpdir(), "dotln-live-null-"));
+    const directory = createFixtureRoot(join(tmpdir(), "dotln-live-null-"));
     t.after(() => rmSync(directory, { recursive: true, force: true }));
     const frames = [];
     const watcher = watchLiveView(directory, (text) => frames.push(text));
