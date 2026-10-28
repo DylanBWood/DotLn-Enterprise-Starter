@@ -60,7 +60,7 @@ export interface HarnessProfile {
 export type OutsideWriteGrant = {
     readonly source: string;
 } & ({
-    readonly kind: "system-temp" | "session-scratch" | "host-scratchpad" | "main-intake";
+    readonly kind: "system-temp" | "session-scratch" | "host-scratchpad" | "main-intake" | "target-worktree";
 } | {
     readonly kind: "operator-root";
     readonly root: string;

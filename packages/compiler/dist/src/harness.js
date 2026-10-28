@@ -160,6 +160,7 @@ export function assertOutsideWriteGrants(value) {
                 "host-scratchpad",
                 "main-intake",
                 "operator-root",
+                "target-worktree",
             ].includes(grant.kind) &&
             (grant.kind === "operator-root"
                 ? typeof grant.root === "string" &&
