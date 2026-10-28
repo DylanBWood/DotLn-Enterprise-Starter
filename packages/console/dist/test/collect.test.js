@@ -1,7 +1,8 @@
+import { createFixtureRoot, removeTemporaryPath as rmSync, } from "@dotln/skeleton/dist/src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { appendFileSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync, } from "node:fs";
+import { appendFileSync, cpSync, existsSync, mkdirSync, readFileSync, symlinkSync, writeFileSync, } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -32,7 +33,7 @@ const warmGit = [
     "worktree",
 ];
 test("WO-164 console collection spawns a constant number of processes and Git reads only new or moved tags", async (t) => {
-    const base = mkdtempSync(join(tmpdir(), "dotln-collect-"));
+    const base = createFixtureRoot(join(tmpdir(), "dotln-collect-"));
     const repo = join(base, "repo");
     const gitLog = join(base, "git.log");
     const nodeLog = join(base, "node.log");
@@ -346,7 +347,7 @@ test("WO-225 segmented instances and configured roots preserve orders and contro
         { control: "records/control" },
         { docs: "records", control: "control-plane", orders: "segments" },
     ]) {
-        const repo = mkdtempSync(join(tmpdir(), "dotln-control-segments-"));
+        const repo = createFixtureRoot(join(tmpdir(), "dotln-control-segments-"));
         try {
             cpSync(join(root, "scripts"), join(repo, "scripts"), { recursive: true });
             installBeaconFixture(repo);
@@ -395,7 +396,7 @@ test("WO-225 segmented instances and configured roots preserve orders and contro
     }
 });
 test("WO-225 configured control refuses an escaped parent symlink like the canonical reader", async (t) => {
-    const base = mkdtempSync(join(tmpdir(), "dotln-control-escape-"));
+    const base = createFixtureRoot(join(tmpdir(), "dotln-control-escape-"));
     t.after(() => rmSync(base, { recursive: true, force: true }));
     const repo = join(base, "repo");
     const outside = join(base, "outside");

@@ -1,7 +1,8 @@
+import { createFixtureRoot, removeTemporaryPath as rmSync, } from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { chmodSync, closeSync, lstatSync, mkdirSync, mkdtempSync, openSync, readFileSync, readdirSync, realpathSync, rmSync, writeFileSync, writeSync, } from "node:fs";
+import { chmodSync, closeSync, lstatSync, mkdirSync, openSync, readFileSync, readdirSync, realpathSync, writeFileSync, writeSync, } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -58,7 +59,7 @@ const fixture = {
     ],
 };
 function provision(t) {
-    const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-senses-")));
+    const root = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-senses-")));
     const repo = join(root, "repository");
     createWorkerFixture(repo, fixture);
     writeFileSync(join(repo, ".gitignore"), ".control-beacons/\n");

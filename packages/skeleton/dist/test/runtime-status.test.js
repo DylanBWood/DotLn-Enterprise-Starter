@@ -1,3 +1,4 @@
+import { createFixtureRoot, removeTemporaryPath as rmSync, } from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -5,7 +6,7 @@ import { syncBuiltinESMExports } from "node:module";
 import { spawnSync } from "node:child_process";
 import { decodeLog } from "@dotln/kernel";
 import { createHash } from "node:crypto";
-import { mkdtempSync, mkdirSync, readdirSync, readFileSync, rmSync, unlinkSync, writeFileSync, } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync, } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
@@ -53,7 +54,7 @@ const result = {
 };
 const read = (directory) => readFileSync(join(directory, "runtime-status-v1.json"), "utf8");
 test("WO-114 per-event status, tick, privacy and restart transcript", async (t) => {
-    const directory = mkdtempSync(join(tmpdir(), "dotln-status-"));
+    const directory = createFixtureRoot(join(tmpdir(), "dotln-status-"));
     t.after(() => rmSync(directory, { recursive: true, force: true }));
     const indexPath = join(directory, "index.md");
     writeFileSync(indexPath, index);
@@ -169,7 +170,7 @@ function configuration(directory) {
     });
 }
 test("intent holds survive replay and restart without exposing raw diagnostics", async (t) => {
-    const directory = mkdtempSync(join(tmpdir(), "dotln-intent-status-"));
+    const directory = createFixtureRoot(join(tmpdir(), "dotln-intent-status-"));
     t.after(() => rmSync(directory, { recursive: true, force: true }));
     const indexPath = join(directory, "index.md");
     writeFileSync(indexPath, index);
@@ -350,7 +351,7 @@ test("finished vertical continuations leave live status and keep at most one hol
     assert.deepEqual(finished.holds, holds);
 });
 test("[document] WO-114 helper and installed-snapshot heartbeat share the host's index and replay every publication", async (t) => {
-    const directory = mkdtempSync(join(tmpdir(), "dotln-status-writers-"));
+    const directory = createFixtureRoot(join(tmpdir(), "dotln-status-writers-"));
     const indexPath = join(directory, "index.md");
     writeFileSync(indexPath, index.replace("### WO-158", "### WO-999\n\n- Provenance: derived from fixture intent."));
     const selectedIndex = readFileSync(indexPath, "utf8");
@@ -406,7 +407,7 @@ test("[document] WO-114 helper and installed-snapshot heartbeat share the host's
     assert.equal(read(directory), latest);
 });
 test("WO-114 CLI binds the selected launchpad's configured index root", (t) => {
-    const directory = mkdtempSync(join(tmpdir(), "dotln-status-launchpad-"));
+    const directory = createFixtureRoot(join(tmpdir(), "dotln-status-launchpad-"));
     t.after(() => rmSync(directory, { recursive: true, force: true }));
     const orders = join(directory, "orders");
     mkdirSync(orders);
@@ -428,7 +429,7 @@ test("WO-114 CLI binds the selected launchpad's configured index root", (t) => {
     assert.deepEqual(JSON.parse(read(store)).workOrders.items.map((row) => row.order), ["WO-114", "WO-999"]);
 });
 test("WO-114 failed publication cannot abort start, presence or dispatch and the next tick rebuilds", async (t) => {
-    const directory = mkdtempSync(join(tmpdir(), "dotln-status-failure-"));
+    const directory = createFixtureRoot(join(tmpdir(), "dotln-status-failure-"));
     const indexPath = join(directory, "index.md");
     writeFileSync(indexPath, index);
     const target = join(directory, "runtime-status-v1.json");
@@ -494,7 +495,7 @@ test("WO-117 bad launchpad sources remain live, replace old bindings and survive
         "launchpad-unavailable",
         "configuration-invalid",
     ]) {
-        const directory = mkdtempSync(join(tmpdir(), "dotln-index-source-"));
+        const directory = createFixtureRoot(join(tmpdir(), "dotln-index-source-"));
         t.after(() => rmSync(directory, { recursive: true, force: true }));
         const store = join(directory, "store");
         mkdirSync(store);
@@ -543,7 +544,7 @@ test("WO-117 bad launchpad sources remain live, replace old bindings and survive
 });
 test("WO-184 criterion 10: FIFO configuration, index and binding cannot block the resident CLI", (t) => {
     for (const source of ["configuration", "index", "binding"]) {
-        const directory = mkdtempSync(join(tmpdir(), "dotln-index-fifo-"));
+        const directory = createFixtureRoot(join(tmpdir(), "dotln-index-fifo-"));
         t.after(() => rmSync(directory, { recursive: true, force: true }));
         mkdirSync(join(directory, "orders"));
         writeFileSync(join(directory, "dotln.config.json"), JSON.stringify({ version: 1, roots: { workOrders: "orders" } }));
@@ -585,7 +586,7 @@ test("WO-184 criterion 10: FIFO configuration, index and binding cannot block th
     }
 });
 test("WO-117 only the lifetime owner sweeps status temporaries", async (t) => {
-    const directory = mkdtempSync(join(tmpdir(), "dotln-status-sweep-"));
+    const directory = createFixtureRoot(join(tmpdir(), "dotln-status-sweep-"));
     const stale = join(directory, ".runtime-status-abandoned.tmp");
     const unrelated = join(directory, "keep.tmp");
     writeFileSync(stale, "stale");

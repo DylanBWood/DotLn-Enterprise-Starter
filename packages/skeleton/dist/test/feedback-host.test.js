@@ -1,6 +1,7 @@
+import { createFixtureRoot, removeTemporaryPath as rmSync, } from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, realpathSync, readdirSync, rmSync, } from "node:fs";
+import { readFileSync, realpathSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -19,7 +20,7 @@ test("WO-129 Claude upgrades retain version observations above the supported min
     assert.equal(new ClaudeCliPrintWorkOrderTransport(undefined, "99.0.0").harnessVersion, "99.0.0");
 });
 test("[document] WO-011 selfhost executes the real repository audit, recovers its saved result, and independently verifies once", async () => {
-    const directory = realpathSync(mkdtempSync(join(tmpdir(), "dotln-feedback-selfhost-")));
+    const directory = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-feedback-selfhost-")));
     let at = 1000000, calls = 0;
     const transport = new FakeVerificationTransport();
     const dispatch = transport.dispatch.bind(transport);

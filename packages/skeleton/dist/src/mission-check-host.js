@@ -1,5 +1,5 @@
+import { createWorkerCapture, removeTemporaryPath as rmSync, } from "./temporary-roots.js";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { missionCheckAuthorization } from "./reactor.js";
@@ -10,7 +10,7 @@ export const missionEpisodeId = (subject) => `ep_mission_${subject.hash.slice(7,
 /** An empty scratch working directory: the capsule is the only input, and no
  * project startup file may add context the judge was not given. */
 export function missionCheckScratch() {
-    const cwd = mkdtempSync(join(tmpdir(), "dotln-mission-check-"));
+    const cwd = createWorkerCapture(join(tmpdir(), "dotln-mission-check-"));
     execFileSync("git", ["-c", "init.templateDir=", "init", "--quiet", cwd], {
         stdio: "pipe",
     });

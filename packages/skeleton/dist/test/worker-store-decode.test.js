@@ -1,7 +1,8 @@
+import { createFixtureRoot, removeTemporaryPath as rmSync, } from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { lstatSync, mkdtempSync, readFileSync, readdirSync, readlinkSync, realpathSync, rmSync, symlinkSync, unlinkSync, writeFileSync, } from "node:fs";
+import { lstatSync, readFileSync, readdirSync, readlinkSync, realpathSync, symlinkSync, unlinkSync, writeFileSync, } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { decodeLog, encodeLog } from "@dotln/kernel";
@@ -51,7 +52,7 @@ function mutate(value, shape) {
 }
 for (const mode of ["inspection", "verification"]) {
     test(`WO-048 ${mode} malformed recovery corpus preserves all store bytes`, async (t) => {
-        const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-decode-")));
+        const root = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-decode-")));
         let launches = 0;
         let afterSave = 0;
         const inspection = {

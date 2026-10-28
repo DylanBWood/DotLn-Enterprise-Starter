@@ -1,9 +1,10 @@
+import { createFixtureRoot, removeTemporaryPath as rmSync, } from "../src/temporary-roots.js";
 import test from "node:test";
 import { startDeadline } from "../src/gate-deadlines.mjs";
 import assert from "node:assert/strict";
 import { once } from "node:events";
 import { spawnSync } from "node:child_process";
-import { chmodSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, symlinkSync, writeFileSync, } from "node:fs";
+import { chmodSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, realpathSync, symlinkSync, writeFileSync, } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -27,7 +28,7 @@ const claim = {
     refusalCount: 0,
 };
 const temporary = (t) => {
-    const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-wo020-")));
+    const root = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-wo020-")));
     t.after(() => rmSync(root, { recursive: true, force: true }));
     return root;
 };
@@ -151,7 +152,7 @@ test("WO-020 AC5 concurrent metadata observer sees only complete codewords and f
         const [result] = (await completion);
         assert.ok(result.samples >= 128);
         assert.equal(result.seen.length, 2);
-        assert.deepEqual(readdirSync(root), ["beacons"], "sibling staging is removed");
+        assert.deepEqual(readdirSync(root).filter((name) => name !== ".dotln-owner.json"), ["beacons"], "sibling staging is removed");
         t.diagnostic(`128 atomic replacements; concurrent sweeps=${result.samples}; observed both states; zero off-lattice sizes or temporary names`);
     }
     finally {
@@ -232,7 +233,7 @@ test("WO-020/WO-029 CLI pins the new timeline, remains opt-in, and prints termin
     assert.equal(plain.status, 0, plain.stderr);
     assert.equal(plain.stderr, "");
     assert.equal(plain.stdout, baseline.replace(/^@dotln\/skeleton v0\.8\.0/, `@dotln/skeleton v${manifest.version}`));
-    assert.deepEqual(readdirSync(root), [], "default creates no files");
+    assert.deepEqual(readdirSync(root).filter((name) => name !== ".dotln-owner.json"), [], "default creates no files");
     for (const args of [
         ["--beacons"],
         ["--beacons", "--audit"],
@@ -241,7 +242,7 @@ test("WO-020/WO-029 CLI pins the new timeline, remains opt-in, and prints termin
         const rejected = run(...args);
         assert.notEqual(rejected.status, 0);
         assert.match(rejected.stderr, /usage: --beacons/);
-        assert.deepEqual(readdirSync(root), []);
+        assert.deepEqual(readdirSync(root).filter((name) => name !== ".dotln-owner.json"), []);
     }
     const directory = join(root, "beacons");
     const emitted = run("--audit", "--compiled-diff", "--beacons", directory);

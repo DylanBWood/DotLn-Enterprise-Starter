@@ -1,9 +1,10 @@
+import { createFixtureRoot, removeTemporaryPath as rmSync, } from "@dotln/skeleton/dist/src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { appendEvent } from "@dotln/kernel";
-import { existsSync, mkdtempSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync, } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync, } from "node:fs";
 import { dirname, join } from "node:path";
 import { homedir, tmpdir } from "node:os";
 import { compileFeedbackUnits, feedbackMaturity, seiriEnvironment, seiriLoadout, } from "@dotln/compiler";
@@ -627,7 +628,7 @@ test("[document] WO-032 AC6 hostile source text stays inert; output is local anc
     assert.throws(() => renderTerminal(board, 12));
 });
 test("[document] WO-032 command renders recorded sources without changing them; HTML output preserves existing files and refuses conflicting modes", () => {
-    const directory = mkdtempSync(join(tmpdir(), "dotln-console-test-"));
+    const directory = createFixtureRoot(join(tmpdir(), "dotln-console-test-"));
     try {
         const input = join(directory, "sources.json"), output = join(directory, "board.html");
         writeFileSync(input, JSON.stringify(loadFixture("selfhost")));
@@ -649,6 +650,7 @@ test("[document] WO-032 command renders recorded sources without changing them; 
         assert.equal(run("--html", join(directory, "source.ts")).status, 1);
         assert.equal(digest(readFileSync(input, "utf8")), before);
         assert.deepEqual(readdirSync(directory).sort(), [
+            ".dotln-owner.json",
             "board.html",
             "sources.json",
         ]);
@@ -668,7 +670,7 @@ test("WO-032 unavailable worker stores stay unavailable; corrupt logs do not bec
     }
 });
 test("[document] WO-032 host collection reads current sources and all shipped exports without changing control or creating a missing store", async () => {
-    const directory = mkdtempSync(join(tmpdir(), "dotln-console-read-only-"));
+    const directory = createFixtureRoot(join(tmpdir(), "dotln-console-read-only-"));
     const absent = join(directory, "missing-store");
     const paths = [
         "docs/control/resume.jsonl",
@@ -774,7 +776,7 @@ test("Store projection codes parse failures without exposing source content", ()
     assert.equal(store.audit.reason, "invalid format");
 });
 test("WO-225 board failure strings contain no fixture root, Node binary or home directory", async () => {
-    const directory = mkdtempSync(join(tmpdir(), "dotln-console-failures-"));
+    const directory = createFixtureRoot(join(tmpdir(), "dotln-console-failures-"));
     try {
         mkdirSync(join(directory, "scripts"));
         writeFileSync(join(directory, "scripts/worktree.mjs"), `console.log(${JSON.stringify(`Beacon fixture:refused | refused | directory cannot be read: ${directory}/refused\nGroup Beacon | active=0 closed=0 | group-v1 | 8 bytes`)});`);

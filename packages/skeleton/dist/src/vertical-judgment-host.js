@@ -1,5 +1,6 @@
+import { createWorkerCapture, promoteTemporaryRoot, removeTemporaryPath as rmSync, } from "./temporary-roots.js";
 import { execFileSync } from "node:child_process";
-import { copyFileSync, existsSync, mkdirSync, mkdtempSync, rmSync, } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { validateVerticalJudgmentResult, verticalJudgmentSubjectHash, } from "./vertical-judgment-protocol.js";
@@ -49,7 +50,7 @@ export async function runVerticalJudgment(options, now = Date.now) {
     };
     const dispatchedAt = now();
     // An empty Git directory satisfies Codex trust without adding any context.
-    const cwd = mkdtempSync(join(tmpdir(), `dotln-vertical-${task}-`));
+    const cwd = createWorkerCapture(join(tmpdir(), `dotln-vertical-${task}-`));
     let dispatch;
     try {
         try {
@@ -122,9 +123,11 @@ export async function runVerticalJudgment(options, now = Date.now) {
             const kept = ["result.json", "statement.txt", "wire.jsonl"].filter((name) => existsSync(join(cwd, name)));
             if (options.retain && kept.length) {
                 mkdirSync(options.retain, { recursive: true, mode: 0o700 });
-                const retained = mkdtempSync(join(options.retain, "rejected-"));
+                const retained = createWorkerCapture(join(options.retain, "rejected-"));
                 for (const name of kept)
                     copyFileSync(join(cwd, name), join(retained, name));
+                // A recorded diagnostic belongs to the retention lane, not the session.
+                promoteTemporaryRoot(retained);
             }
         }
         catch {

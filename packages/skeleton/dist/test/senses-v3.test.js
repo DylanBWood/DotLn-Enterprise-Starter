@@ -1,7 +1,8 @@
+import { createFixtureRoot, removeTemporaryPath as rmSync, } from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createHmac } from "node:crypto";
-import { chmodSync, closeSync, existsSync, lstatSync, mkdtempSync, openSync, readFileSync, readSync, readdirSync, realpathSync, rmSync, } from "node:fs";
+import { chmodSync, closeSync, existsSync, lstatSync, openSync, readFileSync, readSync, readdirSync, realpathSync, } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -125,7 +126,7 @@ test("[document] WO-022 normative v3 codebook data matches the blueprint", () =>
     assert.deepEqual(BEACON_V3_CODEBOOK, JSON.parse(normative));
 });
 test("WO-022 AC9 maximum v3 is sparse through atomic replacement; unsupported hosts create no file", (t) => {
-    const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-v3-storage-")));
+    const root = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-v3-storage-")));
     t.after(() => rmSync(root, { recursive: true, force: true }));
     const storage = probeV3Storage(root);
     const destination = join(root, "beacons");
@@ -149,13 +150,13 @@ test("WO-022 AC9 maximum v3 is sparse through atomic replacement; unsupported ho
         { ...storage, device: storage.device + 1n },
     ])
         assert.throws(() => writeV3BeaconFile(destination, "fixture.beacon", bytes, unsupported));
-    assert.deepEqual(readdirSync(root), []);
+    assert.deepEqual(readdirSync(root).filter((name) => name !== ".dotln-owner.json"), []);
     for (const size of [
         BigInt(Number.MAX_SAFE_INTEGER) + 1n,
         MAX_V3_LOGICAL_BYTES + 1n,
     ])
         assert.throws(() => writeV3BeaconFile(destination, "fixture.beacon", { ...bytes, size }, storage));
-    assert.deepEqual(readdirSync(root), []);
+    assert.deepEqual(readdirSync(root).filter((name) => name !== ".dotln-owner.json"), []);
     const original = Buffer.alloc;
     Buffer.alloc = ((size, ...args) => {
         assert.ok(size <= 65536, "no dense large buffer may be constructed");
@@ -202,7 +203,7 @@ test("WO-022 AC9 maximum v3 is sparse through atomic replacement; unsupported ho
     t.diagnostic(`maximum file: logical=${after.size}; blocks=${after.blocks}/${MAX_V3_ALLOCATED_BLOCKS}; blockBytes=${storage.blockBytes}; encoded millisecond with sub-microsecond positive error and zero tail preserved through temp/rename; unsupported hosts: no files or directories`);
 });
 test("WO-022 AC6/8/10 dynamic external keys, forged provenance, replay, unknown/rotated epochs and exhaustion", (t) => {
-    const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-v3-host-")));
+    const root = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-v3-host-")));
     t.after(() => rmSync(root, { recursive: true, force: true }));
     const keyPath = join(root, "host-key");
     assert.equal(createBeaconKey(keyPath, repository), 0);
@@ -273,12 +274,9 @@ test("WO-022 AC6/8/10 dynamic external keys, forged provenance, replay, unknown/
     assert.ok(readFileSync(keyPath).equals(keyBefore), "exhaustion preserves the current secret file");
     assert.equal(openBeaconKey(keyPath, repository).epoch, 255);
     assert.equal(lstatSync(join(root, "live", address), { bigint: true }).size, beaconBefore.size);
-    assert.deepEqual(readdirSync(root).sort(), [
-        "forged",
-        "host-key",
-        "live",
-        "replay",
-    ]);
+    assert.deepEqual(readdirSync(root)
+        .filter((name) => name !== ".dotln-owner.json")
+        .sort(), ["forged", "host-key", "live", "replay"]);
     const privateKey = JSON.parse(keyBefore.toString()).key;
     assert.ok(!JSON.stringify({ actual, rederived, record }).includes(privateKey), "no secret in state, replay or projection");
     assert.throws(() => createBeaconKey(join(repository, "forbidden-key"), repository), /outside/);

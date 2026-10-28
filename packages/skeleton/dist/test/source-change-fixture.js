@@ -1,5 +1,6 @@
+import { createFixtureRoot } from "../src/temporary-roots.js";
 import { execFileSync } from "node:child_process";
-import { appendFileSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, existsSync, lstatSync, unlinkSync, writeFileSync, } from "node:fs";
+import { appendFileSync, mkdirSync, readFileSync, realpathSync, existsSync, lstatSync, unlinkSync, writeFileSync, } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -58,7 +59,7 @@ export const fixtureGit = (cwd, ...args) => execFileSync("git", ["-c", "core.hoo
     },
 }).trim();
 export function createSourceFixture() {
-    const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-source-host-")));
+    const root = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-source-host-")));
     const repo = join(root, "target");
     mkdirSync(repo);
     mkdirSync(join(root, "trees"));
