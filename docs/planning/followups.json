@@ -3821,7 +3821,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) §10 C4 and D9: re-minted when the candidate heading was rewritten to say it was done; the operator directed the whole operator record reviewed (message 9) and the pass rewrote it as standing directions only in the same pass; the earlier row FUP-6176e828bc3f8b7c is settled for the same reason.",
+          "reopenWhen": "A direction the rewrite dropped is named by the operator or found by a role; the next pass restores it as a rule with its date and capture.",
+          "targets": [],
+          "at": "2026-10-28T19:52:43.832Z"
+        }
+      ]
     }
   ]
 }
