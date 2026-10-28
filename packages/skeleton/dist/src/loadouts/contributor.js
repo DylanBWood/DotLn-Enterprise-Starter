@@ -20,6 +20,16 @@ export const contributorOutsideAuthority = [
         repo: "project",
         reason: "WO-144-D001: temporary work and operator-selected DotLn session scratch; WO-158-D010: the session's host-printed scratchpad",
     },
+    {
+        grantId: "contributor.target-worktree",
+        version: 1,
+        grantedBy: "operator",
+        effects: [
+            outsideWriteEffect({ kind: "target-worktree", source: "WO-236-D001" }),
+        ],
+        repo: "project",
+        reason: "WO-236-D001: operator authorization of 2026-10-28 for the executor to edit its active order's registered target worktree; planning capture sha256:a7f2260e8e0377a737e2141692f1f4cda28c71c052b0fd0dd1fc79c5cd16a5e1",
+    },
 ];
 const sharedIds = sharedSupports.map((support) => support.supportFacetId);
 const contributorSupports = [...executorSupports, ...sharedSupports];
@@ -214,6 +224,14 @@ export const contributorRoles = [
             kind: "host-scratchpad",
             source: "WO-158-D010: the scratchpad Claude Code prints for this session",
         },
+        ...(role.facetId === "contributor.executor"
+            ? [
+                {
+                    kind: "target-worktree",
+                    source: "WO-236-D001: the active order's registered target worktree",
+                },
+            ]
+            : []),
     ],
     procedure: [
         operatorControls,
