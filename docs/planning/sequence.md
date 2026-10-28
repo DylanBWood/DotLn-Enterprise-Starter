@@ -6,10 +6,6 @@ Two entries between blank lines are a lane pair; the entries after the last
 pair run one at a time.
 
 <!-- dotln-work-order-sequence:start -->
-- WO-013 — The sub-app shell and menu
-
-- WO-014 — The toolbox catalog pipeline
-
 - WO-019 — The catalog as something to read
 
 - WO-015 — The soldier scene

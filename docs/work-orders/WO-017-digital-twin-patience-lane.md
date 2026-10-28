@@ -17,7 +17,7 @@ executor work plus the fixed cycle; unknown until run. Context bytes: WS-001
 C1 and §5.2 to §5.3 read at the run's folder, the records and replay
 libraries, this order, about 170 KB. Commands added in the target:
 `npm run twin:derive`, `npm run twin:check`. Tokens: unknown until run.
-Steps: 15. Re-mints: none. Refutations paid: four (receipts 008 to 010 on the earlier texts; the 2026-10-26 pass's receipt on this one).
+Steps: 15. Re-mints: none. Refutations paid: five (receipts 008 to 011 on the earlier texts; the 2026-10-28 pass's receipt on this one).
 **Nomination provenance:** the operator's decisions of 2026-10-24 (ignored
 intake capture `docs/intake/notes/planning-2026-10-24.md`, SHA-256
 `63b25fa11cbd648d224067c98d712b23e79734f35979cc8c9922566cc85e044c`, entry 9):
@@ -42,7 +42,7 @@ fixture's name, the `routePermissions` entry and the signed-in e2e path, the
 registry check's failure on an absent base, the base clause and receipt 008's
 known issues. Amended by the 2026-10-25 pass ([planning document](../planning/standard-pass-v0-99-0-2026-10-25.md)
 §6 D4): receipt 009's known issues (readiness defined, the registry check's
-message on an absent base and the variants as lazy chunks, one tick contract on the replay library). Amended by the 2026-10-26 pass ([planning document](../planning/acceptance-by-use-2026-10-26.md) §6 D9): rule 24's acceptance-by-use criterion (criterion 10) and the walkthrough, the design brief of rule 25, and receipt 010's items: the result fold is the canonical computation of WO-221's figures and the derivation is its check (its item (a)); `BasePaths.Twin` requires `twin:read`, granted to the mocked provider's default user and withheld from its `denied` user, and the Cost line names both (b); a reload after sign-in rests on WO-008's reload row (c); the no-interpreter rule is asserted by a spec that every variant module exports `describe` as a function and by a grep for `new Function` and `eval(` (d); a stored value that fails to parse or names an unknown variant yields the first registry entry (f).
+message on an absent base and the variants as lazy chunks, one tick contract on the replay library). Amended by the 2026-10-26 pass ([planning document](../planning/acceptance-by-use-2026-10-26.md) §6 D9): rule 24's acceptance-by-use criterion (criterion 10) and the walkthrough, the design brief of rule 25, and receipt 010's items: the result fold is the canonical computation of WO-221's figures and the derivation is its check (its item (a)); `BasePaths.Twin` requires `twin:read`, granted to the mocked provider's default user and withheld from its `denied` user, and the Cost line names both (b); a reload after sign-in rests on WO-008's reload row (c); the no-interpreter rule is asserted by a spec that every variant module exports `describe` as a function and by a grep for `new Function` and `eval(` (d); a stored value that fails to parse or names an unknown variant yields the first registry entry (f). Amended by the 2026-10-28 pass ([planning document](../planning/standard-pass-v0-100-0-2026-10-28.md) §6 D4 and D6): the design comparison reads as the operator corrected it in WO-019 (the two layouts are the first pair of an ongoing process the operator ends), and receipt 011's items are written in: the walkthrough runs on the served `mocked` configuration build (its item (a)) and criterion 8's grep names the two phrases that matter (c); `twin:check`'s absent-base message (b) was already in the text.
 **Depends on:** WO-016 merged (hard: the `records` fixture pack and fold, the
 `replay` clock and the `/machinery` group this lane joins); WO-008 merged
 (hard: the member before this one in the sequence; the base above is provisional: since starter v0.96.1 (core WO-230) the target publish describes the change from the merge base of the subject and the target's `main` and names the activation base beside it, so activation on this base publishes right; the planning pass that runs after WO-008 merges may set it to that merge commit, and none is required to (the 2026-10-24 second pass, D4)).
@@ -177,7 +177,7 @@ operator has decided: results only, variants kept, nothing held back.
   (WO-015's scene clock drives frames, WO-016's replay clock drives recorded
   time, and the twin replays on the latter); the scheduler question is
   answered once at step 6 and recorded in the architecture document.
-- **Design brief** (WS-001 rule 25): the two lanes as marble diagrams across the page's width, the recorded lane fixed and the twin lane under it, the ghost at reduced opacity; the result cell as three large figures each beside its recorded baseline with the difference legible at a glance, never a definition list; the variant picker as a list of names with version and lineage; the flip panel as labelled steppers; the catalog's type scale and measure; nothing animated at rest. Two candidate layouts, the result cell beside the lanes and the result cell beneath them, are built as stories and rendered at 1440 and 360; both screenshots go in the pull request, the operator picks one there, the decisions file records the pick and the other is deleted before final review.
+- **Design brief** (WS-001 rule 25): the two lanes as marble diagrams across the page's width, the recorded lane fixed and the twin lane under it, the ghost at reduced opacity; the result cell as three large figures each beside its recorded baseline with the difference legible at a glance, never a definition list; the variant picker as a list of names with version and lineage; the flip panel as labelled steppers; the catalog's type scale and measure; nothing animated at rest. The comparison runs as the operator's eye doctor test (WS-001 rule 25 as revised on 2026-10-28): the first pair is the result cell beside the lanes against the result cell beneath them, built and rendered at 1440 and 360 during execution, presented as A then B with the round named in the question and both captions, one independent variable per pair; the operator's preference makes the next pair, content and usability before cosmetic polish, until the operator says the process is done, and a preferred candidate alone is not acceptance; the decisions file records each round's pair and pick, the rejected implementation leaves the code when its round is decided (its screenshots and an implementation record under `docs/evidence/WO-017/design/` are the history), and a decided choice is not relitigated for this order.
 - **Documents:** `docs/dev-reference/architecture/twin.md` (the twin as
   code, the variant lineage rule, the result fold and its baseline spec, the
   scheduler answer, what the lane claims and does not) and
@@ -237,7 +237,8 @@ library with kits; the menu item; the two documents; `docs/evidence/WO-017/`.
    the persisted-state spec over a fake storage asserts the key prefix and
    no other write.
 8. Composites, mappers, layout, container, facade; stories `Wo221`,
-   `Wo226`, `Flipped`. Check: `npx nx test twin` exits 0; `npm run
+   `Wo226`, `Flipped`, and one story per layout candidate while its round is
+   open. Check: `npx nx test twin` exits 0; `npm run
    lint:components` exits 0.
 9. The variant export: the generated TypeScript for a kept flip compiles
    against `TwinVariant` (a spec writes it to a temporary file and type
@@ -250,7 +251,7 @@ library with kits; the menu item; the two documents; `docs/evidence/WO-017/`.
     provider; two lanes and the result cell with the recorded baseline; the variant picker lists three variants; a flip
     redraws the twin lane and leaves the recorded marks where they were;
     the export dialog shows TypeScript; the chosen variant survives a
-    reload; the keyboard path over every flip; axe at the board spec's threshold; no horizontal overflow at 360, 768 and 1440; then the walkthrough: the executor performs the Objective's session in the served production build, saves one screenshot per step at 360, 768 and 1440 under `docs/evidence/WO-017/walkthrough/` and writes `docs/evidence/WO-017/walkthrough.md` with the dated steps and the three figures before and after the flip. Check: `npx nx e2e dotln-e2e` exits 0 and the walkthrough files exist.
+    reload; the keyboard path over every flip; axe at the board spec's threshold; no horizontal overflow at 360, 768 and 1440; then the walkthrough: the executor performs the Objective's session in the served `mocked` configuration build (the production build carries no provider, WO-008 criterion 5), saves one screenshot per step at 360, 768 and 1440 under `docs/evidence/WO-017/walkthrough/` and writes `docs/evidence/WO-017/walkthrough.md` with the dated steps and the three figures before and after the flip. Check: `npx nx e2e dotln-e2e` exits 0 and the walkthrough files exist.
 12. Documents: `twin.md`, `twin-rules.md`, pointers, `conventions.md`.
     Check: files exist.
 13. Dependency check as WO-015 step 15. Check: prints nothing.
@@ -306,14 +307,14 @@ each.
    (the replay library's), the frame cap observed and that readiness is the
    hand-back's completion row, `docs/ai-reference/twin-rules.md` states that
    a variant is never deleted and that the twin is judged by results only
-   (`grep -c "results" docs/ai-reference/twin-rules.md` is at least 1),
+   (`grep -c "judged by results" docs/ai-reference/twin-rules.md` and `grep -c "never by agreement" docs/ai-reference/twin-rules.md` are each at least 1),
    `package.json`'s `dependencies` keys equal the base's, and the production
    build's budget output names no twin chunk over budget (each variant a
    lazy chunk).
 9. `node scripts/target-gate.mjs WO-017 --review` records a passing row for
    every declared command with no tracked-byte mutation, and
    `npm run test:docs` passes in the launchpad order worktree; the Preflight line ran before the first full gate.
-10. **Use (WS-001 rule 24).** The verifier performs the Objective's session in the served production build: sign in through the mocked provider; open `/twin` on WO-221 and read the two lanes and the result cell against the recorded baseline; pick each of the three variants; flip one parameter and watch the twin lane and the figures change while the recorded lane stays; export the kept flip and read the TypeScript; reload and find the chosen variant; switch to WO-226. The VER report carries a `## Walkthrough` section with the dated steps and names the screenshots at 360, 768 and 1440 under `docs/evidence/WO-017/walkthrough/` (`ls docs/evidence/WO-017/walkthrough | wc -l` prints at least 12), and states in the verifier's own words what the three figures were before and after the flip. The criterion is met only when every step completed and that statement is present.
+10. **Use (WS-001 rule 24).** The verifier performs the Objective's session in the served `mocked` configuration build (WO-008 keeps the mock out of the production build): sign in through the mocked provider; open `/twin` on WO-221 and read the two lanes and the result cell against the recorded baseline; pick each of the three variants; flip one parameter and watch the twin lane and the figures change while the recorded lane stays; export the kept flip and read the TypeScript; reload and find the chosen variant; switch to WO-226. The VER report carries a `## Walkthrough` section with the dated steps and names the screenshots at 360, 768 and 1440 under `docs/evidence/WO-017/walkthrough/` (`ls docs/evidence/WO-017/walkthrough | wc -l` prints at least 12), and states in the verifier's own words what the three figures were before and after the flip. The criterion is met only when every step completed and that statement is present.
 
 **Evidence gate:** the gate rows, the recorded command outputs, `docs/evidence/WO-017/README.md`, `docs/evidence/WO-017/walkthrough.md` and its screenshots, and `docs/evidence/WO-017/host-qualification.md`.
 
@@ -346,7 +347,15 @@ C4 of the second 2026-10-24 pass; the fold, step 6, criteria 2 and 8);
 `twin:check` names the commit and the fetch on an absent base (step 4,
 criterion 4); variants are lazy chunks under the budget (the model, criterion
 8); the twin replays on the replay library's clock and adds no third tick
-contract (the feature, step 6, criterion 8).
+contract (the feature, step 6, criterion 8). From receipt 011 (the
+2026-10-26 pass's refutation), carried into this text by the 2026-10-28
+pass: the walkthrough and the e2e run on the served `mocked` configuration
+build, because the production build carries no provider (its item (a), step
+11, criterion 10); `twin:check` names the commit and the fetch on an absent
+base and the gate's clone is full (b, already in the text); criterion 8's
+grep names the two phrases that matter, "judged by results" and "never by
+agreement" (c); the layout is chosen through the rounds of rule 25 as
+revised on 2026-10-28.
 This order activates only on a launchpad whose starter carries core WO-221's
 `--draft` form; the draft pull request and its workflow runs are a
 final-review obligation read from `docs/evidence/WO-017/preview-pr.json`,

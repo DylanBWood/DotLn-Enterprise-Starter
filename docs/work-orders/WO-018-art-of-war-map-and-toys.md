@@ -21,8 +21,9 @@ catalog rules as WO-019 leaves them, the maps README, design B §3 and
 executor; the mappers read one public-domain text. Commands added in the
 target: `npm run toys:check`; `npm run catalog:check` and `catalog:join`
 already cover the new files. Tokens: unknown until run; recorded per worker.
-Steps: 14. Re-mints: none. Refutations paid: two (the 2026-10-24 pass's
-receipt on the first text, the 2026-10-26 pass's on this one).
+Steps: 14. Re-mints: none. Refutations paid: three (the 2026-10-24 pass's
+receipt on the first text, the 2026-10-26 pass's on the rewrite, the
+2026-10-28 pass's on this one).
 **Nomination provenance:** the operator's decisions of 2026-10-24 (ignored
 intake capture `docs/intake/notes/planning-2026-10-24.md`, SHA-256
 `63b25fa11cbd648d224067c98d712b23e79734f35979cc8c9922566cc85e044c`, entry 9):
@@ -55,7 +56,16 @@ the operator's direction of that day (capture SHA-256
 the operator never gave and go; the toys enter in full; the map rows carry
 the public text's maxims where a maxim is the concept; the shelf is a page
 the operator reads to pick the next toy, accepted by use (rule 24) and
-briefed for its look (rule 25). Opaque identifier, not a priority.
+briefed for its look (rule 25). Amended by the 2026-10-28 pass
+([planning document](../planning/standard-pass-v0-100-0-2026-10-28.md) §6
+D4 and D6): the design comparison reads as the operator corrected it in
+WO-019, with the shelf's first pair named, and receipt 011's items are
+written in: the fan-out stops by decision when its token total passes
+WO-014's recorded order total (its item (a)); the operator's ruling on the
+run's toy designs is recorded at activation (b); criterion 6 gains the
+production build within the declared budgets with the chunk sizes beside
+WO-019's (c); the three meanings of "store" are named (d). Opaque
+identifier, not a priority.
 **Depends on:** WO-014 merged (hard: the `Tool` schema and the classifier
 brief this order's map pass reuses); WO-019 merged (hard: the `v1` schema
 with definitions, the join, and the catalog check as it leaves them); WO-017
@@ -186,7 +196,12 @@ commit concept rows that carry the maxim where the maxim is the concept.
   the critic names continues that mapper and counts once, as WO-014's reruns
   did), each a `dotln-worker` or `dotln-worker-fable` on the operator's
   dispatch, under the launchpad's `subagentCap`; `node scripts/harness.mjs
-  usage <session>` is read before the first spawn and at handoff.
+  usage <session>` is read before the first spawn and at handoff. The stop
+  rule is declared before the spend: the executor reads each worker's token
+  total as it returns and stops the fan-out with a recorded decision when
+  the workers' totals summed with the session's own pass WO-014's recorded
+  order total as `npm run meta` prints it at activation (117,733,609 tokens
+  on 2026-10-26).
 - **The toy shelf** (`libs/features/tools` gains `ChildPaths.Toys = 'toys'`
   and `ChildPaths.Toy = 'toys/:id'`; `toys-page` and `toy-page` over
   `ToolsFacade`): the shelf as rows grouped by purpose and then by source
@@ -201,7 +216,18 @@ commit concept rows that carry the maxim where the maxim is the concept.
   catalog's type scale, measure and work colours; the shelf is a list of
   rows with the question legible at a glance, never a card grid; the toy
   page is prose with the tools as links; the status is a word, not a badge
-  grid; nothing animated at rest.
+  grid; nothing animated at rest. The comparison runs as the operator's eye
+  doctor test (rule 25 as revised on 2026-10-28): the first pair is the
+  shelf grouped by the run's five purposes with the six new toys under their
+  sources, against one list ordered by what the operator can play with
+  soonest (the synthesizer's order), both rendered at 1440 and 360 during
+  execution, A then B with the round named in the question and both
+  captions; the preference makes the next pair, content and usability
+  before cosmetic polish, until the operator says the process is done, and a
+  preferred candidate alone is not acceptance; the rejected implementation
+  leaves the code when its round is decided, its screenshots and an
+  implementation record under `docs/evidence/WO-018/design/` the history;
+  nothing is relitigated for this order.
 - **Documents:** `docs/dev-reference/architecture/catalog.md` gains §Mining a
   new work (the map schema with the maxim field, the public-text rule, the
   critic's sample, the typing and join) and §Toys (the record, the shelf,
@@ -232,7 +258,11 @@ screenshots.
 **Execution plan:**
 
 1. Base guard and activation as WO-005 step 1, for WO-018; read `node
-   scripts/harness.mjs usage <session>` and record the subagent remainder.
+   scripts/harness.mjs usage <session>` and record the subagent remainder;
+   record in the decisions file the operator's ruling of 2026-10-26 that the
+   run's toy designs and the works they reference lie outside the clean room
+   (WS-001 rule 23; capture SHA-256 `9ec78ddb…`), the warrant for carrying
+   `toys.jsonl` and the design anchors as data.
 2. `map-row-v0.schema.json` (with `maxim`), `toy-v0.schema.json`, `toys.ts`;
    `tools/scripts/catalog/check-map.mjs` (wired into `check:fixtures`) and
    `check-toys.mjs` with `npm run toys:check`; negative fixtures (a map row
@@ -268,9 +298,10 @@ screenshots.
    over 25 records and a spec asserts the two built toys link to
    `BasePaths.Scene` and `BasePaths.Twin`.
 9. `ChildPaths.Toys` and `ChildPaths.Toy`, `toys-page`, `toy-page`, the
-   facets, the Tools home item, `tools.toys.*` i18n keys, stories `Shelf`,
-   `ToyBuilt`, `ToyDesigned`. Check: `npx nx test tools` exits 0; `npm run
-   i18n:check` and `npm run lint:components` exit 0.
+   facets, the Tools home item, `tools.toys.*` i18n keys, stories `Shelf`
+   (the selected form), `ToyBuilt`, `ToyDesigned`, and one story per shelf
+   candidate while its round is open. Check: `npx nx test tools` exits 0;
+   `npm run i18n:check` and `npm run lint:components` exit 0.
 10. e2e `apps/dotln-e2e/src/toys.spec.ts`: `/tools/toys` lists 25 toys; a
     filter by source narrows to one; The Twenty's page shows its question
     and what you would see and links a tool into `/tools/catalog` and its
@@ -341,12 +372,17 @@ each.
    two fan-outs with their labels and one-line statements, each saying no
    quarantine file was read, with the launchpad's read observation beside
    each (the harness journal's row count for the quarantine path, or
-   `unobserved`), and records the subagent count from
+   `unobserved`), records each worker's token total and the session's own
+   beside WO-014's recorded order total with the decision that stopped the
+   fan-out if their sum passed it, and records the subagent count from
    `node scripts/harness.mjs usage <session>` at handoff.
 6. `npx nx e2e dotln-e2e` exits 0 and includes the step 10 cases, axe at the
    board spec's threshold and no horizontal overflow at 360, 768 and 1440;
    `grep -rlE "<dl|dotln-key-value-list" libs/features/tools/src` prints
-   nothing.
+   nothing; `npx nx build dotln --configuration=production` exits 0 within
+   the declared budgets with the shelf and the toy page in the lazy Tools
+   chunks, and the evidence README records each catalog and toys chunk's
+   size beside WO-019's figures.
 7. `docs/dev-reference/architecture/catalog.md` carries the headings
    `Mining a new work` and `Toys`, and `docs/ai-reference/catalog-rules.md`
    states that a map row may carry the public text's maxim and that a toy
@@ -385,7 +421,16 @@ window (its item (a)) is moot with the check; the toy-source tools now
 carry definitions (its item (b)); "store" means the committed data here and
 the deferred mining store in candidate C1, and the `v1` summary admits an
 in-repo map (its item (c)); the commands and checks this horizon adds are
-recorded against the orders' own rows (its item (d)). This order activates
+recorded against the orders' own rows (its item (d)). From receipt 011 (the
+2026-10-26 pass's refutation), carried into this text by the 2026-10-28
+pass: the fan-out's token ceiling is WO-014's recorded order total, with a
+decision at the stop (the fan-out bullet, criterion 5); the operator's
+ruling on the run's designs is recorded at activation (step 1); the
+production build within the declared budgets is criterion 6's; "store" has
+three meanings here, the committed data the app ships (this order's rows),
+the mining store that stays candidate C1 of 2026-10-24, and the Tools
+feature's SignalStores; the shelf's form is chosen through the rounds of
+rule 25 as revised on 2026-10-28. This order activates
 only on a launchpad whose starter carries core WO-221's `--draft` form; the
 draft pull request and its workflow runs are a final-review obligation read
 from `docs/evidence/WO-018/preview-pr.json`, never a criterion. `Target

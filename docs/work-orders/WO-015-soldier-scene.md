@@ -19,9 +19,9 @@ the fixed cycle; unknown until run. Context bytes: WS-001 house rules 1, 5,
 12, 14, 18, 24 and 25 and §The app and its sub-apps, design B §1 to §4 read
 at the run's folder, the catalog types and the scene tools WO-019 types,
 this order, about 180 KB. Commands added in the target: none. Tokens:
-unknown until run. Steps: 17. Re-mints: none. Refutations paid: two (the
-2026-10-24 pass's receipt on the first text, the 2026-10-26 pass's on this
-one).
+unknown until run. Steps: 17. Re-mints: none. Refutations paid: three (the
+2026-10-24 pass's receipt on the first text, the 2026-10-26 pass's on the
+rewrite, the 2026-10-28 pass's on this one).
 **Nomination provenance:** the operator's decisions of 2026-10-24 (ignored
 intake capture `docs/intake/notes/planning-2026-10-24.md`, SHA-256
 `63b25fa11cbd648d224067c98d712b23e79734f35979cc8c9922566cc85e044c`, entry 9):
@@ -49,7 +49,17 @@ from the catalog; the "three tools per work" rail rule, which came from the
 prompt core's session drafted for the operator and not from the operator's
 statement, is gone with the clarify fixture; the order carries the
 acceptance-by-use criterion (rule 24) and a design brief (rule 25); the root
-route moves to the scene. Opaque identifier, not a priority.
+route moves to the scene. Amended by the 2026-10-28 pass
+([planning document](../planning/standard-pass-v0-100-0-2026-10-28.md) §6
+D4 and D6): the design comparison reads as the operator corrected it in
+WO-019 (the two chromes are the first pair of an ongoing process the operator
+ends; the selected implementation alone remains after each decided round),
+receipt 011's items are written in (one list, `sceneTools`, behind the rail,
+the inspector and the `?tool=` reader, with a refused or unknown id arriving
+with no tool chosen and a notice; criterion 7 counting the one remaining
+chrome story), and the not-found page's link points home to `/scene` once
+the root moves (receipt 011 on WO-014, item (c)). Opaque identifier, not a
+priority.
 **Depends on:** WO-019 merged (hard: the catalog's definitions and the
 steering, formation and objective tools it types for this rail; the base
 above is provisional: since starter v0.96.1 (core WO-230) the target publish describes the change from the merge base of the subject and the target's `main` and names the activation base beside it, so activation on this base publishes right; the planning pass that runs after WO-019 merges may set it to that merge commit, and none is required to (the 2026-10-24 second pass, D4)).
@@ -162,7 +172,11 @@ accepted by use and briefed for its look.
   `toolbox-rail` (the tools from `catalog-summary.json`'s `sceneTools`
   whose kind the engine interprets, grouped move, group, avoid, form; each
   name in its work's colour; the chosen tool marked; a `?tool=<id>` query
-  from the catalog's link chooses it on arrival), `unit-inspector` (the
+  from the catalog's link chooses it on arrival, and one naming a tool the
+  rail does not offer, refused or unknown, arrives with no tool chosen and a
+  notice naming why; the rail, the inspector and that reader share the one
+  filtered list, `sceneTools` as the interpreter admits it, so no second
+  source of truth exists), `unit-inspector` (the
   tool's definition from the catalog in a 60ch measure, the faces as a
   sentence, the parameters as sliders with defaults and units, the preview
   rows, Apply, a note field whose text is kept with the composition),
@@ -219,11 +233,19 @@ accepted by use and briefed for its look.
   sparklines), never as a definition list; a type scale with the tool's name
   as the inspector's largest element; motion only when something moves,
   nothing animated at rest (G2); the text layer present and legible but
-  visually secondary. Two candidate chromes, the rail and inspector as one
-  right column and the inspector as a drawer over the field's lower edge,
-  are built as stories and rendered at 1440 and 360; both screenshots go in
-  the pull request and the operator picks one there; the decisions file
-  records the pair and the pick and the other is deleted before final review.
+  visually secondary. The comparison runs as the operator's eye doctor test
+  (WS-001 rule 25 as revised on 2026-10-28): the first pair is the rail and
+  inspector as one right column against the inspector as a drawer over the
+  field's lower edge, built and rendered at 1440 and 360 during execution,
+  presented as A then B with the round named in the question and both
+  captions, one independent variable per pair; the operator's preference
+  makes the next pair, content and usability before cosmetic polish, until
+  the operator says the process is done, and a preferred candidate alone is
+  not acceptance; the decisions file records each round's pair and pick, the
+  rejected implementation leaves the code when its round is decided (its
+  screenshots and an implementation record under
+  `docs/evidence/WO-015/design/` are the history), and a decided choice is
+  not relitigated for this order.
 - **Fixtures** (`libs/features/scene/src/testing/fixtures/`): `scene-twenty.json`,
   `cost-table.json`, `trial-known-outcome.json` (expected metric series and
   frame hashes, generated once by the engine's spec and committed);
@@ -291,8 +313,9 @@ the walkthrough and its screenshots.
    storage asserting the `dotln-angular.scene` key and no other write.
 7. The field skin's token layer under `libs/shared/ui/src/styles/` and the
    role and work palettes as tokens; composites, the wrapper, mappers,
-   layout, container, facade; stories `Twenty`, `ReducedMotion`,
-   `ChromeColumn`, `ChromeDrawer`. Check: `npx nx test scene` exits 0;
+   layout, container, facade; stories `Twenty`, `ReducedMotion` and one
+   story per chrome candidate while its round is open, the selected chrome's
+   alone afterwards. Check: `npx nx test scene` exits 0;
    `npm run lint:components` and `npm run check:tokens` exit 0.
 8. The rail reads `catalog-summary.json`'s `sceneTools` and keeps the tools
    whose kind the engine interprets, grouped move, group, avoid, form (a
@@ -309,9 +332,12 @@ the walkthrough and its screenshots.
     Check: the facade spec's export-then-import yields equal state.
 11. Replace the arriving page in `sceneRoutes`; move the root redirect to
     `BasePaths.Scene` and the board's e2e to its own path; `scene.*` i18n
-    keys; `component-taxonomy.md` gains the wrapper sentence. Check: `npm
+    keys; the not-found page's home link (WO-014's wildcard route) points to
+    `/scene` with the root, and its routes spec and e2e case follow;
+    `component-taxonomy.md` gains the wrapper sentence. Check: `npm
     run i18n:check` exits 0; `npx nx build dotln --configuration=production`
-    exits 0; the routes spec asserts the root redirects to `/scene`.
+    exits 0; the routes spec asserts the root redirects to `/scene` and the
+    not-found page links to it.
 12. e2e `apps/dotln-e2e/src/scene.spec.ts`: the root lands on `/scene`;
     twenty rows in the text layer; Step advances the frame counter under
     reduced motion; the rail lists the floor of step 8 and nothing whose
@@ -319,7 +345,9 @@ the walkthrough and its screenshots.
     clears; equip Flock changes the cohesion figure's text and its
     sparkline; a clicked objective and Arrive change time to objective; a
     saved composition survives a reload; `/scene?tool=<flock id>` arrives
-    with Flock chosen; axe at the board spec's threshold; no horizontal
+    with Flock chosen and `/scene?tool=<unknown id>` with no tool chosen and
+    the notice visible; an unknown path's page links home to `/scene`; axe
+    at the board spec's threshold; no horizontal
     overflow at 360, 768 and 1440; the visual baselines for the chosen
     chrome. Check: `npx nx e2e dotln-e2e` exits 0.
 13. The walkthrough: the executor performs the Objective's session in the
@@ -394,8 +422,11 @@ each.
    least two units and Escape clearing the selection; equip Flock changing
    the cohesion figure's text; a clicked objective and Arrive changing time
    to objective; a saved composition present after a reload;
-   `/scene?tool=<id>` arriving with that tool chosen; axe at the board
-   spec's threshold; no horizontal overflow at 360, 768 and 1440.
+   `/scene?tool=<id>` arriving with that tool chosen and
+   `/scene?tool=<unknown or refused id>` arriving with no tool chosen and a
+   visible notice naming why; the wildcard page's home link landing on
+   `/scene`; axe at the board spec's threshold; no horizontal overflow at
+   360, 768 and 1440.
 6. The persisted-state spec asserts every key written starts with
    `dotln-angular.scene` and no other storage, cookie or network write
    occurs, and a second spec seeds that key with a value that does not parse
@@ -403,10 +434,13 @@ each.
    idle twenty units; `grep -rlE "from 'node:|from \"node:|require\(" libs/shared/scene-engine/src libs/features/scene/src libs/features/scene-data-access/src --include='*.ts' | grep -v spec`
    prints nothing.
 7. `grep -rlE "<dl|dotln-key-value-list" libs/features/scene/src` prints
-   nothing (no label-value list on the scene); the stories `ChromeColumn`
-   and `ChromeDrawer` existed at the pull request with both screenshots in
-   its body, the decisions file records the operator's pick, and only the
-   picked chrome remains at final review; `npm run check:tokens` exits 0
+   nothing (no label-value list on the scene); the decisions file records
+   every comparison round's pair and the operator's pick, with the
+   screenshots under `docs/evidence/WO-015/design/`, each decided round left
+   only its selected implementation (no rejected chrome story, input or
+   branch remains), and the container's stories file carries exactly one
+   chrome story (`grep -c "Chrome" libs/features/scene/src/lib/containers/scene-page/scene-page.stories.ts`
+   prints 1); `npm run check:tokens` exits 0
    with the field skin's tokens named `--dotln-field-*`.
 8. `package.json`'s `dependencies` keys equal the base's (the step 15
    command prints nothing), and `npx nx build dotln --configuration=production`
@@ -445,7 +479,14 @@ the wrapper (criterion 3); a refused step leaves the frame hash and the
 clock unchanged (criterion 2); a stored value that fails to parse yields
 the idle field (criterion 6). From receipt 010: the rail distinguishes
 nothing because it offers only tools the engine runs (its item (a)); the
-clarify affordance is replaced by a kept note (its item (b)). This order
+clarify affordance is replaced by a kept note (its item (b)). From receipt
+011 (the 2026-10-26 pass's refutation), carried into this text by the
+2026-10-28 pass: one list, `sceneTools`, feeds the rail, the inspector and
+the `?tool=` reader, and an unknown or refused id arrives with no tool
+chosen and a notice (the rail bullet, step 12, criterion 5); the chrome is
+chosen through the rounds of rule 25 as revised and criterion 7 counts the
+one remaining story; the not-found page's link points home to `/scene` once
+the root moves (step 11, criterion 5; receipt 011 on WO-014, item (c)). This order
 activates only on a launchpad whose starter carries core WO-221's `--draft`
 form; the draft pull request and its workflow runs are a final-review
 obligation read from `docs/evidence/WO-015/preview-pr.json`, never a
@@ -461,6 +502,6 @@ shell beyond the shared palettes and the field skin's tokens.
 
 **Operator-review assumptions:** the operator accepts the lifecycle roles as
 the default unit labels with the UIFA set as a switch, determinism as the
-default, the root route on the scene, picks one of the two chromes from the
-pull request's screenshots, and reads the one draft pull request before
-final review, which the final publish reuses.
+default, the root route on the scene, judges the chrome through rendered
+pairs during execution until they say the process is done, and reads the one
+draft pull request before final review, which the final publish reuses.

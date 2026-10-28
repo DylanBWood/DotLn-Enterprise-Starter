@@ -19,7 +19,7 @@ hours of executor work plus the fixed cycle; unknown until run. Context
 bytes: WS-001 §The app and its sub-apps, design A §1 and §1.6, the UI
 vision §4 and V7 read at the run's folder, the fork's role skill stamps,
 this order, about 190 KB. Commands added in the target: `npm run idea-sink`.
-Tokens: unknown until run. Steps: 17. Re-mints: none. Refutations paid: four (receipts 008 to 010 on the earlier texts; the 2026-10-26 pass's receipt on this one).
+Tokens: unknown until run. Steps: 17. Re-mints: none. Refutations paid: five (receipts 008 to 011 on the earlier texts; the 2026-10-28 pass's receipt on this one).
 **Nomination provenance:** the operator's decisions of 2026-10-24 (ignored
 intake capture `docs/intake/notes/planning-2026-10-24.md`, SHA-256
 `63b25fa11cbd648d224067c98d712b23e79734f35979cc8c9922566cc85e044c`, entry 9):
@@ -47,7 +47,7 @@ priority. Amended by the 2026-10-24 second pass ([planning document](../planning
 records types' name, the caption rule, the base clause and receipt 008's known
 issues. Amended by the 2026-10-25 pass ([planning document](../planning/standard-pass-v0-99-0-2026-10-25.md)
 §6 D4): receipt 009's known issues (the `actor` composite and its scrub, the
-repairer slot, the sink's directory rule and a drop while the sink is down). Amended by the 2026-10-26 pass ([planning document](../planning/acceptance-by-use-2026-10-26.md) §6 D9): rule 24's acceptance-by-use criterion (criterion 10) and the walkthrough, the design brief of rule 25, and receipt 010's items: the sink checks `Origin` and `Host` (its item (a)), its default directory is DotLn-Angular's own ignored tree and never the launchpad's intake (b), criterion 3 reads the counts the executor recorded and names no starter's figures (c), `machinery.md` carries the rule per idea kind (d), a stored value that fails to parse is covered by a spec (e), the fixtures' `actor` values are the observed labels (f), the row counts are asserted by a spec rather than a line grep (g), and the copies' sources are the platform's public repositories (h).
+repairer slot, the sink's directory rule and a drop while the sink is down). Amended by the 2026-10-26 pass ([planning document](../planning/acceptance-by-use-2026-10-26.md) §6 D9): rule 24's acceptance-by-use criterion (criterion 10) and the walkthrough, the design brief of rule 25, and receipt 010's items: the sink checks `Origin` and `Host` (its item (a)), its default directory is DotLn-Angular's own ignored tree and never the launchpad's intake (b), criterion 3 reads the counts the executor recorded and names no starter's figures (c), `machinery.md` carries the rule per idea kind (d), a stored value that fails to parse is covered by a spec (e), the fixtures' `actor` values are the observed labels (f), the row counts are asserted by a spec rather than a line grep (g), and the copies' sources are the platform's public repositories (h). Amended by the 2026-10-28 pass ([planning document](../planning/standard-pass-v0-100-0-2026-10-28.md) §6 D4 and D6): the design comparison reads as the operator corrected it in WO-019 (the two layouts are the first pair of an ongoing process the operator ends), and receipt 011's items are written in: the sink refuses a directory outside the Git root of the checkout it runs from (its item (a)), the verifier recounts the stamp ids independently (b), a planner, refuter or release-close actor is an `unknown`-slot beat naming the role (c), and the reducer's scrub fails a run of 32 or more hexadecimal characters and a UUID shape (d).
 **Depends on:** WO-013 merged (hard: the `/machinery` route and the Machinery
 menu group; the base above is provisional: since starter v0.96.1 (core WO-230) the target publish describes the change from the merge base of the subject and the target's `main` and names the activation base beside it, so activation on this base publishes right; the planning pass that runs after WO-015, the member before this one in the sequence, merges may set it to that merge commit, and none is required to (the 2026-10-24 second pass, D4)).
 **Workstream:** WS-001
@@ -140,7 +140,9 @@ generated cards, ideas saved to ignored intake.
   implementation hand-back to the executor, a verification completion to the
   verifier, a repair completion to the repairer, a final-review completion
   to the reviewer, every request and the activation to the operator, else
-  `unknown`; gaps from `recordedAt` differences; a refilled slot's earlier
+  `unknown`, and a row whose actor ran as planner, refuter or release-close
+  is an `unknown`-slot beat that names the role, never dropped; gaps from
+  `recordedAt` differences; a refilled slot's earlier
   occupant kept as a ghost; a `mode: 'subagents'` actor flagged as a colony
   of unknown size); `apply-ideas.ts` (a pure fold of mechanism changes over a
   copy of the scene and the role mechanisms; a change whose `appliesTo`
@@ -163,7 +165,7 @@ generated cards, ideas saved to ignored intake.
   writes `{ schema: 'control-event-lite-v0', source: { repository:
   'DylanBWood/DotLn', commit, order }, rows }`, runs `assertScrubbed` over
   every string, each `actor` value included, which must read as a harness,
-  model or effort label (a value carrying `@`, a path separator or a dotted hostname fails), and prints PASS or FAIL without values; the committed fixtures carry the `actor` values the platform's rows recorded (harness, model and effort as observed labels, never a pin); run by hand against the platform's public repository at a recorded commit, as the board fixture was captured; the platform's control segments and its role files are public repositories, so the copies' sources are public, and the fixture's `source` block names the repository.
+  model or effort label (a value carrying `@`, a path separator, a dotted hostname, a run of 32 or more hexadecimal characters or a UUID shape fails), and prints PASS or FAIL without values; the committed fixtures carry the `actor` values the platform's rows recorded (harness, model and effort as observed labels, never a pin); run by hand against the platform's public repository at a recorded commit, as the board fixture was captured; the platform's control segments and its role files are public repositories, so the copies' sources are public, and the fixture's `source` block names the repository.
   `tools/scripts/check-record-fixtures.mjs` (Ajv against
   `control-event-lite-v0.schema.json` with `additionalProperties: false`,
   plus `assertScrubbed`) wired into `check:fixtures`.
@@ -203,9 +205,10 @@ generated cards, ideas saved to ignored intake.
   that accepts `POST /ideas` only when the request's `Origin` header is the development origin and its `Host` is the loopback address and port (any other origin or host is refused with 403), refuses a body over 16 KB, never logs a body, and appends one JSON line per idea to
   `DOTLN_INTAKE_SINK_DIR` (default `docs/intake/ideas/` in the DotLn-Angular checkout the sink runs from, never the launchpad's intake, which this order adds to `.gitignore` with a `.gitkeep`), creating
   `ideas-YYYY-MM-DD.jsonl`; the sink refuses to start when the resolved
-  directory lies in no Git repository or is not ignored by the one that
-  contains it (`git check-ignore -q <dir>` exits nonzero), so an idea never
-  lands in a tracked path, a control directory or the launchpad; both variables documented in `.env.example`, values
+  directory lies outside the Git root of the checkout the sink runs from,
+  lies in no Git repository, or is not ignored by the one that contains it
+  (`git check-ignore -q <dir>` exits nonzero), so an idea never lands in a
+  tracked path, a control directory, another repository or the launchpad; both variables documented in `.env.example`, values
   never committed. The app posts a dropped idea when
   `environment.ideaSinkUrl` is a string (development:
   `http://127.0.0.1:4310/ideas`; production: `null`); the drop is applied
@@ -214,7 +217,7 @@ generated cards, ideas saved to ignored intake.
   nothing is lost and nothing blocks. The operator
   runs the sink beside `nx serve` from their own checkout, so the ideas land
   in that checkout's ignored intake and are not lost in a browser.
-- **Design brief** (WS-001 rule 25): the strip is a timeline instrument across the page's width, the gaps drawn as distance with their minutes beside them, the beats as glyphs in one phase palette; the four slots as figures above it in the one role palette the scene and the catalog share, a ghost at reduced opacity; the agent card as prose in the catalog's measure (what it was obliged to do, what it ran with, what it waited on) with the mechanisms as a readable list of names, never a definition-list grid; the idea shelf as rows; the sandbox band as text; nothing animated at rest. Two candidate layouts, the slots above a horizontal strip and the slots beside a vertical one, are built as stories and rendered at 1440 and 360; both screenshots go in the pull request, the operator picks one there, the decisions file records the pick and the other is deleted before final review.
+- **Design brief** (WS-001 rule 25): the strip is a timeline instrument across the page's width, the gaps drawn as distance with their minutes beside them, the beats as glyphs in one phase palette; the four slots as figures above it in the one role palette the scene and the catalog share, a ghost at reduced opacity; the agent card as prose in the catalog's measure (what it was obliged to do, what it ran with, what it waited on) with the mechanisms as a readable list of names, never a definition-list grid; the idea shelf as rows; the sandbox band as text; nothing animated at rest. The comparison runs as the operator's eye doctor test (WS-001 rule 25 as revised on 2026-10-28): the first pair is the slots above a horizontal strip against the slots beside a vertical one, built and rendered at 1440 and 360 during execution, presented as A then B with the round named in the question and both captions, one independent variable per pair; the operator's preference makes the next pair, content and usability before cosmetic polish, until the operator says the process is done, and a preferred candidate alone is not acceptance; the decisions file records each round's pair and pick, the rejected implementation leaves the code when its round is decided (its screenshots and an implementation record under `docs/evidence/WO-016/design/` are the history), and a decided choice is not relitigated for this order.
 - **Documents:** `docs/dev-reference/architecture/machinery.md` (the records
   and replay libraries, the fold's slot table, the fixture reducer and its
   field list, the idea sink, the rule per idea kind (only `addWait` moves the beats; every other kind redraws the card and the caption says the beats are unchanged), what the view claims and does not) and `docs/ai-reference/machinery-rules.md` (fixtures carry the six fields and
@@ -279,7 +282,8 @@ data-access library; the idea sink and its tooling test; the two documents;
    Check: the persisted-state spec over a fake storage asserts the key prefix
    and no other write.
 9. Composites, mappers, layout, container, facade; stories `RecordedWO221`,
-   `RecordedWO226`, `UnknownEventType`, `IdeaApplied`. Check: `npx nx test
+   `RecordedWO226`, `UnknownEventType`, `IdeaApplied`, and one story per
+   layout candidate while its round is open. Check: `npx nx test
    machinery` exits 0; `npm run lint:components` exits 0.
 10. The idea shelf's new-idea form, select-then-apply, the ghost, the band,
     the caption, the refusal. Check: a facade spec applies `narrowKnowledge`
@@ -293,7 +297,8 @@ data-access library; the idea sink and its tooling test; the two documents;
     toast on failure. Check: a tooling test starts the sink on an ephemeral
     port with a temporary ignored directory, posts one idea and asserts one JSON line appended; a second post over 16 KB is refused; a post whose `Origin` is not the development origin or whose `Host` is not the loopback is refused; a third test
     starts it on a tracked directory of a temporary repository and asserts
-    the refusal; a facade spec with the post failing asserts the idea is
+    the refusal, and a fourth starts it on an ignored directory outside the
+    checkout's Git root and asserts the refusal; a facade spec with the post failing asserts the idea is
     applied and present in the fake storage.
 12. Replace the arriving page in `machineryRoutes`; `machinery.*` i18n keys;
     the Machinery menu group lists Board and Agents. Check: `npm run
@@ -331,19 +336,21 @@ then the target gate plain and review once each.
    `order-226.json` validate against `control-event-lite-v0.schema.json` with
    `additionalProperties: false` over the fields `ordinal`, `type`,
    `recordedAt`, `workOrderId`, `actor`, `verdict`, carry a `source.commit`
-   and no absolute path (`npm run check:fixtures` exits 0), and a spec asserts `order-221.json` carries 16 rows and `order-226.json` 6, and `ls libs/shared/records/testing/src/fixtures/segments | grep -ciE '^wo-'`
+   and no absolute path (`npm run check:fixtures` exits 0), a spec asserts `order-221.json` carries 16 rows and `order-226.json` 6, the reducer's tooling test proves a value carrying a run of 32 or more hexadecimal characters or a UUID shape fails the scrub, and `ls libs/shared/records/testing/src/fixtures/segments | grep -ciE '^wo-'`
    prints 0.
 2. `npx nx test records` exits 0 with specs asserting: the WO-221 fold has 8
    operator beats and the seven gaps 87.8, 109.9, 1.7, 1.4, 2.1, 18.2 and
    5.9 minutes within one second each, the first following a hand-back with
    no verdict; the WO-226 fold has gaps of 316.0 and 31.7 minutes; an
-   unknown `type` yields an `unknown` beat; the verifier slot carries one
+   unknown `type` yields an `unknown` beat and a row whose actor is the
+   planner, refuter or release-close role yields an `unknown`-slot beat
+   naming the role; the verifier slot carries one
    ghost after its refill; and `applyIdeas` refuses a card whose `appliesTo`
    excludes the target with a reason while the scene stays unchanged.
 3. `role-mechanisms.json` lists, for the executor, planner, refuter,
    release-close, reviewer and verifier, the ids each role's Origin stamp
    carries at the starter the launchpad carried at activation, each role
-   naming its source file and that starter version (a spec asserts each role's count against the counts the executor recorded in the decisions file from the files read at activation; no starter's figures are written here, because they change with the starter),
+   naming its source file and that starter version (a spec asserts each role's count against the counts the executor recorded in the decisions file from the files read at activation; no starter's figures are written here, because they change with the starter; and the verifier recounts the ids in each role's Origin stamp independently and records the recount beside the spec's in the VER report),
    the `repairer` slot reads the executor's entry and its card states that
    the repairer runs the executor role at `resume: fix` (a spec asserts the
    card's text), and
@@ -354,7 +361,7 @@ then the target gate plain and review once each.
    (a spec asserts zero cards before the operator creates one).
 5. The tooling test for the idea sink passes (`npm run test:tooling` exits
    0): one post appends one JSON line to a temporary ignored directory, a
-   body over 16 KB is refused, a request whose `Origin` is not the development origin or whose `Host` is not the loopback is refused, and the sink refuses to start on a directory that is not Git-ignored;
+   body over 16 KB is refused, a request whose `Origin` is not the development origin or whose `Host` is not the loopback is refused, and the sink refuses to start on a directory that is not Git-ignored or that lies outside the Git root of the checkout it runs from;
    `environment.prod.ts` sets `ideaSinkUrl` to `null` and
    `grep -rl "127.0.0.1" dist/apps/dotln/browser` prints nothing after
    `npx nx build dotln --configuration=production`.
@@ -404,7 +411,14 @@ executor's entry and its card says why, and the e2e counts four role slots
 and the operator figure (the fixtures, step 13, criteria 3 and 7); the sink
 refuses a directory that is not Git-ignored, and a drop while the sink is
 down is applied and persisted before the post (the sink, step 11, criteria
-5 and 6). This order activates only on a launchpad whose
+5 and 6). From receipt 011 (the 2026-10-26 pass's refutation), carried
+into this text by the 2026-10-28 pass: the sink refuses a directory outside
+the Git root of the checkout it runs from (the sink, step 11, criterion 5);
+the verifier recounts the stamp ids independently (criterion 3); a planner,
+refuter or release-close actor is an `unknown`-slot beat naming the role
+(the fold, criterion 2); the scrub fails a run of 32 or more hexadecimal
+characters and a UUID shape (the reducer, criterion 1); the layout is chosen
+through the rounds of rule 25 as revised on 2026-10-28. This order activates only on a launchpad whose
 starter carries core WO-221's `--draft` form; the draft pull request and its
 workflow runs are a final-review obligation read from
 `docs/evidence/WO-016/preview-pr.json`, never a criterion. `Target release
