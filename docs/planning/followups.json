@@ -3788,6 +3788,13 @@
           "title": "C4 The rest of the operator record cut to its standing rules: the Upstream updates, Releases, Manual steps, Review and Research bullets each carry a rule and the dated history of how it was arrived…",
           "summary": "- **C4 The rest of the operator record cut to its standing rules: the Upstream updates, Releases, Manual steps, Review and Research bullets each carry a rule and the dated history of how it was arrived at (the Standing preferences section measured 3,756 words on `main` before this pass cut `Pace:`); the history belongs to the planning documents the bullets already cite, and every role reads the record at every session start.** Not done in this pass beyond `Pace:` and the tone section: those bullets carry decisions with their provenance, and what a session must still see there is the operator's call. Reopen when the operator asks for the record cut to its rules, or the next planning pass meas",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C4 The rest of the operator record cut to its standing rules: the Upstream updates, Releases, Manual steps, Review and Research bullets each carry a rule and the dated history of how it was arrived…",
+          "summary": "- **C4 The rest of the operator record cut to its standing rules: the Upstream updates, Releases, Manual steps, Review and Research bullets each carry a rule and the dated history of how it was arrived at (the Standing preferences section measured 3,756 words on `main` before this pass cut `Pace:`); the history belongs to the planning documents the bullets already cite, and every role reads the record at every session start.** Not done in this pass beyond `Pace:` and the tone section: those bullets carry decisions with their provenance, and what a session must still see there is the operator's call. Reopen when the operator asks for the record cut to its rules, or the next planning pass meas",
+          "missing": true
         }
       ],
       "dispositions": [
@@ -3800,6 +3807,21 @@
           "at": "2026-10-28T19:49:10.978Z"
         }
       ]
+    },
+    {
+      "id": "FUP-2b5000e52ced8cb7",
+      "key": "candidate:docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10::fe9c1fb345878558aa00081a6eb5121d40c1deff3416e1742706fff72ebc24b5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e1ad3f8057aa7aec6988817a9a1c45c14d6a1b443e6654307f2ba504caceee32",
+          "ref": "docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C4 The rest of the operator record cut to its standing rules.",
+          "summary": "- **C4 The rest of the operator record cut to its standing rules.** Minted when the pass had cut only `Pace:`; done in this same pass on the operator's message 9 (D9), so its row is settled. Reopen: never as a candidate; a dropped direction is reported to the next pass.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

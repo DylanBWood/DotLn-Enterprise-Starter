@@ -35,8 +35,7 @@ record a durable understanding of the operator that binds every harness and
 role. Traps named before the material choices: filing a generic Angular
 scaffold instead of the operator's stated one (the direction is the source,
 the research only checks versions); filing far-future orders whose bases and
-inputs do not exist yet (§6 D5 and §9); treating the operator's sarcasm as
-agreement (the operator record, §10); and letting the kit's assumptions
+inputs do not exist yet (§6 D5 and §9); and letting the kit's assumptions
 (reserved historical ids, planning-time bases) pass silently (§6 D4 and D5,
 §9 kit gaps). The NoOp at entry would have left the fork without a
 registration, the Angular repository empty, the taxonomy in a PDF nobody

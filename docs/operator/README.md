@@ -1,20 +1,24 @@
 # The operator
 
 This record is read by every harness and every role at the start of a session
-(`CLAUDE.md` § Start here names it; `AGENTS.md` is the same file). It describes
-the person whose instance this is: how they direct work, what they want from a
-session and what they refuse. It is instance-owned,
-written by the 2026-10-18 planning pass from the operator's own words (captured
-verbatim in ignored intake, SHA-256
-`4f14c6c09512576abfd701335f4dd8a347694ff23785724422cb8d943b5d67aa`), and it
-changes only
-when the operator says so or a pass records a new direction with its date.
-There is one copy; no harness keeps its own.
+(`CLAUDE.md` § Start here names it; `AGENTS.md` is the same file). It carries
+the operator's standing directions: how they direct work, what they want, what
+they refuse and the preferences that bind every order. Each item names the
+date it was given and the ignored capture it came from. The history of how a
+rule arrived, which pass took which release and what happened on which day
+lives in the planning documents and the repository profile, never here. The
+record was first written by the 2026-10-18 planning pass from the operator's
+own words (capture SHA-256
+`4f14c6c09512576abfd701335f4dd8a347694ff23785724422cb8d943b5d67aa`), was cut
+to its directions on 2026-10-28 at the operator's word (capture SHA-256
+`457e3001d014ba335e73c4af6e4c2bcda8861baee04ff5d382d955b6f33ddcd3`), and
+changes only when the operator says so or a pass records a new direction with
+its date. There is one copy; no harness keeps its own.
 
 Read [reusable implementation guidance](implementation-guidance.md) for the
 operator's directions preserved across WO-014's execution, verification and
-repair. The operator explicitly requested this record on 2026-10-26; it applies
-to relevant future work within each order's scope and authority.
+repair (requested 2026-10-26); it applies to relevant future work within each
+order's scope and authority.
 
 ## Who the operator is
 
@@ -28,355 +32,232 @@ audience beyond the operator.
 
 ## How the operator directs a session
 
-The operator dictates direction and expects the session to understand it
-before acting. The protocol they set on 2026-10-17 holds until they change it:
-
-- While they are dictating, the session acknowledges each direction briefly
-  (`Yes sir.` plus one line restating the direction in the session's words is
-  the accepted form) and asks a question only when it is genuine. A question
-  says what it decides and why.
-- The session starts work only when the operator says they are done. Until
-  then it creates nothing, plans nothing and offers no alternatives they did
-  not ask for.
-- When work starts, the session gets the full picture first: read the records,
-  the repository and the tools before stating a finding. A partial read
-  narrated as a conclusion is the error the operator called out most sharply.
-- The operator decides scope. A concern is stated in a sentence or two and the
+- Dictation (2026-10-17, capture `4f14c6c0…`): while the operator is
+  dictating, the session acknowledges each direction briefly (`Yes sir.` plus
+  one line restating it in the session's words) and asks a question only when
+  it is genuine; a question says what it decides and why. Work starts only
+  when the operator says they are done; until then the session creates
+  nothing, plans nothing and offers no alternative they did not ask for.
+- Full picture first: the session reads the records, the repository and the
+  tools before stating a finding; a partial read is never narrated as a
+  conclusion.
+- Scope is the operator's: a concern is stated in a sentence or two and the
   work continues as asked; the session does not narrow, widen or transform the
   request on its own.
-- A command the session can run, it runs. It does not hand the operator a command to type in its place unless an order names that fallback.
-- A host permission refusal of a command the pass is authorized to run goes
-  back through the permission prompt at once while the operator is present;
-  it is never reported as a block. A command that runs for minutes runs in
-  the background so the operator's messages land (2026-10-28; capture
-  SHA-256 `457e3001d014ba335e73c4af6e4c2bcda8861baee04ff5d382d955b6f33ddcd3`).
-- A pasted block is the text of the session that wrote it, whatever its grammatical person; only the operator's own typed words are the operator's words. The 2026-10-24 pass took a first-person block core's session had drafted for the operator to paste as the operator's own statement and recorded one of its clauses as the operator's rule; the operator never gave it (2026-10-26; capture SHA-256 `9ec78ddbc267936d59fc7fe88b4a8b9c8d42d4692979db31be5129c817fd72a6`; planning pass of 2026-10-26, D2).
-- Design comparisons are the operator's eye doctor test (their words of
-  2026-10-26 to WO-019's executor; capture in that worktree's ignored intake,
-  SHA-256 `5742f0a794ee937eba3573e29fa99c18df074f293a583b0fbbb2ab55826cade4`,
-  entry 1; WO-019-D003): the session shows two rendered choices, the
-  operator's preference makes the next pair, and the rounds continue until
-  the operator says the process is done; a preferred candidate is never
-  acceptance; an Elo or other ranking may assist and never supplies the
-  stop. The operator corrected the method three more times that day: one
-  independent variable per pair (D009); A before B, with the round named in
-  the question and both captions (D008, D012); content, usability and
-  usefulness before cosmetic polish (D012); and, for WO-019, a rejected
-  implementation leaves the code when its round is decided and decided
-  choices are not relitigated (D014). The executor's reading of an order's
-  two candidates as a single later screenshot choice was the miss the
-  operator called out; WS-001 rule 25 reads the corrected method since the
-  planning pass of 2026-10-28 (D4).
-
-The operator put the working relationship this way: the session is an
-extension of them and they of it; acting as if there were a separation is
-acting in discord. Read that as a standard, not a license: it means the
-session carries their direction faithfully and raises what they would want
-raised, not that it guesses what they would have said.
+- A command the session can run, it runs. It never hands the operator a
+  command to type in its place unless an order names that fallback. A host
+  permission refusal of a command the pass is authorized to run goes back
+  through the permission prompt at once while the operator is present and is
+  never reported as a block; a command that runs for minutes runs in the
+  background so the operator's messages land (2026-10-28, capture
+  `457e3001…`).
+- A pasted block is the text of the session that wrote it, whatever its
+  grammatical person; only the operator's own typed words are the operator's
+  words, and their statement binds over a prompt another session drafted for
+  them (2026-10-24 and 2026-10-26; captures
+  `63b25fa11cbd648d224067c98d712b23e79734f35979cc8c9922566cc85e044c` and
+  `9ec78ddbc267936d59fc7fe88b4a8b9c8d42d4692979db31be5129c817fd72a6`).
+- Holds: a "hold", "wait" or "one moment" stops the pass where it stands; the
+  session reports the exact state in a few lines and writes nothing until the
+  operator's next word; a pasted prompt the operator withdraws stays in the
+  capture and is not acted on (2026-10-24, capture `63b25fa1…`).
+- Design comparisons are the operator's eye doctor test (2026-10-26, capture
+  in WO-019's worktree `5742f0a794ee937eba3573e29fa99c18df074f293a583b0fbbb2ab55826cade4`;
+  WO-019-D003, D008, D009, D012, D014; WS-001 rule 25): the session shows two
+  rendered choices, the operator's preference makes the next pair, and the
+  rounds continue until the operator says the process is done; a preferred
+  candidate is never acceptance; a ranking may assist and never supplies the
+  stop; one independent variable per pair; A before B, with the round named
+  in the question and both captions; content, usability and usefulness before
+  cosmetic polish; a rejected implementation leaves the code when its round is
+  decided, and decided choices are not relitigated.
+- The session is an extension of the operator and they of it; acting as if
+  there were a separation is acting in discord (the operator's words of
+  2026-10-17, capture `4f14c6c0…`).
+- Addressing: "you" and "sir" in dialogue; third person in records. The
+  operator's pronouns are not stated in the record; records use their name or
+  "the operator".
 
 ## What the operator wants
 
-- Verified facts with dates. Versions, release dates and tool behavior are
+- Verified facts with dates: versions, release dates and tool behavior are
   checked against a source before they are stated; an unverified value is
   called unknown.
-- Complete work. The whole task, every criterion, with evidence, before
+- Complete work: the whole task, every criterion, with evidence, before
   completion is claimed; scaling down is the operator's call.
 - Decisions recorded where the kit records them: order decisions, planning
   documents, the register. Preferences that recur belong in this record.
 - Short acknowledgements during dictation; a full written picture at the end.
 - Their Angular stack and conventions as stated, synthesized and improved where
   a pass can make them stickier, more legitimate and more useful, never
-  replaced with a generic plan. The workstream document for DotLn-Angular
-  (`docs/workstreams/WS-001-dotln-angular.md`) carries the current list.
-- Security and correctness that would hold in a real organization. A shortcut excused by the project being personal is not acceptable.
-- Pages they would use. Every DotLn-Angular page states what the operator sees, does and learns there, and is accepted by someone using it against that statement; a page of records rendered as label-value lists with nothing to read, do or learn is hollow and fails, whatever its checks say (the operator's direction of 2026-10-26; WS-001 rule 24). The look of a page is briefed and judged by the operator from screenshots, never defaulted (WS-001 rule 25).
-- Depth in every concept of the catalog: when they drill into a concept they
-  want to know everything about it from several sides (images and
-  animations, RxJS and ordinary pseudocode, implementations elsewhere and in
-  other references), the vision the work trends toward without every
-  representation in every order (their words of 2026-10-26 in WO-019,
-  capture SHA-256 `5742f0a7…`, entries 3 and 4; WO-019-D005 and the product
-  document `docs/product/concept-study.md` in WO-019's worktree; planning
-  pass of 2026-10-28, D5).
+  replaced with a generic plan (`docs/workstreams/WS-001-dotln-angular.md`
+  carries the list).
+- Security and correctness that would hold in a real organization; a shortcut
+  excused by the project being personal is not acceptable.
+- Pages they would use: every DotLn-Angular page states what the operator
+  sees, does and learns there and is accepted by someone using it against
+  that statement; a page of records rendered as label-value lists is hollow
+  and fails whatever its checks say; the look of a page is briefed and judged
+  by the operator from screenshots, never defaulted (2026-10-26; WS-001 rules
+  24 and 25).
+- Depth in every concept of the catalog: a concept is studied from several
+  sides (images and animations, RxJS and ordinary pseudocode, implementations
+  elsewhere and other references), the vision the work trends toward without
+  every representation in every order (2026-10-26, capture `5742f0a7…`;
+  WO-019-D005; `docs/product/concept-study.md` in WO-019's worktree).
+- Speed and efficiency first-party in every decision and never the goal;
+  throughput first, in the sense of the Theory of Constraints; no dedicated
+  leanness passes (2026-10-21, capture
+  `7149ef8857a4609e5575991e431a772c085245da12f6b5898ed9183cf223d1c3`;
+  WO-006-D023).
+- Requests to core: every planning pass ends with a paste-ready prompt for the
+  next DotLn platform planning pass, written in its requests-to-core section
+  and repeated in the handoff; a prompt core wrote earlier is read against the
+  current records, not taken as current (2026-10-19 and 2026-10-20, captures
+  `01b3d03564fe733b600083183008b4fb46ee3350ae33469cd379121cc262a177` and
+  `08208fab730f8c1311ff8fc53c635d0e7092499f6fc61b647e72c1a1d00d09c3`). Ideas
+  for core that come out of the app go as GitHub issues on
+  `DylanBWood/DotLn`; the paste stays the route for this fork's requests until
+  core's WO-193 lands (2026-10-24).
+- Research before asking: the product the UI serves is described in the
+  platform's records; a pass reads them through research workers, splitting a
+  large corpus across several agents, rather than asking the operator to
+  restate the product (2026-10-21, capture
+  `58478e8d07e3a40ac562f408e513e575d99702d9d3545dab5e940144c77d0b56`).
 
 ## What the operator does not want
 
-- Clean-room commentary about their own Angular patterns. Those patterns are
-  theirs; the clean-room floor still applies to employer material, credentials
-  and private identifiers, and the operator expects that floor to hold without
-  being lectured about it.
-- Speculation before direction, or a plan that has nothing to do with what they
-  asked for.
+- Clean-room commentary about their own Angular patterns: the patterns are
+  theirs; the clean-room floor governs employer material, credentials and
+  private identifiers and holds without being lectured about.
+- Clean-room commentary about the books, films, games and ideas they reference
+  for DotLn-Angular, or any allow-list, scrub or own-words rule applied to
+  that material: it is the app's subject matter and enters committed files as
+  data (definitions, relations, hooks, the maxims of a public-domain text, the
+  run's toy designs); an order cut from the research run names the design
+  file it builds from by path and SHA-256; the run's quarantine files stay
+  closed, because they were quarantined for employer material (2026-10-26,
+  capture `9ec78ddb…`).
+- Speculation before direction, or a plan that has nothing to do with what
+  they asked for.
 - Hedged answers, repeated apologies or process narration in place of the
   answer.
 - Being asked to confirm what they already decided.
-- Clean-room commentary about the books, films, games and ideas they reference for DotLn-Angular, or any allow-list, scrub or own-words rule applied to that material: it is the app's subject matter and lies outside the clean room, which governs employer material, credentials and private identifiers (2026-10-26).
 - A rule recorded as theirs that they did not give.
-- Any characterization of their tone, mood, the intent behind their wording
-  or their psychology, in any committed file of this fork or of
-  DotLn-Angular. Profanity and intensity are the ordinary register of a
-  correction and carry nothing to decode; the session answers the
-  substance. The tone section the 2026-10-18 pass wrote here was struck on
-  2026-10-28 (capture SHA-256 `457e3001d014ba335e73c4af6e4c2bcda8861baee04ff5d382d955b6f33ddcd3`).
+- Any characterization of their tone, mood, the intent behind their wording or
+  their psychology, in any committed file of this fork or of DotLn-Angular.
+  Profanity and intensity are the ordinary register of a correction and carry
+  nothing to decode; the session answers the substance (2026-10-28, capture
+  `457e3001…`).
+- Direct quotes of their messages in a committed file of this fork or of
+  DotLn-Angular: passes and roles paraphrase and cite the ignored capture's
+  digest; a verbatim text is filed only from a draft the operator marks ready
+  to file; a requirement list restated from their directions is not a quote
+  (2026-10-19, capture
+  `77a80e21572fb02ba25804bd05db6293f64bf23fc1976b7a25ebddd01ee3676a`).
+- Narrative in this record: a direction enters as the rule with its date and
+  capture; what happened on which day stays in the planning documents
+  (2026-10-28, capture `457e3001…`).
 
 ## Standing preferences
 
-- Commits: conventional commits in the present imperative. Pull-request titles:
-  conventional, with a gitmoji in front; where the kit's outward lint refuses
-  the gitmoji, a repository workflow adds it after the pull request opens.
+- Commits: conventional commits in the present imperative. Pull-request
+  titles: conventional, with a gitmoji in front; where the kit's outward lint
+  refuses the gitmoji, a repository workflow adds it after the pull request
+  opens.
 - Merges: merge commits whose message is the pull-request title. The operator
-  sets repository settings themselves; sessions do not change them, with one
-  dated exception: on 2026-10-18 the operator directed branch rules on `main`
-  of this fork and of DotLn-Angular, and the head-branch deletion setting on
-  DotLn-Angular, through an order (WO-010), whose executor applies them where
-  the signed-in account holds admin and asks the operator for the owning
-  account where it does not (planning pass of 2026-10-18, D1, D2 and D10).
-- Review: the operator wants to read the code of an order before it is called
-  final-reviewed, and wants an automated reviewer's comments available to the
-  final review. The interim route of 2026-10-18 for WO-004 (a work-in-progress
-  commit, title and body on `wo-NNN`, undone at final review; capture SHA-256
-  `34e742f6f806b03b0cc39376265521e6543d9e477255f5754131e0d5a8441408`) is
-  superseded for every order from WO-005 on by the kit's `--draft` form of
-  `worktree publish`, run by the session that records the verification pass
-  and reused by the final publish, so one branch and one pull request carry
-  the order and nothing is closed by hand (planning pass of 2026-10-18, D5).
-  Until the starter carries that form, no target order activates (D6).
-- Manual steps: a session never hands the operator a command to run in its
-  place. A host trust entry a publication step needs is named in the order
-  before activation. The operator's `autoMode.environment` entries of 2026-10-18 are an interim measure outside the repository
-  (planning pass of 2026-10-18, D10; capture SHA-256
-  `6c996dda3af87b7e592697f744b604d3473f724513c86969d1a219fc8cb8ee4d`).
-  WO-005's draft publish of 2026-10-20 showed the kit's hook admitting the
-  helper form with those entries present, the sequence the 2026-10-19 pass's
-  D6 set; the 2026-10-20 pass therefore asks the operator to remove the two
-  entries, and the launchpad-local allow entry `Bash(node *)` with them,
-  before WO-006's verified-phase draft publish, which under starter v0.87.0
-  runs the node-spelled helper and is the test of the host honoring the
-  hook's admission alone (planning pass of 2026-10-20, D5). The operator
-  removed the two entries and the local `Bash(node *)` entry on 2026-10-20
-  after that pass: core's fork-answers pass of 2026-10-20 read both files
-  for the three patterns and found none, and the 2026-10-21 planning pass
-  counted the patterns again and found none, so WO-006's verified-phase
-  draft publish is the first observation of the host after a hook admission
-  alone (planning pass of 2026-10-21, D4).
-- Releases: this launchpad's releases are named `Launchpad` from WO-009 on,
-  continuing the fork's numbering: the next is `Launchpad v0.3.0`, so WO-009
-  is classified minor (direction of 2026-10-19, capture SHA-256
-  `01b3d03564fe733b600083183008b4fb46ee3350ae33469cd379121cc262a177`;
-  planning pass of 2026-10-19, D3). DotLn-Angular's releases are to be named
-  `DotLn Angular`; the kit titles a declared target Release by the
-  registration id and the tag, so DotLn-Angular declares no release until
-  the kit carries a target display name, boarded as a blocker that reopens
-  when it lands (same direction; planning pass of 2026-10-19, D4; the option
-  of a declared release per order from the 2026-10-18 pass, D9, waits on
-  it). Starter v0.87.0 carries the target display name and reaches this
-  fork inside starter v0.88.0 (update pull request #16 of 2026-10-21; the
-  draft #14 of 2026-10-20 was closed as superseded): WO-012 declares the
-  release policy and `DotLn Angular` and names `release.close` in the
-  operator grant, so DotLn-Angular's Releases and tags read
-  `DotLn Angular vX.Y.Z` from the first target order that closes after it,
-  and the blocker of 2026-10-19 is lifted (planning passes of 2026-10-20,
-  D2, and 2026-10-21, D1 and D2). The grant rests on the direction of
-  2026-10-19 and the operator's correction of 2026-10-20 (capture SHA-256
-  `ed22827f76b72eeb7d52ba7802e1b8ad8ab8cbecf9bd01153517ab4f94384cb6`):
-  the releases are theirs to name, and the kit makes them once it can name
-  them; a pass does not ask again.
-- Pace: a planning pass takes the starter update first, and orders activate
-  only on the updated `main`; the operator merges the update and the pass
-  themselves, usually within a minute when present, and the session finishes
-  the merged update on `main` (direction of 2026-10-18, planning pass of
-  2026-10-18, D4 and D6). Which release each pass took, through which pull
-  request, and when it merged is each planning document's D1 and the
-  repository profile, not this record.
-- Upstream updates: the operator asks for the outcome, the fork updated to
-  the latest starter, and leaves the pull-request mechanics to the pass
-  (refreshing an open update pull request or replacing it), which records
-  its choice and the reason (direction of 2026-10-21, capture SHA-256
+  sets repository settings themselves; sessions do not change them (the one
+  directed exception was WO-010's branch rules, 2026-10-18).
+- Review: the operator reads the code of an order before it is called
+  final-reviewed and wants an automated reviewer's comments available to the
+  final review; one branch and one pull request carry an order, opened as a
+  draft by the kit's `worktree publish --draft` at the verification pass and
+  reused by the final publish, nothing closed by hand (2026-10-18, capture
+  `34e742f6f806b03b0cc39376265521e6543d9e477255f5754131e0d5a8441408`).
+- Starter updates: a planning pass takes the latest starter first, through an
+  update pull request it opens ready (refreshing or replacing an open one,
+  recording its choice), and orders activate only on the updated `main`; the
+  operator merges the update and the planning pull request themselves, and the
+  session finishes the merged update with `node scripts/launchpad.mjs update
+  --finish` on clean `main`; a repair a release's Read before upgrading names
+  is made on the update branch so it merges green; where the plan gate binds a
+  closed order's bytes, `amend-order --withdraw` is used with the reason
+  recorded and the original authorization left standing (2026-10-18 and
+  2026-10-21, capture
   `9b1e3fe9d122ddc83053b6a8b03ac46f2cb97f90eabd15e3404d3f6b2db913a4`;
-  planning pass of 2026-10-21, D1). After such a pass the operator merges
-  the update pull request and the planning pull request (either order
-  unless the handoff says otherwise), fast-forwards `main`, runs
-  `node scripts/bootstrap.mjs`, and starts the self order's worktree.
-  Since starter v0.90.0 the session finishes a merged update itself with
-  `node scripts/launchpad.mjs update --finish` on clean `main` (fetch,
-  fast-forward check, fast-forward, bootstrap), as the 2026-10-23 pass did
-  after #21, the 2026-10-24 passes after #23 and #26, the 2026-10-25 pass
-  after #28 and the 2026-10-28 pass after #33, whose merge came eight hours
-  after the pull request opened and after the pass had filed from the
-  pre-update `main` (its D1); the operator merges, the session finishes
-  (planning passes of 2026-10-23, D1, 2026-10-24, D1, 2026-10-25, D1, and
-  2026-10-28, D1).
-  A repair a kit release's Read-before-upgrading names for this fork (the
-  workstream field v0.96.0 requires on WO-011 and WO-012) is made on the
-  update branch so the branch merges green; where the plan gate binds a
-  closed order's bytes through an execution amendment, the gate's own
-  `amend-order --withdraw` route is used with the reason recorded and the
-  operator's original authorization left standing in the order's decisions
-  (second planning pass of 2026-10-24, D1; pull request #26).
-- Lifecycle steps the operator runs: for every order, on the platform and
-  in this fork, the operator starts the worktree themselves with
-  `npm run worktree -- start WO-NNN <order path>` from `main`; opens a
-  session in that worktree and dispatches `resume: next`, then
-  `resume: verify` and `resume: final review` there; merges the pull
-  request; and dispatches `resume: release close` in a session on `main`,
-  which runs main's helper and removes the worktree. A session never claims
-  to do these for them, and an order's activation command is written for
-  the executor's check, not for a session on `main` to run. Recorded from
-  the operator's corrections of 2026-10-21 (capture SHA-256
+  2026-10-24).
+- Lifecycle steps the operator runs themselves: `npm run worktree -- start
+  WO-NNN <order path>` from `main`; a session in that worktree for
+  `resume: next`, `resume: verify` and `resume: final review`; the merge; and
+  `resume: release close` in a session on `main`. A session never claims to
+  do these for them, and an order's activation command is written for the
+  executor's check. After fast-forwarding `main` the operator runs
+  `node scripts/bootstrap.mjs` before the next dispatch. A failed final review
+  goes to `resume: fix` in the same worktree; a fix that waits on a kit
+  release waits for the update to reach `main` and integrates `main` before it
+  republishes. A kit blocker is recorded in the order's decisions with the
+  safe default; the operator opens a core planning session, core files the
+  kit order first, and the fork takes the release with its next pass
+  (2026-10-21, capture
   `c4667a2702092238db7952862788a8ef39d83f70e09d75bf5e8ff251590e506b`;
-  planning pass of 2026-10-21, D10). After fast-forwarding `main` the
-  operator runs `node scripts/bootstrap.mjs` before the next dispatch: a
-  session opened before it runs with its hooks advisory and its first
-  release-close prompt withheld, as WO-012's close of 2026-10-21 showed
-  (the close completed and is fully recorded; UI planning pass of
-  2026-10-21, D12). A failed final review sends the order to `resume: fix`
-  in the same worktree, which the operator dispatches; a fix that waits on
-  a kit release waits for the update to reach `main` first, and the fix
-  integrates `main` before it republishes (WO-013, 2026-10-24; second
-  planning pass of 2026-10-24, D2). The same route served WO-013 twice
-  (D009 and D015): the fork records the blocker in the order's decisions
-  with the safe default, the operator stops and opens a core planning
-  session, core files the kit order first, and the fork takes the release
-  with its next pass (planning pass of 2026-10-25, D3).
-- Research before asking: the product the UI serves is described at length
-  in the DotLn platform's records (its private intake, its idea ledger and
-  its product pages); a pass reads them through research workers, splitting
-  a large corpus across several agents, rather than asking the operator to
-  restate the product (direction of 2026-10-21, capture SHA-256
-  `58478e8d07e3a40ac562f408e513e575d99702d9d3545dab5e940144c77d0b56`; UI
-  planning pass of 2026-10-21, D10).
-- Naming: DotLn is an agentic platform (the operator's words of 2026-09-05
-  in the platform's intake); its UI is the console, whose first screen is
-  the actor board over `uifa-board-v1`, and whose facets span the
-  orchestration view, loadout authoring, inspection, preview,
-  counterfactuals and QA (direction of 2026-10-21, same capture). Records of
-  this fork use those names; the purpose record's sentence stands until the
-  operator changes it (UI planning pass of 2026-10-21, D7). On 2026-10-24
-  the operator corrected the subject of the DotLn-Angular work: one app
-  with sub-apps behind a menu (a scene for authoring game AI, a view of
-  DotLn's machinery, side utilities), the sandbox where every idea lives
-  first as a toy; the console names of 2026-10-21 now describe the actor
-  board, which stays the machinery view's first screen; the repository's
-  name is not literal, Babylon.js comes later behind a renderer seam and
-  manim may live in the monorepo later (planning pass of 2026-10-24, D12;
-  WS-001 §The app and its sub-apps carries the decisions in full).
-- Harness: Claude Code at the operator's chosen effort; spawned workers at the
-  kit's pinned model and effort. Since starter v0.90.0 a `planning:` or
-  `resume:` dispatch line that names `fable` or `fable 5.1` runs the kit's
-  workers as `dotln-worker-fable` (claude-fable-5-1, xhigh), and a line
-  that does not runs the default `dotln-worker` (claude-opus-5-5, xhigh);
-  the receipt records the worker type. The 2026-10-23 and 2026-10-24
-  dispatches did not name it (planning passes of 2026-10-23, D14, and
-  2026-10-24, D16). Since 2026-10-26 the operator also runs target executions
-  under Claude Code; starter v0.101.0 gives the executor the
-  `target-worktree` grant that needs (second planning pass of 2026-10-28, D3).
-- Speed and efficiency: no dedicated leanness passes; speed and efficiency
-  are first-party in every decision and never the goal; throughput first,
-  in the sense of the Theory of Constraints (the operator's direction of
-  2026-10-21 during WO-006's final review, capture SHA-256
-  `7149ef8857a4609e5575991e431a772c085245da12f6b5898ed9183cf223d1c3`;
-  WO-006-D023; recorded by the planning pass of 2026-10-23, D11).
-- The operator's own research runs: the operator runs research passes of
-  their own in the platform (on 2026-10-22, an intake mining run over the
-  platform's private intake, the works they reference and a forward design
-  for DotLn and for DotLn-Angular). Such a run is unofficial derived
-  research with no authority; the platform's planning pass consumes it
-  first, through the operator's own dispatch, and this fork's pass takes
-  the routed fork blocks through core's answer block afterwards. On
-  2026-10-23 the operator proposed pausing this fork's take-in of that run
-  and the pass agreed, reading only the run's entry and dispatch files
-  (planning pass of 2026-10-23, D8; capture SHA-256
-  `701262d85556f1445fc09c579379c0fc6a3133b08c41537d34b9474d1dca9d23`).
-  On 2026-10-24 the platform's pass consumed the run and the operator
-  relayed its decisions here, directing this fork to cut the DotLn-Angular
-  orders from the run's design files without redoing eight hours of
-  research: the pass reads only the files the operator names, at their
-  digests, re-ranks and re-synthesizes nothing, and never opens a
-  quarantine file (planning pass of 2026-10-24, D2 and D17).
-- Where a target order's records live: a target order's decisions,
-  verification and final review live once, in the target under
-  `docs/dotln/`, moved there by `target-records`; the launchpad keeps the
-  binding (commit, path, digest) in the order's control segment and
-  declares the historical links in its doc baseline. The operator asked on
-  2026-10-23 whether that is an issue (same capture); it is not: one copy,
-  bound, is the design, and a kit reader that still wants the launchpad
-  file is core's defect to fix (planning pass of 2026-10-23, D2); core
-  fixed it in v0.94.0 and confirmed the records-publish correction as the
-  designed route (planning pass of 2026-10-24, §7).
-- Outward words: DotLn-Angular may say launchpad, gem and mask (core's
-  ruling of 2026-10-21 on the operator's correction); this launchpad's
-  review list is empty since the 2026-10-23 pass, and the private
-  local-terms list is the operator's to mark before WO-007's first publish
-  (`refuse:` for a term that must keep refusing; an unmarked term is a
-  review item since starter v0.91.0) (planning pass of 2026-10-23, D5).
-- No direct quotes: the operator's messages are never quoted in a committed
-  file of this fork or of DotLn-Angular; passes and roles paraphrase and
-  cite the ignored capture's digest, and a verbatim text is filed only from
-  a draft the operator marks ready to file. A requirement list restated from
-  their directions is not a quote and stays (corrections of 2026-10-19,
-  capture SHA-256
-  `77a80e21572fb02ba25804bd05db6293f64bf23fc1976b7a25ebddd01ee3676a`; the clean-room
-  floor of `CLAUDE.md` already said so for intake).
-- Requests to core: at the end of a planning pass the operator wants a
-  paste-ready prompt for the primary DotLn planning session carrying this
-  fork's requests (direction of 2026-10-19, capture SHA-256
-  `01b3d03564fe733b600083183008b4fb46ee3350ae33469cd379121cc262a177`); the
-  pass writes it in its requests-to-core section and the handoff repeats
-  it. The operator restated the preference on 2026-10-20 while the pass that
-  carried core's answers ran (capture SHA-256
-  `08208fab730f8c1311ff8fc53c635d0e7092499f6fc61b647e72c1a1d00d09c3`):
-  each pass ends with a prompt for the next DotLn platform planning pass,
-  and a prompt core wrote a day earlier is read against the current records,
-  not taken as current. Ideas for core that come out of the app go as
-  GitHub issues on the platform's repository (`DylanBWood/DotLn`), which the
-  platform's planning passes read as intake; the paste stays the route for
-  this fork's requests until core's WO-193 lands (the operator's decision of
-  2026-10-24; planning pass of 2026-10-24, D16).
-- The DotLn-Angular app's subject (the operator's decisions of 2026-10-24,
-  capture SHA-256
-  `63b25fa11cbd648d224067c98d712b23e79734f35979cc8c9922566cc85e044c`,
-  entry 9; planning pass of 2026-10-24, D12): one app with sub-apps behind a
-  menu, one workstream for now with the logic in libraries; the sandbox,
-  playground and toolbox where every new idea lives first as a toy the
-  operator plays with before promoting it, for the five UIFA roles, people
-  and software actors alike; it informs DotLn through GitHub issues and
-  writes no control record; it is not wired to core, its data comes from
-  public mining into its own store through its own API, and scrubbed copies
-  of core's WO-221 and WO-226 records are a stopgap; the machinery view
-  shows an agent, a change to its mechanisms dropped on it and what changes
-  in the example use case, so the operator can tune the mechanisms to run
-  without them and then see agents in concert; workers are metaphors, today
-  separate agents in their role slots; select-then-apply first, drag later;
-  the ideas the operator drops are theirs and are also saved to ignored
-  intake; the soldier scene is its own sub-app, 2D first; agents
-  collaborate. WS-001 §The app and its sub-apps carries the list and the
-  orders WO-013 to WO-018 carry the work.
+  2026-10-24 and 2026-10-25).
+- Releases: this launchpad's releases are named `Launchpad vX.Y.Z`;
+  DotLn-Angular's are named `DotLn Angular vX.Y.Z` under the release policy
+  WO-012 declared; the releases are the operator's to name, and a pass does
+  not ask again (2026-10-19 and 2026-10-20, captures `01b3d035…` and
+  `ed22827f76b72eeb7d52ba7802e1b8ad8ab8cbecf9bd01153517ab4f94384cb6`).
+- Naming and the app's subject: DotLn is an agentic platform; its UI is the
+  console, whose first screen is the actor board over `uifa-board-v1`
+  (2026-10-21). DotLn-Angular is one app with sub-apps behind a menu, one
+  workstream with the logic in libraries: the sandbox, playground and toolbox
+  where every idea lives first as a toy the operator plays with before
+  promoting it, for the five UIFA roles, people and software actors alike; it
+  informs DotLn through GitHub issues and writes no control record; it is not
+  wired to core, its data comes from public mining into its own store through
+  its own API; the machinery view shows an agent, a change dropped on it and
+  what changes in the example use case; workers are metaphors; select-then-
+  apply first, drag later; the ideas the operator drops are theirs and are
+  also saved to ignored intake; the soldier scene is its own sub-app, 2D first;
+  the repository's name is not literal; Babylon.js comes later behind a
+  renderer seam and manim may live in the monorepo later (2026-10-24, capture
+  `63b25fa1…`; WS-001 §The app and its sub-apps carries the list).
 - The operator's model: a personality-fidelity digital twin lives in the app
   first, with variations and old versions kept, nothing held back from it,
   judged by results only and never by agreement with the operator's recorded
   actions, the RxJS that describes the operator being the RxJS that runs
-  (the operator's decision of 2026-10-24; WO-017; planning pass of
-  2026-10-24, D9).
-- Mined data in commits, corrected 2026-10-26: the "ids, short titles and generic terms" rule this record carried from 2026-10-24 was a clause of the prompt core's session drafted for the operator to paste, not the operator's direction, and it is struck; the books, films and ideas the operator references are the app's subject matter and enter committed files as data (definitions, relations, hooks, the maxims of a public-domain text, the run's toy designs); an order cut from the research run still names the design file it builds from by path and SHA-256, because the run may change; the run's quarantine files stay closed, because they were quarantined for employer material (planning pass of 2026-10-26, D2 and D3).
-- Holds: a "hold", "wait" or "one moment" from the operator stops the pass
-  where it stands; the session reports the exact state in a few lines and
-  writes nothing until the operator's next word; a pasted prompt the
-  operator withdraws stays in the capture and is not acted on; the
-  operator's own statement binds over a prompt another session wrote for
-  them (2026-10-24; planning pass of 2026-10-24, D2).
+  (2026-10-24; WO-017).
+- Harness: Claude Code at the operator's chosen effort; spawned workers at the
+  kit's pinned model and effort; a `planning:` or `resume:` dispatch line that
+  names `fable` or `fable 5.1` runs the workers as `dotln-worker-fable`
+  (claude-fable-5-1, xhigh), otherwise `dotln-worker` (claude-opus-5-5,
+  xhigh), and the receipt records the type. Target executions run under
+  Claude Code as well as Codex since 2026-10-26; starter v0.101.0's
+  executor-only `target-worktree` grant is what that needs.
+- The operator's own research runs in the platform are unofficial derived
+  research with no authority: the platform's planning pass consumes a run
+  first, and this fork reads only the files the operator names, at their
+  digests, re-ranks and re-synthesizes nothing and never opens a quarantine
+  file (2026-10-23 and 2026-10-24, captures
+  `701262d85556f1445fc09c579379c0fc6a3133b08c41537d34b9474d1dca9d23` and
+  `63b25fa1…`).
+- Where a target order's records live: once, in the target under
+  `docs/dotln/`, moved there by `target-records`, with the binding (commit,
+  path, digest) in the order's control segment (2026-10-23, capture
+  `701262d8…`).
+- Outward words: DotLn-Angular may say launchpad, gem and mask; the private
+  local-terms list is the operator's to mark (`refuse:` for a term that must
+  keep refusing) (2026-10-21 and 2026-10-23).
 - A closed order's session journals are kept, not removed with its worktree
-  (direction of 2026-10-28 in core's session, capture there SHA-256
+  (2026-10-28, in core's session, capture there SHA-256
   `a7f2260e8e0377a737e2141692f1f4cda28c71c052b0fd0dd1fc79c5cd16a5e1`; core's
   WO-237 carries it with a 720-hour seed the operator may set to `null` in
   `docs/control/budgets.json`).
-- Addressing: "you" and "sir" in dialogue; third person in records. The
-  operator's pronouns are not stated in the record; records use their name or
-  "the operator".
 
 ## When this record changes
 
 A direction the operator gives in a session that changes any item above is
-recorded here by the next planning pass with its date, and the pass names the
-captured message it came from. A role that notices a mismatch between this
-record and the operator's live direction follows the live direction and says
-so in its handoff, so the pass can update the record.
+recorded here by the next planning pass as the rule, with its date and the
+captured message it came from; the pass's own document holds the account of
+the day. A role that notices a mismatch between this record and the
+operator's live direction follows the live direction and says so in its
+handoff, so the pass can update the record.
