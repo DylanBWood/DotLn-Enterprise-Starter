@@ -3558,6 +3558,14 @@
           "reopenWhen": "Core answers §11 item 2 of the 2026-10-26 pass, or a verifier records a use criterion met with no walkthrough.",
           "targets": [],
           "at": "2026-10-26T13:27:45.475Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) D6 and §7: core answered §11 item 2 of the 2026-10-26 pass on 2026-10-28: no supported route adds duty text to a generated role today; an instance owns its support switches, its grants file and its hostRules, and the order text, the workstream rule and the operator record are the designed carriers of a duty, all three of which this fork already uses (WS-001 rule 24, the orders' use criteria, the operator record); the extension contract is core's candidate 8, deferred with its reopening conditions, so core neither declined nor carried the duty.",
+          "reopenWhen": "A starter release carries an instance role-extension contract (core's candidate 8), or a verifier records a use criterion met with no walkthrough; the pass that reads either weighs the self order again.",
+          "targets": [],
+          "at": "2026-10-28T19:43:05.906Z"
         }
       ]
     },
@@ -3654,6 +3662,14 @@
           "reopenWhen": "An update of this fork refuses or conflicts on .gitignore or docs/control/budgets.json, or core answers §11 item 2 of the 2026-10-28 pass.",
           "targets": [],
           "at": "2026-10-28T07:39:03.097Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) D6, §4 and §7: core allocated the ask of the morning pass's §11 item 2 to its WO-207 as a carry-in (candidate 6); v0.101.0's preview again declared no instance action while the Git merge carried README.md (the registered-target paragraph), the third template-derived instance file in two releases after .gitignore and budgets.json, merged here only because the fork never edited it; reported to core again in this pass's §11 item 1.",
+          "reopenWhen": "A starter release carries core's WO-207 (the preview or update --finish then names a derived instance file), or an update of this fork refuses or conflicts on an instance file the preview did not name.",
+          "targets": [],
+          "at": "2026-10-28T19:43:05.914Z"
         }
       ]
     },
@@ -3678,6 +3694,86 @@
           "reopenWhen": "A starter release carries core's WO-234; the pass that takes it reads the fork's attended comparison sessions against the dispatch bound and the budgets file's new keys before the first stop.",
           "targets": [],
           "at": "2026-10-28T07:39:03.085Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) D6 and §7: core answered item 4a on 2026-10-28: WO-234 as filed counts an attended session the same as an unattended one, because the bound is elapsed wall clock from the dispatch start; idle time is its criterion-1 known issue the executor decides and records; accept-overrun is legal in active and the other named phases with no stop required first, scoped to the order and phase, and an acceptance recorded ahead of the stop extends the bound ahead of it; the fork's attended case is recorded on WO-234's row as evidence. Not yet shipped; recorded for the pass that takes it.",
+          "reopenWhen": "A starter release carries core's WO-234; the pass that takes it reads the fork's attended comparison sessions against the dispatch bound and the budgets file's keys, and records the acceptance route (accept-overrun ahead of the stop) before the operator's first attended session under the bound.",
+          "targets": [],
+          "at": "2026-10-28T19:43:05.922Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-c85b18619ccecfcf",
+      "key": "candidate:docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10::42a1760de37556f4b8bbc3df876b81cdfe1245b15899b19b5627fbffe53b155d",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "138a4de91928bf16d2b697890876539e321e591792fc336e2907be36a72f84d4",
+          "ref": "docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C3 The hook latency under the grant: about 180 ms more per judged executor outside write (core's D029, one resume status spawn per judging hook), paid most in the fork's attended comparison sessions,…",
+          "summary": "- **C3 The hook latency under the grant: about 180 ms more per judged executor outside write (core's D029, one `resume status` spawn per judging hook), paid most in the fork's attended comparison sessions, where an executor edits the target many times a round.** Not an order: core boarded it; the fork has no measurement of its own. Reopen when WO-019's executor or a later order's records the latency as a cost in its decisions or usage, or when a starter release carries core's follow-up.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) §10 C3: v0.101.0's notes board about 180 ms more per judged executor outside write (core's D029, one resume status spawn per judging hook), paid most in the fork's attended comparison sessions; core boarded it and the fork has no measurement of its own.",
+          "reopenWhen": "WO-019's executor or a later order's records the latency as a cost in its decisions or usage readback, or a starter release carries core's follow-up on D029.",
+          "targets": [],
+          "at": "2026-10-28T19:43:05.950Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-64d1967b092ea18a",
+      "key": "candidate:docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10::a5014aea124d1f4043fc59babcb04df17faa9f5a0110929627728ebe031063d7",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "fad93b78548e2b2012a0591ff42765cd21c9f7a6f79911813cc1ccfcef653953",
+          "ref": "docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C1 The closed-journal retention window for this fork: when a starter release carries core's WO-237, docs/control/budgets.json (never edited since export) takes the kit template's seed of 720 hours…",
+          "summary": "- **C1 The `closed-journal` retention window for this fork: when a starter release carries core's WO-237, `docs/control/budgets.json` (never edited since export) takes the kit template's seed of 720 hours through the Git merge, a closed order's session journals, state and gate index move into main's retained lane at release close, and `plan failures` counts its denials and interventions from there; the operator may set the window to `null` to keep the journals forever.** Not an order: the mechanism is core's and not yet shipped; nothing of this fork's changes until the release. Reopen when a starter release carries WO-237; the pass that takes it names the seed in its update pull request and ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) §10 C1 and §7: core's WO-237 (filed fourth, not yet shipped) moves a closed order's session journals, state and gate index into main's retained lane under a closed-journal class seeded at 720 hours; this fork's budgets file, never edited since export, takes the seed through the Git merge when a starter release carries it, and the window is the operator's to set (null keeps the journals forever).",
+          "reopenWhen": "A starter release carries core's WO-237; the pass that takes it names the seed in its update pull request and records the window the operator chooses.",
+          "targets": [],
+          "at": "2026-10-28T19:43:05.931Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0f93f0e36b664163",
+      "key": "candidate:docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10::baf9099f2e89fcc32117336e16358a2fe9a2999a5084eb4020408b458429ac5a",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "024b39546fa4c9e3fb4fbd2626c174b3df67c7bfb6e9305e12f962944c0c8a35",
+          "ref": "docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C2 The field report to core on the target-worktree grant's first use: WO-019's executor's first Edit into the target after #35 merges and the worktree re-emits, journaled granted with kind…",
+          "summary": "- **C2 The field report to core on the target-worktree grant's first use: WO-019's executor's first Edit into the target after #35 merges and the worktree re-emits, journaled `granted` with kind `target-worktree`, its authority, the order and the phase, or refused with the cause named; core's verification ran no live session against a real target, so this is the grant's first field observation.** Not an order: it is the next block's item, written from the executor's record and a count over the worktree's journal, never a printed row. Reopen when WO-019's executor records the first target write after the update, or its records merge; the pass that follows carries the report in its §11.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) §10 C2, D3 and §11 item 2: core's verification of WO-236 ran no live session against a real target, so WO-019's executor's first Edit into its target after update #35 merges and the worktree re-emits is the grant's first field observation; the next pass reports it to core from the executor's record and a count over the worktree's journal, never a printed row.",
+          "reopenWhen": "WO-019's executor records the first target write after the update (granted with kind target-worktree and its authority, or refused with the cause named), or WO-019's records merge; the pass that follows carries the report in its requests to core.",
+          "targets": [],
+          "at": "2026-10-28T19:43:05.939Z"
         }
       ]
     }
