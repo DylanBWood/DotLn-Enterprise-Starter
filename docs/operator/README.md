@@ -10,8 +10,9 @@ lives in the planning documents and the repository profile, never here. The
 record was first written by the 2026-10-18 planning pass from the operator's
 own words (capture SHA-256
 `4f14c6c09512576abfd701335f4dd8a347694ff23785724422cb8d943b5d67aa`), was cut
-to its directions on 2026-10-28 at the operator's word (capture SHA-256
-`457e3001d014ba335e73c4af6e4c2bcda8861baee04ff5d382d955b6f33ddcd3`), and
+to its directions on 2026-10-28 at the operator's word (captures SHA-256
+`457e3001d014ba335e73c4af6e4c2bcda8861baee04ff5d382d955b6f33ddcd3` and
+`8462d2d9aeb3297fa8282d0ad9ec6910cc9d9c880b795ffbe34586c3b47f1b6b`), and
 changes only when the operator says so or a pass records a new direction with
 its date. There is one copy; no harness keeps its own.
 

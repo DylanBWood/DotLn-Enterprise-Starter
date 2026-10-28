@@ -3851,6 +3851,13 @@
           "title": "C5 A mechanical guard on the operator record: a fork-owned check in the document gate that fails npm run test:docs when docs/operator/README.md grows past a bound set by planning or carries…",
           "summary": "- **C5 A mechanical guard on the operator record: a fork-owned check in the document gate that fails `npm run test:docs` when `docs/operator/README.md` grows past a bound set by planning or carries dated-narrative patterns (pull-request numbers, clock times, merged, closed as), plus `refuse:` entries on the operator's private terms list for the vocabulary of characterization, which `harness check` and the document gate already refuse in committed text (`scripts/lib/terms.mjs`).** Not filed: the operator asked what stops a future pass and had not directed the guard when the pass closed; the terms entries are theirs to make, the check is code and needs a self order, and the kit route is asked ",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C5 A mechanical guard on the operator record: a fork-owned check in the document gate that fails npm run test:docs when docs/operator/README.md grows past a bound set by planning or carries…",
+          "summary": "- **C5 A mechanical guard on the operator record: a fork-owned check in the document gate that fails `npm run test:docs` when `docs/operator/README.md` grows past a bound set by planning or carries dated-narrative patterns (pull-request numbers, clock times, merged, closed as), plus `refuse:` entries on the operator's private terms list for the vocabulary of characterization, which `harness check` and the document gate already refuse in committed text (`scripts/lib/terms.mjs`).** Not filed: the operator asked what stops a future pass and had not directed the guard when the pass closed; the terms entries are theirs to make, the check is code and needs a self order, and the kit route is asked ",
+          "missing": true
         }
       ],
       "dispositions": [
@@ -3861,8 +3868,31 @@
           "reopenWhen": "The operator directs the guard (terms entries, a self order for the check, or both), or a planning pass finds docs/operator/README.md grown past 20 KB or carrying a dated account of a day.",
           "targets": [],
           "at": "2026-10-28T20:02:16.650Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "declined",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) D13 and the direction ledger row 11: the operator rejected a deny list of words and a byte or pattern check on the operator record as the opposite of what they want and not useful; the guard is the planning contract (product 07 and the generated planner role), asked of core as §11 item 7; the fork's record states the rule itself and every role reads it.",
+          "reopenWhen": "Never as this candidate; core's answer to §11 item 7 of the second 2026-10-28 pass is the next reading.",
+          "targets": [],
+          "at": "2026-10-28T20:03:51.699Z"
         }
       ]
+    },
+    {
+      "id": "FUP-a2d1907d243db0ef",
+      "key": "candidate:docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10::2c623293ac551dbf2ceaf662dbb9da66157fdff48564b214913791a9d664aecf",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "eee4daf1aa8e724aa1d237e4e165904795a006ac0f01c4578d9f844a97d6b466",
+          "ref": "docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C5 A mechanical guard on the operator record (a fork-owned byte or dated-narrative check in the document gate, and refuse: entries on the private terms list for the vocabulary of characterization).",
+          "summary": "- **C5 A mechanical guard on the operator record (a fork-owned byte or dated-narrative check in the document gate, and `refuse:` entries on the private terms list for the vocabulary of characterization).** Declined on the operator's word of 20:01Z: a deny list of words is the opposite of what they want and would not be useful, and a size or pattern check polices a proxy; the guard is the planning contract (D13, §11 item 7). Reopen: never as this candidate; core's answer to item 7 is the next reading.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
