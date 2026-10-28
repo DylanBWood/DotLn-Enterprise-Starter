@@ -3839,6 +3839,30 @@
           "at": "2026-10-28T19:52:43.832Z"
         }
       ]
+    },
+    {
+      "id": "FUP-358df39e6e339cdf",
+      "key": "candidate:docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10::2cc731cd46e906f94d03cf42c5a1801bd2a9c21f4ee3ff0e4b12ca1c9a6df17e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "117b7d86a6263799ad8f507015427e3cf2b06295bf8bbbdd9ba0e06be9922c0b",
+          "ref": "docs/planning/standard-pass-v0-101-0-2026-10-28.md#candidates-not-filed-with-their-reopening-conditions-section-10",
+          "title": "C5 A mechanical guard on the operator record: a fork-owned check in the document gate that fails npm run test:docs when docs/operator/README.md grows past a bound set by planning or carries…",
+          "summary": "- **C5 A mechanical guard on the operator record: a fork-owned check in the document gate that fails `npm run test:docs` when `docs/operator/README.md` grows past a bound set by planning or carries dated-narrative patterns (pull-request numbers, clock times, merged, closed as), plus `refuse:` entries on the operator's private terms list for the vocabulary of characterization, which `harness check` and the document gate already refuse in committed text (`scripts/lib/terms.mjs`).** Not filed: the operator asked what stops a future pass and had not directed the guard when the pass closed; the terms entries are theirs to make, the check is code and needs a self order, and the kit route is asked ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "Second 2026-10-28 planning pass (docs/planning/standard-pass-v0-101-0-2026-10-28.md) §10 C5 and the direction ledger row 10: the operator asked what stops a future pass from re-accreting the operator record; nothing mechanical does today (doc-ceilings admits product documents only; the private terms list refuses tokens in committed text); the guard needs the operator's terms entries, a self order for a fork check, or a kit route asked of core (§11 item 7); no direction when the pass closed.",
+          "reopenWhen": "The operator directs the guard (terms entries, a self order for the check, or both), or a planning pass finds docs/operator/README.md grown past 20 KB or carrying a dated account of a day.",
+          "targets": [],
+          "at": "2026-10-28T20:02:16.650Z"
+        }
+      ]
     }
   ]
 }
