@@ -1,7 +1,8 @@
+import { createFixtureRoot, removeTemporaryPath as rmSync, } from "../src/temporary-roots.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync, spawn, spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, symlinkSync, writeFileSync, } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, realpathSync, symlinkSync, writeFileSync, } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -18,7 +19,7 @@ import { projectWorkerStatus } from "../src/worker-status.js";
 const fixture = JSON.parse(readFileSync(new URL("../../fixtures/repo-tree.json", import.meta.url), "utf8"));
 const processFixture = fileURLToPath(new URL("../../fixtures/worker-cli.mjs", import.meta.url));
 const statusCli = fileURLToPath(new URL("../src/dotln.js", import.meta.url));
-const temporary = () => realpathSync(mkdtempSync(join(tmpdir(), "dotln-worker-test-")));
+const temporary = () => realpathSync(createFixtureRoot(join(tmpdir(), "dotln-worker-test-")));
 const cliRunner = (transport, behavior = "success", launches = []) => (launch) => {
     launches.push(launch);
     return runWorkerProcess({

@@ -1,9 +1,10 @@
+import { createFixtureRoot, removeTemporaryPath as rmSync, } from "../src/temporary-roots.js";
 import test from "node:test";
 import { feedbackSourcesComments } from "../src/feedback-source-comments.js";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { observedExecFileSync as execFileSync } from "../src/gate-deadlines.mjs";
-import { chmodSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync, } from "node:fs";
+import { chmodSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -17,7 +18,7 @@ if (ablate && !personalFeedbackUnits.some((unit) => unit.unitId === ablate))
 const program = compileFeedbackUnits(personalFeedbackUnits.filter((unit) => unit.unitId !== ablate));
 const effect = (request) => feedbackBoundary(program, request, () => "effect-executed");
 const temporary = (body) => {
-    const directory = realpathSync(mkdtempSync(join(tmpdir(), "dotln-feedback-fixture-")));
+    const directory = realpathSync(createFixtureRoot(join(tmpdir(), "dotln-feedback-fixture-")));
     try {
         body(directory);
     }

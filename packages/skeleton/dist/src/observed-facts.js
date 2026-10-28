@@ -98,6 +98,7 @@ export function observeBackgroundTool(tool, input, output, at, invocationId) {
         backgroundTask: {
             key: digest(id),
             ...(invocationId ? { invocationKey: digest(invocationId) } : {}),
+            ...(tool === "spawn_agent" ? { reusable: true } : {}),
             state,
             ...(dispatch ? { dispatchedAt: at } : {}),
             observedAt: at,
@@ -113,14 +114,16 @@ export function observedFacts(root, scope, now = new Date().toISOString()) {
             continue;
         const previous = tasks.get(task.key);
         // Transcript reconstruction can append older observations after live hooks.
-        // Keep the earliest terminal evidence; later reads, errors or stops cannot
-        // restart elapsed time. Nonterminal facts still follow observation time.
+        // Ordinary tasks keep their earliest terminal evidence. Reusable agents
+        // can receive another turn, so their latest explicit metadata wins.
         const terminal = terminalStates.has(task.state);
         const previousTerminal = previous && terminalStates.has(previous.state);
         const keepPrevious = previous &&
-            (previousTerminal
-                ? !terminal || previous.observedAt <= task.observedAt
-                : !terminal && previous.observedAt > task.observedAt);
+            (task.reusable || previous.reusable
+                ? previous.observedAt > task.observedAt
+                : previousTerminal
+                    ? !terminal || previous.observedAt <= task.observedAt
+                    : !terminal && previous.observedAt > task.observedAt);
         const selected = keepPrevious
             ? { ...task, ...previous }
             : { ...previous, ...task };
@@ -368,6 +371,8 @@ function transcriptTasks(root, scope, transcript, prompt, now) {
     const calls = new Map();
     const journal = journalRows(root, scope).filter((row) => taskInScope(row, scope));
     const seen = new Set(journal.map((row) => row.eventId));
+    const knownTasks = new Set(journal.flatMap((row) => row.backgroundTask?.key ?? []));
+    const agentAliases = new Map();
     const noticeTimes = new Map();
     for (const row of journal) {
         if (!row.eventId?.startsWith("task-notice:"))
@@ -458,14 +463,69 @@ function transcriptTasks(root, scope, transcript, prompt, now) {
                 if (!call || !Number.isFinite(Date.parse(call.at)))
                     continue;
                 const output = object(part.output ?? part.content);
+                const appendTask = (observation, suffix = "") => {
+                    const eventId = `task:${digest(`${id}:${row.position}${suffix}`)}`;
+                    const task = observation.backgroundTask;
+                    knownTasks.add(task.key);
+                    remember(task);
+                    if (seen.has(eventId))
+                        return;
+                    appendObservation(root, scope, { ...observation, eventId }, row.timestamp);
+                    seen.add(eventId);
+                };
+                if (call.name === "list_agents" && Array.isArray(output.agents)) {
+                    for (const agent of output.agents) {
+                        if (typeof agent?.agent_name !== "string")
+                            continue;
+                        const key = digest(agent.agent_name);
+                        if (!knownTasks.has(key))
+                            continue;
+                        const status = agent.agent_status;
+                        const state = typeof status === "string"
+                            ? status
+                            : status &&
+                                typeof status === "object" &&
+                                Object.hasOwn(status, "completed")
+                                ? "completed"
+                                : "unknown";
+                        appendTask({
+                            backgroundTask: {
+                                key,
+                                reusable: true,
+                                state: terminalStates.has(state) ||
+                                    ["running", "pending"].includes(state)
+                                    ? state
+                                    : "unknown",
+                                observedAt: row.timestamp,
+                            },
+                        }, `:${key}`);
+                    }
+                    continue;
+                }
+                if (call.name === "followup_task" &&
+                    typeof call.input.target === "string") {
+                    const target = digest(call.input.target);
+                    const key = agentAliases.get(target) ??
+                        (knownTasks.has(target) ? target : undefined);
+                    if (key)
+                        appendTask({
+                            backgroundTask: {
+                                key,
+                                reusable: true,
+                                state: "unknown",
+                                observedAt: call.at,
+                            },
+                        });
+                    continue;
+                }
                 const observation = observeBackgroundTool(call.name, call.input, output, row.timestamp, id);
                 if (observation?.backgroundTask.dispatchedAt)
                     observation.backgroundTask.dispatchedAt = call.at;
-                const eventId = `task:${digest(`${id}:${row.position}`)}`;
-                if (observation && !seen.has(eventId)) {
-                    appendObservation(root, scope, { ...observation, eventId }, row.timestamp);
-                    seen.add(eventId);
-                    remember(observation.backgroundTask);
+                if (observation) {
+                    if (call.name === "spawn_agent" &&
+                        typeof call.input.task_name === "string")
+                        agentAliases.set(digest(call.input.task_name), observation.backgroundTask.key);
+                    appendTask(observation);
                 }
             }
         }

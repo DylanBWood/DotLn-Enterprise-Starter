@@ -2,12 +2,18 @@ import { createHash, randomUUID } from "node:crypto";
 import { existsSync, lstatSync, mkdirSync, readdirSync, realpathSync, rmdirSync, } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-/** @param {string} root */
-const transitionPaths = (root) => {
+import { ensureTemporaryRoot, temporaryRepository, } from "./temporary-root-records.mjs";
+/** @param {string} root @param {string} [repository] */
+const transitionPaths = (root, repository = temporaryRepository()) => {
     const physical = realpathSync(root);
     const key = createHash("sha256").update(physical).digest("hex");
     const parent = join(tmpdir(), `dotln-writer-transition-${process.getuid?.() ?? "user"}`);
     mkdirSync(parent, { recursive: true, mode: 0o700 });
+    ensureTemporaryRoot(parent, {
+        class: "coordination",
+        repository,
+        adoptExisting: true,
+    });
     return {
         physical,
         lock: join(parent, key),
@@ -25,10 +31,11 @@ const requireWorktree = (root, physical) => {
  * @template T
  * @param {string} root
  * @param {() => T} operation
+ * @param {{repository?: string}} [options]
  * @returns {T}
  */
-export function withWriterRegistration(root, operation) {
-    const { physical, lock, registrations } = transitionPaths(root);
+export function withWriterRegistration(root, operation, { repository } = {}) {
+    const { physical, lock, registrations } = transitionPaths(root, repository);
     mkdirSync(registrations, { recursive: true, mode: 0o700 });
     const lease = join(registrations, randomUUID());
     mkdirSync(lease, { mode: 0o700 });
