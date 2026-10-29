@@ -125,3 +125,49 @@ pull request's state, checks, reviews and review threads were read through
 `gh`. No push, pull request change, deployment, package publication, tag or
 Release operation was attempted before the result transition; the publish
 calls that follow it are recorded below.
+
+## Final publish (FINAL-001 session, 2026-10-29)
+
+- Host: Claude Code 2.1.312; model `claude-fable-5-1`, effort `max` from
+  `CLAUDE_EFFORT`. The publish ran after `final-review-result pass` recorded
+  FINAL-001 at the reviewed commit `261982f2…` (2026-10-28T23:47Z), after
+  `target-records` added the records commit `b8e5b0ce…` in the target, and
+  after this worktree's records were committed (`92101e43`), so the launchpad
+  checkout was clean.
+- Helper command line as run, from the launchpad root, with the launchpad root
+  in `DOTLN_LAUNCHPAD`, after a directory change to the launchpad root and
+  with its output piped through `tail`:
+  `node scripts/worktree.mjs publish WO-019 --target-worktree --branch feat/catalog-reading --title "feat: make the catalog something to read" --body-file docs/final-reviews/WO-019/PR.md`
+- Journal: at 2026-10-29T00:06:47Z the hook recorded a
+  `registeredTargetAdmission` row of kind `near-miss`, syntax `prefix`, with
+  the advisory that the shell syntax hid the helper from the registered-target
+  admission, which was therefore not judged; host permissions decided. The
+  session journal holds no `PermissionDenied` row. The records publish below
+  was run in the plain form, with no directory change, prefix or pipe, so the
+  hook could judge it.
+- Host decision: allowed. No permission prompt surfaced in this session.
+- Helper output: "Pushed feat/catalog-reading at
+  b8e5b0ce0af479bff18a32071c9ee035fe9f4a22 over draft
+  062e8007794eb8adce0b98427d7f7b81e9675794 and marked pull request #8 on
+  github.com/DylanBWood/DotLn-Angular ready."
+- Local readback: target `HEAD` is `b8e5b0ce…`, the records commit, whose
+  parent is the reviewed commit `261982f2…` over the base `1c3a4ff2…`; 0
+  porcelain lines; branch `wo-019`. `git ls-remote --heads origin` reads
+  `feat/catalog-reading` at `b8e5b0ce…` and `main` at `1c3a4ff2…`, so the
+  target's `main` did not advance before the push.
+- Remote readback: `gh pr view 8` reads number 8, `isDraft` false, state
+  `OPEN`, mergeable, head `feat/catalog-reading` at `b8e5b0ce…`, base
+  `main`, title ":sparkles: feat: make the catalog something to read" (the
+  title workflow re-added the gitmoji after the helper set the reviewed title,
+  as it did for the draft), created 2026-10-28T23:04:37Z, updated
+  2026-10-29T00:07:08Z, zero comments and zero reviews. `gh run list` for the
+  branch reads the "Pull request title" run 40791903136 (success) and the CI
+  run 40791903738 (in progress at 00:07Z) at the new head, beside the draft's
+  runs 40784730435 and 40784730430 (both success) at `062e8007…`.
+- Interventions: none. No `--confirm-terms` was needed, and no host denial
+  occurred.
+- Outcome against the record: the final publish composed the change from the
+  merge base, pushed the two commits over the draft and marked the pull request
+  ready, as D036 planned; the operator reads the code there before merging.
+- No private journal contents are copied here: only the row's time, kind and
+  advisory class, the helper output and the public pull request readbacks.
