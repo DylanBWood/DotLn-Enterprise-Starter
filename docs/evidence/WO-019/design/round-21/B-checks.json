@@ -1,0 +1,47 @@
+[
+  {
+    "candidate": "B",
+    "width": 1440,
+    "sharedContentHash": "a471001fec2cbd982bc1a08cc30acf12a8a8bb51e3eb13a114a077d6ee785ff6",
+    "font": "\"Iowan Old Style\", \"Palatino Linotype\", \"Book Antiqua\", Georgia, serif",
+    "textBlocks": 5,
+    "curves": 2,
+    "grouping": "One chart per run",
+    "implementationGroupingA": true,
+    "deferredConstruction": true,
+    "retainsStreamSwitch": true,
+    "axeSeriousCritical": 0,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "candidate": "B",
+    "width": 768,
+    "sharedContentHash": "a471001fec2cbd982bc1a08cc30acf12a8a8bb51e3eb13a114a077d6ee785ff6",
+    "font": "\"Iowan Old Style\", \"Palatino Linotype\", \"Book Antiqua\", Georgia, serif",
+    "textBlocks": 5,
+    "curves": 2,
+    "grouping": "One chart per run",
+    "implementationGroupingA": true,
+    "deferredConstruction": true,
+    "retainsStreamSwitch": true,
+    "axeSeriousCritical": 0,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "candidate": "B",
+    "width": 360,
+    "sharedContentHash": "a471001fec2cbd982bc1a08cc30acf12a8a8bb51e3eb13a114a077d6ee785ff6",
+    "font": "\"Iowan Old Style\", \"Palatino Linotype\", \"Book Antiqua\", Georgia, serif",
+    "textBlocks": 5,
+    "curves": 2,
+    "grouping": "One chart per run",
+    "implementationGroupingA": true,
+    "deferredConstruction": true,
+    "retainsStreamSwitch": true,
+    "axeSeriousCritical": 0,
+    "overflow": false,
+    "errors": []
+  }
+]

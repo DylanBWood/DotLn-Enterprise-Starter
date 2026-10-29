@@ -3902,6 +3902,149 @@
           "at": "2026-10-28T20:04:38.710Z"
         }
       ]
+    },
+    {
+      "id": "FUP-51e2f03a7992aea2",
+      "key": "decision:docs/evidence/WO-019/decisions.md#wo-019-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e808de28e88ee6a940fd81c74a9d4972d96a367bca3f86ac57783ca798461b5a",
+          "ref": "docs/evidence/WO-019/decisions.md#wo-019-d017",
+          "title": "WO-019-D017: Plan explicit catalog search controls: visible filtering and sorting, clear active-filter state and removal, and an optional current-source-book preset shown as a removable filter.…",
+          "summary": "{ \"id\": \"WO-019-D017\", \"date\": \"2026-10-26\", \"dispatch\": \"resume: next\", \"decision\": \"Defer broader catalog search usability to a separately planned follow-up. Keep the operator-selected global ranking in WO-019. Future filtering and sorting must be visible and controllable; any contextual book selection should appear as an explicit preselected filter that the reader can keep or remove.\", \"evidence\": [ \"After round 18, the operator identified ordinary filter and sorting gaps as the appropriate way to improve catalog search and asked for a note rather than requiring those changes in this work order.\", \"The current page has work, kind and status facets and fixed match-strength/alphabetical ran",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-bd2535b42e13d360",
+      "key": "decision:docs/evidence/WO-019/decisions.md#wo-019-d027",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4296e8c317a24fa2591d03ed8358b0233e3dc6fec248b170e430c7d104ea3fbb",
+          "ref": "docs/evidence/WO-019/decisions.md#wo-019-d027",
+          "title": "WO-019-D027: Carry the operator's 2026-10-28 tooling direction into WS-001's house rules and the operator record: each tool has a stated purpose and status (gate, helper or module), a tool stays…",
+          "summary": "{ \"id\": \"WO-019-D027\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; operator directions of 2026-10-28 on tool scripts and the operator's choice of cuts\", \"decision\": \"Give every DotLn-Angular tool a stated purpose and status (in a gate, a helper or a module) in docs/dev-reference/workspace/scripts.md, and make the three cuts the operator chose: CI runs the workspace checks once, through nx run workspace-tools:lint with nx affected excluding workspace-tools; lint:fixtures leaves the gate and becomes a helper for lint-policy changes; tools/scripts/catalog/merge-checkpoints.mjs and its test are deleted, keeping that test's two partial-read assertions. The style-only checks stay, as the oper",
+          "missing": false
+        },
+        {
+          "hash": "cde0a73b83482207f02c62ba82e345ea1e2a221689847da53a229692cbc92567",
+          "ref": "docs/evidence/WO-019/decisions.md#wo-019-d027",
+          "title": "WO-019-D027: Carry the operator's 2026-10-28 tooling direction into WS-001's house rules and the operator record: each tool has a stated purpose and status (gate, helper or module), a tool stays…",
+          "summary": "{ \"id\": \"WO-019-D027\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; operator directions of 2026-10-28 on tool scripts and the operator's choice of cuts\", \"decision\": \"Give every DotLn-Angular tool a stated purpose and status (in a gate, a helper or a module) in docs/dev-reference/workspace/scripts.md, and make the three cuts the operator chose: CI runs the workspace checks once, through nx run workspace-tools:lint with nx affected excluding workspace-tools; lint:fixtures leaves the gate and becomes a helper for lint-policy changes; tools/scripts/catalog/merge-checkpoints.mjs and its test are deleted, keeping that test's two partial-read assertions. The style-only checks stay, as the oper",
+          "missing": false
+        },
+        {
+          "hash": "8835a960e716afb739be77a3e498f67a9e4f328c70ca735bcc654e6b8291d0df",
+          "ref": "docs/evidence/WO-019/decisions.md#wo-019-d027",
+          "title": "WO-019-D027: Carry the operator's 2026-10-28 tooling direction into WS-001's house rules and the operator record: each tool has a stated purpose and status (gate, helper or module), a tool stays…",
+          "summary": "{ \"id\": \"WO-019-D027\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; operator directions of 2026-10-28 on tool scripts and the operator's choice of cuts\", \"decision\": \"Give every DotLn-Angular tool a stated purpose and status (in a gate, a helper or a module) in docs/dev-reference/workspace/scripts.md, and make the three cuts the operator chose: CI runs the workspace checks once, through nx run workspace-tools:lint with nx affected excluding workspace-tools; lint:fixtures leaves the gate and becomes a helper for lint-policy changes; tools/scripts/catalog/merge-checkpoints.mjs and its test are deleted, keeping that test's two partial-read assertions. The style-only checks stay, as the oper",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f1c8c645eb537501",
+      "key": "decision:docs/evidence/WO-019/decisions.md#wo-019-d028",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5a2409351bba0941ac0fe2c139e41afcd15061f0a05b200cd33cc2aff084c3d3",
+          "ref": "docs/evidence/WO-019/decisions.md#wo-019-d028",
+          "title": "WO-019-D028: When the soldier scene replaces its arriving page (WO-015), make the reading's 'runs in the soldier scene' line a link to /scene?tool=<id> for kinds the scene interprets, with a test…",
+          "summary": "{ \"id\": \"WO-019-D028\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; closeout criteria review finding F6\", \"decision\": \"Leave the reading's soldier-scene line as the sentence it is today and hand its conditional link to the order that replaces the scene's arriving page (WO-015).\", \"evidence\": [ \"The design links the line to /scene?tool=<id> when the kind is one the scene interprets and BasePaths.Scene resolves to a page that is not the arriving page. sceneRoutes renders only SceneArrivingPage, so the correct output today is the sentence without a link, which the browser journey pins.\", \"No availability signal exists to read, and the scene's handling of a tool parameter belongs to WO-015.\"",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ebc4ad49cf1ea093",
+      "key": "decision:docs/evidence/WO-019/decisions.md#wo-019-d029",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d2ed1ff1db5e034289eddcf9ecbbe092a7dbbf7feef8eaea44e81cc635244e80",
+          "ref": "docs/evidence/WO-019/decisions.md#wo-019-d029",
+          "title": "WO-019-D029: Make catalog readings addressable (for example /tools/catalog/<tool id>) so the browser's Back and shared links return to a reading, and let the Tools home render works, counts and the…",
+          "summary": "{ \"id\": \"WO-019-D029\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; closeout criteria review finding F7 and design review finding 12\", \"decision\": \"Keep reading state in the persisted store for this order and record two addressing and loading improvements for planning.\", \"evidence\": [ \"Readings open through in-page links; the browser's Back leaves /tools/catalog instead of returning to the previous reading. The in-page 'Back to the previous reading' control works and is tested, and the Objective names no control.\", \"The Tools home now shares the catalog page's store (D026) but still loads every chunk, about 5.4 MB of JSON before compression, to show six titles, six counts and the last re",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5e9566b63fb44fb1",
+      "key": "decision:docs/evidence/WO-019/decisions.md#wo-019-d030",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "bf2f5f93e614793846b7e78552293b89f51b080451243e5bf0022dbacd6b8c90",
+          "ref": "docs/evidence/WO-019/decisions.md#wo-019-d030",
+          "title": "WO-019-D030: In the concept-study authoring work, derive each study's drawing geometry and prose values from its model, make the facade the single source of each section's open state (bind open on…",
+          "summary": "{ \"id\": \"WO-019-D030\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; closeout design review findings 2, 3 and 7\", \"decision\": \"Keep the decided Arrive study's structure for this order and record its maintainability work for the concept-study authoring program.\", \"evidence\": [ \"The motion and velocity drawings' coordinates, the slowing zone and some prose numbers repeat arriveExample's constants as literals in tools.facade.ts, arrive-study.html and en.json; a changed constant would update the motion but not every drawing or sentence. The late-braking chart is now derived from its scales (D026).\", \"Each study section's open state lives both in its native details element and in the facade; t",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2403ce12b1fca8b2",
+      "key": "decision:docs/evidence/WO-019/decisions.md#wo-019-d031",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e75934bc2c332ad8391582cf261bba995aecfff2d8ce441c81eb209d09edf5de",
+          "ref": "docs/evidence/WO-019/decisions.md#wo-019-d031",
+          "title": "WO-019-D031: Ask core whether the executor's closeout step that runs the complete launchpad suite should apply to a target order whose criteria name only its target gates and the document gate, and…",
+          "summary": "{ \"id\": \"WO-019-D031\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; operator questions at 22:30Z on why the launchpad suite ran for this order\", \"decision\": \"Do not run the launchpad's complete `npm test -- --review` for WO-019. Its launchpad-side check is the document gate its criterion 9 names; its product checks are the target gates, which passed. The run started at 22:28:21Z was stopped at 22:30:54Z and supplied no pass. This supersedes D022 and D023's note that the complete run was owed.\", \"evidence\": [ \"The operator asked at 22:30Z what the launchpad suite had to do with this work order, and then whether the executor had run a task unrelated to the order (capture 66335ad0…).\", \"The",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-bc3a25a8671c2814",
+      "key": "decision:docs/evidence/WO-019/decisions.md#wo-019-d032",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4a37250e6ee0b25d860f1897b538c362763c877cfd87477ed5b8c6618bc19b52",
+          "ref": "docs/evidence/WO-019/decisions.md#wo-019-d032",
+          "title": "WO-019-D032: Review the rest of docs/repositories/dotln-angular.md for statements no reader of the repository needs, keep what is useful whatever its length, and stop planning passes and order…",
+          "summary": "{ \"id\": \"WO-019-D032\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; operator messages at 22:43Z–22:46Z on docs/repositories/dotln-angular.md\", \"decision\": \"Replace the DotLn-Angular profile's run-on header paragraph with what a reader of the repository uses (the checked commit, the toolchain and library versions, what the app is, and where history lives), and remove this order's own narrative additions, keeping only corrections of statements that were false. Usefulness is the test, not length.\", \"evidence\": [ \"The operator wrote at 22:43Z–22:46Z that the paragraph was useless accumulation, asked who monitors what goes into the profile and what the paragraph was for, and corrected the exe",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2b0df90366e5fed0",
+      "key": "decision:docs/evidence/WO-019/decisions.md#wo-019-d033",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fb64ec93789b3fba0654a3c7a5c620dc9047ae46907da6bd1b84b03da700b4d0",
+          "ref": "docs/evidence/WO-019/decisions.md#wo-019-d033",
+          "title": "WO-019-D033: Before publishing the launchpad records, paraphrase the operator's verbatim messages in WO-019 decisions and design/rounds.json and cite their existing capture provenance; retain…",
+          "summary": "{ \"id\": \"WO-019-D033\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: verify\", \"decision\": \"Judge the original nine criteria from the current target tree, the independent production walkthrough and direct comparisons with the pinned maps. Retain the existing scene-link, reading-address and study-maintenance follow-ups. Record the decision records' verbatim operator messages as a nonblocking documentation follow-up, without changing the implementation or earlier evidence under review.\", \"evidence\": [ \"VER-001's production journey completed at 360, 768 and 1440 pixels with restored history, no page errors, no horizontal overflow and zero axe violations with the study expanded. All 3,463 joined row",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "FINAL-001 (2026-10-28) paraphrased the operator's verbatim messages in WO-019 decisions D023, D024, D025, D027, D031 and D032, design/rounds.json, design/comparisons.md and design/round-22/README.md before the records were committed or published, citing the ignored capture docs/intake/notes/WO-019-operator-directions-2026-10-28.md (SHA-256 66335ad095bbe814cd112c289b21b176429313d99f9a2dd31f1f3d1ce7d87dd2), which holds the words as the executor recorded them; no ready-to-file authorization exists, so no verbatim message remains in a committed file; the decisions, preferences and comparison stopping state are unchanged (WO-019-D035).",
+          "reopenWhen": "A committed WO-019 record is found to quote the operator's messages verbatim without a recorded ready-to-file authorization.",
+          "targets": [],
+          "at": "2026-10-28T23:29:02.843Z"
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,272 @@
+[
+  {
+    "candidate": "A",
+    "width": 1440,
+    "selectedWork": "aifg",
+    "query": "ar",
+    "arriveRank": 14,
+    "position": {
+      "top": 1214.890625,
+      "bottom": 1234.890625,
+      "inViewport": false
+    },
+    "results": [
+      {
+        "id": "aifg-a:377",
+        "title": "Arbiter"
+      },
+      {
+        "id": "tt1:166",
+        "title": "Architect with technical and social skills and an organisational remit (Kelly)"
+      },
+      {
+        "id": "tt1:58",
+        "title": "Architecting people as if they were software"
+      },
+      {
+        "id": "poeaa:1",
+        "title": "Architecture (as the book uses the term)"
+      },
+      {
+        "id": "poeaa:197",
+        "title": "Architecture advice is situational"
+      },
+      {
+        "id": "tt1:160",
+        "title": "Architecture as an enabler of rapid change (Reinertsen)"
+      },
+      {
+        "id": "tt1:100",
+        "title": "Architecture designed in isolation"
+      },
+      {
+        "id": "tt1:157",
+        "title": "Architecture for participation (MacCormack et al.)"
+      },
+      {
+        "id": "tt1:156",
+        "title": "Architectures should resemble the flows of change they enable"
+      },
+      {
+        "id": "rxc:351",
+        "title": "ArgumentOutOfRangeError"
+      },
+      {
+        "id": "geb2:132",
+        "title": "Arithmetisation of syntax"
+      },
+      {
+        "id": "geb2:137",
+        "title": "Arithmoquining"
+      },
+      {
+        "id": "rxp:253",
+        "title": "Array arguments for join creators"
+      },
+      {
+        "id": "aifg-a:112",
+        "title": "Arrive"
+      },
+      {
+        "id": "aifg-a:1",
+        "title": "Artificial intelligence (working definition)"
+      },
+      {
+        "id": "aifg-b:124",
+        "title": "Artificial neural network"
+      },
+      {
+        "id": "tt3:83",
+        "title": "A thinking model, not an org-chart method"
+      },
+      {
+        "id": "aifg-b:70",
+        "title": "A warning (learning is risky)"
+      },
+      {
+        "id": "rxc:476",
+        "title": "AbortSignal cancellation and addTeardown"
+      },
+      {
+        "id": "rxc:279",
+        "title": "add(teardown)"
+      },
+      {
+        "id": "tt1:267",
+        "title": "Adding teams to share the load"
+      },
+      {
+        "id": "tt2:128",
+        "title": "Additional planes named in the authors' later course (user journeys, markets or regions)"
+      },
+      {
+        "id": "tt1:139",
+        "title": "Adoption of the manoeuvre around 2015"
+      },
+      {
+        "id": "eip:118",
+        "title": "Aggregate initialisation: by first member vs by a separate initialising message; known vs unknown expected count"
+      },
+      {
+        "id": "eip:226",
+        "title": "Aggregating partial updates to reduce flashing, later undone when immediacy mattered"
+      },
+      {
+        "id": "eip:119",
+        "title": "Aggregator state, persistence, scaling and late arrivals"
+      },
+      {
+        "id": "aifg-a:20",
+        "title": "AI as marketing"
+      },
+      {
+        "id": "rxc:442",
+        "title": "AjaxResponse responseHeaders and progress; includeUploadProgress, includeDownloadProgress, queryParams, xsrfCookieName, xsrfHeaderName"
+      },
+      {
+        "id": "rxc:91",
+        "title": "animate(marbles)"
+      },
+      {
+        "id": "geb2:35",
+        "title": "Ant colony prefigured (Aunt Hillary)"
+      }
+    ],
+    "errors": []
+  },
+  {
+    "candidate": "A",
+    "width": 360,
+    "selectedWork": "aifg",
+    "query": "ar",
+    "arriveRank": 14,
+    "position": {
+      "top": 1399.71875,
+      "bottom": 1419.71875,
+      "inViewport": false
+    },
+    "results": [
+      {
+        "id": "aifg-a:377",
+        "title": "Arbiter"
+      },
+      {
+        "id": "tt1:166",
+        "title": "Architect with technical and social skills and an organisational remit (Kelly)"
+      },
+      {
+        "id": "tt1:58",
+        "title": "Architecting people as if they were software"
+      },
+      {
+        "id": "poeaa:1",
+        "title": "Architecture (as the book uses the term)"
+      },
+      {
+        "id": "poeaa:197",
+        "title": "Architecture advice is situational"
+      },
+      {
+        "id": "tt1:160",
+        "title": "Architecture as an enabler of rapid change (Reinertsen)"
+      },
+      {
+        "id": "tt1:100",
+        "title": "Architecture designed in isolation"
+      },
+      {
+        "id": "tt1:157",
+        "title": "Architecture for participation (MacCormack et al.)"
+      },
+      {
+        "id": "tt1:156",
+        "title": "Architectures should resemble the flows of change they enable"
+      },
+      {
+        "id": "rxc:351",
+        "title": "ArgumentOutOfRangeError"
+      },
+      {
+        "id": "geb2:132",
+        "title": "Arithmetisation of syntax"
+      },
+      {
+        "id": "geb2:137",
+        "title": "Arithmoquining"
+      },
+      {
+        "id": "rxp:253",
+        "title": "Array arguments for join creators"
+      },
+      {
+        "id": "aifg-a:112",
+        "title": "Arrive"
+      },
+      {
+        "id": "aifg-a:1",
+        "title": "Artificial intelligence (working definition)"
+      },
+      {
+        "id": "aifg-b:124",
+        "title": "Artificial neural network"
+      },
+      {
+        "id": "tt3:83",
+        "title": "A thinking model, not an org-chart method"
+      },
+      {
+        "id": "aifg-b:70",
+        "title": "A warning (learning is risky)"
+      },
+      {
+        "id": "rxc:476",
+        "title": "AbortSignal cancellation and addTeardown"
+      },
+      {
+        "id": "rxc:279",
+        "title": "add(teardown)"
+      },
+      {
+        "id": "tt1:267",
+        "title": "Adding teams to share the load"
+      },
+      {
+        "id": "tt2:128",
+        "title": "Additional planes named in the authors' later course (user journeys, markets or regions)"
+      },
+      {
+        "id": "tt1:139",
+        "title": "Adoption of the manoeuvre around 2015"
+      },
+      {
+        "id": "eip:118",
+        "title": "Aggregate initialisation: by first member vs by a separate initialising message; known vs unknown expected count"
+      },
+      {
+        "id": "eip:226",
+        "title": "Aggregating partial updates to reduce flashing, later undone when immediacy mattered"
+      },
+      {
+        "id": "eip:119",
+        "title": "Aggregator state, persistence, scaling and late arrivals"
+      },
+      {
+        "id": "aifg-a:20",
+        "title": "AI as marketing"
+      },
+      {
+        "id": "rxc:442",
+        "title": "AjaxResponse responseHeaders and progress; includeUploadProgress, includeDownloadProgress, queryParams, xsrfCookieName, xsrfHeaderName"
+      },
+      {
+        "id": "rxc:91",
+        "title": "animate(marbles)"
+      },
+      {
+        "id": "geb2:35",
+        "title": "Ant colony prefigured (Aunt Hillary)"
+      }
+    ],
+    "errors": []
+  }
+]

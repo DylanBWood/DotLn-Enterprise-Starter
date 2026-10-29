@@ -1,0 +1,28 @@
+[
+  {
+    "candidate": "A",
+    "name": "Data-flow diagram",
+    "width": 1440,
+    "font": "\"Iowan Old Style\", \"Palatino Linotype\", \"Book Antiqua\", Georgia, serif",
+    "sharedContentHash": "cfa41e384df802351f0e620c1677148b2291b8f27e8967f3a5a381bdaae8fe1b",
+    "deferredCreation": true,
+    "retainedOnCollapse": true,
+    "preservesMultipleOpen": true,
+    "preservesCurrentCalculation": true,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "candidate": "A",
+    "name": "Data-flow diagram",
+    "width": 360,
+    "font": "\"Iowan Old Style\", \"Palatino Linotype\", \"Book Antiqua\", Georgia, serif",
+    "sharedContentHash": "cfa41e384df802351f0e620c1677148b2291b8f27e8967f3a5a381bdaae8fe1b",
+    "deferredCreation": true,
+    "retainedOnCollapse": true,
+    "preservesMultipleOpen": true,
+    "preservesCurrentCalculation": true,
+    "overflow": false,
+    "errors": []
+  }
+]

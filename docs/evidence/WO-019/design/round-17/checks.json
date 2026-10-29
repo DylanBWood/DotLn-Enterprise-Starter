@@ -1,0 +1,42 @@
+[
+  {
+    "candidate": "A",
+    "width": 1440,
+    "font": "\"Iowan Old Style\", \"Palatino Linotype\", \"Book Antiqua\", Georgia, serif",
+    "followsTimeline": false,
+    "keyboardReturn": true,
+    "preservesMultipleOpen": true,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "candidate": "A",
+    "width": 360,
+    "font": "\"Iowan Old Style\", \"Palatino Linotype\", \"Book Antiqua\", Georgia, serif",
+    "followsTimeline": false,
+    "keyboardReturn": true,
+    "preservesMultipleOpen": true,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "candidate": "B",
+    "width": 1440,
+    "font": "\"Iowan Old Style\", \"Palatino Linotype\", \"Book Antiqua\", Georgia, serif",
+    "followsTimeline": true,
+    "keyboardReturn": true,
+    "preservesMultipleOpen": true,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "candidate": "B",
+    "width": 360,
+    "font": "\"Iowan Old Style\", \"Palatino Linotype\", \"Book Antiqua\", Georgia, serif",
+    "followsTimeline": true,
+    "keyboardReturn": true,
+    "preservesMultipleOpen": true,
+    "overflow": false,
+    "errors": []
+  }
+]

@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-019",
+  "observedAt": "2026-10-28T23:06:13.163Z",
+  "repository": "DylanBWood/DotLn-Angular",
+  "publication": "draft",
+  "number": 8,
+  "url": "https://github.com/DylanBWood/DotLn-Angular/pull/8",
+  "title": ":sparkles: feat: make the catalog something to read",
+  "state": "OPEN",
+  "isDraft": true,
+  "headBranch": "feat/catalog-reading",
+  "headSha": "062e8007794eb8adce0b98427d7f7b81e9675794",
+  "baseBranch": "main",
+  "verification": {
+    "id": "VER-001",
+    "path": "docs/verifications/WO-019/VER-001.md",
+    "verdict": "pass"
+  },
+  "checks": [
+    {
+      "name": "checks",
+      "status": "IN_PROGRESS",
+      "conclusion": "",
+      "url": "https://github.com/DylanBWood/DotLn-Angular/actions/runs/40784730430/job/123154956935"
+    },
+    {
+      "name": "title",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "url": "https://github.com/DylanBWood/DotLn-Angular/actions/runs/40784730435/job/123154956420"
+    },
+    {
+      "name": "visual",
+      "status": "IN_PROGRESS",
+      "conclusion": "",
+      "url": "https://github.com/DylanBWood/DotLn-Angular/actions/runs/40784730430/job/123154956627"
+    }
+  ],
+  "review": {
+    "operator": "pending",
+    "threads": "not observed; final review must read and route them",
+    "checks": "snapshot only; final review must refresh"
+  },
+  "publisher": {
+    "command": "node scripts/worktree.mjs publish WO-019 --target-worktree --draft --branch feat/catalog-reading --title 'feat: make the catalog something to read' --body-file docs/evidence/WO-019/PR-BODY.md",
+    "exitCode": 0,
+    "headAndIndexUnchanged": true
+  },
+  "notes": [
+    "The canonical publisher opened this draft after verification-result pass; final publication reuses this branch and pull request.",
+    "The title workflow added the configured gitmoji.",
+    "D033 boards the launchpad records paraphrase before records publication."
+  ],
+  "finalReview": {
+    "observedAt": "2026-10-28T23:14:00Z",
+    "state": "OPEN",
+    "isDraft": true,
+    "headSha": "062e8007794eb8adce0b98427d7f7b81e9675794",
+    "mergeable": "MERGEABLE",
+    "checks": [
+      {
+        "name": "checks",
+        "status": "COMPLETED",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-28T23:10:35Z"
+      },
+      {
+        "name": "title",
+        "status": "COMPLETED",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-28T23:04:55Z"
+      },
+      {
+        "name": "visual",
+        "status": "COMPLETED",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-28T23:06:54Z"
+      }
+    ],
+    "reviews": 0,
+    "comments": 0,
+    "reviewThreads": 0,
+    "routed": "nothing to route; the final publish reuses this pull request and marks it ready"
+  },
+  "finalPublish": {
+    "observedAt": "2026-10-29T00:08:00Z",
+    "command": "node scripts/worktree.mjs publish WO-019 --target-worktree --branch feat/catalog-reading --title \"feat: make the catalog something to read\" --body-file docs/final-reviews/WO-019/PR.md",
+    "exitCode": 0,
+    "headSha": "b8e5b0ce0af479bff18a32071c9ee035fe9f4a22",
+    "reviewedCommit": "261982f2cc7e0fca8234faa4b41dceb5e9962bf0",
+    "overDraft": "062e8007794eb8adce0b98427d7f7b81e9675794",
+    "isDraft": false,
+    "state": "OPEN",
+    "mergeable": "MERGEABLE",
+    "title": ":sparkles: feat: make the catalog something to read",
+    "checks": [
+      {
+        "name": "Pull request title",
+        "runId": 40791903136,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "CI",
+        "runId": 40791903738,
+        "status": "in_progress",
+        "conclusion": ""
+      }
+    ],
+    "admission": "registeredTargetAdmission near-miss (shell prefix syntax); host permissions allowed"
+  }
+}

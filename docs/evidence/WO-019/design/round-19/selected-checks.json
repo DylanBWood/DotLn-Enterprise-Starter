@@ -1,0 +1,62 @@
+[
+  {
+    "width": 1440,
+    "view": "flow",
+    "onlyActiveViewConstructed": true,
+    "sharedTextUnchanged": true,
+    "mainTimeUnchanged": true,
+    "keyboardFocus": true,
+    "axeSeriousCritical": 0,
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "view": "timeline",
+    "onlyActiveViewConstructed": true,
+    "sharedTextUnchanged": true,
+    "mainTimeUnchanged": true,
+    "keyboardFocus": true,
+    "axeSeriousCritical": 0,
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "view": "flow",
+    "onlyActiveViewConstructed": true,
+    "sharedTextUnchanged": true,
+    "mainTimeUnchanged": true,
+    "keyboardFocus": true,
+    "axeSeriousCritical": 0,
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "view": "timeline",
+    "onlyActiveViewConstructed": true,
+    "sharedTextUnchanged": true,
+    "mainTimeUnchanged": true,
+    "keyboardFocus": true,
+    "axeSeriousCritical": 0,
+    "overflow": false
+  },
+  {
+    "width": 360,
+    "view": "flow",
+    "onlyActiveViewConstructed": true,
+    "sharedTextUnchanged": true,
+    "mainTimeUnchanged": true,
+    "keyboardFocus": true,
+    "axeSeriousCritical": 0,
+    "overflow": false
+  },
+  {
+    "width": 360,
+    "view": "timeline",
+    "onlyActiveViewConstructed": true,
+    "sharedTextUnchanged": true,
+    "mainTimeUnchanged": true,
+    "keyboardFocus": true,
+    "axeSeriousCritical": 0,
+    "overflow": false
+  }
+]

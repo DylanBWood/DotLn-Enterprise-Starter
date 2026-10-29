@@ -1,0 +1,44 @@
+[
+  {
+    "candidate": "A",
+    "width": 1440,
+    "sharedContentHash": "fd11bec895b4b0d6667dc73587ed7085568420fc4ec4551e56b353dfd8cd7a86",
+    "font": "\"Iowan Old Style\", \"Palatino Linotype\", \"Book Antiqua\", Georgia, serif",
+    "facts": 6,
+    "grouping": "Grouped by implementation",
+    "linksUnchanged": true,
+    "deferredConstruction": true,
+    "retainsStreamSwitch": true,
+    "axeSeriousCritical": 0,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "candidate": "A",
+    "width": 768,
+    "sharedContentHash": "fd11bec895b4b0d6667dc73587ed7085568420fc4ec4551e56b353dfd8cd7a86",
+    "font": "\"Iowan Old Style\", \"Palatino Linotype\", \"Book Antiqua\", Georgia, serif",
+    "facts": 6,
+    "grouping": "Grouped by implementation",
+    "linksUnchanged": true,
+    "deferredConstruction": true,
+    "retainsStreamSwitch": true,
+    "axeSeriousCritical": 0,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "candidate": "A",
+    "width": 360,
+    "sharedContentHash": "fd11bec895b4b0d6667dc73587ed7085568420fc4ec4551e56b353dfd8cd7a86",
+    "font": "\"Iowan Old Style\", \"Palatino Linotype\", \"Book Antiqua\", Georgia, serif",
+    "facts": 6,
+    "grouping": "Grouped by implementation",
+    "linksUnchanged": true,
+    "deferredConstruction": true,
+    "retainsStreamSwitch": true,
+    "axeSeriousCritical": 0,
+    "overflow": false,
+    "errors": []
+  }
+]

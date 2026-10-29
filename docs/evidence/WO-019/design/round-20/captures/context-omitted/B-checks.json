@@ -1,0 +1,44 @@
+[
+  {
+    "candidate": "B",
+    "width": 1440,
+    "sharedContentHash": "ca73d30168c2dfe192f3ccbd172ae380b12efdc4e148fce3e9b54483cab76541",
+    "font": "\"Iowan Old Style\", \"Palatino Linotype\", \"Book Antiqua\", Georgia, serif",
+    "facts": 6,
+    "grouping": "Grouped by algorithm step",
+    "linksUnchanged": true,
+    "deferredConstruction": true,
+    "retainsStreamSwitch": true,
+    "axeSeriousCritical": 0,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "candidate": "B",
+    "width": 768,
+    "sharedContentHash": "ca73d30168c2dfe192f3ccbd172ae380b12efdc4e148fce3e9b54483cab76541",
+    "font": "\"Iowan Old Style\", \"Palatino Linotype\", \"Book Antiqua\", Georgia, serif",
+    "facts": 6,
+    "grouping": "Grouped by algorithm step",
+    "linksUnchanged": true,
+    "deferredConstruction": true,
+    "retainsStreamSwitch": true,
+    "axeSeriousCritical": 0,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "candidate": "B",
+    "width": 360,
+    "sharedContentHash": "ca73d30168c2dfe192f3ccbd172ae380b12efdc4e148fce3e9b54483cab76541",
+    "font": "\"Iowan Old Style\", \"Palatino Linotype\", \"Book Antiqua\", Georgia, serif",
+    "facts": 6,
+    "grouping": "Grouped by algorithm step",
+    "linksUnchanged": true,
+    "deferredConstruction": true,
+    "retainsStreamSwitch": true,
+    "axeSeriousCritical": 0,
+    "overflow": false,
+    "errors": []
+  }
+]

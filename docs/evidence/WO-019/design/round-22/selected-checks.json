@@ -1,0 +1,47 @@
+[
+  {
+    "width": 1440,
+    "completeCodeFirst": true,
+    "completeCodeCanonical": true,
+    "explanations": 4,
+    "stepDisclosures": 4,
+    "stepDisclosuresClosedInitially": true,
+    "stepPartsJoinToCompleteCode": true,
+    "summariesDescribedByStepHeading": true,
+    "keyboardToggles": true,
+    "axeSeriousCriticalClosed": 0,
+    "axeSeriousCriticalOneOpen": 0,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "width": 768,
+    "completeCodeFirst": true,
+    "completeCodeCanonical": true,
+    "explanations": 4,
+    "stepDisclosures": 4,
+    "stepDisclosuresClosedInitially": true,
+    "stepPartsJoinToCompleteCode": true,
+    "summariesDescribedByStepHeading": true,
+    "keyboardToggles": true,
+    "axeSeriousCriticalClosed": 0,
+    "axeSeriousCriticalOneOpen": 0,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "width": 360,
+    "completeCodeFirst": true,
+    "completeCodeCanonical": true,
+    "explanations": 4,
+    "stepDisclosures": 4,
+    "stepDisclosuresClosedInitially": true,
+    "stepPartsJoinToCompleteCode": true,
+    "summariesDescribedByStepHeading": true,
+    "keyboardToggles": true,
+    "axeSeriousCriticalClosed": 0,
+    "axeSeriousCriticalOneOpen": 0,
+    "overflow": false,
+    "errors": []
+  }
+]

@@ -1,0 +1,389 @@
+{
+  "finalAcceptance": false,
+  "orderingRule": "A.png first, B.png second; captions and answer options use the same order. One independent change per comparison.",
+  "processEnded": {
+    "date": "2026-10-28",
+    "at": "2026-10-28T21:08Z",
+    "afterRound": "round-22",
+    "direction": "wrap the comparisons up for now; the operator's words are in the ignored capture, SHA-256 66335ad095bbe814cd112c289b21b176429313d99f9a2dd31f1f3d1ce7d87dd2",
+    "decision": "WO-019-D025"
+  },
+  "rounds": [
+    {
+      "round": "round-01",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "side",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "strip",
+          "image": "B.png"
+        }
+      ],
+      "preference": "A",
+      "state": "preference-recorded"
+    },
+    {
+      "round": "round-02",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "serif",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "sans",
+          "image": "B.png"
+        }
+      ],
+      "preference": null,
+      "state": "unshown"
+    },
+    {
+      "round": "round-03",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "essay",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "lenses",
+          "image": "B.png"
+        }
+      ],
+      "preference": "B",
+      "state": "preference-recorded"
+    },
+    {
+      "round": "round-04",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "single",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "multiple",
+          "image": "B.png"
+        }
+      ],
+      "preference": "B",
+      "state": "preference-recorded"
+    },
+    {
+      "round": "round-05",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "motion",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "velocity",
+          "image": "B.png"
+        }
+      ],
+      "preference": "both",
+      "state": "preference-recorded"
+    },
+    {
+      "round": "round-06",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "combined",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "switchable",
+          "image": "B.png"
+        }
+      ],
+      "preference": "B",
+      "state": "preference-recorded"
+    },
+    {
+      "round": "round-07",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "above",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "below",
+          "image": "B.png"
+        }
+      ],
+      "preference": "B",
+      "state": "preference-recorded"
+    },
+    {
+      "round": "round-08",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "legend",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "direct",
+          "image": "B.png"
+        }
+      ],
+      "preference": "A",
+      "state": "preference-recorded"
+    },
+    {
+      "round": "round-09",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "headings",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "previews",
+          "image": "B.png"
+        }
+      ],
+      "preference": "B",
+      "state": "preference-recorded"
+    },
+    {
+      "round": "round-10",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "after",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "before",
+          "image": "B.png"
+        }
+      ],
+      "preference": "A",
+      "state": "preference-recorded"
+    },
+    {
+      "round": "round-11",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "serif",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "sans",
+          "image": "B.png"
+        }
+      ],
+      "preference": null,
+      "state": "discarded"
+    },
+    {
+      "round": "round-12",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "sans",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "serif",
+          "image": "B.png"
+        }
+      ],
+      "preference": "B",
+      "state": "preference-recorded"
+    },
+    {
+      "round": "round-13",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "open",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "tight",
+          "image": "B.png"
+        }
+      ],
+      "preference": "B",
+      "state": "preference-recorded"
+    },
+    {
+      "round": "round-14",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "closed",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "open",
+          "image": "B.png"
+        }
+      ],
+      "preference": "A",
+      "state": "preference-recorded"
+    },
+    {
+      "round": "round-15",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "inline",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "lines",
+          "image": "B.png"
+        }
+      ],
+      "preference": "B",
+      "state": "preference-recorded"
+    },
+    {
+      "round": "round-16",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "plain",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "strong",
+          "image": "B.png"
+        }
+      ],
+      "preference": "A",
+      "state": "preference-recorded"
+    },
+    {
+      "round": "round-17",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "Stable first step",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "Follows the timeline",
+          "image": "B.png"
+        }
+      ],
+      "preference": "B",
+      "state": "preference-recorded"
+    },
+    {
+      "round": "round-18",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "All works equally",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "Current work first",
+          "image": "B.png"
+        }
+      ],
+      "preference": "A",
+      "state": "preference-recorded"
+    },
+    {
+      "round": "round-19",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "Data-flow diagram",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "Event timeline",
+          "image": "B.png"
+        }
+      ],
+      "preference": "both",
+      "state": "preference-recorded"
+    },
+    {
+      "round": "round-20",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "Grouped by implementation",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "Grouped by algorithm step",
+          "image": "B.png"
+        }
+      ],
+      "preference": "A",
+      "state": "preference-recorded",
+      "reason": "Each implementation needs its own explanation structure; shared steps are not a general requirement."
+    },
+    {
+      "round": "round-21",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "Both runs on one chart",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "One chart per run",
+          "image": "B.png"
+        }
+      ],
+      "preference": "A",
+      "state": "preference-recorded"
+    },
+    {
+      "round": "round-22",
+      "candidates": [
+        {
+          "id": "A",
+          "label": "Full code, then explanations",
+          "image": "A.png"
+        },
+        {
+          "id": "B",
+          "label": "Code interleaved with explanations",
+          "image": "B.png"
+        }
+      ],
+      "preference": "both",
+      "state": "preference-recorded",
+      "reason": "The operator asked for a mix of A and B: keep the complete code before the explanations, with the code B interleaves hidden by default in an expand (accordion) control. First given at 2026-10-28T13:08:57Z in the morning Claude Code session, which recorded it nowhere before its edit into the target was refused; restated at 2026-10-28T20:34Z."
+    }
+  ]
+}
