@@ -33,6 +33,32 @@ the pass was not an ideation dispatch; the operator's ideas of 2026-10-26
 (the concept study and the comparison method) are ledgered by WO-019's own
 session in its worktree and reach this ledger when its records merge.
 
+## 2026-10-26 — concept study and repeated design comparisons during WO-019
+
+The operator's depth direction, iterative comparison correction and `ideation:`
+dispatch are captured unedited in ignored intake
+`docs/intake/notes/WO-019-expanded-ideation-2026-10-26.md`, SHA-256
+`5742f0a794ee937eba3573e29fa99c18df074f293a583b0fbbb2ab55826cade4`.
+The [receipt](../evidence/WO-019/ideation.md) records source treatment, scope and
+required review. These entries are synthesis, not copied intake.
+
+- **CS1 — A concept is a place to study an idea.** `adopted` `north-star` `operator-directed`
+  Build understanding through complementary prose, visuals, ordinary and RxJS
+  pseudocode, implementations, other references, limits and related concepts.
+  WO-019 demonstrates the direction with one bounded Arrive study; full coverage
+  is not claimed. Promoted to [concept study](../product/concept-study.md).
+- **CS2 — Choose visual media for the mechanism they explain.** `candidate` `operator-directed`
+  Mermaid flows, Manim animations and custom drawings are possible ways to show
+  relationships and change. Their role is explanatory; this does not select a
+  catalog-wide dependency or media pipeline. The first bounded example uses a
+  custom browser drawing. Revisit the medium when a concept needs capabilities
+  that the current illustration cannot express.
+- **CS3 — Preferences feed the next pair.** `adopted` `operator-directed`
+  Continue rendered pairwise comparisons until the operator explicitly ends
+  them. Contents beside reading is the first preference. Rankings may help track
+  preferences but cannot declare acceptance. The next comparison addresses
+  explanatory depth rather than closing the process after one layout choice.
+
 ## 2026-10-26 — planning pass: acceptance by use, the clean room's scope and the catalog as something to read (operator dispatch of 2026-10-26)
 
 Dispatch: a `planning:` request opened on the state of the DotLn-Angular app

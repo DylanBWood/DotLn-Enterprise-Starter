@@ -49,6 +49,31 @@ DotLn-Angular as #7 at `1c3a4ff24e38d179d0fd1ad910bc6719c2740045`, the base
 above, set by the 2026-10-26 pass).
 **Workstream:** WS-001
 
+**Execution expansion (2026-10-26):** the operator's depth direction and
+`ideation:` dispatch authorize the concept-study breakout recorded in
+[the receipt](../evidence/WO-019/ideation.md),
+[D005](../evidence/WO-019/decisions.md#wo-019-d005) and
+[the product direction](../product/concept-study.md). Add one authored Arrive
+study with a custom step-through visual, worked example, ordinary and RxJS
+pseudocode, limitations and checked public reference links. Keep it separate
+from the joined source definition and preserve tool-v1/v0 compatibility. Add no
+runtime dependency and do not build the soldier scene or a catalog-wide media
+pipeline. Verify the illustration's behavior, accessible text and controls,
+narrow-screen presentation and reference/pseudocode accuracy. The verifier and
+final reviewer read the receipt and promoted document as part of their subject.
+The extra concept-study component, content, tests and screenshots are part of
+this bounded expansion; the original criteria remain required.
+
+The operator also corrected the comparison procedure: the initial layouts are
+the first pair in an ongoing eye doctor test. Contents beside reading is the
+first preference. Continue deriving and rendering pairs from preferences until
+the operator explicitly ends the process; a preferred candidate alone is not
+final acceptance. Preserve comparison evidence. On each decision, remove the
+rejected implementation during execution and carry only the selected behavior
+into the next round. The operator clarified on 2026-10-26 that decided choices
+will not be relitigated for this order; screenshots, decisions and a high-level
+implementation record are sufficient history (D014).
+
 <!-- dotln-dependencies:start -->
 [
   {
@@ -213,11 +238,11 @@ worker's reading rather than verified text.
   label-value list, no fixed page width, nothing animated at rest. Two
   candidate layouts, the shelf and contents on the left with the reading on
   the right, and the contents as a strip above a wider reading column, are
-  built as stories and rendered at 1440 and 360; the executor puts both
-  screenshots in the pull request and the operator picks one there (the
-  pairwise comparison the workstream already names); the decisions file
-  records the pair and the pick, and the other layout is deleted before
-  final review.
+  built and rendered at 1440 and 360 during execution. The operator picks
+  from the rendered pair; the decisions file records the pair and the pick.
+  Delete the rejected implementation immediately after the decision. Preserve
+  its screenshots and an implementation record as evidence; no rejected
+  runtime or Storybook path is required at the pull request or final review.
 - **Documents:** `docs/dev-reference/architecture/catalog.md` rewritten (the
   row schema carried in full, the join and its digest rule, the check as
   schema and counts, how a new work enters, the reading surface and its
@@ -284,7 +309,7 @@ walkthrough and its screenshots.
    storage asserting the key prefix and that a stored value of WO-014's
    shape yields the shelf.
 7. The composites, mappers, layout, container and facade; stories `Reading`,
-   `Search`, `Untyped`, `ModelKnowledge`, `LayoutSide`, `LayoutStrip`.
+   `Search`, `Untyped`, `ModelKnowledge`, and the selected `LayoutSide`.
    Check: `npx nx test tools` and `npm run lint:components` exit 0.
 8. The `tools.*` translation block rewritten, the faces-sentence templates
    among it; the Tools home. Check: `npm run i18n:check` exits 0.
@@ -360,11 +385,12 @@ then the target gate plain and review once each.
 5. `npx nx e2e dotln-e2e` exits 0 and includes the step 10 cases, axe at the
    board spec's threshold and no horizontal overflow at 360, 768 and 1440.
 6. `grep -rlE "<dl|dotln-key-value-list" libs/features/tools/src` prints
-   nothing, and the stories `LayoutSide` and `LayoutStrip` existed at the
-   pull request with both screenshots in its body, the decisions file
-   recording the operator's pick, and only the picked layout remaining at
-   final review (`grep -c "Layout" libs/features/tools/src/lib/containers/catalog-page/catalog-page.stories.ts`
-   prints 1).
+   nothing. Comparison screenshots, decisions and a high-level implementation
+   record preserve the judged alternatives. Each decided round leaves only
+   its selected implementation during execution; no rejected comparison
+   inputs, branches or stories remain. The selected layout story is
+   `LayoutSide` (`grep -c "Layout" libs/features/tools/src/lib/containers/catalog-page/catalog-page.stories.ts`
+   prints 1). Ongoing comparisons do not reopen decided choices for this order.
 7. `npm run check:bundle` exits 0 within the declared budgets, and a tooling
    test proves it refuses the Angular Aria menu and the CDK overlay in the
    initial graph.
@@ -415,6 +441,6 @@ agent; checking the worker's-reading rows against the books; the shell's or
 the board's look beyond the tokens the brief adds.
 
 **Operator-review assumptions:** the operator accepts the run's own
-definitions as the catalog's text, picks one of the two layouts from the
-pull request's screenshots, and reads the one draft pull request before
-final review, which the final publish reuses.
+definitions as source text, with the authored study clearly distinguished;
+iterates through rendered design pairs until explicitly satisfied; and reads
+the one draft pull request before final review, which the final publish reuses.

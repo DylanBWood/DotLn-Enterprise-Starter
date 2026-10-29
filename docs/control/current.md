@@ -1,25 +1,25 @@
 # Current control state
 
-## WO-014
+## WO-019
 
-- Work order: WO-014
-- Work-order path: docs/work-orders/WO-014-toolbox-catalog-pipeline.md
-- Repository: dotln-angular @ bc9133e932a00d33c15bc5289d683b8078f51ee4
+- Work order: WO-019
+- Work-order path: docs/work-orders/WO-019-catalog-as-content.md
+- Repository: dotln-angular @ 1c3a4ff24e38d179d0fd1ad910bc6719c2740045
 - Phase: closed
-- Latest verification: VER-002
-- Verification path: dotln-angular@0090ffd5d33998f64bb330827414acb98c05ef46:docs/dotln/verifications/WO-014/VER-002.md
+- Latest verification: VER-001
+- Verification path: dotln-angular@b8e5b0ce0af479bff18a32071c9ee035fe9f4a22:docs/dotln/verifications/WO-019/VER-001.md
 - Latest verdict: pass
 - Final review: FINAL-001
-- Final-review path: dotln-angular@0090ffd5d33998f64bb330827414acb98c05ef46:docs/dotln/final-reviews/WO-014/FINAL-001.md
-- Latest attestation: harness claude-code; version 2.1.310; model claude-fable-5-1; effort xhigh; source claude-session-readback; account not-applicable
-- Effort drift: max -> xhigh
-- Latest recordedAt: 2026-10-26T03:22:12.720Z
-- Elapsed implementation: 5613482 ms
-- Elapsed verification: 999453 ms
-- Elapsed repair: 5313036 ms
-- Elapsed finalReview: 1973093 ms
-- Latest checkpoint: ad657289893ea9d634642692cc2e4060688de935 (restore: `git checkout refs/dotln/checkpoint/WO-014/12 -- .`)
+- Final-review path: dotln-angular@b8e5b0ce0af479bff18a32071c9ee035fe9f4a22:docs/dotln/final-reviews/WO-019/FINAL-001.md
+- Latest attestation: harness claude-code; version 2.1.312; model claude-fable-5-1; effort max; source claude-session-readback; account not-applicable
+- Effort drift: none
+- Latest recordedAt: 2026-10-28T23:48:34.885Z
+- Elapsed implementation: 203606948 ms
+- Elapsed verification: 777567 ms
+- Elapsed finalReview: 2339186 ms
+- Latest checkpoint: ab304ae65c915e9036cdf092b235a6654380850e (restore: `git checkout refs/dotln/checkpoint/WO-019/10 -- .`)
 - Legal next actions: release-close, next, activate
 - Legal off-ramps: correct, override-record
+- Unmet criteria: 1 (recorded unmet by the executor at ordinal 2)
 
 Generated from the append-only `docs/control/resume.jsonl` and `docs/control/orders/WO-NNN.jsonl` segments; do not edit this projection manually.

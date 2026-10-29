@@ -1,0 +1,599 @@
+{
+  "recordedAt": "2026-10-28T23:01:42.298Z",
+  "subject": [
+    {
+      "requested": "plain",
+      "repositoryId": "dotln-angular",
+      "commit": "1c3a4ff24e38d179d0fd1ad910bc6719c2740045",
+      "treeHash": "0c45e8128a3f2e3ee9c2398d4228d35ff05cae54",
+      "selection": "review",
+      "names": [
+        "install",
+        "lint",
+        "test",
+        "format",
+        "build",
+        "e2e",
+        "visual"
+      ],
+      "durationMs": 62216,
+      "evidenceRef": "target-gate:b8eb4bb0-482c-4019-86ac-f9d5474ec707",
+      "recordedAt": "2026-10-28T22:44:09.487Z"
+    },
+    {
+      "requested": "review",
+      "repositoryId": "dotln-angular",
+      "commit": "1c3a4ff24e38d179d0fd1ad910bc6719c2740045",
+      "treeHash": "0c45e8128a3f2e3ee9c2398d4228d35ff05cae54",
+      "selection": "review",
+      "names": [
+        "install",
+        "lint",
+        "test",
+        "format",
+        "build",
+        "e2e",
+        "visual"
+      ],
+      "durationMs": 62216,
+      "evidenceRef": "target-gate:b8eb4bb0-482c-4019-86ac-f9d5474ec707",
+      "recordedAt": "2026-10-28T22:44:09.487Z"
+    }
+  ],
+  "format": [
+    {
+      "name": "target-format",
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "name": "launchpad-format",
+      "exitCode": 0,
+      "signal": null
+    }
+  ],
+  "tooling": [
+    {
+      "name": "catalog-check",
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "name": "catalog-report",
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "name": "tooling-tests",
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "name": "bundle-check",
+      "exitCode": 1,
+      "signal": null
+    }
+  ],
+  "productionBundle": {
+    "command": "npm run check:bundle",
+    "exitCode": 0,
+    "initialBytes": 393633,
+    "lazyCodeInInitial": [],
+    "menuAvailableWithTools": true
+  },
+  "corpus": {
+    "rows": 3463,
+    "checkpoints": 8,
+    "works": 6,
+    "relations": {
+      "aifg": {
+        "resolved": 980,
+        "total": 1335
+      },
+      "eip": {
+        "resolved": 1073,
+        "total": 1088
+      },
+      "poeaa": {
+        "resolved": 705,
+        "total": 772
+      },
+      "rxjs": {
+        "resolved": 821,
+        "total": 1382
+      },
+      "geb": {
+        "resolved": 482,
+        "total": 965
+      },
+      "tt": {
+        "resolved": 919,
+        "total": 1183
+      }
+    },
+    "verified": {
+      "sourced": 2202,
+      "model-knowledge": 1260,
+      "partial": 1
+    }
+  },
+  "sceneFloor": [
+    {
+      "title": "Seek",
+      "kind": "steer.blend"
+    },
+    {
+      "title": "Arrive",
+      "kind": "steer.blend"
+    },
+    {
+      "title": "Velocity matching",
+      "kind": "steer.blend"
+    },
+    {
+      "title": "Wander",
+      "kind": "steer.blend"
+    },
+    {
+      "title": "Separation",
+      "kind": "steer.blend"
+    },
+    {
+      "title": "Weighted blending",
+      "kind": "steer.blend"
+    },
+    {
+      "title": "Flocking",
+      "kind": "steer.blend"
+    },
+    {
+      "title": "Priority steering",
+      "kind": "steer.priority"
+    },
+    {
+      "title": "Equilibrium fallback",
+      "kind": "steer.priority"
+    },
+    {
+      "title": "Fixed formations",
+      "kind": "formation.fixed"
+    },
+    {
+      "title": "Scalable formations",
+      "kind": "formation.twoLevel"
+    },
+    {
+      "title": "Two-level formation steering",
+      "kind": "formation.twoLevel"
+    },
+    {
+      "title": "Formation pattern interface",
+      "kind": "formation.twoLevel"
+    },
+    {
+      "title": "Slot assignment",
+      "kind": "formation.twoLevel"
+    },
+    {
+      "title": "Group movement",
+      "kind": "formation.twoLevel"
+    },
+    {
+      "title": "Making the creatures",
+      "kind": "steer.blend"
+    }
+  ],
+  "schemaAttacks": {
+    "missingDefinition": false,
+    "blankDefinition": false,
+    "missingChapter": false,
+    "unknownField": false
+  },
+  "source": {
+    "recordedAt": "2026-10-28T22:59:40.723Z",
+    "readmeDigestMatched": true,
+    "designDigestMatched": true,
+    "maps": [
+      {
+        "file": "ai-for-games-3e-part-a.jsonl",
+        "rows": 389,
+        "digestMatched": true
+      },
+      {
+        "file": "ai-for-games-3e-part-b.jsonl",
+        "rows": 379,
+        "digestMatched": true
+      },
+      {
+        "file": "enterprise-integration-patterns.jsonl",
+        "rows": 288,
+        "digestMatched": true
+      },
+      {
+        "file": "poeaa.jsonl",
+        "rows": 455,
+        "digestMatched": true
+      },
+      {
+        "file": "rxjs-core.jsonl",
+        "rows": 481,
+        "digestMatched": true
+      },
+      {
+        "file": "rxjs-patterns.jsonl",
+        "rows": 261,
+        "digestMatched": true
+      },
+      {
+        "file": "geb-map-part-1.jsonl",
+        "rows": 237,
+        "digestMatched": true
+      },
+      {
+        "file": "geb-map-part-2.jsonl",
+        "rows": 336,
+        "digestMatched": true
+      },
+      {
+        "file": "map-part-1.jsonl",
+        "rows": 364,
+        "digestMatched": true
+      },
+      {
+        "file": "map-part-2.jsonl",
+        "rows": 134,
+        "digestMatched": true
+      },
+      {
+        "file": "map-part-3.jsonl",
+        "rows": 139,
+        "digestMatched": true
+      }
+    ],
+    "rowsCompared": 3463,
+    "contentFieldsMatched": true,
+    "sourceWrites": 0
+  },
+  "motion": {
+    "latePeak": 103.92999953232008,
+    "lateFinal": {
+      "position": 100,
+      "velocity": 0
+    },
+    "normalFinal": {
+      "position": 100,
+      "velocity": 0
+    }
+  },
+  "reactiveSemantics": {
+    "states": [
+      {
+        "n": 1,
+        "dt": 0.1,
+        "target": 100
+      },
+      {
+        "n": 2,
+        "dt": 0.1,
+        "target": 80
+      },
+      {
+        "n": 3,
+        "dt": 0.1,
+        "target": 80
+      }
+    ],
+    "notifierEmissionStops": true,
+    "notifierCompletionDoesNotStop": true
+  },
+  "newSuppressions": [],
+  "browser": {
+    "recordedAt": "2026-10-28T22:54:10.784Z",
+    "finishedAt": "2026-10-28T22:54:17.930Z",
+    "version": "156.0.8078.4",
+    "widths": [
+      {
+        "width": 360,
+        "steps": [
+          {
+            "name": "01-tools",
+            "screenshot": "walkthrough/ver001-01-tools-360.png",
+            "overflow": false
+          },
+          {
+            "name": "02-shelf",
+            "screenshot": "walkthrough/ver001-02-shelf-360.png",
+            "overflow": false
+          },
+          {
+            "name": "03-chapter",
+            "screenshot": "walkthrough/ver001-03-chapter-360.png",
+            "overflow": false
+          },
+          {
+            "name": "04-formation",
+            "screenshot": "walkthrough/ver001-04-formation-360.png",
+            "overflow": false
+          },
+          {
+            "name": "05-slot",
+            "screenshot": "walkthrough/ver001-05-slot-360.png",
+            "overflow": false
+          },
+          {
+            "name": "06-return",
+            "screenshot": "walkthrough/ver001-06-return-360.png",
+            "overflow": false
+          },
+          {
+            "name": "07-search",
+            "screenshot": "walkthrough/ver001-07-search-360.png",
+            "overflow": false
+          },
+          {
+            "name": "08-arrive",
+            "screenshot": "walkthrough/ver001-08-arrive-360.png",
+            "overflow": false
+          },
+          {
+            "name": "09-study",
+            "screenshot": "walkthrough/ver001-09-study-360.png",
+            "overflow": false
+          },
+          {
+            "name": "10-reload",
+            "screenshot": "walkthrough/ver001-10-reload-360.png",
+            "overflow": false
+          }
+        ],
+        "errors": [],
+        "axe": {
+          "total": 0,
+          "seriousCritical": []
+        },
+        "history": [
+          "Arrive",
+          "Two-level formation steering",
+          "Slot"
+        ],
+        "twoCharacterSearch": true,
+        "references": [
+          {
+            "text": "Read the RxJS withLatestFrom contract",
+            "href": "https://github.com/ReactiveX/rxjs/blob/7.8.2/src/internal/operators/withLatestFrom.ts"
+          },
+          {
+            "text": "About the gdx-ai game-AI library",
+            "href": "https://github.com/libgdx/gdx-ai"
+          },
+          {
+            "text": "Craig Reynolds · Arrival",
+            "href": "https://www.red3d.com/cwr/steer/Arrival.html"
+          },
+          {
+            "text": "Read Arrive.java — the gdx-ai library’s Java source",
+            "href": "https://github.com/libgdx/gdx-ai/blob/master/gdx-ai/src/com/badlogic/gdx/ai/steer/behaviors/Arrive.java"
+          }
+        ]
+      },
+      {
+        "width": 768,
+        "steps": [
+          {
+            "name": "01-tools",
+            "screenshot": "walkthrough/ver001-01-tools-768.png",
+            "overflow": false
+          },
+          {
+            "name": "02-shelf",
+            "screenshot": "walkthrough/ver001-02-shelf-768.png",
+            "overflow": false
+          },
+          {
+            "name": "03-chapter",
+            "screenshot": "walkthrough/ver001-03-chapter-768.png",
+            "overflow": false
+          },
+          {
+            "name": "04-formation",
+            "screenshot": "walkthrough/ver001-04-formation-768.png",
+            "overflow": false
+          },
+          {
+            "name": "05-slot",
+            "screenshot": "walkthrough/ver001-05-slot-768.png",
+            "overflow": false
+          },
+          {
+            "name": "06-return",
+            "screenshot": "walkthrough/ver001-06-return-768.png",
+            "overflow": false
+          },
+          {
+            "name": "07-search",
+            "screenshot": "walkthrough/ver001-07-search-768.png",
+            "overflow": false
+          },
+          {
+            "name": "08-arrive",
+            "screenshot": "walkthrough/ver001-08-arrive-768.png",
+            "overflow": false
+          },
+          {
+            "name": "09-study",
+            "screenshot": "walkthrough/ver001-09-study-768.png",
+            "overflow": false
+          },
+          {
+            "name": "10-reload",
+            "screenshot": "walkthrough/ver001-10-reload-768.png",
+            "overflow": false
+          }
+        ],
+        "errors": [],
+        "axe": {
+          "total": 0,
+          "seriousCritical": []
+        },
+        "history": [
+          "Arrive",
+          "Two-level formation steering",
+          "Slot"
+        ],
+        "twoCharacterSearch": true,
+        "references": [
+          {
+            "text": "Read the RxJS withLatestFrom contract",
+            "href": "https://github.com/ReactiveX/rxjs/blob/7.8.2/src/internal/operators/withLatestFrom.ts"
+          },
+          {
+            "text": "About the gdx-ai game-AI library",
+            "href": "https://github.com/libgdx/gdx-ai"
+          },
+          {
+            "text": "Craig Reynolds · Arrival",
+            "href": "https://www.red3d.com/cwr/steer/Arrival.html"
+          },
+          {
+            "text": "Read Arrive.java — the gdx-ai library’s Java source",
+            "href": "https://github.com/libgdx/gdx-ai/blob/master/gdx-ai/src/com/badlogic/gdx/ai/steer/behaviors/Arrive.java"
+          }
+        ]
+      },
+      {
+        "width": 1440,
+        "steps": [
+          {
+            "name": "01-tools",
+            "screenshot": "walkthrough/ver001-01-tools-1440.png",
+            "overflow": false
+          },
+          {
+            "name": "02-shelf",
+            "screenshot": "walkthrough/ver001-02-shelf-1440.png",
+            "overflow": false
+          },
+          {
+            "name": "03-chapter",
+            "screenshot": "walkthrough/ver001-03-chapter-1440.png",
+            "overflow": false
+          },
+          {
+            "name": "04-formation",
+            "screenshot": "walkthrough/ver001-04-formation-1440.png",
+            "overflow": false
+          },
+          {
+            "name": "05-slot",
+            "screenshot": "walkthrough/ver001-05-slot-1440.png",
+            "overflow": false
+          },
+          {
+            "name": "06-return",
+            "screenshot": "walkthrough/ver001-06-return-1440.png",
+            "overflow": false
+          },
+          {
+            "name": "07-search",
+            "screenshot": "walkthrough/ver001-07-search-1440.png",
+            "overflow": false
+          },
+          {
+            "name": "08-arrive",
+            "screenshot": "walkthrough/ver001-08-arrive-1440.png",
+            "overflow": false
+          },
+          {
+            "name": "09-study",
+            "screenshot": "walkthrough/ver001-09-study-1440.png",
+            "overflow": false
+          },
+          {
+            "name": "10-reload",
+            "screenshot": "walkthrough/ver001-10-reload-1440.png",
+            "overflow": false
+          }
+        ],
+        "errors": [],
+        "axe": {
+          "total": 0,
+          "seriousCritical": []
+        },
+        "history": [
+          "Arrive",
+          "Two-level formation steering",
+          "Slot"
+        ],
+        "twoCharacterSearch": true,
+        "references": [
+          {
+            "text": "Read the RxJS withLatestFrom contract",
+            "href": "https://github.com/ReactiveX/rxjs/blob/7.8.2/src/internal/operators/withLatestFrom.ts"
+          },
+          {
+            "text": "About the gdx-ai game-AI library",
+            "href": "https://github.com/libgdx/gdx-ai"
+          },
+          {
+            "text": "Craig Reynolds · Arrival",
+            "href": "https://www.red3d.com/cwr/steer/Arrival.html"
+          },
+          {
+            "text": "Read Arrive.java — the gdx-ai library’s Java source",
+            "href": "https://github.com/libgdx/gdx-ai/blob/master/gdx-ai/src/com/badlogic/gdx/ai/steer/behaviors/Arrive.java"
+          }
+        ]
+      }
+    ],
+    "persistenceAttacks": [
+      {
+        "name": "unparseable",
+        "history": [],
+        "errors": 0,
+        "shelfVisible": true
+      },
+      {
+        "name": "old-shape",
+        "history": [],
+        "errors": 0,
+        "shelfVisible": true
+      },
+      {
+        "name": "stale-and-duplicate",
+        "history": [
+          "Arrive"
+        ],
+        "errors": 0,
+        "shelfVisible": true
+      }
+    ]
+  },
+  "screenshots": {
+    "count": 30,
+    "bytes": 9525723
+  },
+  "probeCorrections": [
+    {
+      "observation": "Standalone bundle checker exited 1 because generated stats were absent",
+      "disposition": "Declared build-and-check command exited 0"
+    },
+    {
+      "observation": "Initial browser probe matched two Tools headings",
+      "disposition": "Scoped to the level-one page heading; complete journey then passed"
+    },
+    {
+      "observation": "Generic comparison-word search matched supported examples",
+      "disposition": "Reviewed matches and searched for rejected controls; no rejected implementation found"
+    },
+    {
+      "observation": "Several audit source and metadata batches were truncated",
+      "disposition": "Relevant source sections, final Preflight fields and documentation lookup were reread in smaller selections; no truncated result was used as sole verdict evidence"
+    }
+  ],
+  "limits": {
+    "booksReverified": false,
+    "fieldVitalsClaimed": false,
+    "freshSubagents": 0,
+    "hardDollarCap": "unenforced"
+  }
+}

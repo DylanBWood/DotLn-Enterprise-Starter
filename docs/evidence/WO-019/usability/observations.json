@@ -1,0 +1,44 @@
+[
+  {
+    "width": 360,
+    "search": {
+      "top": 1543.25,
+      "bottom": 1563.25,
+      "inViewport": false,
+      "index": 14
+    },
+    "restored": {
+      "top": 1080.109375,
+      "bottom": 1117.953125,
+      "inViewport": false
+    }
+  },
+  {
+    "width": 768,
+    "search": {
+      "top": 1485.328125,
+      "bottom": 1505.328125,
+      "inViewport": false,
+      "index": 14
+    },
+    "restored": {
+      "top": 669.203125,
+      "bottom": 707.046875,
+      "inViewport": true
+    }
+  },
+  {
+    "width": 1440,
+    "search": {
+      "top": 1381.609375,
+      "bottom": 1401.609375,
+      "inViewport": false,
+      "index": 14
+    },
+    "restored": {
+      "top": 476.0625,
+      "bottom": 533.078125,
+      "inViewport": true
+    }
+  }
+]

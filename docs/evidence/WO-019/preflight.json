@@ -1,0 +1,1638 @@
+{
+  "runs": [
+    {
+      "run": "wo019-preflight",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "nx",
+            "format:check"
+          ],
+          "startedAt": "2026-10-26T16:13:31.446Z",
+          "finishedAt": "2026-10-26T16:13:33.588Z",
+          "exitCode": 1
+        },
+        {
+          "command": [
+            "npx",
+            "nx",
+            "run-many",
+            "-t",
+            "lint",
+            "test",
+            "build",
+            "--parallel=1",
+            "--output-style=static"
+          ],
+          "startedAt": "2026-10-26T16:13:33.589Z",
+          "finishedAt": "2026-10-26T16:14:58.911Z",
+          "exitCode": 1
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:fixtures"
+          ],
+          "startedAt": "2026-10-26T16:14:58.912Z",
+          "finishedAt": "2026-10-26T16:15:02.801Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:components"
+          ],
+          "startedAt": "2026-10-26T16:15:02.801Z",
+          "finishedAt": "2026-10-26T16:15:03.108Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:hygiene"
+          ],
+          "startedAt": "2026-10-26T16:15:03.109Z",
+          "finishedAt": "2026-10-26T16:15:03.412Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "check:fixtures"
+          ],
+          "startedAt": "2026-10-26T16:15:03.412Z",
+          "finishedAt": "2026-10-26T16:15:04.022Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "catalog:check"
+          ],
+          "startedAt": "2026-10-26T16:15:04.022Z",
+          "finishedAt": "2026-10-26T16:15:04.350Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "test:tooling"
+          ],
+          "startedAt": "2026-10-26T16:15:04.351Z",
+          "finishedAt": "2026-10-26T16:15:06.125Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "i18n:check"
+          ],
+          "startedAt": "2026-10-26T16:15:06.125Z",
+          "finishedAt": "2026-10-26T16:15:07.215Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "check:bundle"
+          ],
+          "startedAt": "2026-10-26T16:15:07.215Z",
+          "finishedAt": "2026-10-26T16:15:12.460Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck:foundations"
+          ],
+          "startedAt": "2026-10-26T16:15:12.460Z",
+          "finishedAt": "2026-10-26T16:15:39.345Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck:e2e"
+          ],
+          "startedAt": "2026-10-26T16:15:39.345Z",
+          "finishedAt": "2026-10-26T16:15:40.127Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npx",
+            "nx",
+            "e2e",
+            "dotln-e2e",
+            "--output-style=static"
+          ],
+          "startedAt": "2026-10-26T16:15:40.127Z",
+          "finishedAt": "2026-10-26T16:17:35.834Z",
+          "exitCode": 1
+        }
+      ],
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row"
+    },
+    {
+      "run": "wo019-preflight-retry",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "nx",
+            "format:check"
+          ],
+          "startedAt": "2026-10-26T16:25:07.885Z",
+          "finishedAt": "2026-10-26T16:25:10.119Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npx",
+            "nx",
+            "run-many",
+            "-t",
+            "lint",
+            "test",
+            "build",
+            "--parallel=1",
+            "--output-style=static"
+          ],
+          "startedAt": "2026-10-26T16:25:10.119Z",
+          "finishedAt": "2026-10-26T16:26:07.496Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npx",
+            "nx",
+            "e2e",
+            "dotln-e2e",
+            "--output-style=static"
+          ],
+          "startedAt": "2026-10-26T16:26:07.496Z",
+          "finishedAt": "2026-10-26T16:26:50.260Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "check:bundle"
+          ],
+          "startedAt": "2026-10-26T16:26:50.260Z",
+          "finishedAt": "2026-10-26T16:26:55.764Z",
+          "exitCode": 0
+        }
+      ],
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row"
+    },
+    {
+      "run": "wo019-round09-checks",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "nx",
+            "format:check"
+          ],
+          "startedAt": "2026-10-26T16:59:14.890Z",
+          "finishedAt": "2026-10-26T16:59:17.033Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npx",
+            "nx",
+            "run-many",
+            "-t",
+            "lint",
+            "test",
+            "-p",
+            "tools",
+            "--parallel=1",
+            "--output-style=static"
+          ],
+          "startedAt": "2026-10-26T16:59:17.034Z",
+          "finishedAt": "2026-10-26T16:59:24.987Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:components"
+          ],
+          "startedAt": "2026-10-26T16:59:24.987Z",
+          "finishedAt": "2026-10-26T16:59:25.314Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "i18n:check"
+          ],
+          "startedAt": "2026-10-26T16:59:25.314Z",
+          "finishedAt": "2026-10-26T16:59:26.219Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck:e2e"
+          ],
+          "startedAt": "2026-10-26T16:59:26.219Z",
+          "finishedAt": "2026-10-26T16:59:26.921Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npx",
+            "nx",
+            "e2e",
+            "dotln-e2e",
+            "--output-style=static"
+          ],
+          "startedAt": "2026-10-26T16:59:26.921Z",
+          "finishedAt": "2026-10-26T17:00:16.204Z",
+          "exitCode": 0
+        }
+      ],
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row"
+    },
+    {
+      "run": "wo019-round19-A-build",
+      "commands": [
+        {
+          "command": [
+            "sh",
+            "-c",
+            "NX_DAEMON=false npx prettier --write libs/features/tools/src/lib/composites/study-explanation/* apps/dotln/public/i18n/en.json libs/features/tools/testing/src/lib/tools-en.json && NX_DAEMON=false npx nx run tools:lint && npm run i18n:check && npm run lint:components && NX_DAEMON=false npx nx run ui:build-storybook"
+          ],
+          "startedAt": "2026-10-26T19:29:52.591Z",
+          "finishedAt": "2026-10-26T19:30:07.131Z",
+          "exitCode": 0
+        }
+      ],
+      "source": "executor bounded-result",
+      "scope": "Preflight observation; not a target gate row"
+    },
+    {
+      "run": "wo019-round19-B-build-probe",
+      "commands": [
+        {
+          "command": [
+            "sh",
+            "-c",
+            "NX_DAEMON=false npx prettier --write libs/features/tools/src/lib/composites/study-explanation/* apps/dotln/public/i18n/en.json libs/features/tools/testing/src/lib/tools-en.json && NX_DAEMON=false npx nx run tools:lint && npm run i18n:check && npm run check:tokens && npm run lint:components && NX_DAEMON=false npx nx run ui:build-storybook && node tmp/wo019-rx-comparison.mjs B"
+          ],
+          "startedAt": "2026-10-26T19:33:19.770Z",
+          "finishedAt": "2026-10-26T19:33:34.995Z",
+          "exitCode": 0
+        }
+      ],
+      "source": "executor bounded-result",
+      "scope": "Preflight observation; not a target gate row"
+    },
+    {
+      "run": "wo019-round19-B-label-check",
+      "commands": [
+        {
+          "command": [
+            "sh",
+            "-c",
+            "NX_DAEMON=false npx nx run ui:build-storybook && node tmp/wo019-rx-comparison.mjs B"
+          ],
+          "startedAt": "2026-10-26T19:34:25.995Z",
+          "finishedAt": "2026-10-26T19:34:37.017Z",
+          "exitCode": 0
+        }
+      ],
+      "source": "executor bounded-result",
+      "scope": "Preflight observation; not a target gate row"
+    },
+    {
+      "run": "wo019-round19-browser-check",
+      "commands": [
+        {
+          "command": [
+            "sh",
+            "-c",
+            "NX_DAEMON=false npx nx run tools:test && npm run typecheck:e2e && NX_DAEMON=false npx playwright test --config=apps/dotln-e2e/playwright.config.mts"
+          ],
+          "startedAt": "2026-10-26T19:35:57.288Z",
+          "finishedAt": "2026-10-26T19:36:52.421Z",
+          "exitCode": 0
+        }
+      ],
+      "source": "executor bounded-result",
+      "scope": "Preflight observation; not a target gate row"
+    },
+    {
+      "run": "wo019-round19-production",
+      "commands": [
+        {
+          "command": [
+            "sh",
+            "-c",
+            "NX_DAEMON=false npm run check:bundle && node tmp/wo019-walkthrough.mjs"
+          ],
+          "startedAt": "2026-10-26T19:38:02.184Z",
+          "finishedAt": "2026-10-26T19:38:14.431Z",
+          "exitCode": 0
+        }
+      ],
+      "source": "executor bounded-result",
+      "scope": "Preflight observation; not a target gate row"
+    },
+    {
+      "run": "wo019-performance-current",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "tools/scripts/sample-performance.mjs"
+          ],
+          "startedAt": "2026-10-26T19:39:47.004Z",
+          "finishedAt": "2026-10-26T19:41:46.243Z",
+          "exitCode": 0
+        }
+      ],
+      "source": "executor bounded-result",
+      "scope": "30 local functional journeys; diagnostic timing, not field Core Web Vitals"
+    },
+    {
+      "run": "wo019-stream-switch-check",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": "2026-10-26T19:48:17.395Z",
+      "finishedAt": "2026-10-26T19:49:59.601Z",
+      "exitCode": 1,
+      "outcome": "Catalog browser checks: 16 passed; the new switch regression failed because its child locator was incorrectly scoped."
+    },
+    {
+      "run": "wo019-stream-switch-retry",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": "2026-10-26T19:51:13.801Z",
+      "finishedAt": "2026-10-26T19:51:26.619Z",
+      "exitCode": 1,
+      "outcome": "The corrected locator exposed a test-only rendered-text versus DOM-text comparison mismatch."
+    },
+    {
+      "run": "wo019-stream-switch-confirm",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": "2026-10-26T19:54:35.639Z",
+      "finishedAt": "2026-10-26T19:54:45.205Z",
+      "exitCode": 1,
+      "outcome": "The corrected keyboard regression passed; the following standalone axe probe failed because it used an implicit browser context."
+    },
+    {
+      "run": "wo019-stream-selected-captures",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": "2026-10-26T19:56:32.767Z",
+      "finishedAt": "2026-10-26T19:56:37.465Z",
+      "exitCode": 0,
+      "outcome": "The explicit-context probe passed both reactive views at 360, 768 and 1440 pixels, with no serious/critical axe findings, page errors or overflow."
+    },
+    {
+      "run": "wo019-round20-A-build",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": "2026-10-26T19:58:35.096Z",
+      "finishedAt": "2026-10-26T19:58:51.314Z",
+      "exitCode": 0,
+      "outcome": "Formatting, Tools lint, translation checks, component rules and the first reference-grouping Storybook build passed."
+    },
+    {
+      "run": "wo019-round20-A-captures",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": "2026-10-26T19:59:48.748Z",
+      "finishedAt": "2026-10-26T19:59:52.654Z",
+      "exitCode": 0,
+      "outcome": "Candidate A passed the reference-comparison checks at all three widths."
+    },
+    {
+      "run": "wo019-round20-B-build-captures",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": "2026-10-26T20:02:01.486Z",
+      "finishedAt": "2026-10-26T20:02:17.878Z",
+      "exitCode": 0,
+      "outcome": "Candidate B build and reference-comparison checks passed at all three widths."
+    },
+    {
+      "run": "wo019-round20-A-focused",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": "2026-10-26T20:05:10.378Z",
+      "finishedAt": "2026-10-26T20:05:15.610Z",
+      "exitCode": 0,
+      "outcome": "Candidate A focused primary capture and all three width checks passed."
+    },
+    {
+      "run": "wo019-round20-B-focused",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": "2026-10-26T20:07:12.809Z",
+      "finishedAt": "2026-10-26T20:07:17.929Z",
+      "exitCode": 0,
+      "outcome": "Candidate B focused primary capture and all three width checks passed."
+    },
+    {
+      "run": "wo019-round20-browser",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": "2026-10-26T20:11:45.971Z",
+      "finishedAt": "2026-10-26T20:12:42.906Z",
+      "exitCode": 0,
+      "outcome": "Tools unit tests, e2e typecheck and the full 83-test browser suite passed before the context correction."
+    },
+    {
+      "run": "wo019-round20-A-context",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": "2026-10-26T20:16:08.550Z",
+      "finishedAt": "2026-10-26T20:16:29.354Z",
+      "exitCode": 0,
+      "outcome": "Both comparison subjects are introduced explicitly. Candidate A formatting, lint, translation/component checks, Storybook build and all three width checks passed."
+    },
+    {
+      "run": "wo019-round20-B-context",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": "2026-10-26T20:17:18.155Z",
+      "finishedAt": "2026-10-26T20:17:51.453Z",
+      "exitCode": 0,
+      "outcome": "Candidate B with both subjects introduced passed the Storybook build and three width checks; all 17 catalog browser checks passed after the wording correction."
+    },
+    {
+      "run": "wo019-round20-selected",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": "2026-10-26T20:22:49.096Z",
+      "finishedAt": "2026-10-26T20:22:50.706Z",
+      "exitCode": 0,
+      "outcome": "Selected reference grouping A restored and Storybook built successfully."
+    },
+    {
+      "run": "wo019-round21-A-build",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": "2026-10-26T20:27:46.347Z",
+      "finishedAt": "2026-10-26T20:27:56.368Z",
+      "exitCode": 2,
+      "outcome": "Tools lint and unit checks passed; translation check stopped on two unused candidate description keys. Those keys were removed before the successful retry."
+    },
+    {
+      "run": "wo019-round21-A-build-retry",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": "2026-10-26T20:29:50.547Z",
+      "finishedAt": "2026-10-26T20:30:00.010Z",
+      "exitCode": 0,
+      "outcome": "Translation, token and component checks and Storybook build passed after using visible text as graphic descriptions."
+    },
+    {
+      "run": "wo019-round21-A-captures",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": "2026-10-26T20:30:51.035Z",
+      "finishedAt": "2026-10-26T20:30:55.099Z",
+      "exitCode": 0,
+      "outcome": "Combined chart passed all three widths, including shared data, explanatory text, accessibility and expansion checks."
+    },
+    {
+      "run": "wo019-round21-B-build-captures",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": "2026-10-26T20:32:09.187Z",
+      "finishedAt": "2026-10-26T20:32:26.469Z",
+      "exitCode": 0,
+      "outcome": "Separate-chart candidate build and all three width checks passed with the same data and text hash."
+    },
+    {
+      "run": "wo019-round21-browser",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": "2026-10-26T20:35:26.032Z",
+      "finishedAt": "2026-10-26T20:35:50.108Z",
+      "exitCode": 0,
+      "outcome": "All 17 catalog browser checks and e2e typecheck passed, including the new failure-example regression."
+    },
+    {
+      "run": "wo019-round22-A-build",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": "2026-10-26T20:41:16.659Z",
+      "finishedAt": "2026-10-26T20:41:29.176Z",
+      "exitCode": 0,
+      "outcome": "Tools lint, translation/component checks and Storybook build passed for full code followed by explanations."
+    },
+    {
+      "run": "wo019-round22-A-captures",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": "2026-10-26T20:43:08.555Z",
+      "finishedAt": "2026-10-26T20:43:12.810Z",
+      "exitCode": 0,
+      "outcome": "Candidate A passed all three width checks, including canonical code equality, typography and prior selected behavior."
+    },
+    {
+      "run": "wo019-round22-B-build-captures",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": "2026-10-26T20:44:20.011Z",
+      "finishedAt": "2026-10-26T20:44:32.204Z",
+      "exitCode": 0,
+      "outcome": "Candidate B built and passed all three width checks, with the same code/prose hash and typography. This was the final in-flight probe before the operator-requested pause."
+    },
+    {
+      "run": "wo019-closeout-preflight-1",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "outcome": "Workspace lint failed: round 21 template literal axis numbers (check:templates) and round 22 allTextContents assertion (playwright/prefer-web-first-assertions); every other command passed, 84 browser tests.",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "nx",
+            "format:check"
+          ],
+          "startedAt": "2026-10-28T21:12:46.043Z",
+          "finishedAt": "2026-10-28T21:12:47.810Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npx",
+            "nx",
+            "run-many",
+            "-t",
+            "lint",
+            "test",
+            "build",
+            "--parallel=1",
+            "--output-style=static"
+          ],
+          "startedAt": "2026-10-28T21:12:47.811Z",
+          "finishedAt": "2026-10-28T21:13:00.428Z",
+          "exitCode": 1
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:fixtures"
+          ],
+          "startedAt": "2026-10-28T21:13:00.428Z",
+          "finishedAt": "2026-10-28T21:13:04.094Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:components"
+          ],
+          "startedAt": "2026-10-28T21:13:04.094Z",
+          "finishedAt": "2026-10-28T21:13:04.402Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:hygiene"
+          ],
+          "startedAt": "2026-10-28T21:13:04.402Z",
+          "finishedAt": "2026-10-28T21:13:04.701Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "check:fixtures"
+          ],
+          "startedAt": "2026-10-28T21:13:04.701Z",
+          "finishedAt": "2026-10-28T21:13:05.327Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "catalog:check"
+          ],
+          "startedAt": "2026-10-28T21:13:05.327Z",
+          "finishedAt": "2026-10-28T21:13:05.646Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "test:tooling"
+          ],
+          "startedAt": "2026-10-28T21:13:05.646Z",
+          "finishedAt": "2026-10-28T21:13:07.281Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "i18n:check"
+          ],
+          "startedAt": "2026-10-28T21:13:07.281Z",
+          "finishedAt": "2026-10-28T21:13:08.093Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "check:bundle"
+          ],
+          "startedAt": "2026-10-28T21:13:08.094Z",
+          "finishedAt": "2026-10-28T21:13:13.253Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck:foundations"
+          ],
+          "startedAt": "2026-10-28T21:13:13.253Z",
+          "finishedAt": "2026-10-28T21:13:40.269Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck:e2e"
+          ],
+          "startedAt": "2026-10-28T21:13:40.269Z",
+          "finishedAt": "2026-10-28T21:13:40.953Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npx",
+            "nx",
+            "e2e",
+            "dotln-e2e",
+            "--output-style=static"
+          ],
+          "startedAt": "2026-10-28T21:13:40.953Z",
+          "finishedAt": "2026-10-28T21:14:26.138Z",
+          "exitCode": 0
+        }
+      ]
+    },
+    {
+      "run": "wo019-closeout-preflight-2",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "outcome": "After moving the axis labels into the model, check:templates required them inside translate=\"no\"; e2e lint passed.",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "nx",
+            "format:check"
+          ],
+          "startedAt": "2026-10-28T21:16:59.723Z",
+          "finishedAt": "2026-10-28T21:17:01.563Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npx",
+            "nx",
+            "run-many",
+            "-t",
+            "lint",
+            "test",
+            "build",
+            "--parallel=1",
+            "--output-style=static"
+          ],
+          "startedAt": "2026-10-28T21:17:01.564Z",
+          "finishedAt": "2026-10-28T21:17:20.472Z",
+          "exitCode": 1
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:fixtures"
+          ],
+          "startedAt": "2026-10-28T21:17:20.472Z",
+          "finishedAt": "2026-10-28T21:17:24.134Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:components"
+          ],
+          "startedAt": "2026-10-28T21:17:24.134Z",
+          "finishedAt": "2026-10-28T21:17:24.450Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:hygiene"
+          ],
+          "startedAt": "2026-10-28T21:17:24.450Z",
+          "finishedAt": "2026-10-28T21:17:24.744Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "check:fixtures"
+          ],
+          "startedAt": "2026-10-28T21:17:24.745Z",
+          "finishedAt": "2026-10-28T21:17:25.360Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "catalog:check"
+          ],
+          "startedAt": "2026-10-28T21:17:25.360Z",
+          "finishedAt": "2026-10-28T21:17:25.680Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "test:tooling"
+          ],
+          "startedAt": "2026-10-28T21:17:25.681Z",
+          "finishedAt": "2026-10-28T21:17:27.292Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "i18n:check"
+          ],
+          "startedAt": "2026-10-28T21:17:27.292Z",
+          "finishedAt": "2026-10-28T21:17:28.059Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "check:bundle"
+          ],
+          "startedAt": "2026-10-28T21:17:28.059Z",
+          "finishedAt": "2026-10-28T21:17:33.153Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck:foundations"
+          ],
+          "startedAt": "2026-10-28T21:17:33.153Z",
+          "finishedAt": "2026-10-28T21:17:59.525Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck:e2e"
+          ],
+          "startedAt": "2026-10-28T21:17:59.526Z",
+          "finishedAt": "2026-10-28T21:18:00.183Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npx",
+            "nx",
+            "e2e",
+            "dotln-e2e",
+            "--output-style=static"
+          ],
+          "startedAt": "2026-10-28T21:18:00.183Z",
+          "finishedAt": "2026-10-28T21:18:54.712Z",
+          "exitCode": 0
+        }
+      ]
+    },
+    {
+      "run": "wo019-closeout-preflight-3",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "outcome": "All 13 commands passed before the independent reviews.",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "nx",
+            "format:check"
+          ],
+          "startedAt": "2026-10-28T21:19:35.941Z",
+          "finishedAt": "2026-10-28T21:19:37.703Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npx",
+            "nx",
+            "run-many",
+            "-t",
+            "lint",
+            "test",
+            "build",
+            "--parallel=1",
+            "--output-style=static"
+          ],
+          "startedAt": "2026-10-28T21:19:37.704Z",
+          "finishedAt": "2026-10-28T21:20:31.511Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:fixtures"
+          ],
+          "startedAt": "2026-10-28T21:20:31.511Z",
+          "finishedAt": "2026-10-28T21:20:35.141Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:components"
+          ],
+          "startedAt": "2026-10-28T21:20:35.142Z",
+          "finishedAt": "2026-10-28T21:20:35.456Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:hygiene"
+          ],
+          "startedAt": "2026-10-28T21:20:35.457Z",
+          "finishedAt": "2026-10-28T21:20:35.772Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "check:fixtures"
+          ],
+          "startedAt": "2026-10-28T21:20:35.772Z",
+          "finishedAt": "2026-10-28T21:20:36.400Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "catalog:check"
+          ],
+          "startedAt": "2026-10-28T21:20:36.400Z",
+          "finishedAt": "2026-10-28T21:20:36.719Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "test:tooling"
+          ],
+          "startedAt": "2026-10-28T21:20:36.720Z",
+          "finishedAt": "2026-10-28T21:20:38.346Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "i18n:check"
+          ],
+          "startedAt": "2026-10-28T21:20:38.347Z",
+          "finishedAt": "2026-10-28T21:20:39.113Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "check:bundle"
+          ],
+          "startedAt": "2026-10-28T21:20:39.114Z",
+          "finishedAt": "2026-10-28T21:20:44.118Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck:foundations"
+          ],
+          "startedAt": "2026-10-28T21:20:44.119Z",
+          "finishedAt": "2026-10-28T21:21:10.354Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck:e2e"
+          ],
+          "startedAt": "2026-10-28T21:21:10.355Z",
+          "finishedAt": "2026-10-28T21:21:11.033Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npx",
+            "nx",
+            "e2e",
+            "dotln-e2e",
+            "--output-style=static"
+          ],
+          "startedAt": "2026-10-28T21:21:11.033Z",
+          "finishedAt": "2026-10-28T21:22:05.195Z",
+          "exitCode": 0
+        }
+      ]
+    },
+    {
+      "run": "wo019-closeout-preflight-4",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "outcome": "After the first review repairs: the re-joined data needed formatting and a Record over all 17 WorkSlug values failed the type check, so build, bundle, foundations and browser runs failed with it.",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "nx",
+            "format:check"
+          ],
+          "startedAt": "2026-10-28T21:41:04.541Z",
+          "finishedAt": "2026-10-28T21:41:06.275Z",
+          "exitCode": 1
+        },
+        {
+          "command": [
+            "npx",
+            "nx",
+            "run-many",
+            "-t",
+            "lint",
+            "test",
+            "build",
+            "--parallel=1",
+            "--output-style=static"
+          ],
+          "startedAt": "2026-10-28T21:41:06.276Z",
+          "finishedAt": "2026-10-28T21:42:16.908Z",
+          "exitCode": 1
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:fixtures"
+          ],
+          "startedAt": "2026-10-28T21:42:16.908Z",
+          "finishedAt": "2026-10-28T21:42:20.447Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:components"
+          ],
+          "startedAt": "2026-10-28T21:42:20.447Z",
+          "finishedAt": "2026-10-28T21:42:20.751Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:hygiene"
+          ],
+          "startedAt": "2026-10-28T21:42:20.751Z",
+          "finishedAt": "2026-10-28T21:42:21.048Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "check:fixtures"
+          ],
+          "startedAt": "2026-10-28T21:42:21.048Z",
+          "finishedAt": "2026-10-28T21:42:21.648Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "catalog:check"
+          ],
+          "startedAt": "2026-10-28T21:42:21.648Z",
+          "finishedAt": "2026-10-28T21:42:21.965Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "test:tooling"
+          ],
+          "startedAt": "2026-10-28T21:42:21.965Z",
+          "finishedAt": "2026-10-28T21:42:23.560Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "i18n:check"
+          ],
+          "startedAt": "2026-10-28T21:42:23.561Z",
+          "finishedAt": "2026-10-28T21:42:24.309Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "check:bundle"
+          ],
+          "startedAt": "2026-10-28T21:42:24.310Z",
+          "finishedAt": "2026-10-28T21:42:28.030Z",
+          "exitCode": 1
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck:foundations"
+          ],
+          "startedAt": "2026-10-28T21:42:28.030Z",
+          "finishedAt": "2026-10-28T21:42:33.709Z",
+          "exitCode": 2
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck:e2e"
+          ],
+          "startedAt": "2026-10-28T21:42:33.710Z",
+          "finishedAt": "2026-10-28T21:42:34.359Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npx",
+            "nx",
+            "e2e",
+            "dotln-e2e",
+            "--output-style=static"
+          ],
+          "startedAt": "2026-10-28T21:42:34.359Z",
+          "finishedAt": "2026-10-28T21:42:44.685Z",
+          "exitCode": 1
+        }
+      ]
+    },
+    {
+      "run": "wo019-closeout-preflight-5",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "outcome": "All 13 commands passed after the review repairs; 85 browser and 41 tooling tests.",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "nx",
+            "format:check"
+          ],
+          "startedAt": "2026-10-28T21:43:53.743Z",
+          "finishedAt": "2026-10-28T21:43:55.520Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npx",
+            "nx",
+            "run-many",
+            "-t",
+            "lint",
+            "test",
+            "build",
+            "--parallel=1",
+            "--output-style=static"
+          ],
+          "startedAt": "2026-10-28T21:43:55.521Z",
+          "finishedAt": "2026-10-28T21:44:53.192Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:fixtures"
+          ],
+          "startedAt": "2026-10-28T21:44:53.193Z",
+          "finishedAt": "2026-10-28T21:44:56.696Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:components"
+          ],
+          "startedAt": "2026-10-28T21:44:56.696Z",
+          "finishedAt": "2026-10-28T21:44:57.005Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:hygiene"
+          ],
+          "startedAt": "2026-10-28T21:44:57.005Z",
+          "finishedAt": "2026-10-28T21:44:57.297Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "check:fixtures"
+          ],
+          "startedAt": "2026-10-28T21:44:57.297Z",
+          "finishedAt": "2026-10-28T21:44:57.899Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "catalog:check"
+          ],
+          "startedAt": "2026-10-28T21:44:57.899Z",
+          "finishedAt": "2026-10-28T21:44:58.215Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "test:tooling"
+          ],
+          "startedAt": "2026-10-28T21:44:58.216Z",
+          "finishedAt": "2026-10-28T21:44:59.811Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "i18n:check"
+          ],
+          "startedAt": "2026-10-28T21:44:59.811Z",
+          "finishedAt": "2026-10-28T21:45:00.561Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "check:bundle"
+          ],
+          "startedAt": "2026-10-28T21:45:00.561Z",
+          "finishedAt": "2026-10-28T21:45:05.571Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck:foundations"
+          ],
+          "startedAt": "2026-10-28T21:45:05.571Z",
+          "finishedAt": "2026-10-28T21:45:31.100Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck:e2e"
+          ],
+          "startedAt": "2026-10-28T21:45:31.101Z",
+          "finishedAt": "2026-10-28T21:45:31.748Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npx",
+            "nx",
+            "e2e",
+            "dotln-e2e",
+            "--output-style=static"
+          ],
+          "startedAt": "2026-10-28T21:45:31.749Z",
+          "finishedAt": "2026-10-28T21:46:27.915Z",
+          "exitCode": 0
+        }
+      ]
+    },
+    {
+      "run": "wo019-closeout-preflight-6",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "outcome": "All 13 commands passed after the parameter-line style fix and documentation updates.",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "nx",
+            "format:check"
+          ],
+          "startedAt": "2026-10-28T21:52:35.972Z",
+          "finishedAt": "2026-10-28T21:52:37.742Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npx",
+            "nx",
+            "run-many",
+            "-t",
+            "lint",
+            "test",
+            "build",
+            "--parallel=1",
+            "--output-style=static"
+          ],
+          "startedAt": "2026-10-28T21:52:37.743Z",
+          "finishedAt": "2026-10-28T21:53:37.792Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:fixtures"
+          ],
+          "startedAt": "2026-10-28T21:53:37.793Z",
+          "finishedAt": "2026-10-28T21:53:41.560Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:components"
+          ],
+          "startedAt": "2026-10-28T21:53:41.560Z",
+          "finishedAt": "2026-10-28T21:53:41.889Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:hygiene"
+          ],
+          "startedAt": "2026-10-28T21:53:41.889Z",
+          "finishedAt": "2026-10-28T21:53:42.194Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "check:fixtures"
+          ],
+          "startedAt": "2026-10-28T21:53:42.194Z",
+          "finishedAt": "2026-10-28T21:53:42.822Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "catalog:check"
+          ],
+          "startedAt": "2026-10-28T21:53:42.822Z",
+          "finishedAt": "2026-10-28T21:53:43.525Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "test:tooling"
+          ],
+          "startedAt": "2026-10-28T21:53:43.525Z",
+          "finishedAt": "2026-10-28T21:53:45.179Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "i18n:check"
+          ],
+          "startedAt": "2026-10-28T21:53:45.179Z",
+          "finishedAt": "2026-10-28T21:53:45.999Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "check:bundle"
+          ],
+          "startedAt": "2026-10-28T21:53:46.000Z",
+          "finishedAt": "2026-10-28T21:53:51.183Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck:foundations"
+          ],
+          "startedAt": "2026-10-28T21:53:51.183Z",
+          "finishedAt": "2026-10-28T21:54:17.831Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck:e2e"
+          ],
+          "startedAt": "2026-10-28T21:54:17.831Z",
+          "finishedAt": "2026-10-28T21:54:18.515Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npx",
+            "nx",
+            "e2e",
+            "dotln-e2e",
+            "--output-style=static"
+          ],
+          "startedAt": "2026-10-28T21:54:18.515Z",
+          "finishedAt": "2026-10-28T21:55:15.849Z",
+          "exitCode": 0
+        }
+      ]
+    },
+    {
+      "run": "wo019-closeout-preflight-final",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "outcome": "All 13 commands passed on the final target tree after the follow-up repairs and the operator-chosen tooling cuts; 85 browser and 41 tooling tests; bundle 393,633 initial bytes.",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "nx",
+            "format:check"
+          ],
+          "startedAt": "2026-10-28T22:13:50.034Z",
+          "finishedAt": "2026-10-28T22:13:52.227Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npx",
+            "nx",
+            "run-many",
+            "-t",
+            "lint",
+            "test",
+            "build",
+            "--parallel=1",
+            "--output-style=static"
+          ],
+          "startedAt": "2026-10-28T22:13:52.229Z",
+          "finishedAt": "2026-10-28T22:15:44.537Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:fixtures"
+          ],
+          "startedAt": "2026-10-28T22:15:44.537Z",
+          "finishedAt": "2026-10-28T22:15:48.630Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:components"
+          ],
+          "startedAt": "2026-10-28T22:15:48.630Z",
+          "finishedAt": "2026-10-28T22:15:48.965Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "lint:hygiene"
+          ],
+          "startedAt": "2026-10-28T22:15:48.966Z",
+          "finishedAt": "2026-10-28T22:15:49.286Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "check:fixtures"
+          ],
+          "startedAt": "2026-10-28T22:15:49.289Z",
+          "finishedAt": "2026-10-28T22:15:49.938Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "catalog:check"
+          ],
+          "startedAt": "2026-10-28T22:15:49.938Z",
+          "finishedAt": "2026-10-28T22:15:50.287Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "test:tooling"
+          ],
+          "startedAt": "2026-10-28T22:15:50.287Z",
+          "finishedAt": "2026-10-28T22:15:52.036Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "i18n:check"
+          ],
+          "startedAt": "2026-10-28T22:15:52.036Z",
+          "finishedAt": "2026-10-28T22:15:52.887Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "check:bundle"
+          ],
+          "startedAt": "2026-10-28T22:15:52.887Z",
+          "finishedAt": "2026-10-28T22:15:58.192Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck:foundations"
+          ],
+          "startedAt": "2026-10-28T22:15:58.192Z",
+          "finishedAt": "2026-10-28T22:16:25.633Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck:e2e"
+          ],
+          "startedAt": "2026-10-28T22:16:25.634Z",
+          "finishedAt": "2026-10-28T22:16:26.325Z",
+          "exitCode": 0
+        },
+        {
+          "command": [
+            "npx",
+            "nx",
+            "e2e",
+            "dotln-e2e",
+            "--output-style=static"
+          ],
+          "startedAt": "2026-10-28T22:16:26.326Z",
+          "finishedAt": "2026-10-28T22:17:27.275Z",
+          "exitCode": 0
+        }
+      ]
+    },
+    {
+      "run": "wo019-visual-probe",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": null,
+      "finishedAt": "2026-10-28T21:25:06.526Z",
+      "exitCode": 0,
+      "outcome": "npx nx e2e-visual dotln-e2e: 42 passed before any baseline change."
+    },
+    {
+      "run": "wo019-visual-after-review",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": null,
+      "finishedAt": "2026-10-28T21:47:51.446Z",
+      "exitCode": 0,
+      "outcome": "npx nx e2e-visual dotln-e2e: 42 passed; the tolerance absorbed the parameter-line shift."
+    },
+    {
+      "run": "wo019-catalog-baselines-refresh",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": null,
+      "finishedAt": "2026-10-28T21:50:01.684Z",
+      "exitCode": 0,
+      "outcome": "catalog.visual.spec.ts --update-snapshots after the parameter-line fix; three baselines written and inspected."
+    },
+    {
+      "run": "wo019-walkthrough-2026-10-28",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": null,
+      "finishedAt": "2026-10-28T21:58:40.615Z",
+      "exitCode": 0,
+      "outcome": "Eleven steps at 360, 768 and 1440 px against the optimized build; no page errors or overflow; 42 captures."
+    },
+    {
+      "run": "wo019-performance-2026-10-28",
+      "source": "executor bounded-result",
+      "scope": "Local preflight observation; not a registered target gate row",
+      "startedAt": null,
+      "finishedAt": "2026-10-28T22:01:40.236Z",
+      "exitCode": 0,
+      "outcome": "node tools/scripts/sample-performance.mjs: 30 journeys, no failures; see performance.json."
+    }
+  ],
+  "cutoff": "2026-10-28T22:17:27.275Z"
+}

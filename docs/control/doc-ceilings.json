@@ -1,6 +1,12 @@
 {
   "schemaVersion": 1,
   "documents": {
+    "concept-study.md": {
+      "ceiling": 4142,
+      "nonExemptBytesAtLanding": 4060,
+      "date": "2026-10-26",
+      "decision": "WO-019-D010: land the operator-authorized concept-study product synthesis at 4060 non-exempt bytes plus two per cent, rounded upward."
+    },
     "purpose.md": {
       "ceiling": 2305,
       "nonExemptBytesAtLanding": 2095,

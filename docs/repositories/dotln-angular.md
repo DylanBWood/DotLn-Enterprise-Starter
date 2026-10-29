@@ -1,75 +1,25 @@
 # dotln-angular — profile
 
 **Class:** `angular-nx-monorepo`
+
 **Base branch:** `main`
-**Checked:** `d487a8075f28bb9d456b549c77e1cb211238839a` (WO-014's second
-reviewed commit of 2026-10-26, the hidden-file fix over its reviewed feature
-commit `23b39aef39ce8f17407d9f21f30fb33eaba5e20e`, over the base
-`83184879358a30a60596aea983d587ed5681ea9d`, WO-013's merge commit; WO-014 adds
-no dependency, so the versions below are unchanged from WO-013's reviewed
-commit `99a30bef`).
-Node 26.9.0, npm 11.19.1, Nx 23.3.0, Angular 22.2.3, TypeScript 6.0.3 and
-Vitest 5.0.5 (with its UI and coverage packages, aligned from 4.1.12 by WO-007
-for MSW 3) were observed, with Transloco 8.4.0, Ramda 0.32.0, Ramda Adjunct
-6.1.0 and AnalogJS 2.9.1 added by WO-005, Angular Aria 22.2.3, the CDK 22.2.3,
-Storybook 10.6.3, axe-core for Playwright 4.14.0, Ajv 8.20.0 and the Inter
-variable font 5.3.0 added by WO-006, and NgRx Signals 22.0.1, the Angular
-Architects NgRx toolkit 22.0.0 and MSW 3.0.3 added by WO-007. The declared
-review gate, with the catalog and visual commands below, passed at that
-commit's tree with no tracked-byte mutation; the order's evidence records the
-preflight and gate results. WO-006 merged as pull request #4
-(`90fa6e8d879cb499107ff79d1051c200d17c1cbc`, 2026-10-21T21:11Z) and closed
-at that commit as `DotLn Angular v0.1.0` (Release published
-2026-10-21T21:14:44Z); its decisions, verification and final review live
-once, under `docs/dotln/` in this repository, bound from the launchpad's
-control segment. WO-007's base is that merge commit (planning pass of
-2026-10-23); WO-007 merged as pull request #5
-(`2ab4f28501628cf95dd0102c42440fd7de9f8055`, 2026-10-24T16:23Z) and closed at
-that commit as `DotLn Angular v0.2.0` (Release published 2026-10-24T16:26Z),
-its records under `docs/dotln/` at `4304a9d5`. WO-013 activated on 2026-10-24
-at the provisional base `bc9133e9`; its verified draft (parent `2ab4f285`, 83
-files) was refused at publish because the kit described the change from the
-activation base (WO-013-D008); its fix integrated `main` at starter v0.96.1,
-whose publish describes the change from the merge base of the subject and
-this repository's `main` (core WO-230; WO-013-D010), VER-002 passed at tree
-`dc997234…` and its draft publish opened pull request #6 (`99a30bef…`, 83
-files, CI green), and FINAL-002 found every criterion met and no new
-defect but was refused by the kit's pre-review commit lint, which still ranged 17 commits from the activation base and met two
-merged subjects of 78 and 90 characters (WO-013-D015); starter v0.97.1 (core
-WO-231) lints the described range and reached the launchpad's `main` on
-2026-10-25 (#28). The repair integrated it through starter v0.99.0 and
-main `04c45cfa` on 2026-10-25, reproduced the passing one-commit lint and
-seven regression controls, and preserved the target tree (WO-013-D016,
-D017). VER-003 reproduced the corrected lint and republished #6 at the same
-tree, and FINAL-003 accepted the order on 2026-10-25 with every criterion
-met and no new finding, its unit and browser suites rerun uncached at
-`99a30bef` (WO-013-D018, D019). The final publish pushed that commit and the
-records commit `61cf1ae9` over the draft and marked #6 ready the same day,
-and WO-013 merged as #6 (`83184879`) on 2026-10-25. WO-014 activated the
-same day at the provisional base and fast-forwarded to that merge
-(WO-014-D001); its twelve-worker fan-out typed the 3,463 rows under the
-operator's cap of 40 and the criterion 3 amendment (D002, D006); VER-001
-failed criterion 7 on an avoidable initial-bundle growth from 495.40 kB to
-530.37 kB (WO-014-D011); the repair of 2026-10-26 moved the menu stack to the
-lazy Tools route, curated the utility exports and added the bundle check and
-the sampler under the operator's bounded additions (D016 to D022); VER-002
-passed at tree `da7780d7` with the initial bundle at 376.91 kB and ran no
-draft publish; FINAL-001 accepted the order on 2026-10-26 with every
-criterion met, fixed four in-surface items, re-gated the reviewed commits
-`23b39aef` and `d487a807`, recorded the missing draft and restored the cap
-(D025 to D028); the final publish pushed the records commit `0090ffd5`
-and opened pull request #7 ready on `feat/toolbox-catalog` the same day; the operator merged it (`1c3a4ff24e38d179d0fd1ad910bc6719c2740045`, 2026-10-26) and closed it as `DotLn Angular v0.4.0` (Release published 2026-10-26T12:34:52Z); WO-013 had closed as `DotLn Angular v0.3.0` (Release published 2026-10-25T22:42:09Z at `83184879`). On 2026-10-26 the operator judged the app's pages hollow; the planning pass of that day struck a clean-room rule the 2026-10-24 pass had recorded as the operator's (it came from a prompt core's session drafted), wrote WS-001 rules 23 to 25 (the clean room's scope, acceptance by use, the look briefed and judged), filed WO-019 (the catalog as something to read, at `1c3a4ff2`), rewrote WO-015 and WO-018 and amended WO-016, WO-017 and WO-008 (`docs/planning/acceptance-by-use-2026-10-26.md`). On 2026-10-26 the operator started WO-019's worktree and ran its execution through twenty-two design-comparison rounds, expanding the order under their authority with one authored Arrive study (WO-019-D005) and the removal of rejected alternatives during execution (D014), and paused it after round 22 was prepared; the planning pass of 2026-10-28 opened update #33 (starter v0.100.0) first and, while its merge waited for the operator's return (merged 12:42Z), recorded the operator's corrected comparison method and their depth direction, amended WO-015, WO-016, WO-008, WO-017 and WO-018 from receipt 011 and left WO-019 to the operator's resume (`docs/planning/standard-pass-v0-100-0-2026-10-28.md`). Later on 2026-10-28 the operator resumed WO-019 under Claude Code and had its executor integrate `main` (WO-019-D022); the executor's first Edit into the target worktree was refused by the kit's fifth refusal at 13:12Z, the first Claude Code executor dispatch on a target order in either repository; the operator carried the blocker to core, which filed WO-236 first and shipped it as v0.101.0 at 18:55Z, and the second planning pass of 2026-10-28 took it through update #35 first, recorded the route after the merge and amended no order (`docs/planning/standard-pass-v0-101-0-2026-10-28.md`).
-The 2026-10-24 planning pass restated the app's subject on the
-operator's decisions (one app with sub-apps behind a menu, not wired to
-core, its data from public mining into its own store; WS-001 §The app and
-its sub-apps), moved WO-007's board route to the app's own API with
-`uifa-board-v1` kept as the response shape, and filed WO-013 to WO-018
-(the sub-app shell, the toolbox catalog, the soldier scene, the machinery
-view, the digital twin's patience lane, The Art of War map and the toy
-shelf) with provisional bases; since starter v0.96.1 an order activated on
-its provisional base publishes right, and a pass may set the base to the
-predecessor's merge commit without being required to (the 2026-10-24 second
-planning pass, D4 and D7).
+
+**Checked:** `261982f2`, WO-019's reviewed commit over WO-014's merge `1c3a4ff2`. WO-019 changes no dependency.
+
+**Toolchain:** Node 26.9.0, npm 11.19.1, Nx 23.3.0, Angular 22.2.3, TypeScript
+6.0.3 and Vitest 5.0.5.
+
+**Libraries:** Transloco 8.4.0, Ramda 0.32.0, Ramda Adjunct 6.1.0, AnalogJS 2.9.1,
+Angular Aria and the CDK 22.2.3, Storybook 10.6.3, axe-core for Playwright 4.14.0,
+Ajv 8.20.0, the Inter variable font 5.3.0, NgRx Signals 22.0.1, the Angular
+Architects NgRx toolkit 22.0.0 and MSW 3.0.3.
+
+**Subject:** one app with sub-apps behind a menu, not wired to core; its data
+comes from public mining into its own store (WS-001 §The app and its sub-apps).
+
+**History:** each order's merges, releases, verifications and reviews live in its
+records (`docs/dotln/` in the repository; `docs/evidence/`, `docs/verifications/`
+and `docs/final-reviews/` here) and in Git, not in this profile.
 
 The launchpad that registers a repository owns its profile; this file is
 repo-native convention authority for sessions acting in
@@ -103,16 +53,17 @@ tracked file fails the gate):
 
 The target's package scripts `lint`, `test`, `format:check`, `build` and `e2e`
 mirror those Nx commands. The registration prefixes checks with
-`env NX_DAEMON=false NX_ISOLATE_PLUGINS=false` to keep plugin workers in process. CI also runs `npm run lint:fixtures` to prove that a
-forbidden dependency is rejected, `npm run test:tooling` for title validation
-and literal argument handling, `npm run typecheck:e2e` for the NodeNext
-Playwright files, and `npm run boards` to print visible boards.
+`env NX_DAEMON=false NX_ISOLATE_PLUGINS=false` to keep plugin workers in process. CI runs the workspace checks once
+(`nx run workspace-tools:lint`), `typecheck:e2e`, `boards`, `check:bundle` and the
+affected projects' lint, test, build and e2e; a macOS job runs the visual suite.
+`lint:fixtures` is a helper for lint-policy changes.
 
 WO-005 adds `env:prime`, `i18n:check`, `check:templates`, `check:tokens`,
 `check:kits` and `typecheck:foundations`. The `workspace-tools` project's uncached `lint`
 target runs the three structural checks, translation extraction, foundation
-compiler checks, negative lint fixtures and tooling tests, so the declared
-gate exercises them through its existing lint command. WO-006 adds
+compiler checks and tooling tests, so the declared gate exercises them through
+its existing lint command; WO-019 moved the negative lint fixtures out of it
+(D027). WO-006 adds
 `lint:components`, `check:shared-types` and `check:fixtures` to that target.
 The e2e target builds the local Storybook catalog as a dependency; the review
 gate also runs the visual target. Baselines under the e2e source tree are
@@ -375,13 +326,25 @@ no host-qualification claim.
   `docs/dev-reference/workspace/storybook.md`.
 
 - Catalog contract: `libs/shared/models/src/lib/toolbox.ts` and the closed
-  `tool-v0` schema in `libs/shared/catalog/src/schema/`. Eight allow-listed
-  checkpoints supply 3,463 rows; the loader imports each work lazily and exposes
-  pure filters, an explicit provider and a test kit through its public seam.
-- Tools routes: `libs/features/tools/src/lib/tools.routes.ts`; `/tools` lists
-  utilities and `/tools/catalog` composes five menu filters, a paged tool list
-  and details through an event-backed facade. The final app wildcard renders a
-  translated not-found page with a board link.
+  `tool-v1` schema in `libs/shared/catalog/src/schema/`. Eight checkpoints supply
+  3,463 definitions with source places, relations, hooks and verification notes.
+  The loader retains a v0 compatibility reader for one release and the explicit
+  `CatalogToken` provider seam. `tools/scripts/catalog/join-maps.mjs` validates
+  all eleven declared source digests before writing, resolving only unique exact
+  relation titles within a work; schema, inventory and relation checks cover
+  the generated data.
+- Tools routes: `libs/features/tools/src/lib/tools.routes.ts`; `/tools` shows
+  the works and last reading. `/tools/catalog` composes the shelf, contents,
+  reading, search facets and history through its event-backed facade. The last
+  ten readings and chosen location persist; the search query and back stack do
+  not. Reading mappers present the full source definition and application faces
+  as prose. The final app wildcard renders a translated not-found page.
+- Concept studies: the Arrive example in `libs/features/tools/src/lib/` is
+  authored separately from source data. It adds a time-scrubbed motion
+  illustration, ordinary and RxJS pseudocode, limits and public references.
+  Standalone explanations use Angular `@defer` on first expansion; closed
+  sections create no explanation view, and visited sections retain their view on
+  collapse. Design comparisons and their outcome live in WO-019 evidence.
 - Concept mapping: `docs/dev-reference/architecture/concept-mapping.md` records
   the UIFA engineer's exploration purpose, cross-area metaphors, diagnostic
   mappings, RxJS modelling and candidate graduation to platform behavior.

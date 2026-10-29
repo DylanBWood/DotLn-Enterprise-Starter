@@ -1,0 +1,233 @@
+{
+  "schema": "local-performance-samples-v1",
+  "completed": true,
+  "recordedAt": "2026-10-28T22:01:40.236Z",
+  "statsSha256": "d9eb7a53e4eb00b17f5aed6d1501235e1630656024ea8bbf91894b12ddcda016",
+  "fixtureSha256": "5557fc64cb764293e64fc480ccd6d1a7d0d0c244f5c8696db4b1eba1d5a35d26",
+  "bundle": {
+    "initialBytes": 393633,
+    "initialFiles": [
+      "main-N5TIDCCX.js",
+      "chunk-B7PFt-85.js",
+      "chunk-BF_D9T28.js",
+      "styles-CD643GQZ.css"
+    ],
+    "attributedInputBytes": {
+      "@ngrx/signals": 6430,
+      "@angular-architects/ngrx-toolkit": 8976,
+      "libs/shared/data-access": 2702,
+      "libs/shared/events": 1166,
+      "libs/shared/state": 2354,
+      "libs/shared/ui": 15133,
+      "@angular/aria": 17564,
+      "libs/dotln/shell": 6868,
+      "apps/dotln/src": 7400,
+      "@angular/core": 187560,
+      "rxjs": 29116,
+      "tslib": 2454,
+      "@jsverse/utils": 582,
+      "@jsverse/transloco": 19213,
+      "libs/shared/i18n": 1579,
+      "@angular/common": 34016,
+      "@angular/platform-browser": 16186,
+      "libs/shared/utils": 144,
+      "ramda": 19314,
+      "ramda-adjunct": 743,
+      "libs/shared/core": 859,
+      "@angular/router": 97626,
+      "@angular/cdk": 12221,
+      "styles and generated": 0
+    },
+    "lazyCodeInInitial": [],
+    "menuAvailableWithTools": true
+  },
+  "profiles": [
+    {
+      "name": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "cpu": 1,
+      "network": null
+    },
+    {
+      "name": "constrained",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "cpu": 4,
+      "network": {
+        "offline": false,
+        "latency": 150,
+        "downloadThroughput": 200000,
+        "uploadThroughput": 93750
+      }
+    }
+  ],
+  "limits": "Local diagnostics only. Event maximum is not INP. Completion includes automation overhead. Timings are nonblocking until calibrated.",
+  "summary": [
+    {
+      "profile": "desktop",
+      "journey": "board-to-catalog",
+      "lcpCandidateMs": {
+        "min": 68,
+        "median": 88,
+        "max": 88
+      },
+      "initialReadyMs": {
+        "min": 105.89999961853027,
+        "median": 122.69999980926514,
+        "max": 125.90000009536743
+      },
+      "cls": {
+        "min": 0.6421937088745284,
+        "median": 0.9469506172839506,
+        "max": 0.9469506172839506
+      },
+      "observedInteractionMaxMs": {
+        "min": 32,
+        "median": 32,
+        "max": 48
+      },
+      "maxActionCompletionMs": {
+        "min": 116.30000019073486,
+        "median": 147.30000019073486,
+        "max": 197.39999961853027
+      }
+    },
+    {
+      "profile": "desktop",
+      "journey": "direct-catalog",
+      "lcpCandidateMs": {
+        "min": 88,
+        "median": 88,
+        "max": 96
+      },
+      "initialReadyMs": {
+        "min": 106.7000002861023,
+        "median": 108,
+        "max": 108.40000009536743
+      },
+      "cls": {
+        "min": 0.3507861128358356,
+        "median": 0.3510327145590867,
+        "max": 0.3510327145590867
+      },
+      "observedInteractionMaxMs": {
+        "min": 56,
+        "median": 56,
+        "max": 64
+      },
+      "maxActionCompletionMs": {
+        "min": 115.2999997138977,
+        "median": 116.09999990463257,
+        "max": 132.90000009536743
+      }
+    },
+    {
+      "profile": "desktop",
+      "journey": "warm-catalog",
+      "lcpCandidateMs": null,
+      "initialReadyMs": null,
+      "cls": {
+        "min": 0,
+        "median": 0,
+        "max": 0
+      },
+      "observedInteractionMaxMs": {
+        "min": 32,
+        "median": 32,
+        "max": 32
+      },
+      "maxActionCompletionMs": {
+        "min": 82.7999997138977,
+        "median": 83.30000019073486,
+        "max": 100.09999990463257
+      }
+    },
+    {
+      "profile": "constrained",
+      "journey": "board-to-catalog",
+      "lcpCandidateMs": {
+        "min": 2116,
+        "median": 2128,
+        "max": 2140
+      },
+      "initialReadyMs": {
+        "min": 2157.9000000953674,
+        "median": 2182.199999809265,
+        "max": 2189.6000003814697
+      },
+      "cls": {
+        "min": 0.6182203526720896,
+        "median": 0.6182203526720896,
+        "max": 0.6182203526720896
+      },
+      "observedInteractionMaxMs": {
+        "min": 72,
+        "median": 96,
+        "max": 96
+      },
+      "maxActionCompletionMs": {
+        "min": 3561.7000002861023,
+        "median": 3578.5,
+        "max": 4045.5
+      }
+    },
+    {
+      "profile": "constrained",
+      "journey": "direct-catalog",
+      "lcpCandidateMs": {
+        "min": 4996,
+        "median": 5012,
+        "max": 5016
+      },
+      "initialReadyMs": {
+        "min": 5180.5,
+        "median": 5190.699999809265,
+        "max": 5194.60000038147
+      },
+      "cls": {
+        "min": 0.470947477802718,
+        "median": 0.470947477802718,
+        "max": 0.470947477802718
+      },
+      "observedInteractionMaxMs": {
+        "min": 80,
+        "median": 88,
+        "max": 88
+      },
+      "maxActionCompletionMs": {
+        "min": 145.90000009536743,
+        "median": 149,
+        "max": 150.2999997138977
+      }
+    },
+    {
+      "profile": "constrained",
+      "journey": "warm-catalog",
+      "lcpCandidateMs": null,
+      "initialReadyMs": null,
+      "cls": {
+        "min": 0,
+        "median": 0,
+        "max": 0
+      },
+      "observedInteractionMaxMs": {
+        "min": 64,
+        "median": 72,
+        "max": 72
+      },
+      "maxActionCompletionMs": {
+        "min": 132,
+        "median": 133.10000038146973,
+        "max": 133.40000009536743
+      }
+    }
+  ],
+  "failures": [],
+  "samplesPerProfileAndJourney": 5,
+  "journeyCount": 30
+}
