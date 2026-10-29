@@ -39,6 +39,9 @@ export declare const harnessToolEffects: {
 };
 /** Public token view for diagnostics; classification uses the provenance above. */
 export declare function shellInvocations(source: string): string[][];
+/** Normalize executable operands for admission without requiring an effect
+ * adapter for every operand. Effect classification keeps its own full checks. */
+export declare function executableShellInvocations(source: string): string[][];
 /** WO-172: what the shell itself said about a command as written. zsh begins
  * such a line with its own name, the name of a builtin that refused and a
  * line number. The same text inside other output is not this command's
