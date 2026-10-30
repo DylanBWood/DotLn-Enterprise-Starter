@@ -1,4 +1,10 @@
 #!/usr/bin/env node
+import { formatDuration } from "./lib/duration.mjs";
+import {
+  dispatchStanding,
+  dispatchBoundResult,
+  recordBoundStop,
+} from "./lib/dispatch-bound.mjs";
 import {
   createFixtureRoot,
   readRetention,
@@ -162,6 +168,7 @@ export const machinerySources = {
     "scripts/lib/build-freshness.mjs",
   ],
   "launchpad-planning": [
+    "scripts/lib/planning-document.mjs",
     "packages/kernel/src/types.ts",
     "packages/compiler/src/harness.ts",
     "packages/console/src/index.ts",
@@ -218,6 +225,7 @@ export const machinerySources = {
     "scripts/test-fixture-temp-root.sh",
   ],
   "harness-probe": [
+    "scripts/lib/planning-document.mjs",
     // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/skeleton/src/discovery-sandbox.ts",
     "packages/skeleton/src/source-change-command.ts",
@@ -239,6 +247,9 @@ export const machinerySources = {
     "packages/skeleton/src/worker-transport.ts",
   ],
   "harness-fixtures": [
+    "scripts/lib/planning-document.mjs",
+    "scripts/lib/off-ramps.mjs",
+    "scripts/test-dispatch-bound.mjs",
     "scripts/test-temporary-roots.mjs",
     "scripts/lib/temporary-prune.mjs",
     "scripts/lib/temporary-root-declarations.mjs",
@@ -248,6 +259,11 @@ export const machinerySources = {
     "scripts/lib/plan-failures.mjs",
     // Direct entry imports and literal first-party script inputs (WO-174).
     "scripts/lib/bounded-command.mjs",
+    "scripts/lib/dispatch-bound.mjs",
+    "scripts/lib/duration.mjs",
+    "packages/skeleton/src/duration.mjs",
+    "packages/skeleton/src/dispatch-journal.mjs",
+    "packages/skeleton/src/test-selection.mjs",
     "packages/kernel/src/index.ts",
     "packages/compiler/src/artifact-identity.ts",
     "packages/compiler/src/index.ts",
@@ -301,11 +317,17 @@ export const machinerySources = {
     "packages/skeleton/src/version.ts",
     "packages/skeleton/src/subagent-budget.ts",
     "packages/skeleton/src/harness-command.ts",
+    "packages/skeleton/src/document-quality.ts",
     "packages/skeleton/src/loadouts/",
   ],
   harness: [
     "scripts/lib/host-lanes.mjs",
     "scripts/lib/bounded-command.mjs",
+    "scripts/lib/dispatch-bound.mjs",
+    "scripts/lib/duration.mjs",
+    "packages/skeleton/src/duration.mjs",
+    "packages/skeleton/src/dispatch-journal.mjs",
+    "packages/skeleton/src/test-selection.mjs",
     // The check action's stale host-rule report (WO-221), loaded on demand.
     "scripts/lib/target-worktrees.mjs",
     // Direct entry imports and literal first-party script inputs (WO-174).
@@ -334,12 +356,18 @@ export const machinerySources = {
   ],
   "harness-context": [
     "scripts/lib/process-budget.mjs",
+    "scripts/lib/dispatch-bound.mjs",
+    "scripts/lib/duration.mjs",
+    "packages/skeleton/src/duration.mjs",
+    "packages/skeleton/src/dispatch-journal.mjs",
+    "packages/skeleton/src/test-selection.mjs",
     "scripts/lib/harness.mjs",
     "scripts/harness-context.mjs",
     "scripts/lib/harness-context.mjs",
   ],
   "harness-evidence": recordedSources["harness"],
   "plan-refutation": [
+    "scripts/lib/planning-document.mjs",
     "scripts/lib/gate-evidence.mjs",
     "scripts/lib/gate-reuse.mjs",
     "scripts/lib/planning-conditions.mjs",
@@ -396,6 +424,11 @@ export const machinerySources = {
     "scripts/lib/host-lanes.mjs",
     "scripts/lib/process-monitor.mjs",
     "scripts/lib/bounded-command.mjs",
+    "scripts/lib/dispatch-bound.mjs",
+    "scripts/lib/duration.mjs",
+    "packages/skeleton/src/duration.mjs",
+    "packages/skeleton/src/dispatch-journal.mjs",
+    "packages/skeleton/src/test-selection.mjs",
     "scripts/fixtures/memory-growth.c",
     "scripts/fixtures/detached-descendant.c",
     "scripts/lib/plan-failures.mjs",
@@ -464,6 +497,8 @@ export const machinerySources = {
     "scripts/lib/target-worktree-fixture.mjs",
   ],
   "process-debt": [
+    "scripts/lib/plan-subject.mjs",
+    "scripts/lib/planning-document.mjs",
     "scripts/test-gate-followups.mjs",
     "docs/control/budgets.json",
     "CLAUDE.md",
@@ -476,6 +511,7 @@ export const machinerySources = {
     "packages/skeleton/src/feedback-selfhost.ts",
     "packages/skeleton/src/gate-deadlines.mjs",
     "packages/skeleton/src/harness-command.ts",
+    "packages/skeleton/src/document-quality.ts",
     "packages/skeleton/src/observed-facts.ts",
     "packages/skeleton/src/writer-teardown.mjs",
     "scripts/bootstrap.mjs",
@@ -509,6 +545,7 @@ export const machinerySources = {
     "scripts/discover.mjs",
     "packages/skeleton/src/usage-observation.mjs",
     "scripts/test-process-debt.mjs",
+    "scripts/test-process-debt.fixture-inputs.json",
     "packages/skeleton/fixtures/wo195-role-baseline.json",
     "packages/skeleton/fixtures/wo195-integrated-role-baseline.json",
     "packages/skeleton/fixtures/wo186-role-baseline.json",
@@ -525,6 +562,16 @@ export const machinerySources = {
     "packages/skeleton/fixtures/wo204-role-baseline.json",
     "packages/skeleton/fixtures/wo233-role-baseline.json",
     "packages/skeleton/fixtures/wo236-role-baseline.json",
+    "packages/skeleton/fixtures/wo234-role-baseline.json",
+    "packages/skeleton/fixtures/wo234-recovery-role-baseline.json",
+    "packages/skeleton/fixtures/wo234-integration-role-baseline.json",
+    "packages/skeleton/fixtures/wo235-role-baseline.json",
+    "packages/skeleton/fixtures/wo235-repair-role-baseline.json",
+    "packages/skeleton/fixtures/wo235-private-reply-role-baseline.json",
+    "packages/skeleton/fixtures/wo235-usefulness-role-baseline.json",
+    "packages/skeleton/fixtures/wo235-maintenance-role-baseline.json",
+    "packages/skeleton/fixtures/wo235-quality-pass-role-baseline.json",
+    "packages/skeleton/fixtures/wo235-removal-role-baseline.json",
     "packages/skeleton/fixtures/wo217-role-efficiency-baseline.json",
     "scripts/test-helper-reuse.mjs",
     "scripts/lib/helpers.mjs",
@@ -536,6 +583,11 @@ export const machinerySources = {
     "scripts/lib/receipt-cost.mjs",
     "scripts/lib/worktree-material.mjs",
     "scripts/lib/process-budget.mjs",
+    "scripts/lib/dispatch-bound.mjs",
+    "scripts/lib/duration.mjs",
+    "packages/skeleton/src/duration.mjs",
+    "packages/skeleton/src/dispatch-journal.mjs",
+    "packages/skeleton/src/test-selection.mjs",
     "packages/skeleton/src/harness-host.ts",
     "packages/skeleton/src/version.ts",
     "packages/skeleton/src/subagent-budget.ts",
@@ -573,6 +625,7 @@ export const machinerySources = {
   // Any changed docs path, stub list or registry re-runs the registration
   // check under --review, not only under test:docs (WO-157 item 13).
   registrations: [
+    "scripts/lib/planning-document.mjs",
     "scripts/lib/build-freshness.mjs",
     // Direct entry imports and literal first-party script inputs (WO-174).
     "packages/kernel/src/index.ts",
@@ -602,6 +655,11 @@ export const machinerySources = {
     "scripts/lib/meta.mjs",
     "scripts/lib/receipt-cost.mjs",
     "scripts/lib/process-budget.mjs",
+    "scripts/lib/dispatch-bound.mjs",
+    "scripts/lib/duration.mjs",
+    "packages/skeleton/src/duration.mjs",
+    "packages/skeleton/src/dispatch-journal.mjs",
+    "packages/skeleton/src/test-selection.mjs",
   ],
 };
 const protection = {
@@ -1429,7 +1487,7 @@ export const suites = [
     document: true,
     needsBuild: false,
     protects:
-      "reader commands reject invalid profiles and quotations, select the nearest example, retain tag profiles and record scores idempotently",
+      "reader commands reject invalid profiles and quotations, name the contract and reader without ranking example size, retain tag profiles and record scores idempotently",
   }),
   node("entropy", "scripts/entropy.mjs", {
     args: ["check"],
@@ -1818,7 +1876,7 @@ export function executeSuite(
     };
     const namedAt = new Map();
     const entered = (marker, now) =>
-      `${marker.name.slice(0, 80)} (entered ${((now - marker.at) / 1000).toFixed(1)} s ago)`;
+      `${marker.name.slice(0, 80)} (entered ${formatDuration(now - marker.at)} ago)`;
     // A case is named from its own start and end markers, so never after it
     // ended. Every case that has run for the interval is named on the tick
     // it becomes due and again each interval, even while other cases keep
@@ -2057,7 +2115,7 @@ export function executeSuite(
           : {}),
         executed: true,
         ...(stopped ? { stopped: true } : {}),
-        output: `${renderedOutput}${failure ? `\n${failure}` : ""}${timedOut ? `\nSuite ${row.name} timed out after ${durationMs} ms` : ""}${stopped ? `\nSuite ${row.name} stopped by gate request after ${durationMs} ms` : ""}`,
+        output: `${renderedOutput}${failure ? `\n${failure}` : ""}${timedOut ? `\nSuite ${row.name} timed out after ${formatDuration(durationMs)}` : ""}${stopped ? `\nSuite ${row.name} stopped by gate request after ${formatDuration(durationMs)}` : ""}`,
       });
     };
     child.on("close", (code) => {
@@ -3055,6 +3113,8 @@ async function runGateChecks(
       );
     return { exitCode: 0 };
   }
+  const judgeDispatchBound =
+    !only && !document && !machinery && !confinedPartial;
   // Compile once when needed: a stale runtime is rebuilt before the reuse
   // lookup and the subject capture, so an ordinary package edit reaches the
   // suites instead of a refusal to run npm run sync first. The compiled
@@ -3299,6 +3359,16 @@ async function runGateChecks(
       stopped: true,
       stoppedBy,
       evidenceRef: `host-gate:${codeIdentity}:stopped:${recordedAt}`,
+      startedAt: new Date(started).toISOString(),
+      gateSelection: document
+        ? "document"
+        : review
+          ? "review"
+          : machinery
+            ? "machinery"
+            : only
+              ? "single"
+              : "plain",
       recordedAt,
       requiredSuites: selected.map((row) => row.name),
       cases: completedRows.map(failedOutputOnly),
@@ -3395,6 +3465,36 @@ async function runGateChecks(
         renameSync(`${peerFile}.tmp`, peerFile);
       },
       execute: async (row, cwd) => {
+        // Keep dispatch identity in the runner; fixture children deliberately
+        // receive no invoking harness session metadata.
+        if (row.name === "host" && judgeDispatchBound) {
+          const observedAt = Date.now();
+          try {
+            const standing = dispatchStanding(repo);
+            if (standing.state === "exceeded") {
+              const result = dispatchBoundResult(standing);
+              try {
+                recordBoundStop(repo, standing, "gate");
+              } catch (error) {
+                result.output += ` Stop record unavailable: ${error.message}.`;
+              }
+              return {
+                name: row.name,
+                executed: true,
+                durationMs: Date.now() - observedAt,
+                ...result,
+              };
+            }
+          } catch (error) {
+            return {
+              name: row.name,
+              executed: true,
+              exitCode: 1,
+              durationMs: Date.now() - observedAt,
+              output: `Dispatch standing unavailable: ${error.message}. Use analysis: to diagnose.`,
+            };
+          }
+        }
         const result =
           row.name === "document-barrier"
             ? {
@@ -3417,7 +3517,7 @@ async function runGateChecks(
                 row.timeoutMs ?? 900_000,
                 ({ name, message, elapsedMs }) =>
                   console.log(
-                    `PROGRESS [${name}] ${(elapsedMs / 1000).toFixed(1)} s ${message}`,
+                    `PROGRESS [${name}] ${formatDuration(elapsedMs)} ${message}`,
                   ),
                 stop.signal,
               );
@@ -3430,7 +3530,14 @@ async function runGateChecks(
               const detail = JSON.parse(
                 line.slice("STRUCTURAL_RESULT ".length),
               );
-              for (const key of ["stale", "cases", "sample", "fileEvents"])
+              for (const key of [
+                "stale",
+                "cases",
+                "sample",
+                "fileEvents",
+                "boundStop",
+                "dispatchBound",
+              ])
                 if (detail[key] !== undefined) result[key] = detail[key];
               if (Array.isArray(result.cases))
                 result.cases = result.cases.map(failedOutputOnly);
@@ -3471,7 +3578,7 @@ async function runGateChecks(
           return;
         }
         console.log(
-          `${!row.executed ? "SKIP" : row.exitCode === 0 ? "PASS" : "FAIL"} ${row.name} ${(row.durationMs / 1000).toFixed(2)} s`,
+          `${!row.executed ? "SKIP" : row.exitCode === 0 ? "PASS" : "FAIL"} ${row.name} ${formatDuration(row.durationMs)}`,
         );
         // Successful checks still deliver their explicit diagnostics.
         for (const line of (row.output ?? "").trimEnd().split("\n"))
@@ -3485,7 +3592,7 @@ async function runGateChecks(
     });
     if (stopping() && (interrupted || !resourceGateFailure))
       throw new Error(
-        `Gate stopped by ${interrupted ?? "request"} after ${((Date.now() - started) / 1000).toFixed(1)} s; ${stoppedCheck ? `stopped row recorded: ${stoppedCheck.evidenceRef}` : `no check recorded for tree ${treeHash}`}`,
+        `Gate stopped by ${interrupted ?? "request"} after ${formatDuration(Date.now() - started)}; ${stoppedCheck ? `stopped row recorded: ${stoppedCheck.evidenceRef}` : `no check recorded for tree ${treeHash}`}`,
       );
     const failureComparisons = document
       ? await classifyDocumentFailures(repo, tasks, taskRows, {
@@ -3591,6 +3698,13 @@ async function runGateChecks(
         : reused.size
           ? "composed"
           : "fresh",
+      startedAt: new Date(started).toISOString(),
+      ...(taskRows.find((row) => row.boundStop)?.boundStop
+        ? {
+            boundStop: taskRows.find((row) => row.boundStop).boundStop,
+            dispatchBound: taskRows.find((row) => row.boundStop).dispatchBound,
+          }
+        : {}),
       gateSelection: document
         ? "document"
         : review
@@ -3822,7 +3936,7 @@ async function runGateChecks(
       `Gate cleanup: ${check.temporaryCleanup.removed.length} roots removed; ${check.temporaryCleanup.retained.length} retained; ${check.temporaryCleanup.blockers.length} blockers. Churn: ${JSON.stringify(check.churn)}. fseventsd: ${JSON.stringify(check.fileEvents)}`,
     );
     console.log(
-      `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(check.durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh tasks${formatHostLaneWait(check.hostLaneWait)}${unchanged ? "" : "; code changed"}${outputUnchanged ? "" : "; build output changed during the gate"}${check.abandonedRoots?.length ? `; abandoned fixture roots: ${check.abandonedRoots.join(", ")}` : ""}${confinedPartial ? `; partial, not product-gate evidence: excluded ${check.excludedSuites.join(", ") || "none"}` : ""}`,
+      `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${formatDuration(check.durationMs)}; ${check.freshSuites} fresh tasks${formatHostLaneWait(check.hostLaneWait)}${unchanged ? "" : "; code changed"}${outputUnchanged ? "" : "; build output changed during the gate"}${check.abandonedRoots?.length ? `; abandoned fixture roots: ${check.abandonedRoots.join(", ")}` : ""}${confinedPartial ? `; partial, not product-gate evidence: excluded ${check.excludedSuites.join(", ") || "none"}` : ""}`,
     );
     return check;
   } finally {
