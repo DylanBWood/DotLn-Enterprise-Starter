@@ -148,3 +148,10 @@ The pull request's body was then refreshed with `gh pr edit 9 --body-file`, beca
 left the helper's composed body at the first publish: the reviewed PR.md as updated above, followed by
 the helper's Change and Target checks sections as published, and one line naming the corrected tree's
 gate. The host ran it without a prompt; the kit's publish helper did not compose this body.
+
+The records branch was republished with the same `node scripts/worktree.mjs publish WO-015 --title
+… --body-file docs/final-reviews/WO-015/RECORDS-PR.md` helper: it pushed `wo-015` and then refused to
+open a second pull request because 40 already exists, exit 1 after the push. Pull request 40's body
+was refreshed with `gh pr edit 40 --body-file`: the updated RECORDS-PR.md with its relative links
+rewritten to this branch's head commit, as the helper writes them, followed by the helper's
+product-gate block as published. The host ran both without a prompt.
