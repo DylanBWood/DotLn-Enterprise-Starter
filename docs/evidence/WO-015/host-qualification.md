@@ -108,3 +108,43 @@ decorated by the repository's workflow with `:sparkles:`, the title check passed
 `checks` run in progress and `visual` queued, so the merge state read blocked until they finish; no
 review, comment or thread. The records branch publish follows this section's commit and is recorded in
 the preview record.
+
+### Operator override recovery — 2026-10-30
+
+After the publish, CI's `typecheck:e2e` step on pull request 9 failed on the final review's
+browser regression: `scene.spec.ts(117,11): error TS2551: Property 'click' does not exist on type
+'HTMLElement | SVGElement'`. The operator reported it and asked how every phase had missed it, then
+authorized recovery with `operator override:` (ignored capture
+`docs/intake/notes/wo-015-override-2026-10-30.md`, SHA-256
+`9d37ee27af8606eb71f242fcf23a379bd4012d230e2290946f75a3bfcf07a738`, entries 1 and 2). The hook
+suspended its enforcement for the session; host permissions still applied, and no lifecycle dispatch
+or passing check is claimed.
+
+The cause and the gap: the line was the review's own (D020); ESLint, Playwright, the registered gate
+and the order's Preflight line do not type-check the e2e project, CI does, and the review did not run
+`typecheck:e2e` after changing an e2e spec. The decision is D022 in the target's decisions file.
+
+What ran, from this launchpad root: `npm run typecheck:e2e` under the bounded wrapper reproduced the
+error at `b4c51461`; the one-line annotation (`input: HTMLInputElement`) was applied; `typecheck:e2e`
+exited 0; `node scripts/target-gate.mjs WO-015 --review` passed all seven commands at the corrected
+tree `5c7aa4b6fceec12052ebe41adc5ced180f4694d4` (row `target-gate:6e817aaa-872c-41bd-a562-ec734fea6e3a`,
+2026-10-30T21:17:28Z, 138 s, test and build replayed from the Nx cache because no unit input changed);
+`npx nx format:check` passed again after D022 was written. Two commits followed on `wo-015`:
+`cc0e58ed` (`test: type the checkbox regression's element for the e2e type check`) and `4260fea1`
+(`docs: record the e2e type-check correction and the gate gap it exposed`), both passing the outward
+commit lint with the target flag.
+
+Bypassed, named truthfully: the kit's closed-phase publish helper refuses a head past the records
+commit, so the branch was pushed with `git push origin wo-015:feat/soldier-scene` from the target
+worktree (`b4c5146..4260fea`), outside the registered-target admission; no repair, verify or review
+phase re-judged the change, because the lifecycle has none after a passing final review; the
+`TargetRecordsCommitted` binding still names the records as of `b4c51461`, so the launchpad's decisions
+index and follow-up register do not carry D022 until a planning pass reads the target's records. A
+read-only forge read at 21:19Z confirmed head `4260fea1`, five commits, the pull request still ready,
+and both CI runs in progress. The override record is appended from the main checkout when the operator
+ends the override, as the hook's advisory names.
+
+The pull request's body was then refreshed with `gh pr edit 9 --body-file`, because the raw push
+left the helper's composed body at the first publish: the reviewed PR.md as updated above, followed by
+the helper's Change and Target checks sections as published, and one line naming the corrected tree's
+gate. The host ran it without a prompt; the kit's publish helper did not compose this body.

@@ -18,6 +18,8 @@ The declared review gate (install, lint, test, format, build, e2e and visual) pa
 
 The final review read the whole change against the base and the engine, feature, store, persistence, button, catalog, route, e2e, tooling and document changes file by file; reproduced the grep, dependency, fixture and walkthrough-count criteria at the verified tree before any edit; ran the scene and engine suites fresh; read three of the verifier's captures; and repaired the verifier's follow-up: each text-layer checkbox is now controlled, its click cancelled and the selection driving `checked`, so a toggle and a clear that coalesce into one render cannot leave the native box out of step. A browser case issues the activation and the clear in one task; it fails on the verified bytes and passes on the repaired ones. The first commit is the verified tree as the draft carried it and the second is that repair, so what changed since the draft is readable on its own. The draft pull request opened at verification is reused and marked ready here; the operator reads the code here before merging.
 
+After the pull request was marked ready, CI's e2e type check refused the regression's callback: Playwright types an untyped locator's element as `HTMLElement | SVGElement`, and the review had run ESLint, the unit suites, the browser cases and the full review gate, none of which type-checks the e2e project. Under the operator's recovery authority the element is now typed `HTMLInputElement`, proven with the type check and the full review gate again, and pushed as its own commit with the decision recorded in the repository's own records. The gap, a type check that CI runs and the declared gate does not, is boarded as a follow-up.
+
 ## Known follow-ups
 
 None blocks the change; each is recorded with its owner.
@@ -26,6 +28,7 @@ None blocks the change; each is recorded with its owner.
 - Two slider extremes are left as they read: Arrive at a weight of 0.05 with a time to target of 2 never clears the snap to rest, so its units stay put, and a wedge of twenty at the widest spacing, too big for the field, takes 105 s to pause with no objective.
 - Compare at the eight-hour step bound blocks the page for about 12.7 s; only a crafted import or a working day's play reaches it.
 - The view model stays flat, a painter's styles arrive through closures, and a unit's label and role are one string until a later scene, painter or translation needs otherwise.
+- The declared gate does not run the e2e project's type check, which CI does; the next change to the gate or the workspace lint target should add it.
 
 ## Notes
 

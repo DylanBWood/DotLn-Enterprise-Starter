@@ -124,5 +124,56 @@
     "reviews": 0,
     "comments": 0,
     "admission": "run plainly from the launchpad root with the node spelling the registered-target admission covers; the host ran it without a permission prompt; the pre-tool admission line was not surfaced in the command output"
+  },
+  "overrideRecovery": {
+    "observedAt": "2026-10-30T21:19:30Z",
+    "cause": "CI typecheck:e2e refused scene.spec.ts(117,11) TS2551 on the final review regression; the declared gate and the Preflight do not type-check the e2e project",
+    "authority": "operator override: (ignored capture docs/intake/notes/wo-015-override-2026-10-30.md, sha256 9d37ee27af8606eb71f242fcf23a379bd4012d230e2290946f75a3bfcf07a738)",
+    "decision": "WO-015-D022 in the target decisions file after the records commit",
+    "gate": {
+      "evidenceRef": "target-gate:6e817aaa-872c-41bd-a562-ec734fea6e3a",
+      "treeHash": "5c7aa4b6fceec12052ebe41adc5ced180f4694d4",
+      "recordedAt": "2026-10-30T21:17:28.638Z",
+      "durationMs": 138485
+    },
+    "commits": [
+      {
+        "sha": "cc0e58ed",
+        "subject": "test: type the checkbox regression's element for the e2e type check"
+      },
+      {
+        "sha": "4260fea1",
+        "subject": "docs: record the e2e type-check correction and the gate gap it exposed"
+      }
+    ],
+    "push": {
+      "command": "git push origin wo-015:feat/soldier-scene",
+      "range": "b4c5146..4260fea",
+      "bypassed": "the closed-phase publish helper refuses a head past the records commit; the registered-target admission did not judge this push"
+    },
+    "pullRequest": {
+      "headSha": "4260fea18b43",
+      "isDraft": false,
+      "state": "OPEN",
+      "mergeable": "MERGEABLE",
+      "mergeStateStatus": "BLOCKED",
+      "checks": [
+        {
+          "name": "checks",
+          "status": "IN_PROGRESS",
+          "startedAt": "2026-10-30T21:18:57Z"
+        },
+        {
+          "name": "visual",
+          "status": "IN_PROGRESS",
+          "startedAt": "2026-10-30T21:18:57Z"
+        }
+      ]
+    },
+    "bodyRefresh": {
+      "command": "gh pr edit 9 --body-file <reviewed PR.md plus the published Change and Target checks sections and one line on the corrected tree>",
+      "observedAt": "2026-10-30T21:22:00Z",
+      "bypassed": "the kit publish helper did not compose this body"
+    }
   }
 }
