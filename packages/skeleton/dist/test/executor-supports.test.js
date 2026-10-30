@@ -94,7 +94,9 @@ test("WO-179 and WO-195 emitted roles carry their assigned corrections across su
                     assert.equal(role.contents.split(rule).length - 1, 1, `${subject}: assigned rule ${rule}`);
                 assert.doesNotMatch(role.contents, /ask if an answer changes scope or authority|ask one focused question if that reading is doubtful/, `${subject}: replaced arbitration wording stays absent`);
                 if (role.path.endsWith("dotln-release-close/SKILL.md")) {
-                    assert.match(role.contents, /Run the printed helper command exactly as printed, with no redirect, prefix, cd or pipe/, subject);
+                    assert.match(role.contents, /Run the printed --publish helper command once,/, subject);
+                    assert.match(role.contents, /exactly as printed, with no redirect, prefix, cd or pipe/, subject);
+                    assert.match(role.contents, /use --dry-run only when a prerequisite such as egress or a foreign tag is in doubt/, subject);
                     assert.match(role.contents, /The close is done when the tag and Release exist, git worktree list shows no worktree for the order, its directory is gone, git branch --list wo-NNN is empty and no starter-refresh blocker remains/, subject);
                     assert.match(role.contents, /Diagnose and finish a cleanup blocker in this session; retry by re-running the same command, which re-checks an existing Release and never publishes twice/, subject);
                     assert.match(role.contents, /Retry a host denial of the exact command once through the host permission flow before handing the operator the printed command for !/, subject);
@@ -419,7 +421,10 @@ test("execution roles open with an ordered handoff and keep shared rules below i
             assert.match(steps[run], /composes nothing from `--only` rows/);
             assert.doesNotMatch(steps.join("\n"), /--only format/);
             assert.match(steps[run + 1], /After the complete run passes/);
-            assert.match(steps[run + 1], /same consistency reviewer check the final write-backs/);
+            assert.match(steps[run + 1], /Post-pass handoff write-backs are executor-owned/);
+            assert.doesNotMatch(steps[run + 1], /same consistency reviewer check the final write-backs/);
+            assert.match(steps[format - 1], /Finish implementation or repair,.*authored outputs before launching or restarting all three/);
+            assert.match(steps[run], /on failure finish.*repair and its write-backs.*restart all three existing reviewers.*wait for all three to finish/);
         }
         else if (name === "verifier") {
             assert.match(steps[run], /npm test -- --only <suite>/);
@@ -443,10 +448,19 @@ test("execution roles open with an ordered handoff and keep shared rules below i
         .procedure.join("\n");
     assert.match(executor, /Every execution and fix requires three fresh independent `dotln-worker` agents/);
     assert.match(executor, /nonoverlapping briefs/);
+    assert.match(executor, /Launch or restart them only after implementation or repair and its write-backs are complete, never as early scouts/);
     assert.match(executor, /criteria adversary seeks concrete counterexamples, failed acceptance criteria and missing regression tests; exclude design cleanup/);
     assert.match(executor, /design improver seeks simpler structure, coupling, error handling and six-month maintainability; exclude criterion verdicts and adversarial test design/);
     assert.match(executor, /consistency reviewer solely verifies write-backs, dependencies and versions/);
     assert.match(executor, /test dependencies, fixture inputs\/manifests\/pins, generated test baselines and evidence-source declarations/);
+    const consistencyBrief = executor.match(/The consistency reviewer[\s\S]+?(?=Transfer findings)/)?.[0];
+    assert.ok(consistencyBrief);
+    assert.match(consistencyBrief, /changed document, emitted output and helper.*every consuming test/);
+    assert.match(consistencyBrief, /old\/new text and byte\/count pins/);
+    assert.match(consistencyBrief, /transitive imports and fixture copy\/export manifests/);
+    assert.match(consistencyBrief, /retained gate failures.*same failure shapes/);
+    assert.match(consistencyBrief, /Preserve intentional contract pins.*expectations from requirements/);
+    assert.match(consistencyBrief, /producer\/consumer pairs.*unsearched boundaries/);
     assert.doesNotMatch(executor, /Before `implementation-ready` only|separate-pass fallback|900 s|all eight system traps/);
     const verifier = roles
         .find((row) => row.name === "verifier")
