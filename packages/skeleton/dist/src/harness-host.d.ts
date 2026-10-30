@@ -38,7 +38,19 @@ export interface HarnessCheck {
     readonly codeIdentity?: string;
     readonly durationMs?: number;
 }
+/** A dispatch gets its own budget anchor while session observations retain
+ * their original lifetime. Repeating an unfinished phase cannot reset it. */
+export declare function bindDispatchBound(root: string, session: HarnessSession, role: string, intent: string, workOrder: string | null, now?: string): void;
 export interface HarnessSession {
+    executedOrders?: string[];
+    boundDispatch?: {
+        role: string;
+        intent: string;
+        workOrder: string | null;
+        startedAt: string;
+        phaseBoundary: string;
+        unavailable?: string;
+    };
     role?: string;
     intent?: string;
     expectedEvent?: string;
@@ -165,7 +177,7 @@ export declare function harnessControl(root: string, workOrder?: string): Contro
 export declare function dispatchAdmissionPolicy(root: string): CompiledFeedback | null;
 export declare function recordOperatorMessage(root: string, input: HarnessInput, source?: string): void;
 /** Codex exposes dispatches here, not a prompt hook or mid-turn inbox. */
-export declare function recordCodexDispatch(root: string, sessionId: string, action: string): void;
+export declare function recordCodexDispatch(root: string, sessionId: string, action: string, workOrder?: string): void;
 interface ProcessRow {
     readonly pid: number;
     readonly ppid: number;

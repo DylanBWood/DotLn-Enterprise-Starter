@@ -288,7 +288,8 @@ The same planning commands run here using this instance's records. Commit the
 export and install its pinned dependencies first. On clean `main`, run
 `npm run plan -- start first-pass`; it creates the planning branch and reads
 the current follow-up feed. Draft this instance's orders and sequence, then
-record its dated planning pass in `docs/lineage/idea-ledger.md`.
+record its dated planning pass in `docs/lineage/idea-ledger.md`. `plan start`
+also writes the pass's planning document with its standard section headings.
 
 - `npm run plan -- followups` pages the register; `--export <file>` exports it;
   `--apply <batch.json>` applies dispositions against the revision read.
@@ -835,6 +836,44 @@ installed. `worktree start`, `plan start` and update preview print the census.
 Nested suite commands retain their outer gate's cleanup ownership across copied
 repositories. Creator teardown waits only for a gate that can read its ledger.
 
+Every role's `dispatches` entry in `docs/control/budgets.json` carries
+`wallClockMs` and `completeRuns`; missing keys and null disable that bound.
+`dispatches.executor.repair` overrides the executor's bounds for `resume: fix`.
+The kit exports `local-median` for implementation, verification, final review
+and repair. Each consumer derives max(4 times its own completed phase median,
+8 h 0 min); without local history the bound is 8 h 0 min. History is cut off at
+the dispatch's original start. No source-repository timing sample is exported.
+Explicit numeric overrides and null retain their meanings; the complete-run
+default is three. Planner, refuter and release close stay unset. This instance
+owns its budgets.
+The gate host task, bounded wrapper and lifecycle redispatch refuse exhausted
+bounds. Claude's tool hook also refuses costly starts and worker launches,
+and its Stop hook prints standing. `node scripts/harness.mjs usage <session>`
+returns the same standing on all hosts. If standing cannot be read, usage still
+prints its observation and host session readback with
+`dispatch standing: unavailable (<named read error>)`. Restored history recovers
+the original phase attempt's anchor even after completion. Host-refused complete
+selections consume no run; admitted failures and interruptions do. Reads, listings and focused
+reproductions stay available. Use `analysis:` for diagnosis. When the operator
+authorizes proceeding in ordinary language, interpret the conversation context,
+capture the actual words and context in ignored intake, and run
+`npm run resume -- accept-overrun <wallClockMs|completeRuns>
+--ceiling <value> --reason <text> --capture <path> --capture-hash sha256:<digest>
+<actor-flags>` yourself with your actual actor attestation. The executor can
+record that authorization while keeping its writer. No exact phrase, session
+exit or manual operator command is required; diagnose and repair script errors
+in the same session. Without operator authorization the bound still holds.
+An operator may also authorize a run for as long as needed before it begins,
+in ordinary language. Record `--ceiling unlimited` for both `wallClockMs` and
+`completeRuns` with that capture. Null acceptance ceilings lift those two
+limits until the current phase completes; they preserve timing and run counts.
+The extension applies
+only to the current order activation and phase, changes no verdict, and is
+projected by `status --json`. The meter and `plan failures` show stops,
+acceptances and the next same-order event with its delay. Operator-facing
+durations use hours and minutes; numeric flags and machine records keep their
+declared units.
+
 Read before upgrading: the optional `retention` object in
 `docs/control/budgets.json` takes hours for `gate-fixture-passed` (0),
 `gate-fixture-failed` (24), `session-scratch` (24), `worker-capture` (1),
@@ -853,6 +892,30 @@ still decide command admission; the kit does not change account settings.
 An orphan without an observed end is retained on preview. Applying prune
 records the first proven-dead observation and starts its full retention window;
 it cannot be deleted by that same plan merely because it was created long ago.
+
+## Document quality
+
+Artifacts follow their declared contract and check, never the preceding
+instance's shape. Standing documents describe current state and link dated
+records. Writing guidance identifies the contract, meaning the document sections
+and functions that judge each surface, then the kind and reader. Preserve
+required content and the context, evidence, examples and alternatives that help
+that reader understand, answer, decide, act, verify or recover reasoning.
+Artifact size is no quality score and no example is selected by its length.
+
+Use `quality pass: <target>` in the current session to improve a document file,
+file list, folder, described set, or specific passage. For example,
+`quality pass: the opening paragraph of README.md` limits editing to that
+passage while allowing wider reading. The assistant resolves and announces the
+scope, asks only about material target or reader ambiguity, preserves useful
+content and settled structure, and leaves sound passages unchanged. It edits
+generated documents through their sources and preserves immutable records.
+Existing document checks still apply; it reports changes and unresolved facts,
+then continues the original task. The command adds no lifecycle event or gate
+and retains writer isolation, live-gate protection and publication controls.
+Every generated role carries this guidance. Claude's prompt hook also adds it
+when the prompt's own first content line opens with the command, so a prose
+mention, a task notification or another agent's report does not invoke it.
 
 ## License
 

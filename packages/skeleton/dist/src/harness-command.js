@@ -295,6 +295,11 @@ function shellWords(source) {
 export function shellInvocations(source) {
     return shellWords(source).map(({ words }) => words.map((word) => word.value));
 }
+/** Normalize executable operands for admission without requiring an effect
+ * adapter for every operand. Effect classification keeps its own full checks. */
+export function executableShellInvocations(source) {
+    return executableInvocations(source, 0, [], { screenEffects: false }).map((words) => words.map((word) => word.value));
+}
 const readControl = new Set([
     "if",
     "then",
@@ -1976,7 +1981,8 @@ function invocationProgram(source) {
     }
     return [];
 }
-function executableInvocations(source, depth = 0, inheritedInput = []) {
+function executableInvocations(source, depth = 0, inheritedInput = [], options = {}) {
+    const screenEffects = options.screenEffects !== false;
     if (depth > 16)
         throw new HarnessCommandRefused("Shell nesting requires an explicit effect adapter");
     return shellWords(source).flatMap((invocation) => {
@@ -1992,25 +1998,28 @@ function executableInvocations(source, depth = 0, inheritedInput = []) {
             ...invocation.stdin.map(literal),
         ];
         if (program === "eval")
-            return executableInvocations(args.map((word) => requireLiteral(word, "eval command")).join(" "), depth + 1, input);
+            return executableInvocations(args.map((word) => requireLiteral(word, "eval command")).join(" "), depth + 1, input, options);
         if (shellPrograms.has(program ?? "")) {
             // Shells accept combined short options such as -lc and -xc. The command
             // operand has the same effects whether the c option is combined or not.
             const commandOption = args.findIndex((arg) => /^-[a-z]*c[a-z]*$/i.test(requireLiteral(arg, "shell option")));
             if (commandOption >= 0)
-                return executableInvocations(requireLiteral(args[commandOption + 1], "shell command"), depth + 1, input);
+                return executableInvocations(requireLiteral(args[commandOption + 1], "shell command"), depth + 1, input, options);
             if (invocation.stdin.length)
                 return [
                     words,
-                    ...executableInvocations(invocation.stdin.join("\n"), depth + 1, input),
+                    ...executableInvocations(invocation.stdin.join("\n"), depth + 1, input, options),
                 ];
-            refuseDeniedProgram([...input, ...words]);
+            if (screenEffects)
+                refuseDeniedProgram([...input, ...words]);
         }
         // Recognizing a program never makes its remaining operands data. Keep the
         // literal floor for every invocation except proven data operands; structured
         // classification may add effects, but cannot exempt a future subcommand.
         // An already-denied invocation keeps its precise effect classification.
-        if (!dataPrograms.has(program ?? "") && !deniedInvocation(words))
+        if (screenEffects &&
+            !dataPrograms.has(program ?? "") &&
+            !deniedInvocation(words))
             refuseDeniedProgram([...input, ...floorOperands(words)]);
         return words.length ? [words] : [];
     });
