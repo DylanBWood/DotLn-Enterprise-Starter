@@ -80,5 +80,49 @@
         "note": "the review's repair of VER-001's F1 (WO-015-D020); review gate row target-gate:c1edc407-9723-4ab0-9af4-a773626d5580"
       }
     ]
+  },
+  "finalPublish": {
+    "observedAt": "2026-10-30T19:42:30Z",
+    "command": "node scripts/worktree.mjs publish WO-015 --target-worktree --branch feat/soldier-scene --title \"feat: add the soldier scene with flock, arrive and formation\" --body-file docs/final-reviews/WO-015/PR.md",
+    "exitCode": 0,
+    "headSha": "b4c51461014a835ea470542de3ab5b95a570d86d",
+    "reviewedCommits": [
+      "1eb63058ba05ff961db52bdc1302ff1f58bd168b",
+      "0df9db56bf0f18e7cf9d8e06bd91bdedc0774d60"
+    ],
+    "recordsCommit": "b4c51461014a835ea470542de3ab5b95a570d86d",
+    "overDraft": "96a62d103f66fff6b61e02cb981624992fab6d9d",
+    "isDraft": false,
+    "state": "OPEN",
+    "mergeable": "MERGEABLE",
+    "mergeStateStatus": "BLOCKED",
+    "mergeStateNote": "the required CI run had not finished at the observation; the title check had passed",
+    "title": ":sparkles: feat: add the soldier scene with flock, arrive and formation",
+    "checks": [
+      {
+        "name": "title",
+        "workflow": "Pull request title",
+        "status": "COMPLETED",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-30T19:42:13Z"
+      },
+      {
+        "name": "checks",
+        "workflow": "CI",
+        "status": "IN_PROGRESS",
+        "conclusion": "",
+        "startedAt": "2026-10-30T19:42:03Z"
+      },
+      {
+        "name": "visual",
+        "workflow": "CI",
+        "status": "QUEUED",
+        "conclusion": "",
+        "startedAt": "2026-10-30T19:42:01Z"
+      }
+    ],
+    "reviews": 0,
+    "comments": 0,
+    "admission": "run plainly from the launchpad root with the node spelling the registered-target admission covers; the host ran it without a permission prompt; the pre-tool admission line was not surfaced in the command output"
   }
 }

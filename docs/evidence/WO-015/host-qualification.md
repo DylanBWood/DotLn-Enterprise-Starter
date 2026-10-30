@@ -86,3 +86,25 @@ commits were made with `git commit-tree` from the verified tree object and an or
 the repair; no reset, restore or stash was used.
 
 The publish invocations, the hook's decision and the host's are appended below after the result.
+
+### The final publish
+
+From this launchpad worktree's root, after `final-review-result pass` (19:38:15Z), `target-records`
+(records commit `b4c51461`, 19:38:50Z) and the instance records commit `8d71ec8`, the exact registered
+helper was run plainly, with no environment prefix, pipe or redirect:
+
+```sh
+node scripts/worktree.mjs publish WO-015 --target-worktree --branch feat/soldier-scene --title "feat: add the soldier scene with flock, arrive and formation" --body-file docs/final-reviews/WO-015/PR.md
+```
+
+The host ran it without a permission prompt; exit 0. Its one output line: pushed `feat/soldier-scene`
+at `b4c51461014a835ea470542de3ab5b95a570d86d` over the draft `96a62d103f66fff6b61e02cb981624992fab6d9d`
+and marked pull request 9 on `github.com/DylanBWood/DotLn-Angular` ready. The kit's pre-tool admission
+line is not part of the command's output and was not otherwise surfaced; the plain node spelling from
+the launchpad root is the form the registered-target admission covers, and no near-miss advisory was
+seen. A read-only forge read at 19:42Z confirmed `isDraft` false, head `b4c51461`, the three commits
+(`1eb63058` the verified tree, `0df9db56` the checkbox repair, `b4c51461` the records), the title
+decorated by the repository's workflow with `:sparkles:`, the title check passed at 19:42:13Z, the CI
+`checks` run in progress and `visual` queued, so the merge state read blocked until they finish; no
+review, comment or thread. The records branch publish follows this section's commit and is recorded in
+the preview record.
