@@ -3614,6 +3614,14 @@
           "reopenWhen": "WO-019 merges and the operator names enrichment as the next member or asks how the depth extends to the catalog; the pass that hears it files the authoring-system order with the backlog as data in the app.",
           "targets": [],
           "at": "2026-10-28T07:39:03.091Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-30 planning pass (docs/planning/standard-pass-v0-103-0-2026-10-30.md) D8: WO-019 merged with the Arrive pilot the program would be designed from; the operator has not named enrichment as the next member or asked how the depth extends to the catalog; WO-019-D030's maintainability work (FUP-5e9566b63fb44fb1) rides with this candidate as its carry-in; where the order goes in the road is the operator's word.",
+          "reopenWhen": "The operator names enrichment as the next member or asks how the depth extends to the catalog; the pass that hears it files the authoring-system order with the backlog as data in the app and D030's work as a step.",
+          "targets": [],
+          "at": "2026-10-30T09:11:01.411Z"
         }
       ]
     },
@@ -3638,6 +3646,14 @@
           "reopenWhen": "WO-019 merges; the pass that follows weighs a small order for the search controls against a step in WO-018 and names which, and disposes WO-019's own row FUP-51e2f03a7992aea2 onto this candidate.",
           "targets": [],
           "at": "2026-10-28T07:39:03.079Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-30 planning pass (docs/planning/standard-pass-v0-103-0-2026-10-30.md) D8 and §NoOps C3: WO-019 merged (DotLn-Angular #8, DotLn Angular v0.5.0); the pass weighed a small order against steps in WO-018 and names the steps: the search controls are written into WO-018 as a carry-in by the pass before WO-018 activates, because WO-018 already edits the Tools home, the catalog page and the catalog data and a separate order would pay the fixed cycle for one subsystem's change; WO-019's own row FUP-51e2f03a7992aea2 is disposed onto this candidate as a duplicate.",
+          "reopenWhen": "The operator asks for the search controls before WO-018, or the pass before WO-018 activates writes them in (then this row is settled onto that amendment).",
+          "targets": [],
+          "at": "2026-10-30T09:11:01.376Z"
         }
       ]
     },
@@ -3670,6 +3686,14 @@
           "reopenWhen": "A starter release carries core's WO-207 (the preview or update --finish then names a derived instance file), or an update of this fork refuses or conflicts on an instance file the preview did not name.",
           "targets": [],
           "at": "2026-10-28T19:43:05.914Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-30 planning pass (docs/planning/standard-pass-v0-103-0-2026-10-30.md) D8 and §Requests to core item 1: core allocated the ask to WO-207 (its row FUP-b44117f7b047e976); update #38 (v0.102.0 and v0.103.0) again declared no instance action while the Git merge carried four instance seeds the fork never edited: README.md (the dispatch-bound and document-quality sections), docs/control/budgets.json (the bound keys), CLAUDE.md's generated block (six refusals) and docs/PLAYBOOK.md; reported to core again.",
+          "reopenWhen": "A starter release carries core's WO-207 (the preview or update --finish then names a derived instance file), or an update of this fork refuses or conflicts on an instance file the preview did not name.",
+          "targets": [],
+          "at": "2026-10-30T09:11:01.439Z"
         }
       ]
     },
@@ -3702,6 +3726,14 @@
           "reopenWhen": "A starter release carries core's WO-234; the pass that takes it reads the fork's attended comparison sessions against the dispatch bound and the budgets file's keys, and records the acceptance route (accept-overrun ahead of the stop) before the operator's first attended session under the bound.",
           "targets": [],
           "at": "2026-10-28T19:43:05.922Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-30 planning pass (docs/planning/standard-pass-v0-103-0-2026-10-30.md) D4 and D8: starter v0.102.0 (core WO-234) is taken by update #38; the budgets seed came through the Git merge (local-median and three complete runs for the executor, its repair, the verifier and the reviewer); over the fork's thirteen closed orders every bounded phase resolves to 8 h 0 min; WS-001 rule 25 now carries the route for an attended comparison session (the executor records accept-overrun with --ceiling unlimited for both metrics ahead of the stop when the operator says the session runs as long as it needs). The first stop or acceptance is the observation candidate C1 of that pass (FUP-3777717897701f29) reads.",
+          "reopenWhen": "Never on its own; FUP-3777717897701f29 carries the next observation.",
+          "targets": [],
+          "at": "2026-10-30T09:11:01.338Z"
         }
       ]
     },
@@ -3726,6 +3758,14 @@
           "reopenWhen": "WO-019's executor or a later order's records the latency as a cost in its decisions or usage readback, or a starter release carries core's follow-up on D029.",
           "targets": [],
           "at": "2026-10-28T19:43:05.950Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-30 planning pass (docs/planning/standard-pass-v0-103-0-2026-10-30.md) D8 and §Readings (core's item 5): core recorded the fork's case on its row FUP-be6721fbdd4b6285, which reopens on the measured cost WO-019's resume records; WO-019's decisions, host qualification and usage carry no measurement of D029's hook latency (the 150 ms in its performance record is the sampler's network throttle), so there is nothing to report yet.",
+          "reopenWhen": "An executor records the hook's cost in its decisions or usage readback (WO-015's attended session is the next chance), or a starter release carries core's follow-up on D029.",
+          "targets": [],
+          "at": "2026-10-30T09:11:01.430Z"
         }
       ]
     },
@@ -3750,6 +3790,14 @@
           "reopenWhen": "A starter release carries core's WO-237; the pass that takes it names the seed in its update pull request and records the window the operator chooses.",
           "targets": [],
           "at": "2026-10-28T19:43:05.931Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-30 planning pass (docs/planning/standard-pass-v0-103-0-2026-10-30.md) D8 and §Requests to core item 6: neither v0.102.0 nor v0.103.0 carries core's WO-237 (fourth in core's queue after WO-239 and WO-238); WO-019's release close of 2026-10-29 removed its worktrees and with them the session journals that held the grant's first granted write, the first such loss in this fork, reported to core as evidence for WO-237's row.",
+          "reopenWhen": "A starter release carries core's WO-237; the pass that takes it names the seed in its update pull request and records the window the operator chooses.",
+          "targets": [],
+          "at": "2026-10-30T09:11:01.448Z"
         }
       ]
     },
@@ -3774,6 +3822,14 @@
           "reopenWhen": "WO-019's executor records the first target write after the update (granted with kind target-worktree and its authority, or refused with the cause named), or WO-019's records merge; the pass that follows carries the report in its requests to core.",
           "targets": [],
           "at": "2026-10-28T19:43:05.939Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-30 planning pass (docs/planning/standard-pass-v0-103-0-2026-10-30.md) D8 and §Requests to core item 2: WO-019's host-qualification record and its D023 and D024 record the grant's first field use: after update #35 merged, the executor integrated main, reinstalled and re-emitted, and its first edit into the target worktree (the round-22 template change) was journaled granted with kind target-worktree; later edit-tool writes were admitted and shell-run program writes fell to host permissions, which refused none. Reported to core; the worktree's journal left with the worktree at the order's close, so no count over it is possible.",
+          "reopenWhen": "Never on its own; the next executor's target write under the grant is ordinary.",
+          "targets": [],
+          "at": "2026-10-30T09:11:01.328Z"
         }
       ]
     },
@@ -3916,7 +3972,18 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "2026-10-30 planning pass (docs/planning/standard-pass-v0-103-0-2026-10-30.md) D8: this row is WO-019-D017's note on explicit catalog search controls, which candidate C1 of the v0.100.0 pass (FUP-0fb531a975308a81) already carries with its disposition and reopening condition. Duplicate of FUP-0fb531a975308a81.",
+          "reopenWhen": "Never on its own; FUP-0fb531a975308a81 carries the condition.",
+          "targets": [
+            "FUP-0fb531a975308a81"
+          ],
+          "at": "2026-10-30T09:11:01.366Z"
+        }
+      ]
     },
     {
       "id": "FUP-bd2535b42e13d360",
@@ -3945,7 +4012,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 3,
+          "status": "settled",
+          "reason": "2026-10-30 planning pass (docs/planning/standard-pass-v0-103-0-2026-10-30.md) D9: the operator's tooling direction of 2026-10-28 (capture 66335ad0…; WO-019-D027) is WS-001 house rule 26 (every tool states its purpose and status in docs/dev-reference/workspace/scripts.md, enforced by check:scripts; a tool stays because it is useful; a gate check protects something worth checking on every change; CI runs the workspace checks once) and a standing direction under what the operator wants in the operator record.",
+          "reopenWhen": "The operator changes the cuts or the rule, or a helper proves it must run on every change.",
+          "targets": [],
+          "at": "2026-10-30T09:11:01.347Z"
+        }
+      ]
     },
     {
       "id": "FUP-f1c8c645eb537501",
@@ -3960,7 +4036,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-30 planning pass (docs/planning/standard-pass-v0-103-0-2026-10-30.md) D8: WO-015 activated on 2026-10-30T08:30Z, frozen, and its text already has the scene read its tool parameter (?tool=<id>, receipt 011's item); the catalog side of the link (the reading's 'runs in the soldier scene' line to /scene?tool=<id> with the availability test) goes to WO-018's carry-ins, written by the pass before WO-018 activates, unless WO-015's executor takes it as a named boy-scout item inside the order's authority.",
+          "reopenWhen": "WO-015 merges (the pass that follows checks whether the reading's line links), or the pass before WO-018 activates writes the carry-in.",
+          "targets": [],
+          "at": "2026-10-30T09:11:01.384Z"
+        }
+      ]
     },
     {
       "id": "FUP-ebc4ad49cf1ea093",
@@ -3975,7 +4060,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-30 planning pass (docs/planning/standard-pass-v0-103-0-2026-10-30.md) D8: addressable readings (/tools/catalog/<tool id>, so Back and shared links return to a reading) and the Tools home rendered from the summary and persisted history without loading every chunk are WO-018's carry-ins, the catalog's next order already in the sequence, written in by the pass before WO-018 activates; the loader half is also touched by the mining-store candidate (FUP-400988852956edcf) if it lands first.",
+          "reopenWhen": "The pass before WO-018 activates writes the carry-ins, or the mining-store order replaces the loader first, or the operator brings either change into an active order.",
+          "targets": [],
+          "at": "2026-10-30T09:11:01.393Z"
+        }
+      ]
     },
     {
       "id": "FUP-5e9566b63fb44fb1",
@@ -3990,7 +4084,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-30 planning pass (docs/planning/standard-pass-v0-103-0-2026-10-30.md) D8: the Arrive study's maintainability work (geometry and prose values derived from the model, the facade as the single source of each section's open state, the study owning its focus, per-instance ids) rides with the concept-enrichment and authoring program (FUP-5f1cdfde5e860902) as its carry-in, since a second authored study is that program's first act.",
+          "reopenWhen": "The enrichment program is filed (then this row is its carry-in), or a defect in the Arrive study's state or geometry appears (then the order that touches the study takes it).",
+          "targets": [],
+          "at": "2026-10-30T09:11:01.402Z"
+        }
+      ]
     },
     {
       "id": "FUP-2403ce12b1fca8b2",
@@ -4005,7 +4108,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-30 planning pass (docs/planning/standard-pass-v0-103-0-2026-10-30.md) D8, D11 and §Requests to core item 3: WO-019-D031's question (should the executor's closeout step that starts the complete launchpad run apply to a target order whose criteria name only its target gates and the document gate, and should the integrate helper list it as an affected check there) is asked of core in this pass's block; the executor procedure is core's and the fork files no order for it.",
+          "reopenWhen": "Core answers the question, or a WO-015 criterion or the kit's completion starts to consume a launchpad complete row for a target order.",
+          "targets": [],
+          "at": "2026-10-30T09:11:01.420Z"
+        }
+      ]
     },
     {
       "id": "FUP-bc3a25a8671c2814",
@@ -4020,7 +4132,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "2026-10-30 planning pass (docs/planning/standard-pass-v0-103-0-2026-10-30.md) D7: the rest of docs/repositories/dotln-angular.md is cut to what a reader of the repository uses (every command, policy in force, route, architecture pointer and reference kept; the accounts of which starter or pull request introduced each rule, the publish stories and the header additions removed, each named with the record that holds it in §Write-backs); the standing-document rule enters this fork's product 07 and every generated role with starter v0.103.0, and the operator record says event history never enters a standing document.",
+          "reopenWhen": "A reader of the profile misses a fact the cut removed, or a pass or order write-back appends event history to it again.",
+          "targets": [],
+          "at": "2026-10-30T09:11:01.358Z"
+        }
+      ]
     },
     {
       "id": "FUP-2b0df90366e5fed0",
@@ -4043,6 +4164,78 @@
           "reopenWhen": "A committed WO-019 record is found to quote the operator's messages verbatim without a recorded ready-to-file authorization.",
           "targets": [],
           "at": "2026-10-28T23:29:02.843Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3777717897701f29",
+      "key": "candidate:docs/planning/standard-pass-v0-103-0-2026-10-30.md#candidates-not-filed-with-their-reopening-conditions::12adc40b6b3a2e4e95728e6e8fc6aa97cf54c95203366093489b1871203a5a1d",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "fca8ede0f1f6c9162d9d568bb7bac3919c2ba4619947c4045c93cddf6f701c66",
+          "ref": "docs/planning/standard-pass-v0-103-0-2026-10-30.md#candidates-not-filed-with-their-reopening-conditions",
+          "title": "C1 The fork's own dispatch-bound values: whether the executor's wallClockMs stays local-median, becomes a number, or null for the attended comparison sessions, and whether completeRuns stays three,…",
+          "summary": "- **C1 The fork's own dispatch-bound values: whether the executor's `wallClockMs` stays `local-median`, becomes a number, or `null` for the attended comparison sessions, and whether `completeRuns` stays three, set in `docs/control/budgets.json` with a dated acceptance.** Not decided now: no stop or acceptance has been observed in this fork, the kit's policy resolves from the fork's own history, and the route of D4 covers the attended case. Reopen when `plan failures` reports the first `boundStops` row or a `DispatchBoundAccepted` event is recorded; the pass that reads it weighs the observed stop against the session it interrupted and records the fork's values or keeps the seed with its reaso",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-30 planning pass (docs/planning/standard-pass-v0-103-0-2026-10-30.md) §NoOps C1 and D4: the fork's own dispatch-bound values are not set before a stop or an acceptance has been observed; the kit's policy resolves from the fork's own history (8 h 0 min for every bounded phase today) and the route for an attended session is WS-001 rule 25.",
+          "reopenWhen": "npm run plan -- failures reports the first boundStops row, or a DispatchBoundAccepted event is recorded; the pass that reads it weighs the observed stop against the session it interrupted and records the fork's values in docs/control/budgets.json with a dated acceptance or keeps the seed with its reason.",
+          "targets": [],
+          "at": "2026-10-30T09:11:01.457Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-2ed0c79e62b53dd7",
+      "key": "candidate:docs/planning/standard-pass-v0-103-0-2026-10-30.md#candidates-not-filed-with-their-reopening-conditions::53df550b44a03aca117dbbcf8d4801839e2d7e71b66ab324416aefc9b39f84ab",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ca05d70933708620cc45881743158df46226684ac4617a3b46ff11ab093956c7",
+          "ref": "docs/planning/standard-pass-v0-103-0-2026-10-30.md#candidates-not-filed-with-their-reopening-conditions",
+          "title": "C2 The amendments the pass after WO-015 merges makes: WO-016's base to WO-015's merge commit; receipt 012's known issues written into WO-016, WO-008, WO-017 and WO-018; WO-018's catalog carry-ins…",
+          "summary": "- **C2 The amendments the pass after WO-015 merges makes: WO-016's base to WO-015's merge commit; receipt 012's known issues written into WO-016, WO-008, WO-017 and WO-018; WO-018's catalog carry-ins (the search controls of D017, the reading's scene link of D028 if WO-015 left it, the addressable readings and summary-driven Tools home of D029); one amendment per order, judged by that pass's refutation.** Not now: WO-015 is active and its outcome may move WO-016's shared surfaces; one amendment each later costs less than two. Reopen when WO-015 merges, or when the operator activates WO-016 before a pass runs (then its executor meets the items inside the order's authority).",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "2026-10-30 planning pass (docs/planning/standard-pass-v0-103-0-2026-10-30.md) §NoOps C2 and D6: WO-016's base, receipt 012's known issues for WO-016, WO-008, WO-017 and WO-018, and WO-018's catalog carry-ins (FUP-0fb531a975308a81, FUP-f1c8c645eb537501, FUP-ebc4ad49cf1ea093) are written by the pass after WO-015 merges, one amendment per order, because WO-015 is active and its outcome may move WO-016's shared surfaces.",
+          "reopenWhen": "WO-015 merges, or the operator activates WO-016 before a pass runs (then its executor meets receipt 012's items inside the order's authority and this row waits for WO-008).",
+          "targets": [],
+          "at": "2026-10-30T09:11:01.465Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-1d92970127b8418c",
+      "key": "candidate:docs/planning/standard-pass-v0-103-0-2026-10-30.md#candidates-not-filed-with-their-reopening-conditions::6826d6f1cf65a062c40d841d496a9cba9683a9552cc337dfa1ca16f9e596c09f",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7c2b4a42020cf68af7dce8ee2815610f2fcd05d9c8a328d55bbe757193ed987c",
+          "ref": "docs/planning/standard-pass-v0-103-0-2026-10-30.md#candidates-not-filed-with-their-reopening-conditions",
+          "title": "C3 A small catalog order of its own for WO-019's three reading follow-ups (search controls, addressable readings, the scene link) ahead of WO-018.",
+          "summary": "- **C3 A small catalog order of its own for WO-019's three reading follow-ups (search controls, addressable readings, the scene link) ahead of WO-018.** Declined: the operator asked for a note, not a redesign; the three changes sit on the surfaces WO-018 already edits (the Tools home, the catalog page, the catalog data), so a separate order would pay the fixed cycle for one subsystem's changes WO-018 can carry; the operator's road runs scene, machinery, permissions, twin, then the catalog's next work. Reopen when the operator asks for the controls before WO-018, or when WO-018's amendment would grow it past one outcome.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "declined",
+          "reason": "2026-10-30 planning pass (docs/planning/standard-pass-v0-103-0-2026-10-30.md) §NoOps C3 and D8: a small catalog order of its own for WO-019's three reading follow-ups is declined; the operator asked for a note, not a redesign, the three changes sit on the surfaces WO-018 already edits, and the operator's road runs scene, machinery, permissions, twin, then the catalog's next work; the follow-ups are WO-018's carry-ins.",
+          "reopenWhen": "The operator asks for the search controls before WO-018, or WO-018's amendment would grow it past one outcome.",
+          "targets": [],
+          "at": "2026-10-30T09:11:01.473Z"
         }
       ]
     }

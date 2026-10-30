@@ -4,7 +4,7 @@
 
 **Base branch:** `main`
 
-**Checked:** `261982f2`, WO-019's reviewed commit over WO-014's merge `1c3a4ff2`. WO-019 changes no dependency.
+**Checked:** `261982f2`, WO-019's reviewed commit, merged as DotLn-Angular #8 (`38f8afd`) and released as `DotLn Angular v0.5.0`.
 
 **Toolchain:** Node 26.9.0, npm 11.19.1, Nx 23.3.0, Angular 22.2.3, TypeScript
 6.0.3 and Vitest 5.0.5.
@@ -30,10 +30,10 @@ registration's envelope in `dotln.config.json`.
 ## Purpose and standards to emulate
 
 The workstream document [WS-001](../workstreams/WS-001-dotln-angular.md)
-carries the outcome, the twenty-one house rules and the component taxonomy.
-WO-004 demonstrates the shell app in `apps/dotln`. WO-005 adds shared core,
-utils and i18n in its target worktree; the examples below identify their source
-paths. WO-006 adds the house UI, app layout and recorded-board feature.
+carries the outcome, the house rules and the component taxonomy. The shell
+app is `apps/dotln`; the shared core, utils and i18n libraries, the house UI,
+the app layout and the features live under `libs/`, and §Demonstrated
+architecture names the file that shows each convention.
 
 ## Commands
 
@@ -56,47 +56,49 @@ mirror those Nx commands. The registration prefixes checks with
 `env NX_DAEMON=false NX_ISOLATE_PLUGINS=false` to keep plugin workers in process. CI runs the workspace checks once
 (`nx run workspace-tools:lint`), `typecheck:e2e`, `boards`, `check:bundle` and the
 affected projects' lint, test, build and e2e; a macOS job runs the visual suite.
-`lint:fixtures` is a helper for lint-policy changes.
 
-WO-005 adds `env:prime`, `i18n:check`, `check:templates`, `check:tokens`,
-`check:kits` and `typecheck:foundations`. The `workspace-tools` project's uncached `lint`
-target runs the three structural checks, translation extraction, foundation
-compiler checks and tooling tests, so the declared gate exercises them through
-its existing lint command; WO-019 moved the negative lint fixtures out of it
-(D027). WO-006 adds
-`lint:components`, `check:shared-types` and `check:fixtures` to that target.
-The e2e target builds the local Storybook catalog as a dependency; the review
-gate also runs the visual target. Baselines under the e2e source tree are
-tracked inputs, not disposable output.
+The `workspace-tools` project's uncached `lint` target runs, in this order,
+`check:templates`, `check:tokens`, `check:kits`, `i18n:check`,
+`typecheck:foundations`, `test:tooling`, `lint:components`,
+`check:shared-types`, `check:fixtures` (which runs `catalog:check`),
+`lint:hygiene` and `check:scripts`, so the declared gate exercises them
+through its existing lint command. `lint:fixtures`, `env:prime`,
+`check:bundle` and `perf:sample` are helpers outside the gate. Every tool
+script states its purpose and whether it runs in a gate, as a helper or as a
+module in the target's `docs/dev-reference/workspace/scripts.md`, which
+`check:scripts` enforces (WS-001 rule 26). The e2e target builds the local
+Storybook catalog as a dependency; the review gate also runs the visual
+target. Baselines under the e2e source tree are tracked inputs, not
+disposable output.
 
-Cache finding, 2026-10-20: installed Angular 22.2.3's
+Angular's additional disk cache is disabled in the target's `nx.json`
+(WO-005-D013): installed Angular 22.2.3's
 `node_modules/@angular/build/src/utils/normalize-cache.js` resolves a relative
 CLI cache path through a linked worktree's common Git directory to the clone's
-base checkout. The target's `nx.json` disables that additional Angular disk
-cache and retains Nx caching in `.nx/cache`; Vite uses Angular's separate local
-path inside the worktree. Disabling that cache also disables the dev server's
-Vite dependency prebundling: `@angular/build`'s dev-server options enable
-prebundling only while the cache is enabled, so `nx serve` reports that
-prebundling is disabled. WO-006 e2e serves production builds instead (VER-001 F6, WO-005-D013). An absolute Angular cache path also stays
-local and keeps both the disk cache and prebundling, but would require
-machine-specific configuration. WO-005 chooses portable isolation at that
-whole cost and records the comparison and build readback in its evidence and
-the target generator log. No registration argv change is needed. Reopen this
+base checkout, so a worktree would share the base checkout's cache. Nx caching
+stays in `.nx/cache` and Vite uses Angular's separate local path inside the
+worktree. Because `@angular/build` enables the dev server's dependency
+prebundling only while that cache is enabled, `nx serve` reports prebundling
+disabled, and e2e serves production builds instead. An absolute cache path
+would keep both at the cost of machine-specific configuration; the comparison
+and build readback are in WO-005's evidence and the generator log. Reopen this
 choice when Angular supports a portable worktree-local cache setting or when
 dev-server rebuild time becomes a concern.
 
 ## Local application startup
 
 Run `npm ci`, then `npx nx serve dotln` (or `npm start`). Open the address
-Nx prints; the root redirects to `/board` and shows **The actor board** through its own mocked HTTP API. No environment file, API or account is required. Playwright starts its own server at
-`http://127.0.0.1:4200`, refuses to reuse an existing process, and checks the
-heading, document title and absence of page errors. WO-005 adds `.env.example`,
-`npm run env:prime` and the `local` serve configuration for public local
-settings. Default development still requires no environment file or API.
-WO-007 uses MSW 3 in development and the optimized `mocked` configuration,
-serving the unchanged `uifa-board-v1` fixture from the app's own API route.
+Nx prints; the root redirects to `/board` and shows **The actor board**
+through its own mocked HTTP API (WO-015 moves the root to `/scene`). No
+environment file, API or account is required: MSW 3 answers the app's own API
+in development and in the optimized `mocked` configuration, serving the
+`uifa-board-v1` fixture; `.env.example`, `npm run env:prime` and the `local`
+serve configuration carry public local settings for whoever wants them.
 Production excludes the worker and fixtures and reports HTTP unavailability
-when its configured API is absent. It does not read the platform's resident.
+when its configured API is absent; it does not read the platform's resident.
+Playwright starts its own server at `http://127.0.0.1:4200`, refuses to reuse
+an existing process, and checks the heading, document title and absence of
+page errors.
 
 ## Branch and pull-request policy
 
@@ -108,80 +110,61 @@ pushes to `main` or merges; repository settings change only where an order
 the operator dispatched names the setting (WO-010). Target tags and Releases
 use the declared release-close route below. The registration permits
 `repo.push`, `pr.open`, `pr.thread.resolve` and `release.close` through the
-operator grant. Draft at verified (planning
-pass of 2026-10-18, D5): after the session that records
-`verification-result pass` has done so, it runs `worktree publish WO-NNN
---target-worktree --draft --branch <type>/<slug> …`, which commits from the
-tree, pushes the branch and opens a draft pull request for the operator and
-an automated reviewer; the final review reads the threads into the order's
-`preview-pr.json`, routes each, and publishes with the same command without
-`--draft`, which reuses the branch and the pull request. Starter v0.85.0
-carries the form (update pull request #8 of 2026-10-19); WO-011 declares
-the disposable output the v0.85.0 close deletes and the core-named-tag
-guard, and no target order activates before it merges (a typed hard edge on
-WO-005; planning pass of 2026-10-19, D2). DotLn-Angular declared no target
-release while the kit titled a declared target Release by the registration id
-and the tag (2026-10-19, D4); starter v0.87.0 carries
-`release.displayName`, taken by this fork inside starter v0.88.0 (update
-pull request #16 of 2026-10-21, after the draft #14 of 2026-10-20 was
-closed as superseded), and WO-012 declares the policy, `DotLn Angular` and
-the operator grant naming `release.close` (planning passes of 2026-10-20,
-D2, and 2026-10-21, D2).
-The same starter admits only the node spelling of the helper for a
-registered target, `node scripts/worktree.mjs publish WO-NNN --target-worktree …`
-run from the launchpad root at the phases that make the draft and closed
-forms legal; raw `git`, `gh` and `npm` forms, the
-`npm run worktree -- publish` spelling included, receive no
-registered-target admission and are left to host permissions. WO-006's draft
-and final publishes use the node spelling. The release-close policy below
-records the declared roots.
-Starter v0.90.0 and v0.91.0 (taken by #21 on 2026-10-23) change what the
-publish judges: the registered-target admission compares only the
-registration's publication fields (`baseBranch`, `authorityProfile`,
-`release`, the roots) and the grants file with main's committed bytes, so
-an order that edits its own gate command still publishes; a helper hidden
-by a pipe, a redirect, a `cd` or a variable prefix gets a near-miss
-advisory and no admission; launchpad identifiers (`WO-NNN`, `WO-NNN-DNNN`,
-`FUP-<16 hex>`, `VER-NNN`, `FINAL-NNN`, `REVIEW-NNN`, `WS-NNN`) refuse in
-the branch, the commits, the title and the composed body, so an order's
-commits name their change and not the order; the launchpad's
-`docs/control/outward-vocabulary.json` lists `reviewTerms`, empty since the
-planning pass of 2026-10-23, so `launchpad`, `gem` and `mask` are ordinary
-words in this repository; and each private local-terms line carries a
-`refuse:` or `review:` mode, a review item refusing the publish until the
-reviewer confirms the printed digest with `--confirm-terms sha256:<digest>`.
-WO-006's publishes of 2026-10-21 ran under the earlier rules and are
-recorded in its host-qualification record.
-Rules in force, read back on 2026-10-20: the active `main` ruleset targets
-the default branch with no bypass actors. Its `pull_request` rule accepts
+operator grant.
+
+Draft at verified (planning pass of 2026-10-18, D5): after the session that
+records `verification-result pass` has done so, it runs
+`node scripts/worktree.mjs publish WO-NNN --target-worktree --draft --branch <type>/<slug> --title <title> --body-file <path>`
+from the launchpad root, which commits from the tree, pushes the branch and
+opens a draft pull request for the operator and an automated reviewer; the
+final review reads the threads into the order's `preview-pr.json`, routes
+each, and publishes with the same command without `--draft`, which reuses
+the branch and the pull request. The kit admits only that node spelling for
+a registered target, run plainly from the launchpad root at the phases that
+make the draft and closed forms legal: raw `git`, `gh` and `npm` forms, the
+`npm run worktree -- publish` spelling included, receive no registered-target
+admission, and a helper hidden by a pipe, a redirect, a `cd` or a variable
+prefix gets a near-miss advisory and no admission; both are left to host
+permissions. The admission compares only the registration's publication
+fields (`baseBranch`, `authorityProfile`, `release`, the roots) and the
+grants file with `main`'s committed bytes, so an order that edits its own
+gate command still publishes. Launchpad identifiers (`WO-NNN`,
+`WO-NNN-DNNN`, `FUP-<16 hex>`, `VER-NNN`, `FINAL-NNN`, `REVIEW-NNN`,
+`WS-NNN`) refuse in the branch, the commits, the title and the composed
+body, so an order's commits name their change and not the order. The
+launchpad's `docs/control/outward-vocabulary.json` lists `reviewTerms`,
+empty, so `launchpad`, `gem` and `mask` are ordinary words in this
+repository; each private local-terms line carries a `refuse:` or `review:`
+mode, a review item refusing the publish until the reviewer confirms the
+printed digest with `--confirm-terms sha256:<digest>`.
+
+Rules in force on `main` (read back 2026-10-20): the active ruleset targets
+the default branch with no bypass actors; its `pull_request` rule accepts
 merge commits only, `required_status_checks` requires the `checks` run from
 GitHub Actions (app 15368), `non_fast_forward` refuses force pushes, and
-`deletion` refuses branch deletion. No approving review is required.
-DotLn-Angular automatically deletes a pull request's head branch on merge.
-The [active branch rules](../evidence/WO-010/readback-dotln-angular.json)
-and [ruleset and repository-setting readbacks](../evidence/WO-010/README.md)
+`deletion` refuses branch deletion; no approving review is required; the
+repository deletes a pull request's head branch on merge. The
+[active branch rules](../evidence/WO-010/readback-dotln-angular.json) and
+[ruleset and repository-setting readbacks](../evidence/WO-010/README.md)
 record the applied policy.
 
 ## Release close
 
 WO-012 declares `release: { "policy": "declared", "displayName": "DotLn Angular" }`
-on the `dotln-angular` registration under starter v0.88.0. A target order's
-release close creates an annotated tag and a GitHub Release titled
-`DotLn Angular <tag>`; the first is `DotLn Angular v0.1.0` while the target
-has no release baseline. The tag annotation opens with the same title. The
-registration allows `release.close`, and the existing operator grant
-`operator.dotln-angular.publication` names it in both `effects` and
-`operations`, alongside `repo.push`, `pr.open` and `pr.thread.resolve`.
-The release-close route is authorized to tag and publish the Release under
-the operator's direction of 2026-10-19; merging, repository settings and
-package publication remain with the operator. The close reads this
-launchpad's merged `main` registration and grant. The first close ran on
-2026-10-21 for WO-006: tag `v0.1.0`, Release `DotLn Angular v0.1.0`, the
-worktree and branch removed, the retained record under the launchpad's
-ignored control directory. From WO-007 on, `**Target release notes:**
+on the `dotln-angular` registration. A target order's release close creates
+an annotated tag and a GitHub Release titled `DotLn Angular <tag>`, whose
+annotation opens with the same title; the releases so far run from `v0.1.0`
+to `v0.5.0` on the repository's Releases page. The registration allows
+`release.close`, and the operator grant `operator.dotln-angular.publication`
+names it in both `effects` and `operations`, alongside `repo.push`,
+`pr.open` and `pr.thread.resolve`. The release-close route is authorized to
+tag and publish the Release under the operator's direction of 2026-10-19;
+merging, repository settings and package publication remain with the
+operator. The close reads this launchpad's merged `main` registration and
+grant, removes the worktree and branch, and keeps its retained record under
+the launchpad's ignored control directory. `**Target release notes:**
 reviewed` on the order makes the Release body the order's reviewed
-`RELEASE-NOTES.md` at the merged revision (starter v0.91.0), linted as a
-target's text.
+`RELEASE-NOTES.md` at the merged revision, linted as a target's text.
 
 Before any `dotln-angular` order starts, its authority must carry exactly
 one `**Target release classification:**` header naming `patch`, `minor` or
@@ -193,13 +176,11 @@ Both counts must be 1. Counting only recognized values misses a second header
 with a malformed value. The kit checks recognized headers only at close;
 the before-start check also rejects that malformed-duplicate case, which is
 boarded in [WO-012-D008](../evidence/WO-012/decisions.md#wo-012-d008).
-The UI planning pass adds the headers to WO-006,
-WO-007 and WO-008 and WO-006's typed dependency on WO-012 before activation.
 
 `baseDisposablePolicy: "judge-only"` keeps the clone's base-checkout output
 after the same ignored-material and filesystem judgment. The target
 worktree's declared disposable output is still deleted at close. `loadConfig`
-composes the class's declaration into this sorted list, unchanged by WO-012; WO-006 adds only the exact generated probe-diagnostic path below:
+composes the class's declaration into this sorted list, which includes the exact generated probe-diagnostic path:
 
 ```json
 [".angular",".nx","__screenshots__","coverage","dist","docs/control/local/harness/memory-incidents.jsonl","node_modules","out-tsc","playwright-report","test-output","test-results","tmp"]
@@ -237,33 +218,22 @@ identity read from `git log --no-merges -1 --format='%an <%ae>' main`.
 The launchpad `worktree publish` helper compares every commit author in
 `origin/main..HEAD` with that declaration: the operator's own commits need
 no sign-off, while every other author needs a matching `Signed-off-by`
-trailer. Mutable Git configuration grants no exemption. WO-012's final
-review records the helper's `PASS contribution-signoff` lines before
-publication; the target publish route itself does not run that rule.
+trailer. Mutable Git configuration grants no exemption; the target publish
+route itself does not run that rule.
 
 The launchpad clone's shared Git configuration sets
 `remote.upstream.tagOpt` to `--no-tags`; this is local to that clone and is
 not transmitted by its pull request. Ordinary upstream fetches therefore
-do not follow the starter's tags. The current README's named-release
-preview uses a non-tag ref:
-`git fetch --no-tags upstream refs/tags/v0.88.0:refs/upstream-releases/v0.88.0`.
+do not follow the starter's tags. A named starter release is previewed from
+a non-tag ref:
+`git fetch --no-tags upstream refs/tags/vX.Y.Z:refs/upstream-releases/vX.Y.Z`.
 Use that ref for the detached preview worktree and `preview --from`; no local
 tag is created or deleted. Keep starter/core tags off this fork's `origin`.
 The original setting readbacks are in
-[WO-011 evidence](../evidence/WO-011/README.md).
-
-WO-006's verified-phase draft publish uses
-`node scripts/worktree.mjs publish WO-006 --target-worktree --draft` with its
-reviewed branch, title and body-file arguments, run from the launchpad root;
-the final publish uses the same helper without `--draft`. Raw `git`, `gh`
-and `npm` forms receive no registered-target admission. WO-005's draft was
-admitted with the interim trust entries present; the operator removed those
-entries on 2026-10-20, as the planning pass of 2026-10-21 records. WO-006's
-session records the exact helper invocation, the hook's decision and whether
-the host prompts or denies after that admission, with no private journal
-contents copied. A prompt or denial reopens the existing literal-host-rules
-fallback through a self order. WO-012 runs no live target episode and makes
-no host-qualification claim.
+[WO-011 evidence](../evidence/WO-011/README.md). Each target order's
+host-qualification record names the exact publish invocation it ran, the
+hook's decision and the host's; a prompt or denial reopens the
+literal-host-rules fallback through a self order.
 
 ## Demonstrated architecture
 
@@ -359,10 +329,14 @@ no host-qualification claim.
 - Curated utilities: the house R/RA entry points expose application-used
   functions only, with runtime surface checks and compiler assertions.
 
-WO-007 adds stores, MSW handlers and interceptors; WO-013 adds the sub-app menu
-and arriving routes; WO-014 adds the catalog and Tools browser, which WO-019 rebuilds as a reading surface over the run's definitions, relations and hooks. Guards remain WO-008; the scene engine, records and replay libraries, twin model and toy shelf are WO-015 to WO-018's. WO-014's reviewed commits `23b39aef` and `d487a807`
-are the `Checked` revision above; its evidence and decisions record the
-fan-out, the failed and passing verifications, the repair and the review.
+Where each area came from, for the reader who wants its record: the
+workspace, tooling and CI (WO-004); core, utils, i18n and the test kits
+(WO-005); the taxonomy, the house `ui` library, the shell layout and the
+board (WO-006); events, stores, data access, MSW and persistence (WO-007);
+the sub-app menu and the arriving routes (WO-013); the catalog pipeline
+(WO-014) and the reading surface over it (WO-019). Guards are WO-008's; the
+scene engine, the records and replay libraries, the twin model and the toy
+shelf are WO-015 to WO-018's.
 
 ## Upstream references
 
@@ -374,8 +348,8 @@ fan-out, the failed and passing verifications, the repair and the review.
 - `ngrx/platform@22.0.1` (`@ngrx/signals` with the Events plugin) and
   `angular-architects/ngrx-toolkit@22.0.0` (`withCallState`, `withStorageSync`,
   `withDevtools`), installed by WO-007 (WO-007-D002), with MSW 3.0.3 answering
-  the app's own API in development and tests; the versions were read from the
-  installed declarations and the planning pass's research (2026-10-18, §4).
+  the app's own API in development and tests; the versions are read from the
+  installed declarations.
 - `angular/components@v22.2.3 src/aria` and `src/cdk` — the behavior
   libraries WO-006 wraps (Angular Aria, stable since v22 and MIT; the CDK's
   overlay, a11y and dialog entry points); no vendor component library is
@@ -389,17 +363,15 @@ fan-out, the failed and passing verifications, the repair and the review.
   feature renders and the host rules WS-001 §The console restates; WO-006
   pins the schema's commit and SHA-256 in its decisions and the generator
   log, and the pin is reported stale by `resume: status`, never a live
-  dependency; the same bytes ship as a kit file of the launchpad since
-  starter v0.93.0 (verified at v0.94.0 by the 2026-10-24 pass), and the
-  app keeps the shape as its own API's response contract for the board. The exact schema SHA-256 is
-  `7d20e785c718b4b601f45a9c351461955666ea16d49f17ae6d8fde0676629cd3`.
-  Since starter v0.93.0 the launchpad carries the same schema as a kit
-  file, `packages/console/uifa-board-v1.schema.json`, byte-identical to
-  that digest, beside `packages/console/runtime-status-v1.schema.json`
-  (SHA-256 `600bb73ab38b663a8356f305e6080729689b71f99bdd32665f634d7537b29bed`),
-  so the pin's provenance is a kit file from WO-007 on; the target's
-  committed copy stays, because this repository never depends on the
-  launchpad.
+  dependency; the app keeps the shape as its own API's response contract
+  for the board. The exact schema SHA-256 is
+  `7d20e785c718b4b601f45a9c351461955666ea16d49f17ae6d8fde0676629cd3`; the
+  launchpad carries the same bytes as a kit file,
+  `packages/console/uifa-board-v1.schema.json`, beside
+  `packages/console/runtime-status-v1.schema.json` (SHA-256
+  `600bb73ab38b663a8356f305e6080729689b71f99bdd32665f634d7537b29bed`), and
+  the target's committed copy stays, because this repository never depends
+  on the launchpad.
 - `DylanBWood/DotLn@c670e6288ecb221ef2416cef06f920006866bc5d packages/skeleton/src/console-loopback.ts`
   (core WO-225, starter v0.93.0) — the resident's loopback serves
   `GET /uifa-board-v1` and `GET /runtime-status-v1` to a caller on

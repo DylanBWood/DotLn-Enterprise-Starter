@@ -7,12 +7,11 @@ they refuse and the preferences that bind every order. Each item names the
 date it was given and the ignored capture it came from. The history of how a
 rule arrived, which pass took which release and what happened on which day
 lives in the planning documents and the repository profile, never here. The
-record was first written by the 2026-10-18 planning pass from the operator's
-own words (capture SHA-256
-`4f14c6c09512576abfd701335f4dd8a347694ff23785724422cb8d943b5d67aa`), was cut
-to its directions on 2026-10-28 at the operator's word (captures SHA-256
+record is written from the operator's own words (the captures each item
+cites; the record as a whole rests on SHA-256
+`4f14c6c09512576abfd701335f4dd8a347694ff23785724422cb8d943b5d67aa`,
 `457e3001d014ba335e73c4af6e4c2bcda8861baee04ff5d382d955b6f33ddcd3` and
-`8462d2d9aeb3297fa8282d0ad9ec6910cc9d9c880b795ffbe34586c3b47f1b6b`), and
+`8462d2d9aeb3297fa8282d0ad9ec6910cc9d9c880b795ffbe34586c3b47f1b6b`) and
 changes only when the operator says so or a pass records a new direction with
 its date. There is one copy; no harness keeps its own.
 
@@ -125,6 +124,13 @@ audience beyond the operator.
   large corpus across several agents, rather than asking the operator to
   restate the product (2026-10-21, capture
   `58478e8d07e3a40ac562f408e513e575d99702d9d3545dab5e940144c77d0b56`).
+- Tools that earn their place (2026-10-28, capture
+  `66335ad095bbe814cd112c289b21b176429313d99f9a2dd31f1f3d1ce7d87dd2`;
+  WO-019-D027; WS-001 rule 26): every tool script in DotLn-Angular has a
+  stated purpose and a status, in a gate, a helper or a module; a tool stays
+  because it is useful; a gate check protects something worth checking on
+  every change; the scripts, their tests and the gates around them never
+  take up the work for little gain.
 
 ## What the operator does not want
 
@@ -159,6 +165,11 @@ audience beyond the operator.
 - Narrative in this record: a direction enters as the rule with its date and
   capture; what happened on which day stays in the planning documents
   (2026-10-28, capture `457e3001…`).
+- Event history appended to a standing document: the repository profile, the
+  workstream and this record carry what their reader uses, whatever its
+  length, and usefulness is the test, never size; the history lives in the
+  orders' decisions and the planning documents (2026-10-28, capture
+  `66335ad0…`; WO-019-D032).
 
 ## Standing preferences
 

@@ -4,6 +4,20 @@ Statuses: `adopted`, `preserved`, `raw`, `superseded`, `transformed`, `rejected`
 
 Insert this instance's dated sessions below, newest first.
 
+## 2026-10-30 — planning pass: starter v0.103.0 taken and finished, core's answers of 2026-10-28 read, the standing documents cut (operator dispatch of 2026-10-30)
+
+Dispatch: a `planning:` request for a standard pass with the latest upstream,
+carrying core's answers of 2026-10-28 to the fork's block of its second pass
+of that day, followed by the operator's one message that update pull request
+#38 was merged, captured verbatim in ignored intake
+(`docs/intake/notes/planning-2026-10-30.md`, SHA-256
+`e3ffcaeca2670fed74edad6813c4347057544afbcc7b1571cdbc926be2bd9626`, and
+`docs/intake/notes/planning-2026-10-30-messages.md`, SHA-256
+`72d3339645a477b575b0e5e273e72c5b0562998aa1a518595fdf870626707f33`). The
+record is [the planning document](../planning/standard-pass-v0-103-0-2026-10-30.md);
+this heading registers the pass for the plan tooling. No idea is ledgered:
+the pass was not an ideation dispatch.
+
 ## 2026-10-28 — planning pass: the second standard pass of the day, on starter v0.101.0 (the update first, core's answers of 2026-10-28, WO-019's refused target write and its route after the update, three register rows re-disposed) (operator dispatch of 2026-10-28, second)
 
 Dispatch: a `planning:` request for a standard pass with the latest upstream
