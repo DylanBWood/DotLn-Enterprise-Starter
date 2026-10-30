@@ -155,3 +155,18 @@ open a second pull request because 40 already exists, exit 1 after the push. Pul
 was refreshed with `gh pr edit 40 --body-file`: the updated RECORDS-PR.md with its relative links
 rewritten to this branch's head commit, as the helper writes them, followed by the helper's
 product-gate block as published. The host ran both without a prompt.
+
+At `operator override: off` (entered 2026-10-30T21:11:16Z, exited 21:26:13Z) the hook wrote its own
+verbatim capture, `docs/intake/operator-override/2026-10-30-c5ebde820b75-212613.md` (SHA-256
+`caf1cda1e7648bcea9e40452835445f034754d3452c1a4de59e4afb2cd8b214a`), and could not append the override
+record: a closed order's record runs from the main checkout, and main refused `unknown work order
+WO-015`, because this order's control segment reaches `main` only when pull request 40 merges. The
+capture was copied to main's ignored intake at the same path and hash. The record is therefore deferred
+to the main checkout after that merge and the fast-forward, run from `/Users/dylanwood/Projects/DotLn-Instance`:
+
+```sh
+node scripts/resume.mjs override-record --bypassed "dotln-hook-enforcement,post-pass-repair-phase-absent,closed-phase-publish-helper-head-check,registered-target-admission-on-push" --effects "target commit cc0e58ed typed the e2e regression element,target commit 4260fea1 recorded decision D022 with the gate-gap follow-up,git push feat/soldier-scene b4c5146..4260fea,gh pr edit 9 body refreshed,launchpad commits ca49d5a 2f563b5 010328b and this one on wo-015,gh pr edit 40 body refreshed" --reason 'operator override from 2026-10-30T21:11:16.333Z to 2026-10-30T21:26:13.800Z' --capture docs/intake/operator-override/2026-10-30-c5ebde820b75-212613.md --capture-hash sha256:caf1cda1e7648bcea9e40452835445f034754d3452c1a4de59e4afb2cd8b214a --harness claude-code --harness-version 2.1.314 --model claude-fable-5-1 --effort xhigh --source claude-session-readback --work-order WO-015
+```
+
+Until it runs, the control log carries no `OperatorOverrideRecorded` event for this order; this
+record, D022 and the preview record are the override's durable account.
