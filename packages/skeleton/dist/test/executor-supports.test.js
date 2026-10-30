@@ -75,6 +75,21 @@ test("WO-179 and WO-195 emitted roles carry their assigned corrections across su
             assert.equal(roles.length, 6);
             for (const role of roles) {
                 const subject = `${profile.profileId} ${role.path} economy=${economy}`;
+                assert.match(role.contents, /`quality pass: <target>`/);
+                assert.match(role.contents, /file, file list, folder, described set of files, or a paragraph\/location within a file/);
+                assert.match(role.contents, /state the edit scope/);
+                assert.match(role.contents, /An omitted target does not mean every document/);
+                assert.match(role.contents, /leave sound passages unchanged/);
+                assert.match(role.contents, /preserve immutable records/);
+                assert.match(role.contents, /Continue the original task afterward/);
+                assert.match(role.contents, /creates no lifecycle event or new gate, and preserves writer isolation, live-gate protection, host permissions and publication controls/);
+                assert.match(role.contents, /judge usefulness by what the intended reader can understand, answer, decide, do, verify or recover/);
+                assert.match(role.contents, /Byte counts and structural passes do not establish usefulness or justify removing useful context/);
+                assert.match(role.contents, /Integrate each change into the affected paragraph or section/);
+                assert.match(role.contents, /Read the resulting passage as a whole; a one-line edit is sufficient when it remains coherent/);
+                assert.match(role.contents, /Rewrite or split accumulated prose when needed, preserving useful information and established structure/);
+                assert.match(role.contents, /Broader restructuring needs a concrete defect or changed reader need and must stay within authorized scope/);
+                assert.doesNotMatch(role.contents, /smallest comparable|changed conditions or shorten/);
                 for (const rule of sharedRules)
                     assert.equal(role.contents.split(rule).length - 1, 1, `${subject}: assigned rule ${rule}`);
                 assert.doesNotMatch(role.contents, /ask if an answer changes scope or authority|ask one focused question if that reading is doubtful/, `${subject}: replaced arbitration wording stays absent`);
@@ -105,7 +120,7 @@ test("WO-179 and WO-195 emitted roles carry their assigned corrections across su
                     assert.doesNotMatch(role.contents, /A comment says what the code does/, subject);
                 }
                 else if (role.path.endsWith("dotln-verifier/SKILL.md")) {
-                    assert.match(role.contents, /Consume the executor's structural, Preflight suite and document rows when their code identity matches the subject/, subject);
+                    assert.match(role.contents, /Consume the executor's structural and Preflight rows at the subject's code identity, and its document row for the exact candidate tree/, subject);
                     assert.doesNotMatch(role.contents, /Run the product gate with `npm test`|Consume the executor's recorded passing `npm test` row/, subject);
                     assert.match(role.contents, /probe with `npm test -- --only <suite>`/, subject);
                 }

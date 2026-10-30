@@ -17,6 +17,7 @@ import { TARGET_PUBLICATION_EFFECTS, targetPublicationRefusal, } from "./target-
 import { applyFeedbackCorrection, compileFeedbackUnits, COMPILER_PACKAGE_VERSION, fnv1a64, canonicalStringify, showHarnessAdvisory, harnessPromptIntent, harnessPromptLine, assertOutsideWriteGrants, outsideWriteEffect, } from "@dotln/compiler";
 import { harnessAuthorization } from "./reactor.js";
 import { personalFeedback } from "./loadouts/feedback.js";
+import { qualityPassGuidance } from "./document-quality.js";
 import { HarnessCommandRefused, LIVE_GATE_READ_LIST, harnessToolEffects, invocationEffects, liveGateReads, patchWriteTargets, shellRedirectTargets, shellWritePaths, shellWriteTargets, commitMessageInputs, shellDiagnostics, shellInvocations, executableShellInvocations, shellGuidance, } from "./harness-command.js";
 import { activeGateRuns, beginGateRun, gateInputPath, gateRecordPath, prospectiveRealpath, gateTreeHash, findGateCheck, readGateChecks, recordGateChecks, gateCodeIdentity, } from "./gate-evidence.mjs";
 import { collectSessionUsage, currentCopilotSession, usageObservation, recordUsageObservation, usageReadbackLine, usageSessionKey, } from "./usage-observation.mjs";
@@ -786,6 +787,7 @@ const operatorPrefixes = {
     "operator override:": "override",
     "scope expand:": "scope expansion",
     "conversation only:": "other step",
+    "quality pass:": "direction",
 };
 const observationPhase = (session) => session.intent === "resume: fix"
     ? "repair"
@@ -4483,6 +4485,14 @@ async function evaluateExistingHarnessHook(config, input, root, boundary, outsid
         observeTypedCorrection(root, observationScope(), input.prompt ?? "");
         additionalContext = [
             additionalContext,
+            // A quality pass is requested by the prompt's own first content line,
+            // the line every dispatch prefix is read from. A task notification or
+            // another agent's report opens with its envelope there, so it never
+            // receives the document-editing guidance.
+            input.hook_event_name === "UserPromptSubmit" &&
+                harnessPromptLine(input.prompt).text.startsWith("quality pass:")
+                ? qualityPassGuidance
+                : undefined,
             observationBoundary(root, observationScope(), {
                 ...(input.prompt ? { prompt: input.prompt } : {}),
                 ...(input.transcript_path

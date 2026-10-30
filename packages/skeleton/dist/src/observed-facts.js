@@ -202,7 +202,9 @@ export function scanHedges(text, facts) {
         return markers.flatMap((marker, index) => {
             const part = phrase.slice(index === 0 ? 0 : marker.index, markers[index + 1]?.index);
             const afterMarker = part.slice(part.indexOf(marker[0]) + marker[0].length);
-            const number = /\b\d+(?:,\d{3})*(?:\.\d+)?(?::\d{2})?\s*(?:milliseconds?|ms|seconds?|secs?|minutes?|mins?|hours?|tokens?|USD|dollars?)?\b/i;
+            // A number inside a dotted version or identifier, such as 2.1.312, is
+            // not a quantity.
+            const number = /(?<![\w.])\d+(?:,\d{3})*(?:\.\d+)?(?!\.\d)(?::\d{2})?\s*(?:milliseconds?|ms|seconds?|secs?|minutes?|mins?|hours?|tokens?|USD|dollars?)?\b/i;
             const quantity = number.exec(afterMarker) ??
                 /\b(?:a|one|two|three|four|five|six|seven|eight|nine|ten)?\s*(?:milliseconds?|seconds?|minutes?|hours?)\b/i.exec(afterMarker) ??
                 number.exec(part);
