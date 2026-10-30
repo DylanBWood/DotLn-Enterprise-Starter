@@ -13,7 +13,7 @@ This branch files the instance records of WO-015, the soldier scene in DotLn-Ang
 
 - The target's declared review gate (install, lint, test, format, build, e2e and visual) passed at the verified tree `fbad54f9…`, again at the reviewed tree after the review's repair, and a third time at the corrected tree `5c7aa4b6…` under the override, each with no tracked-byte mutation; `npm run typecheck:e2e`, which CI runs and the gate does not, passes at the corrected tree; the eleven-command preflight ran before the first full gate; this review reproduced the grep, dependency, fixture and walkthrough-count criteria at the verified tree and ran the scene and engine suites fresh.
 - The kit's pre-review commit lint passes over the two described commits at the result transition.
-- All ten criteria are met; no waiver, correction or override was recorded. Criterion 1, the verifier's, is met on VER-001's independent walkthrough.
+- All ten criteria are met; no waiver or correction was recorded. Criterion 1, the verifier's, is met on VER-001's independent walkthrough. The one override, the type-check recovery after the pass (D022), is recorded in the host qualification and the preview record here and in the control log from the main checkout when the operator ends it.
 - Gates in this worktree: `npm run test:docs` passed after the review's last record edit, again after the records moved into the target, and once more after the publish observations; no launchpad complete run is owed for this target order (D019); `git diff --check` clean; `node scripts/harness.mjs check`, `npm run release -- check-surfaces --local` and `npm run publication:check` passed after the no-op integration.
 
 ## Limits and follow-ups
