@@ -289,6 +289,20 @@
       "reason": "missing file",
       "count": 1,
       "note": "WO-019's decisions.md, VER-001.md and FINAL-001.md moved into DotLn-Angular's docs/dotln/ by target-records (TargetRecordsCommitted, 2026-10-28, records commit b8e5b0ce); the launchpad record keeps its original link; declared by WO-019's final review (FINAL-001, 2026-10-28) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-015/README.md",
+      "href": "decisions.md",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-015's decisions.md, VER-001.md and FINAL-001.md moved into DotLn-Angular's docs/dotln/ by target-records (TargetRecordsCommitted, 2026-10-30, records commit b4c51461); the launchpad record keeps its original link; declared by WO-015's final review (FINAL-001, 2026-10-30) before the records publish, so the records branch and main stay green."
+    },
+    {
+      "file": "docs/evidence/WO-015/design/comparisons.md",
+      "href": "../decisions.md",
+      "reason": "missing file",
+      "count": 1,
+      "note": "WO-015's decisions.md, VER-001.md and FINAL-001.md moved into DotLn-Angular's docs/dotln/ by target-records (TargetRecordsCommitted, 2026-10-30, records commit b4c51461); the launchpad record keeps its original link; declared by WO-015's final review (FINAL-001, 2026-10-30) before the records publish, so the records branch and main stay green."
     }
   ],
   "homePaths": {

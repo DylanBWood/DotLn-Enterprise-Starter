@@ -4,7 +4,7 @@
 
 **Base branch:** `main`
 
-**Checked:** `261982f2`, WO-019's reviewed commit, merged as DotLn-Angular #8 (`38f8afd`) and released as `DotLn Angular v0.5.0`.
+**Checked:** `0df9db56`, WO-015's reviewed head (`1eb63058`, the verified tree, and the review's checkbox repair) over WO-019's merge `38f8afd`, open as DotLn-Angular #9; the latest release is `DotLn Angular v0.5.0`.
 
 **Toolchain:** Node 26.9.0, npm 11.19.1, Nx 23.3.0, Angular 22.2.3, TypeScript
 6.0.3 and Vitest 5.0.5.
@@ -88,8 +88,8 @@ dev-server rebuild time becomes a concern.
 ## Local application startup
 
 Run `npm ci`, then `npx nx serve dotln` (or `npm start`). Open the address
-Nx prints; the root redirects to `/board` and shows **The actor board**
-through its own mocked HTTP API (WO-015 moves the root to `/scene`). No
+Nx prints; the root redirects to `/scene` and shows **The soldier scene**, and
+`/board` shows **The actor board** through its own mocked HTTP API. No
 environment file, API or account is required: MSW 3 answers the app's own API
 in development and in the optimized `mocked` configuration, serving the
 `uifa-board-v1` fixture; `.env.example`, `npm run env:prime` and the `local`
@@ -272,9 +272,10 @@ literal-host-rules fallback through a self order.
   `sub-app-menu-group.ts` beside it. The app projects groups and router links;
   the menu owns the navigation landmark and the group owns its list fallback.
 - Lazy sub-app routes: `libs/features/scene/src/lib/scene.routes.ts` and
-  `libs/features/machinery/src/lib/machinery.routes.ts`; arriving containers
-  compose the house empty-state template. Scene, Machinery and Tools are the
-  menu groups; the root continues to redirect to the actor board at `/board`.
+  `libs/features/machinery/src/lib/machinery.routes.ts`; Machinery's arriving
+  container composes the house empty-state template. Scene, Machinery and Tools
+  are the menu groups; the root redirects to the soldier scene at `/scene`, and
+  the actor board keeps its own route at `/board`.
 - Mapper: `libs/features/board/src/lib/mappers/cell-value-mapper/cell-value-mapper.ts`.
 - Container: `libs/features/board/src/lib/containers/board-page/board-page.ts`.
 - Facade: `libs/features/board/src/lib/facades/board.facade.ts`.
@@ -315,6 +316,21 @@ literal-host-rules fallback through a self order.
   Standalone explanations use Angular `@defer` on first expansion; closed
   sections create no explanation view, and visited sections retain their view on
   collapse. Design comparisons and their outcome live in WO-019 evidence.
+- Scene engine: `libs/shared/scene-engine` is pure TypeScript tagged `type:util`,
+  so every later scene reuses it. `interpreter.ts` reads a catalog tool through its
+  parameter names, with no code per tool, and `run.ts` keeps a live run and its
+  replay the same. A run is a seed and a list of steps; `trial-known-outcome.json`
+  pins its frame hashes. `docs/dev-reference/architecture/scene.md` holds the rules.
+- Renderer seam: `libs/features/scene/src/lib/renderers/scene-renderer.ts` is what
+  a painter implements, with canvas, text and null painters behind it, so a later
+  painter changes neither the engine nor the feature.
+- Drawing wrapper: `libs/features/scene/src/lib/wrappers/scene-canvas/` owns the only
+  `<canvas>`. A wrapper may own a browser drawing API, as `component-taxonomy.md`
+  records.
+- Field skin: `libs/shared/ui/src/styles/_field-skin.scss` is a token layer under
+  `[data-skin='field']` over the plain skin, reaching the shell around the page
+  through `html:has()`; `[data-full-bleed]` in the app's styles is the one rule that
+  is not a token.
 - Concept mapping: `docs/dev-reference/architecture/concept-mapping.md` records
   the UIFA engineer's exploration purpose, cross-area metaphors, diagnostic
   mappings, RxJS modelling and candidate graduation to platform behavior.
@@ -334,9 +350,9 @@ workspace, tooling and CI (WO-004); core, utils, i18n and the test kits
 (WO-005); the taxonomy, the house `ui` library, the shell layout and the
 board (WO-006); events, stores, data access, MSW and persistence (WO-007);
 the sub-app menu and the arriving routes (WO-013); the catalog pipeline
-(WO-014) and the reading surface over it (WO-019). Guards are WO-008's; the
-scene engine, the records and replay libraries, the twin model and the toy
-shelf are WO-015 to WO-018's.
+(WO-014) and the reading surface over it (WO-019); the scene engine and the
+soldier scene (WO-015). Guards are WO-008's; the records and replay libraries,
+the twin model and the toy shelf are WO-016 to WO-018's.
 
 ## Upstream references
 

@@ -1,0 +1,955 @@
+{
+  "schema": "independent-verification-probes-v1",
+  "workOrder": "WO-015",
+  "report": "docs/verifications/WO-015/VER-001.md",
+  "targetCommit": "38f8afd6e1507483c58a662f2df7c3974dfd62b0",
+  "targetTree": "fbad54f93626d1cde1321a59a94b46e2e42c50e1",
+  "walkthrough": {
+    "startedAt": "2026-10-30T18:18:28.116Z",
+    "production": true,
+    "browserClock": "Playwright controlled requestAnimationFrame time; real DOM and pointer/keyboard actions",
+    "widths": [
+      {
+        "width": 1440,
+        "steps": [
+          {
+            "step": "01-root",
+            "path": "ver-001-01-root-1440.png",
+            "at": "2026-10-30T18:18:28.294Z",
+            "metrics": {
+              "cohesionRadius": "55.0",
+              "collisions": "0",
+              "headingVariance": "0.84",
+              "timeToObjective": "unknown",
+              "stalledUnits": "0"
+            }
+          },
+          {
+            "step": "02-marquee",
+            "path": "ver-001-02-marquee-1440.png",
+            "at": "2026-10-30T18:18:28.589Z",
+            "metrics": {
+              "cohesionRadius": "37.8",
+              "collisions": "0",
+              "headingVariance": "0.71",
+              "timeToObjective": "unknown",
+              "stalledUnits": "0"
+            },
+            "selected": 12
+          },
+          {
+            "step": "03-flock",
+            "path": "ver-001-03-flock-1440.png",
+            "at": "2026-10-30T18:18:30.208Z",
+            "metrics": {
+              "cohesionRadius": "14.9",
+              "collisions": "0",
+              "headingVariance": "0.69",
+              "timeToObjective": "unknown",
+              "stalledUnits": "0"
+            }
+          },
+          {
+            "step": "04-arrive",
+            "path": "ver-001-04-arrive-1440.png",
+            "at": "2026-10-30T18:18:34.192Z",
+            "metrics": {
+              "cohesionRadius": "2.9",
+              "collisions": "0",
+              "headingVariance": "0.11",
+              "timeToObjective": "5.0",
+              "stalledUnits": "0"
+            },
+            "settleBrowserMs": 12000
+          },
+          {
+            "step": "05-wedge",
+            "path": "ver-001-05-wedge-1440.png",
+            "at": "2026-10-30T18:18:47.778Z",
+            "metrics": {
+              "cohesionRadius": "8.1",
+              "collisions": "0",
+              "headingVariance": "0.79",
+              "timeToObjective": "22.3",
+              "stalledUnits": "0"
+            },
+            "beforeWedge": {
+              "cohesionRadius": "32.2",
+              "collisions": "0",
+              "headingVariance": "0.80",
+              "timeToObjective": "5.0",
+              "stalledUnits": "0"
+            },
+            "settleBrowserMs": 38000
+          },
+          {
+            "step": "06-compare",
+            "path": "ver-001-06-compare-1440.png",
+            "at": "2026-10-30T18:18:47.964Z",
+            "metrics": {},
+            "divergence": "The branches first differ at frame 908.",
+            "series": [
+              "Cohesion radius\n32.2 \u2192 8.1",
+              "Collisions\n0 \u2192 0",
+              "Heading variance\n0.80 \u2192 0.00",
+              "Time to objective\n5.0 \u2192 unknown",
+              "Stalled units\n0 \u2192 0"
+            ]
+          },
+          {
+            "step": "07-saved",
+            "path": "ver-001-07-saved-1440.png",
+            "at": "2026-10-30T18:18:48.172Z",
+            "metrics": {
+              "cohesionRadius": "55.0",
+              "collisions": "0",
+              "headingVariance": "0.84",
+              "timeToObjective": "unknown",
+              "stalledUnits": "0"
+            }
+          },
+          {
+            "step": "08-link",
+            "path": "ver-001-08-link-1440.png",
+            "at": "2026-10-30T18:18:48.428Z",
+            "metrics": {
+              "cohesionRadius": "55.0",
+              "collisions": "0",
+              "headingVariance": "0.84",
+              "timeToObjective": "unknown",
+              "stalledUnits": "0"
+            }
+          }
+        ],
+        "definition": "The classic blend: separation from close neighbours, cohesion (arrive toward the neighbours' centre of mass) and velocity matching; emergent bird-like group motion from three local rules.",
+        "storage": {
+          "keys": [
+            "dotln-angular.scene"
+          ],
+          "writes": [
+            "dotln-angular.scene"
+          ],
+          "cookie": ""
+        },
+        "axeViolations": [],
+        "pageErrors": [],
+        "nonGetRequests": []
+      },
+      {
+        "width": 768,
+        "steps": [
+          {
+            "step": "01-root",
+            "path": "ver-001-01-root-768.png",
+            "at": "2026-10-30T18:18:49.223Z",
+            "metrics": {
+              "cohesionRadius": "55.0",
+              "collisions": "0",
+              "headingVariance": "0.84",
+              "timeToObjective": "unknown",
+              "stalledUnits": "0"
+            }
+          },
+          {
+            "step": "02-marquee",
+            "path": "ver-001-02-marquee-768.png",
+            "at": "2026-10-30T18:18:49.520Z",
+            "metrics": {
+              "cohesionRadius": "37.8",
+              "collisions": "0",
+              "headingVariance": "0.71",
+              "timeToObjective": "unknown",
+              "stalledUnits": "0"
+            },
+            "selected": 12
+          },
+          {
+            "step": "03-flock",
+            "path": "ver-001-03-flock-768.png",
+            "at": "2026-10-30T18:18:51.175Z",
+            "metrics": {
+              "cohesionRadius": "14.8",
+              "collisions": "0",
+              "headingVariance": "0.69",
+              "timeToObjective": "unknown",
+              "stalledUnits": "0"
+            }
+          },
+          {
+            "step": "04-arrive",
+            "path": "ver-001-04-arrive-768.png",
+            "at": "2026-10-30T18:18:55.114Z",
+            "metrics": {
+              "cohesionRadius": "2.9",
+              "collisions": "0",
+              "headingVariance": "0.11",
+              "timeToObjective": "5.0",
+              "stalledUnits": "0"
+            },
+            "settleBrowserMs": 12000
+          },
+          {
+            "step": "05-wedge",
+            "path": "ver-001-05-wedge-768.png",
+            "at": "2026-10-30T18:19:08.549Z",
+            "metrics": {
+              "cohesionRadius": "8.1",
+              "collisions": "0",
+              "headingVariance": "0.79",
+              "timeToObjective": "19.8",
+              "stalledUnits": "0"
+            },
+            "beforeWedge": {
+              "cohesionRadius": "32.2",
+              "collisions": "0",
+              "headingVariance": "0.80",
+              "timeToObjective": "5.0",
+              "stalledUnits": "0"
+            },
+            "settleBrowserMs": 38000
+          },
+          {
+            "step": "06-compare",
+            "path": "ver-001-06-compare-768.png",
+            "at": "2026-10-30T18:19:08.747Z",
+            "metrics": {},
+            "divergence": "The branches first differ at frame 905.",
+            "series": [
+              "Cohesion radius\n32.2 \u2192 8.1",
+              "Collisions\n0 \u2192 0",
+              "Heading variance\n0.80 \u2192 0.00",
+              "Time to objective\n5.0 \u2192 unknown",
+              "Stalled units\n0 \u2192 0"
+            ]
+          },
+          {
+            "step": "07-saved",
+            "path": "ver-001-07-saved-768.png",
+            "at": "2026-10-30T18:19:08.935Z",
+            "metrics": {
+              "cohesionRadius": "55.0",
+              "collisions": "0",
+              "headingVariance": "0.84",
+              "timeToObjective": "unknown",
+              "stalledUnits": "0"
+            }
+          },
+          {
+            "step": "08-link",
+            "path": "ver-001-08-link-768.png",
+            "at": "2026-10-30T18:19:09.172Z",
+            "metrics": {
+              "cohesionRadius": "55.0",
+              "collisions": "0",
+              "headingVariance": "0.84",
+              "timeToObjective": "unknown",
+              "stalledUnits": "0"
+            }
+          }
+        ],
+        "definition": "The classic blend: separation from close neighbours, cohesion (arrive toward the neighbours' centre of mass) and velocity matching; emergent bird-like group motion from three local rules.",
+        "storage": {
+          "keys": [
+            "dotln-angular.scene"
+          ],
+          "writes": [
+            "dotln-angular.scene"
+          ],
+          "cookie": ""
+        },
+        "axeViolations": [],
+        "pageErrors": [],
+        "nonGetRequests": []
+      },
+      {
+        "width": 360,
+        "steps": [
+          {
+            "step": "01-root",
+            "path": "ver-001-01-root-360.png",
+            "at": "2026-10-30T18:19:09.963Z",
+            "metrics": {
+              "cohesionRadius": "55.0",
+              "collisions": "0",
+              "headingVariance": "0.84",
+              "timeToObjective": "unknown",
+              "stalledUnits": "0"
+            }
+          },
+          {
+            "step": "02-marquee",
+            "path": "ver-001-02-marquee-360.png",
+            "at": "2026-10-30T18:19:10.258Z",
+            "metrics": {
+              "cohesionRadius": "37.8",
+              "collisions": "0",
+              "headingVariance": "0.71",
+              "timeToObjective": "unknown",
+              "stalledUnits": "0"
+            },
+            "selected": 12
+          },
+          {
+            "step": "03-flock",
+            "path": "ver-001-03-flock-360.png",
+            "at": "2026-10-30T18:19:11.865Z",
+            "metrics": {
+              "cohesionRadius": "15.0",
+              "collisions": "0",
+              "headingVariance": "0.70",
+              "timeToObjective": "unknown",
+              "stalledUnits": "0"
+            }
+          },
+          {
+            "step": "04-arrive",
+            "path": "ver-001-04-arrive-360.png",
+            "at": "2026-10-30T18:19:15.814Z",
+            "metrics": {
+              "cohesionRadius": "2.9",
+              "collisions": "0",
+              "headingVariance": "0.11",
+              "timeToObjective": "5.0",
+              "stalledUnits": "0"
+            },
+            "settleBrowserMs": 12000
+          },
+          {
+            "step": "05-wedge",
+            "path": "ver-001-05-wedge-360.png",
+            "at": "2026-10-30T18:19:29.186Z",
+            "metrics": {
+              "cohesionRadius": "8.1",
+              "collisions": "0",
+              "headingVariance": "0.79",
+              "timeToObjective": "19.8",
+              "stalledUnits": "0"
+            },
+            "beforeWedge": {
+              "cohesionRadius": "32.2",
+              "collisions": "0",
+              "headingVariance": "0.80",
+              "timeToObjective": "5.0",
+              "stalledUnits": "0"
+            },
+            "settleBrowserMs": 38000
+          },
+          {
+            "step": "06-compare",
+            "path": "ver-001-06-compare-360.png",
+            "at": "2026-10-30T18:19:29.369Z",
+            "metrics": {},
+            "divergence": "The branches first differ at frame 905.",
+            "series": [
+              "Cohesion radius\n32.2 \u2192 8.1",
+              "Collisions\n0 \u2192 0",
+              "Heading variance\n0.80 \u2192 0.00",
+              "Time to objective\n5.0 \u2192 unknown",
+              "Stalled units\n0 \u2192 0"
+            ]
+          },
+          {
+            "step": "07-saved",
+            "path": "ver-001-07-saved-360.png",
+            "at": "2026-10-30T18:19:29.558Z",
+            "metrics": {
+              "cohesionRadius": "55.0",
+              "collisions": "0",
+              "headingVariance": "0.84",
+              "timeToObjective": "unknown",
+              "stalledUnits": "0"
+            }
+          },
+          {
+            "step": "08-link",
+            "path": "ver-001-08-link-360.png",
+            "at": "2026-10-30T18:19:29.789Z",
+            "metrics": {
+              "cohesionRadius": "55.0",
+              "collisions": "0",
+              "headingVariance": "0.84",
+              "timeToObjective": "unknown",
+              "stalledUnits": "0"
+            }
+          }
+        ],
+        "definition": "The classic blend: separation from close neighbours, cohesion (arrive toward the neighbours' centre of mass) and velocity matching; emergent bird-like group motion from three local rules.",
+        "storage": {
+          "keys": [
+            "dotln-angular.scene"
+          ],
+          "writes": [
+            "dotln-angular.scene"
+          ],
+          "cookie": ""
+        },
+        "axeViolations": [],
+        "pageErrors": [],
+        "nonGetRequests": []
+      }
+    ]
+  },
+  "walkthroughRequiredStepsPassed": true,
+  "combinedWalkthroughProcessExit": 1,
+  "combinedWalkthroughExitReason": "All eight required steps completed at each of three widths; the later rapid Space/Escape variation found F1. Its diagnosis and passing ordinary selection flow are in browserExtras.",
+  "browserExtras": {
+    "startedAt": "2026-10-30T18:21:12.185Z",
+    "keyboard": [
+      {
+        "waitForModel": false,
+        "before": {
+          "focus": "All 20 units",
+          "checked": 1
+        },
+        "after": {
+          "focus": "All 20 units",
+          "checked": 1,
+          "canvas": "The field, with 20 units and 0 selected. The unit list below the field carries the same state as text."
+        }
+      },
+      {
+        "waitForModel": true,
+        "before": {
+          "focus": "1 selected",
+          "checked": 1
+        },
+        "after": {
+          "focus": "All 20 units",
+          "checked": 0,
+          "canvas": "The field, with 20 units and 0 selected. The unit list below the field carries the same state as text."
+        }
+      },
+      {
+        "rapidRepeat": 0,
+        "focus": "All 20 units",
+        "checked": 1
+      },
+      {
+        "rapidRepeat": 1,
+        "focus": "All 20 units",
+        "checked": 1
+      },
+      {
+        "rapidRepeat": 2,
+        "focus": "All 20 units",
+        "checked": 1
+      },
+      {
+        "rapidRepeat": 3,
+        "focus": "All 20 units",
+        "checked": 1
+      },
+      {
+        "rapidRepeat": 4,
+        "focus": "All 20 units",
+        "checked": 1
+      },
+      {
+        "rapidRepeat": 5,
+        "focus": "All 20 units",
+        "checked": 1
+      },
+      {
+        "rapidRepeat": 6,
+        "focus": "All 20 units",
+        "checked": 1
+      },
+      {
+        "rapidRepeat": 7,
+        "focus": "All 20 units",
+        "checked": 1
+      },
+      {
+        "rapidRepeat": 8,
+        "focus": "All 20 units",
+        "checked": 1
+      },
+      {
+        "rapidRepeat": 9,
+        "focus": "All 20 units",
+        "checked": 1
+      }
+    ],
+    "extra": [
+      {
+        "probe": "marquee then Escape required flow",
+        "pass": true
+      },
+      {
+        "probe": "unoffered query tool",
+        "id": "unknown:ver-001",
+        "notice": "unknown:ver-001",
+        "pass": true
+      },
+      {
+        "probe": "unoffered query tool",
+        "id": "eip:91",
+        "notice": "channel.policy",
+        "pass": true
+      },
+      {
+        "probe": "unreadable stored value is idle, reported and unchanged",
+        "raw": "{broken",
+        "pass": true
+      },
+      {
+        "probe": "unreadable stored value is idle, reported and unchanged",
+        "raw": "{\"version\":0,\"compositions\":[]}",
+        "pass": true
+      },
+      {
+        "probe": "wildcard home",
+        "pass": true
+      }
+    ],
+    "pageErrors": [],
+    "success": true,
+    "finishedAt": "2026-10-30T18:21:15.046Z"
+  },
+  "engine": {
+    "startedAt": "2026-10-30T18:23:22.267Z",
+    "checks": [
+      {
+        "name": "all sixteen catalog tools run and every catalog parameter is read",
+        "pass": true,
+        "tools": 16,
+        "scenarios": 32
+      },
+      {
+        "name": "determinism and live/replay equality across varied seeds, defaults and slider extremes",
+        "pass": true,
+        "sessions": 48,
+        "framesPerSession": 600
+      },
+      {
+        "name": "zero separation collides; default flock stays collision-free after settling",
+        "pass": true,
+        "zeroSeparationPeakCollisions": 50,
+        "defaultZeroCollisionFrames": 901
+      },
+      {
+        "name": "greedy assignment agrees with the hand-computed table and unique slots",
+        "pass": true,
+        "assignment": [
+          {
+            "unitId": "unit-c",
+            "slot": 0,
+            "slotRole": "close-combat",
+            "cost": 0
+          },
+          {
+            "unitId": "unit-d",
+            "slot": 1,
+            "slotRole": "close-combat",
+            "cost": 0
+          },
+          {
+            "unitId": "unit-b",
+            "slot": 2,
+            "slotRole": "ranged",
+            "cost": 0
+          },
+          {
+            "unitId": "unit-e",
+            "slot": 3,
+            "slotRole": "ranged",
+            "cost": 0
+          },
+          {
+            "unitId": "unit-a",
+            "slot": 4,
+            "slotRole": "support",
+            "cost": 0
+          },
+          {
+            "unitId": "unit-f",
+            "slot": 5,
+            "slotRole": "support",
+            "cost": 0
+          }
+        ]
+      },
+      {
+        "name": "known hashes, metric series and first-divergence frame match committed oracle",
+        "pass": true,
+        "firstDivergence": 61,
+        "metricSeries": 8
+      },
+      {
+        "name": "unknown kind and empty selection refuse without changing state or next frame",
+        "pass": true,
+        "tick": 137,
+        "refusal": "The scene engine does not interpret the transform kind verify.uninterpreted."
+      },
+      {
+        "name": "same-frame replay ordering and refusal persistence from earlier reviews",
+        "pass": true,
+        "sameFrameHash": "b82aef346d1ce846",
+        "refusalStillVisible": true
+      },
+      {
+        "name": "fixed-after-wedge, holed formations and false first-tick arrivals are repaired",
+        "pass": true,
+        "fixedArrival": 6.916666666666667,
+        "holedFormationAtRest": true,
+        "scatteredSeekInitiallyUnknown": true
+      },
+      {
+        "name": "priority crowd known follow-up remains visible",
+        "pass": true,
+        "atRest": false,
+        "peakSpeedAtFinalFrame": 0.2327241366127464,
+        "metrics": {
+          "cohesionRadius": 6.456761032831969,
+          "collisions": 0,
+          "headingVariance": 0.7026070842014465,
+          "timeToObjective": 5.9,
+          "stalledUnits": 0,
+          "anchorToMean": null,
+          "slotError": null,
+          "assignmentCost": null
+        }
+      }
+    ],
+    "success": true,
+    "finishedAt": "2026-10-30T18:23:23.732Z"
+  },
+  "static": {
+    "engineDomAngular": [],
+    "canvasFiles": [
+      "libs/features/scene/src/lib/wrappers/scene-canvas/scene-canvas.ts"
+    ],
+    "canvasApiOutsideWrapper": [],
+    "nodeImports": [],
+    "labelValueMatches": [],
+    "chromeLines": 1,
+    "runtimeDependencyKeysEqual": true,
+    "lockDiff": 0,
+    "drawingApiSentence": 1,
+    "engineRunsSentence": 1,
+    "newSuppressions": [],
+    "rejectedChromeReferences": [],
+    "success": true
+  },
+  "images": [
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-01-root-1440.png",
+      "sha256": "7de61e1e60b8ba4811bac41174d3f47810c34b7ea49eefc7bdbd4ccac4763830",
+      "bytes": 121644
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-02-marquee-1440.png",
+      "sha256": "3eff0da7adbaf6b177145402d573b662a20780be07a65de8bd6aa92e30a0d0e3",
+      "bytes": 128770
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-03-flock-1440.png",
+      "sha256": "884300612cb46cda1528d87c504aa49683354102d754b864e11115572d7717d8",
+      "bytes": 175154
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-04-arrive-1440.png",
+      "sha256": "15c11066bd72d41e3332e83c2d3ee3d597c5378255fa9caad6c4120d1523ae17",
+      "bytes": 169303
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-05-wedge-1440.png",
+      "sha256": "d6f145348ad7528dc63b73d61322b93d7530df0c88ff0bdcae8794ce7375ccfc",
+      "bytes": 180201
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-06-compare-1440.png",
+      "sha256": "93ffab91d8837fbf27f8055409039e12c05b1038867cf1657f134340d2d8bc0e",
+      "bytes": 190800
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-07-saved-1440.png",
+      "sha256": "c04012d716b01c91493a4632601a442cc57420b3e878688913b52c67510e01a0",
+      "bytes": 131261
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-08-link-1440.png",
+      "sha256": "c3c160e0201f3646c1283805de6299edaabeff6de72ff092e163ad8940f758c3",
+      "bytes": 172394
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-01-root-768.png",
+      "sha256": "d73298431f03ae6ed91eafd1c17cc1d13f72b1c1e42e7d9ee4b4c58eff223efb",
+      "bytes": 110184
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-02-marquee-768.png",
+      "sha256": "9601645cdeea06d521cac2926939ac29ce247e0a2f3fec7b3363fe991155e2cc",
+      "bytes": 117139
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-03-flock-768.png",
+      "sha256": "4061325478dae563b04ba462fbf9b83dad8a1f019247573e676ac4106a24212f",
+      "bytes": 167231
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-04-arrive-768.png",
+      "sha256": "7976a574b465112ea8d5fc09146eed61ee4f09c24d20629206bc39749837f1c5",
+      "bytes": 164806
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-05-wedge-768.png",
+      "sha256": "212b2e843ffeed53eea39e52416a29a95a07732c38bb53498289539d1f740f84",
+      "bytes": 214785
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-06-compare-768.png",
+      "sha256": "559608fe83cd00e1f53fa783835544b23ed9e6ec8bcc1b6eb81dc2f6b1ccb40e",
+      "bytes": 213168
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-07-saved-768.png",
+      "sha256": "f92e83a8a7d9c10f1867ec50dbdccd2306f464753c001692e583585f11002c9e",
+      "bytes": 119062
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-08-link-768.png",
+      "sha256": "d06dba0080934d090d5c6416ce166984ff125ef12655a0dda281abfe699428a6",
+      "bytes": 156098
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-01-root-360.png",
+      "sha256": "b130ebc709089d78ae108f63f1fd99243cafa497f578ddbe2e50691e8eaa8f58",
+      "bytes": 110645
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-02-marquee-360.png",
+      "sha256": "f6e80614646dd84b138bfb5abfd27844563034b2ef44d10da47c218cf238d5da",
+      "bytes": 114486
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-03-flock-360.png",
+      "sha256": "5f8227ae93a7ed0e2157580716d88c9b4b909ec0c6c32ea850540c5edd495739",
+      "bytes": 161895
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-04-arrive-360.png",
+      "sha256": "b4691d0f9d296f3d28b88d3e8e5924edf26d384bab9d7652bf120dda8d7f6b43",
+      "bytes": 160122
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-05-wedge-360.png",
+      "sha256": "6b2222371b876ff95894ce3a34958c6c79f86f47fecda692302ddb2f506599dd",
+      "bytes": 196796
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-06-compare-360.png",
+      "sha256": "7f002aef16ff2104fcf3e79e75d912b8312662d64e2de01e599bb9159e91b181",
+      "bytes": 197518
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-07-saved-360.png",
+      "sha256": "d5861ca8b3908d93e3224c21dcd636f0782631048ffa64a99061f378b91176d4",
+      "bytes": 118996
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-08-link-360.png",
+      "sha256": "b0b4f405a86a83a65127a201eb41e636efa79d5e0d420aadd8d73141edda86a3",
+      "bytes": 155865
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-slider-access-360.png",
+      "sha256": "1cb4fe7906bec295d0519db5dd420df7e5718336348513cbbb89d9e575b4d611",
+      "bytes": 89836
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-slider-access-768.png",
+      "sha256": "5311edb8efe33f9604fd14de43443c3365f2ec08b1ae2d6147d732b930b41515",
+      "bytes": 101491
+    },
+    {
+      "path": "docs/evidence/WO-015/walkthrough/ver-001-slider-access-1440.png",
+      "sha256": "b8d6e1766605e0f27457b3b441c04e9c3493439aed3ec014f2d4609f468aee95",
+      "bytes": 184974
+    }
+  ],
+  "probeCalibration": [
+    "The initial browser runner needed to await the running state after Apply.",
+    "UI caption assertions were corrected to the actual translation strings and five instrument charts.",
+    "The first engine runner read only the first AI-for-Games chunk; the final runner reads both chunks and all sixteen tools."
+  ],
+  "limitations": [
+    "Browser requestAnimationFrame time was controlled for the three width walkthroughs; pointer, keyboard, routing, storage and production scripts were real.",
+    "Browser and engine probes ran on this local host; no cross-architecture execution was performed.",
+    "The raw scratch probes are transient; this receipt preserves the measured results, image identities and exact variation outcomes."
+  ],
+  "sliderAccess": [
+    {
+      "width": 360,
+      "controls": [
+        {
+          "label": "separation weight\n2 weight",
+          "hit": {
+            "box": {
+              "x": 14,
+              "y": 441.53125,
+              "width": 336,
+              "height": 16
+            },
+            "topElement": "INPUT",
+            "topClass": "",
+            "topText": "",
+            "hitIsInput": true
+          },
+          "actionable": true,
+          "error": null
+        },
+        {
+          "label": "cohesion weight\n1 weight",
+          "hit": {
+            "box": {
+              "x": 14,
+              "y": 489.921875,
+              "width": 336,
+              "height": 16
+            },
+            "topElement": "INPUT",
+            "topClass": "",
+            "topText": "",
+            "hitIsInput": true
+          },
+          "actionable": true,
+          "error": null
+        },
+        {
+          "label": "velocity match weight\n1 weight",
+          "hit": {
+            "box": {
+              "x": 14,
+              "y": 538.3125,
+              "width": 336,
+              "height": 16
+            },
+            "topElement": "INPUT",
+            "topClass": "",
+            "topText": "",
+            "hitIsInput": true
+          },
+          "actionable": true,
+          "error": null
+        }
+      ],
+      "screenshot": "ver-001-slider-access-360.png"
+    },
+    {
+      "width": 768,
+      "controls": [
+        {
+          "label": "separation weight\n2 weight",
+          "hit": {
+            "box": {
+              "x": 552.78125,
+              "y": 441.5625,
+              "width": 205.21875,
+              "height": 16
+            },
+            "topElement": "INPUT",
+            "topClass": "",
+            "topText": "",
+            "hitIsInput": true
+          },
+          "actionable": true,
+          "error": null
+        },
+        {
+          "label": "cohesion weight\n1 weight",
+          "hit": {
+            "box": {
+              "x": 552.78125,
+              "y": 489.953125,
+              "width": 205.21875,
+              "height": 16
+            },
+            "topElement": "INPUT",
+            "topClass": "",
+            "topText": "",
+            "hitIsInput": true
+          },
+          "actionable": true,
+          "error": null
+        },
+        {
+          "label": "velocity match weight\n1 weight",
+          "hit": {
+            "box": {
+              "x": 552.78125,
+              "y": 538.34375,
+              "width": 205.21875,
+              "height": 16
+            },
+            "topElement": "INPUT",
+            "topClass": "",
+            "topText": "",
+            "hitIsInput": true
+          },
+          "actionable": true,
+          "error": null
+        }
+      ],
+      "screenshot": "ver-001-slider-access-768.png"
+    },
+    {
+      "width": 1440,
+      "controls": [
+        {
+          "label": "separation weight\n2 weight",
+          "hit": {
+            "box": {
+              "x": 1079,
+              "y": 811.125,
+              "width": 343,
+              "height": 16
+            },
+            "topElement": "INPUT",
+            "topClass": "",
+            "topText": "",
+            "hitIsInput": true
+          },
+          "actionable": true,
+          "error": null
+        },
+        {
+          "label": "cohesion weight\n1 weight",
+          "hit": {
+            "box": {
+              "x": 1079,
+              "y": 859.515625,
+              "width": 343,
+              "height": 16
+            },
+            "topElement": "DIV",
+            "topClass": "apply",
+            "topText": "Apply",
+            "hitIsInput": false
+          },
+          "actionable": true,
+          "error": null
+        },
+        {
+          "label": "velocity match weight\n1 weight",
+          "hit": {
+            "box": {
+              "x": 1079,
+              "y": 489.90625,
+              "width": 343,
+              "height": 16
+            },
+            "topElement": "INPUT",
+            "topClass": "",
+            "topText": "",
+            "hitIsInput": true
+          },
+          "actionable": true,
+          "error": null
+        }
+      ],
+      "screenshot": "ver-001-slider-access-1440.png"
+    }
+  ],
+  "sliderAccessConclusion": "All nine sliders passed real-browser pointer actionability after scrolling. The apparent full-page-capture overlap did not reproduce as an inaccessible control."
+}

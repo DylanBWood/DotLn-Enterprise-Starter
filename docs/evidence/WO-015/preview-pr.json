@@ -1,0 +1,188 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-015",
+  "repository": "DylanBWood/DotLn-Angular",
+  "number": 9,
+  "url": "https://github.com/DylanBWood/DotLn-Angular/pull/9",
+  "title": ":sparkles: feat: add the soldier scene with flock, arrive and formation",
+  "baseBranch": "main",
+  "headBranch": "feat/soldier-scene",
+  "draft": {
+    "publication": "draft",
+    "publisher": {
+      "command": "node scripts/worktree.mjs publish WO-015 --target-worktree --draft --branch feat/soldier-scene --title \"feat: add the soldier scene with flock, arrive and formation\" --body-file docs/evidence/WO-015/draft-pr-body.md",
+      "exitCode": 0,
+      "headAndIndexUnchanged": true,
+      "session": "the verifying Codex session, after verification-result pass"
+    },
+    "headSha": "96a62d103f66fff6b61e02cb981624992fab6d9d",
+    "tree": "fbad54f93626d1cde1321a59a94b46e2e42c50e1",
+    "verification": {
+      "id": "VER-001",
+      "path": "docs/verifications/WO-015/VER-001.md",
+      "verdict": "pass"
+    },
+    "source": "docs/evidence/WO-015/host-qualification.md and WO-015-D018; the verifying session recorded the publish there rather than in this file, which the final review writes",
+    "notes": [
+      "The canonical publisher opened this draft after verification-result pass; final publication reuses this branch and pull request.",
+      "The title workflow added the configured gitmoji."
+    ]
+  },
+  "finalReview": {
+    "observedAt": "2026-10-30T19:07:00Z",
+    "state": "OPEN",
+    "isDraft": true,
+    "headSha": "96a62d103f66fff6b61e02cb981624992fab6d9d",
+    "mergeable": "MERGEABLE",
+    "mergeStateStatus": "CLEAN",
+    "mergeabilityObservedAt": "2026-10-30T19:31:00Z",
+    "checks": [
+      {
+        "name": "checks",
+        "workflow": "CI",
+        "status": "COMPLETED",
+        "conclusion": "SUCCESS",
+        "startedAt": "2026-10-30T18:42:39Z",
+        "completedAt": "2026-10-30T18:51:15Z"
+      },
+      {
+        "name": "title",
+        "workflow": "Pull request title",
+        "status": "COMPLETED",
+        "conclusion": "SUCCESS",
+        "startedAt": "2026-10-30T18:42:39Z",
+        "completedAt": "2026-10-30T18:42:53Z"
+      },
+      {
+        "name": "visual",
+        "workflow": "CI",
+        "status": "COMPLETED",
+        "conclusion": "SUCCESS",
+        "startedAt": "2026-10-30T18:42:40Z",
+        "completedAt": "2026-10-30T18:44:39Z"
+      }
+    ],
+    "reviews": 0,
+    "comments": 0,
+    "reviewThreads": 0,
+    "routed": "nothing to route; the final publish reuses this pull request, pushes the two reviewed commits and the records commit over the draft and marks it ready",
+    "reviewedCommits": [
+      {
+        "sha": "1eb63058ba05ff961db52bdc1302ff1f58bd168b",
+        "subject": "feat: add the soldier scene with flock, arrive and formation",
+        "tree": "fbad54f93626d1cde1321a59a94b46e2e42c50e1",
+        "note": "the verified tree the draft carries, committed without a change"
+      },
+      {
+        "sha": "0df9db56bf0f18e7cf9d8e06bd91bdedc0774d60",
+        "subject": "fix: keep a text-layer checkbox in step with a cleared selection",
+        "tree": "240d7f20205fa8813ec0e6e1266e49b916217bae",
+        "note": "the review's repair of VER-001's F1 (WO-015-D020); review gate row target-gate:c1edc407-9723-4ab0-9af4-a773626d5580"
+      }
+    ]
+  },
+  "finalPublish": {
+    "observedAt": "2026-10-30T19:42:30Z",
+    "command": "node scripts/worktree.mjs publish WO-015 --target-worktree --branch feat/soldier-scene --title \"feat: add the soldier scene with flock, arrive and formation\" --body-file docs/final-reviews/WO-015/PR.md",
+    "exitCode": 0,
+    "headSha": "b4c51461014a835ea470542de3ab5b95a570d86d",
+    "reviewedCommits": [
+      "1eb63058ba05ff961db52bdc1302ff1f58bd168b",
+      "0df9db56bf0f18e7cf9d8e06bd91bdedc0774d60"
+    ],
+    "recordsCommit": "b4c51461014a835ea470542de3ab5b95a570d86d",
+    "overDraft": "96a62d103f66fff6b61e02cb981624992fab6d9d",
+    "isDraft": false,
+    "state": "OPEN",
+    "mergeable": "MERGEABLE",
+    "mergeStateStatus": "BLOCKED",
+    "mergeStateNote": "the required CI run had not finished at the observation; the title check had passed",
+    "title": ":sparkles: feat: add the soldier scene with flock, arrive and formation",
+    "checks": [
+      {
+        "name": "title",
+        "workflow": "Pull request title",
+        "status": "COMPLETED",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-30T19:42:13Z"
+      },
+      {
+        "name": "checks",
+        "workflow": "CI",
+        "status": "IN_PROGRESS",
+        "conclusion": "",
+        "startedAt": "2026-10-30T19:42:03Z"
+      },
+      {
+        "name": "visual",
+        "workflow": "CI",
+        "status": "QUEUED",
+        "conclusion": "",
+        "startedAt": "2026-10-30T19:42:01Z"
+      }
+    ],
+    "reviews": 0,
+    "comments": 0,
+    "admission": "run plainly from the launchpad root with the node spelling the registered-target admission covers; the host ran it without a permission prompt; the pre-tool admission line was not surfaced in the command output"
+  },
+  "overrideRecovery": {
+    "observedAt": "2026-10-30T21:19:30Z",
+    "cause": "CI typecheck:e2e refused scene.spec.ts(117,11) TS2551 on the final review regression; the declared gate and the Preflight do not type-check the e2e project",
+    "authority": "operator override: (ignored capture docs/intake/notes/wo-015-override-2026-10-30.md, sha256 9d37ee27af8606eb71f242fcf23a379bd4012d230e2290946f75a3bfcf07a738)",
+    "decision": "WO-015-D022 in the target decisions file after the records commit",
+    "gate": {
+      "evidenceRef": "target-gate:6e817aaa-872c-41bd-a562-ec734fea6e3a",
+      "treeHash": "5c7aa4b6fceec12052ebe41adc5ced180f4694d4",
+      "recordedAt": "2026-10-30T21:17:28.638Z",
+      "durationMs": 138485
+    },
+    "commits": [
+      {
+        "sha": "cc0e58ed",
+        "subject": "test: type the checkbox regression's element for the e2e type check"
+      },
+      {
+        "sha": "4260fea1",
+        "subject": "docs: record the e2e type-check correction and the gate gap it exposed"
+      }
+    ],
+    "push": {
+      "command": "git push origin wo-015:feat/soldier-scene",
+      "range": "b4c5146..4260fea",
+      "bypassed": "the closed-phase publish helper refuses a head past the records commit; the registered-target admission did not judge this push"
+    },
+    "pullRequest": {
+      "headSha": "4260fea18b43",
+      "isDraft": false,
+      "state": "OPEN",
+      "mergeable": "MERGEABLE",
+      "mergeStateStatus": "BLOCKED",
+      "checks": [
+        {
+          "name": "checks",
+          "status": "IN_PROGRESS",
+          "startedAt": "2026-10-30T21:18:57Z"
+        },
+        {
+          "name": "visual",
+          "status": "IN_PROGRESS",
+          "startedAt": "2026-10-30T21:18:57Z"
+        }
+      ]
+    },
+    "bodyRefresh": {
+      "command": "gh pr edit 9 --body-file <reviewed PR.md plus the published Change and Target checks sections and one line on the corrected tree>",
+      "observedAt": "2026-10-30T21:22:00Z",
+      "bypassed": "the kit publish helper did not compose this body"
+    },
+    "record": {
+      "status": "deferred",
+      "reason": "closed-order override-record runs from main; main refused unknown work order WO-015 until pull request 40 merges",
+      "hookCapture": "docs/intake/operator-override/2026-10-30-c5ebde820b75-212613.md",
+      "hookCaptureSha256": "caf1cda1e7648bcea9e40452835445f034754d3452c1a4de59e4afb2cd8b214a",
+      "enteredAt": "2026-10-30T21:11:16.333Z",
+      "exitedAt": "2026-10-30T21:26:13.800Z",
+      "command": "see host-qualification.md"
+    }
+  }
+}
