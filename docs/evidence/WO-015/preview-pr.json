@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-015",
+  "repository": "DylanBWood/DotLn-Angular",
+  "number": 9,
+  "url": "https://github.com/DylanBWood/DotLn-Angular/pull/9",
+  "title": ":sparkles: feat: add the soldier scene with flock, arrive and formation",
+  "baseBranch": "main",
+  "headBranch": "feat/soldier-scene",
+  "draft": {
+    "publication": "draft",
+    "publisher": {
+      "command": "node scripts/worktree.mjs publish WO-015 --target-worktree --draft --branch feat/soldier-scene --title \"feat: add the soldier scene with flock, arrive and formation\" --body-file docs/evidence/WO-015/draft-pr-body.md",
+      "exitCode": 0,
+      "headAndIndexUnchanged": true,
+      "session": "the verifying Codex session, after verification-result pass"
+    },
+    "headSha": "96a62d103f66fff6b61e02cb981624992fab6d9d",
+    "tree": "fbad54f93626d1cde1321a59a94b46e2e42c50e1",
+    "verification": {
+      "id": "VER-001",
+      "path": "docs/verifications/WO-015/VER-001.md",
+      "verdict": "pass"
+    },
+    "source": "docs/evidence/WO-015/host-qualification.md and WO-015-D018; the verifying session recorded the publish there rather than in this file, which the final review writes",
+    "notes": [
+      "The canonical publisher opened this draft after verification-result pass; final publication reuses this branch and pull request.",
+      "The title workflow added the configured gitmoji."
+    ]
+  },
+  "finalReview": {
+    "observedAt": "2026-10-30T19:07:00Z",
+    "state": "OPEN",
+    "isDraft": true,
+    "headSha": "96a62d103f66fff6b61e02cb981624992fab6d9d",
+    "mergeable": "MERGEABLE",
+    "mergeStateStatus": "CLEAN",
+    "mergeabilityObservedAt": "2026-10-30T19:31:00Z",
+    "checks": [
+      {
+        "name": "checks",
+        "workflow": "CI",
+        "status": "COMPLETED",
+        "conclusion": "SUCCESS",
+        "startedAt": "2026-10-30T18:42:39Z",
+        "completedAt": "2026-10-30T18:51:15Z"
+      },
+      {
+        "name": "title",
+        "workflow": "Pull request title",
+        "status": "COMPLETED",
+        "conclusion": "SUCCESS",
+        "startedAt": "2026-10-30T18:42:39Z",
+        "completedAt": "2026-10-30T18:42:53Z"
+      },
+      {
+        "name": "visual",
+        "workflow": "CI",
+        "status": "COMPLETED",
+        "conclusion": "SUCCESS",
+        "startedAt": "2026-10-30T18:42:40Z",
+        "completedAt": "2026-10-30T18:44:39Z"
+      }
+    ],
+    "reviews": 0,
+    "comments": 0,
+    "reviewThreads": 0,
+    "routed": "nothing to route; the final publish reuses this pull request, pushes the two reviewed commits and the records commit over the draft and marks it ready",
+    "reviewedCommits": [
+      {
+        "sha": "1eb63058ba05ff961db52bdc1302ff1f58bd168b",
+        "subject": "feat: add the soldier scene with flock, arrive and formation",
+        "tree": "fbad54f93626d1cde1321a59a94b46e2e42c50e1",
+        "note": "the verified tree the draft carries, committed without a change"
+      },
+      {
+        "sha": "0df9db56bf0f18e7cf9d8e06bd91bdedc0774d60",
+        "subject": "fix: keep a text-layer checkbox in step with a cleared selection",
+        "tree": "240d7f20205fa8813ec0e6e1266e49b916217bae",
+        "note": "the review's repair of VER-001's F1 (WO-015-D020); review gate row target-gate:c1edc407-9723-4ab0-9af4-a773626d5580"
+      }
+    ]
+  }
+}

@@ -25,7 +25,7 @@ gate in its target worktree (`node scripts/target-gate.mjs WO-NNN --review`),
 its change reaches the operator as a pull request they read before it merges,
 and its write-backs keep `docs/dev-reference` and `docs/ai-reference` in the
 target current. The workstream is delivered when WO-004 to WO-008 and WO-013 to WO-019 are merged and `apps/dotln` runs locally with the sub-app menu, the catalog as something to read, the soldier scene over it, the machinery view over the recorded orders, the twin's first lane, the toy shelf, login, permissions and i18n, with the component taxonomy demonstrated in every sub-app and every page accepted by use (rule 24). The operator judges delivery by using the app and merging the last member's pull request.
-**Delivery state:** active (WO-003 to WO-007, WO-011 to WO-014 and WO-019 merged and closed, the target at `DotLn Angular v0.5.0`; WO-015 active in its worktree; WO-016, WO-008, WO-017 and WO-018 filed; §Delivery states carries each member's record)
+**Delivery state:** active (WO-003 to WO-007, WO-011 to WO-014 and WO-019 merged and closed, the target at `DotLn Angular v0.5.0`; WO-015 final-reviewed, its pull request DotLn-Angular #9 open for the operator to merge; WO-016, WO-008, WO-017 and WO-018 filed; §Delivery states carries each member's record)
 
 ## Member orders
 
@@ -620,7 +620,7 @@ sequence's order, then the later members with their reopening conditions
 
 | Member or candidate | What the operator sees or does | State or reopening condition |
 | --- | --- | --- |
-| WO-015 the scene | the root route: twenty units on a dark field, a rail of the tools the engine runs with their definitions, RTS selection, flock, arrive, formation, the instruments, trials, the first look | active |
+| WO-015 the scene | the root route: twenty units on a dark field, a rail of the tools the engine runs with their definitions, RTS selection, flock, arrive, formation, the instruments, trials, the first look | final-reviewed; DotLn-Angular #9 open |
 | WO-016 the machinery view | one order's agents in their slots over the six-field copies; a mechanism change dropped on an agent; ideas saved | filed |
 | WO-008 authentication and permissions | sign-in and permissions through the mocked provider; an account page they can read; nothing playable, required by the operator's standing rule on security | filed |
 | WO-017 the twin's first lane | patience over WO-221 on virtual time, judged by results, variants kept as code | filed |
@@ -669,7 +669,7 @@ minutes, 227.0 waiting minutes, a span of 1,110.3 minutes.
 | WO-013 | merged   | DotLn-Angular #6, `DotLn Angular v0.3.0`, its records #30; [evidence](../evidence/WO-013/README.md) |
 | WO-014 | merged   | DotLn-Angular #7, `DotLn Angular v0.4.0`, its records #31; [evidence](../evidence/WO-014/README.md) |
 | WO-019 | merged   | DotLn-Angular #8, `DotLn Angular v0.5.0`, its records #37; [evidence](../evidence/WO-019/README.md) |
-| WO-015 | active   | since 2026-10-30 in its worktree on the provisional base; [the order](../work-orders/WO-015-soldier-scene.md) |
+| WO-015 | final-reviewed | DotLn-Angular #9 on `feat/soldier-scene`, opened as a draft at verification and marked ready by the final publish, for the operator to merge; its records pull request follows; [evidence](../evidence/WO-015/README.md) |
 | WO-016 | filed    | base provisional until WO-015 merges; [the order](../work-orders/WO-016-machinery-view.md) |
 | WO-008 | filed    | base provisional until WO-016 merges; [the order](../work-orders/WO-008-authentication-and-permissions.md) |
 | WO-017 | filed    | base provisional until WO-008 merges; [the order](../work-orders/WO-017-digital-twin-patience-lane.md) |

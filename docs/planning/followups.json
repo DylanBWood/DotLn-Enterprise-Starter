@@ -4034,6 +4034,13 @@
           "title": "WO-019-D028: When the soldier scene replaces its arriving page (WO-015), make the reading's 'runs in the soldier scene' line a link to /scene?tool=<id> for kinds the scene interprets, with a test…",
           "summary": "{ \"id\": \"WO-019-D028\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; closeout criteria review finding F6\", \"decision\": \"Leave the reading's soldier-scene line as the sentence it is today and hand its conditional link to the order that replaces the scene's arriving page (WO-015).\", \"evidence\": [ \"The design links the line to /scene?tool=<id> when the kind is one the scene interprets and BasePaths.Scene resolves to a page that is not the arriving page. sceneRoutes renders only SceneArrivingPage, so the correct output today is the sentence without a link, which the browser journey pins.\", \"No availability signal exists to read, and the scene's handling of a tool parameter belongs to WO-015.\"",
           "missing": false
+        },
+        {
+          "hash": "64060391459acb2f7378b0291ae03618629dd5918a24022f3584f5692d3a87f2",
+          "ref": "docs/evidence/WO-019/decisions.md#wo-019-d028",
+          "title": "WO-019-D028: When the soldier scene replaces its arriving page (WO-015), make the reading's 'runs in the soldier scene' line a link to /scene?tool=<id> for kinds the scene interprets, with a test…",
+          "summary": "{ \"id\": \"WO-019-D028\", \"date\": \"2026-10-28\", \"dispatch\": \"resume: next; closeout criteria review finding F6\", \"decision\": \"Leave the reading's soldier-scene line as the sentence it is today and hand its conditional link to the order that replaces the scene's arriving page (WO-015).\", \"evidence\": [ \"The design links the line to /scene?tool=<id> when the kind is one the scene interprets and BasePaths.Scene resolves to a page that is not the arriving page. sceneRoutes renders only SceneArrivingPage, so the correct output today is the sentence without a link, which the browser journey pins.\", \"No availability signal exists to read, and the scene's handling of a tool parameter belongs to WO-015.\"",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -4044,6 +4051,14 @@
           "reopenWhen": "WO-015 merges (the pass that follows checks whether the reading's line links), or the pass before WO-018 activates writes the carry-in.",
           "targets": [],
           "at": "2026-10-30T09:11:01.384Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "settled",
+          "reason": "WO-015-D007 made the reading's soldier-scene line a link to /scene?tool=<id> for tools the scene runs, with its anchor supplied by the catalog page container, and the catalog visual baseline follows it (D015).",
+          "reopenWhen": "WO-015 does not merge, or the reading's line stops linking to the scene.",
+          "targets": [],
+          "at": "2026-10-30T17:29:59.954Z"
         }
       ]
     },
@@ -4238,6 +4253,73 @@
           "at": "2026-10-30T09:11:01.473Z"
         }
       ]
+    },
+    {
+      "id": "FUP-e9b95694a5de071e",
+      "key": "decision:docs/evidence/WO-015/decisions.md#wo-015-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "92d0ea0329f9e6230cc04fdd45a0b8144c8bf3713b99167cb91d4070685d965c",
+          "ref": "docs/evidence/WO-015/decisions.md#wo-015-d010",
+          "title": "WO-015-D010: Settle a crowd under priority steering: units keep a faint shimmer, so the run never pauses by itself, and in 4 of 60 random runs the group stopped off-centre and time to objective…",
+          "summary": "{ \"id\": \"WO-015-D010\", \"date\": \"2026-10-30\", \"dispatch\": \"resume: next; the three reviews of the first pass, before the operator's hand-off\", \"decision\": \"Fix the settling and arrival defects at their source rather than with thresholds. Forces fade to nothing at their edges: arrive's wanted speed reaches nothing halfway inside the target radius, and separation, flee and the anchor's speed fade at theirs. A unit nothing steers brakes. A wall zeroes the velocity into it. Priority's separation group sheds the unit's speed as well as parting it. Formation membership has one record, the assignment, and behaviour.formation and the formation id are gone. A two-level formation that loses members mov",
+          "missing": false
+        },
+        {
+          "hash": "a7bda9cf09c93e6513c2f74835b379b591620a5d318db18c600a5ace13a1351a",
+          "ref": "docs/evidence/WO-015/decisions.md#wo-015-d010",
+          "title": "WO-015-D010: Settle a crowd under priority steering, which keeps a faint shimmer so the run rarely pauses by itself, and leaves time to objective unknown in 4 of 60 random runs with Arrive and 30 of…",
+          "summary": "{ \"id\": \"WO-015-D010\", \"date\": \"2026-10-30\", \"dispatch\": \"resume: next; the three reviews of the first pass, before the operator's hand-off\", \"decision\": \"Fix the settling and arrival defects at their source rather than with thresholds. Forces fade to nothing at their edges: arrive's wanted speed reaches nothing halfway inside the target radius, and separation, flee and the anchor's speed fade at theirs. A unit nothing steers brakes. A wall zeroes the velocity into it. Round the objective, priority's separation group sheds the unit's speed as well as parting it, and a formation's members keep the formation's own spacing in that group (D016). Formation membership has one record, the assignmen",
+          "missing": false
+        },
+        {
+          "hash": "ffc13478ede4e73b06fac00589c8de98c3ec3d2c9d1be1940ea078e8d7ac953b",
+          "ref": "docs/evidence/WO-015/decisions.md#wo-015-d010",
+          "title": "WO-015-D010: Bring a crowd under priority steering fully to rest: it keeps a faint shimmer, peaking at 0.58 to 0.67 units a second, so the run rarely pauses by itself. Candidates are a speed limit…",
+          "summary": "{ \"id\": \"WO-015-D010\", \"date\": \"2026-10-30\", \"dispatch\": \"resume: next; the three reviews of the first pass, before the operator's hand-off\", \"decision\": \"Fix the settling and arrival defects at their source rather than with thresholds. Forces fade to nothing at their edges: arrive's wanted speed reaches nothing halfway inside the target radius, and separation, flee and the anchor's speed fade at theirs. A unit nothing steers brakes. A wall zeroes the velocity into it. Round the objective a unit is heading for, priority's separation group sheds the unit's speed as well as parting it (D016). Formation membership has one record, the assignment, and behaviour.formation and the formation id are ",
+          "missing": false
+        },
+        {
+          "hash": "f99f6fe346485e8462867464f1cfd646cf1a16cc2130c57215ac988e9d66c5ed",
+          "ref": "docs/evidence/WO-015/decisions.md#wo-015-d010",
+          "title": "WO-015-D010: Bring a crowd under priority steering fully to rest and let it start again promptly. It keeps a faint shimmer, peaking at 0.55 to 0.67 units a second, so the run rarely pauses by itself;…",
+          "summary": "{ \"id\": \"WO-015-D010\", \"date\": \"2026-10-30\", \"dispatch\": \"resume: next; the three reviews of the first pass, before the operator's hand-off\", \"decision\": \"Fix the settling and arrival defects at their source rather than with thresholds. Forces fade to nothing at their edges: arrive's wanted speed reaches nothing halfway inside the target radius, and separation, flee and the anchor's speed fade at theirs. A unit nothing steers brakes. A wall zeroes the velocity into it. Round the objective a unit is heading for, priority's separation group sheds the unit's speed as well as parting it (D016). Formation membership has one record, the assignment, and behaviour.formation and the formation id are ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 4,
+          "status": "deferred",
+          "reason": "WO-015-D010 records it: a crowd under priority steering keeps a faint shimmer and is slow to start again. The operator ended the order's feedback loop (D015) and moved iteration to later orders, so this goes to the planning pass that takes their notes.",
+          "reopenWhen": "A later scene order takes up priority steering, or the operator's play shows the shimmer or a false arrival under priority.",
+          "targets": [],
+          "at": "2026-10-30T17:29:59.964Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-f0c69ddeda278b29",
+      "key": "decision:docs/evidence/WO-015/decisions.md#wo-015-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3c8f56b1e7ad8cbf3ec1bb5ffd569ab6c530ef6e197eef4f92799d80c4ed6f00",
+          "ref": "docs/evidence/WO-015/decisions.md#wo-015-d017",
+          "title": "WO-015-D017: Make a scene text-layer checkbox reflect the current selection after rapid Space followed immediately by Escape, even when no intermediate selection render occurs. Touch…",
+          "summary": "{ \"id\": \"WO-015-D017\", \"date\": \"2026-10-30\", \"dispatch\": \"resume: verify; independent production walkthrough and rapid keyboard variation\", \"decision\": \"Record the rapid Space then Escape checkbox mismatch as a Low follow-up, while judging the original criteria against their named flows. All twenty units are unselected in the engine and the canvas label after Escape, but the native checkbox can remain checked when the two events precede the intermediate render. The ordinary keyboard path and the required marquee then Escape path pass. The placeholder on main had no unit selection, so this is not a regression of existing behavior. The read-only verifier leaves implementation unchanged. The kn",
+          "missing": false
+        },
+        {
+          "hash": "19d8008313de1d4a5cd7d454e44c170d5a0b883a914e440369eb8b7b4a27a215",
+          "ref": "docs/evidence/WO-015/decisions.md#wo-015-d017",
+          "title": "WO-015-D017: Make a scene text-layer checkbox reflect the current selection after rapid Space followed immediately by Escape, even when no intermediate selection render occurs. Touch…",
+          "summary": "{ \"id\": \"WO-015-D017\", \"date\": \"2026-10-30\", \"dispatch\": \"resume: verify; independent production walkthrough and rapid keyboard variation\", \"decision\": \"Record the rapid Space then Escape checkbox mismatch as a Low follow-up, while judging the original criteria against their named flows. All twenty units are unselected in the engine and the canvas label after Escape, but the native checkbox can remain checked when the two events precede the intermediate render. The ordinary keyboard path and the required marquee then Escape path pass. The placeholder on main had no unit selection, so this is not a regression of existing behavior. The read-only verifier leaves implementation unchanged. The kn",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
