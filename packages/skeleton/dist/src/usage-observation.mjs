@@ -613,6 +613,7 @@ export function recordUsageObservation(root, row) {
             "release-close",
             "planner",
             "refuter",
+            "router",
         ].includes(row.role))
         throw new Error("Usage attribution requires a work order or named planning pass and dispatch kind");
     const path = join(root, "docs/control/local/process/usage.jsonl");

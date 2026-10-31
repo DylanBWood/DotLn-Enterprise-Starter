@@ -60,7 +60,7 @@ export interface HarnessProfile {
 export type OutsideWriteGrant = {
     readonly source: string;
 } & ({
-    readonly kind: "system-temp" | "session-scratch" | "host-scratchpad" | "main-intake" | "target-worktree";
+    readonly kind: "system-temp" | "session-scratch" | "host-scratchpad" | "main-intake" | "target-worktree" | "order-worktree";
 } | {
     readonly kind: "operator-root";
     readonly root: string;
@@ -109,7 +109,19 @@ export interface HarnessWorker {
     readonly model: string;
     readonly effort: "low" | "medium" | "high" | "xhigh" | "max";
     readonly optIn?: boolean;
+    readonly description?: string;
+    readonly skills?: readonly string[];
+    readonly body?: string;
 }
+/** The generated Markdown and print-session transport consume one worker contract. */
+export declare function workerSpecification(worker: HarnessWorker): {
+    name: string;
+    description: string;
+    model: string;
+    effort: "high" | "low" | "max" | "medium" | "xhigh";
+    skills: readonly string[];
+    prompt: string;
+};
 /** Separate target input. It never extends or changes the loadout-v1 preimage. */
 export interface HarnessProgram {
     readonly contractVersion: "harness-v1";

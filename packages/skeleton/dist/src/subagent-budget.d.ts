@@ -24,10 +24,57 @@ export declare function readSubagentCap(root: string): number | null;
 export declare function initializeSubagentCounter(directory: string, session: string): string | null;
 export declare function subagentUsage(root: string, directory: string, session: string, hashed?: boolean): SubagentObservation;
 export declare function subagentSummary(row: SubagentObservation): string;
-export declare function admitSubagentTool(root: string, directory: string, input: SpawnInput, spawn: boolean): {
+export declare function admitSubagentTool(root: string, directory: string, input: SpawnInput, spawn: boolean, options?: {
+    cap?: number | null;
+    spawnerCap?: number | null;
+    spawner?: string;
+}): {
     refusal?: string;
     advisory?: string;
     usage: SubagentObservation;
 };
+export interface DrivenWorkerContext {
+    schemaVersion: 1;
+    root: string;
+    directory: string;
+    session: string;
+    worker: string;
+    role: string;
+    workOrder: string;
+    cap: number | null;
+    ceiling: number | null;
+}
+export declare function drivenWorkerContext(): DrivenWorkerContext | null;
+export declare function drivenSubagentUsage(worker?: string): {
+    count: number | null;
+    cap: number | null;
+    remaining: number | null;
+    countKind: "exact-observed" | "minimum-observed" | "unknown";
+    unresolvedAdmissions: number | null;
+    unlinkedChildren: number | null;
+    uncountedRemainder: "unknown";
+    reason?: string;
+    perSpawnerCap: number | null;
+    spawnsByWorker: number;
+    source: string;
+} | {
+    count: number | null;
+    cap: number | null;
+    remaining: number | null;
+    countKind: "exact-observed" | "minimum-observed" | "unknown";
+    unresolvedAdmissions: number | null;
+    unlinkedChildren: number | null;
+    uncountedRemainder: "unknown";
+    reason?: string;
+    perSpawnerCap: number | null;
+    spawnsByWorker: null;
+    source: string;
+} | null;
+export declare function admitDrivenTool(input: SpawnInput, spawn: boolean): {
+    refusal?: string;
+    advisory?: string;
+    usage: SubagentObservation;
+} | undefined;
+export declare function linkDrivenResult(input: SpawnInput): void;
 /** PostToolUse's observed join is exact; it never guesses from arrival order. */
 export declare function linkSubagentResult(directory: string, input: SpawnInput): void;

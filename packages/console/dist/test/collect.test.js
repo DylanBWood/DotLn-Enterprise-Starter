@@ -20,7 +20,8 @@ const cache = "docs/control/local/cache/release-list.json";
 const gitPerNewTag = 2;
 const batchGit = 4; // tag batch, control batch, note batch, boundary view
 // Every warm collection, whatever the order and tag counts: the branch, the
-// release set dependency edges read once, the worktree list, and the
+// release set dependency edges read once, one worktree list per status and
+// constellation projection, and the
 // listing's tags, ignore check and history view.
 const warmGit = [
     "cat-file",
@@ -30,6 +31,7 @@ const warmGit = [
     "rev-parse",
     "symbolic-ref",
     "tag",
+    "worktree",
     "worktree",
 ];
 test("WO-164 console collection spawns a constant number of processes and Git reads only new or moved tags", async (t) => {

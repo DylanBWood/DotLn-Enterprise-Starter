@@ -1,5 +1,17 @@
 import { type AuthorityGrant, type AuthorityEnvelope, type CompiledProgram, type HarnessProfile, type HarnessProgram, type HarnessRole, type LoadoutGraph, type PresencePolicy, type PresenceNarrowing } from "@dotln/compiler";
 import { type ExecutorSupportSwitches } from "./executor-supports.js";
+export declare const contributorWorkerPins: {
+    readonly claude: {
+        readonly model: "claude-opus-5-5";
+        readonly effort: "xhigh";
+    };
+    readonly codex: {
+        readonly model: "gpt-6.1-sol";
+        readonly effort: "max";
+    };
+};
+/** Independent verification runs at this effort on every host (product 07). */
+export declare const contributorVerifierEffort = "xhigh";
 /** Operator-authorized policy input; never inferred from a submitted support. */
 export declare const contributorOutsideAuthority: readonly AuthorityGrant[];
 export declare const contributorSupportIds: string[];

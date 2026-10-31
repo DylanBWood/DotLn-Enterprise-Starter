@@ -3,13 +3,14 @@ import { type AuthorityEnvelope, type CompiledFeedback, type CorrectionState, ty
 import { gateTreeHash } from "./gate-evidence.mjs";
 import { type FeedbackBoundaryRequest, type feedbackBoundary } from "./feedback-boundary.js";
 export { HARNESS_HOST_VERSION } from "./version.js";
-type HostHookEvent = HarnessEvent | "SessionStart" | "PermissionDenied" | "PostToolUseFailure";
+type HostHookEvent = HarnessEvent | "SessionStart" | "PermissionDenied" | "PostToolUseFailure" | "SubagentStop";
 export interface HarnessInput {
     readonly hook_event_name: HostHookEvent;
     readonly cwd: string;
     readonly transcript_path?: string;
     readonly session_id: string;
     readonly agent_id?: string;
+    readonly agent_type?: string;
     readonly tool_name?: string;
     readonly tool_use_id?: string;
     readonly tool_input?: Record<string, unknown>;
@@ -52,6 +53,12 @@ export interface HarnessSession {
         unavailable?: string;
     };
     role?: string;
+    routerLaunchRefused?: boolean;
+    nativePhaseEntered?: boolean;
+    selectedEffort?: {
+        level: string;
+        source: "hook-input";
+    };
     intent?: string;
     expectedEvent?: string;
     startingEventCount: number;
@@ -108,7 +115,7 @@ interface HookConfig {
         }[];
     };
     readonly event: HostHookEvent;
-    readonly kind: "feedback" | "permission" | "observe" | "session" | "finish" | "denial";
+    readonly kind: "feedback" | "permission" | "observe" | "session" | "finish" | "denial" | "agent-finished";
     readonly policy?: CompiledFeedback;
     readonly envelope?: AuthorityEnvelope;
     readonly correctionToken?: string | null;
@@ -137,6 +144,7 @@ export interface HarnessProcess {
 }
 export interface HarnessWriter {
     readonly actorId: string;
+    readonly agentId?: string;
     readonly worktree: string;
     readonly owner?: HarnessProcess;
     readonly reservedAt?: string;
@@ -157,6 +165,7 @@ export type HarnessWriterView = {
     readonly contract: "harness-writer-v1";
     readonly reserved: true;
     readonly actorId: string;
+    readonly agentId?: string;
     readonly owner?: HarnessProcess;
     readonly reservedAt?: string;
     readonly liveness?: "unavailable";
@@ -164,6 +173,11 @@ export type HarnessWriterView = {
     readonly alive: boolean | "unknown";
 };
 export declare const harnessStateDirectory: (root: string) => string;
+/** A lifecycle worker definition selects a role of its own. Every other spawned
+ * agent helps its spawner: it works inside that session, under its role, grants
+ * and writer, because the host ends a helper with no event that could release a
+ * reservation of its own. */
+export declare const routerPhrases: Readonly<Record<string, string>>;
 export declare function harnessRoot(cwd: string): string;
 export declare function harnessControl(root: string, workOrder?: string): ControlView;
 /**
@@ -234,7 +248,7 @@ export declare function harnessOutputObligations(root: string, session: HarnessS
  * baseline, unless a mid-upgrade session explicitly adopts its current outputs.
  */
 export declare function openOverrideAdvisory(root: string): string | null;
-export declare function beginHarnessSession(root: string, sessionId: string, role: string, adoptCurrent?: boolean | readonly string[]): {
+export declare function beginHarnessSession(root: string, sessionId: string, role: string, adoptCurrent?: boolean | readonly string[], drivenOrder?: string): {
     session: string;
     scratch: string;
     inheritedOutputs: number;
@@ -242,7 +256,7 @@ export declare function beginHarnessSession(root: string, sessionId: string, rol
 /** Lifecycle dispatches use the existing session without rewriting its entry
  * observation when a Codex thread repeats the same dispatch.
  */
-export declare function beginHarnessSessionOnce(root: string, sessionId: string, role: string): {
+export declare function beginHarnessSessionOnce(root: string, sessionId: string, role: string, controlRoot?: string): {
     session: string;
     scratch: string;
     inheritedOutputs: number;
@@ -267,6 +281,31 @@ export declare function measureHarnessSessionUsage(root: string, session: Harnes
     coverage?: never;
     cause?: string;
     subagents: import("./subagent-budget.js").SubagentObservation;
+    driven?: {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: number;
+        source: string;
+    } | {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: null;
+        source: string;
+    } | null;
 } | {
     aiCredits: number | null;
     creditSource: string;
@@ -285,6 +324,31 @@ export declare function measureHarnessSessionUsage(root: string, session: Harnes
     context: null;
     cause?: string;
     subagents: import("./subagent-budget.js").SubagentObservation;
+    driven?: {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: number;
+        source: string;
+    } | {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: null;
+        source: string;
+    } | null;
 } | {
     aiCredits: number | null;
     creditSource: string;
@@ -307,6 +371,31 @@ export declare function measureHarnessSessionUsage(root: string, session: Harnes
     };
     cause?: string;
     subagents: import("./subagent-budget.js").SubagentObservation;
+    driven?: {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: number;
+        source: string;
+    } | {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: null;
+        source: string;
+    } | null;
 } | {
     activity: {
         stepCount: number | null;
@@ -321,6 +410,31 @@ export declare function measureHarnessSessionUsage(root: string, session: Harnes
     coverage?: never;
     cause?: string;
     subagents: import("./subagent-budget.js").SubagentObservation;
+    driven?: {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: number;
+        source: string;
+    } | {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: null;
+        source: string;
+    } | null;
 } | {
     activity: {
         stepCount: number | null;
@@ -335,6 +449,31 @@ export declare function measureHarnessSessionUsage(root: string, session: Harnes
     context: null;
     cause?: string;
     subagents: import("./subagent-budget.js").SubagentObservation;
+    driven?: {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: number;
+        source: string;
+    } | {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: null;
+        source: string;
+    } | null;
 } | {
     coverage?: never;
     activity: {
@@ -353,6 +492,31 @@ export declare function measureHarnessSessionUsage(root: string, session: Harnes
     };
     cause?: string;
     subagents: import("./subagent-budget.js").SubagentObservation;
+    driven?: {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: number;
+        source: string;
+    } | {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: null;
+        source: string;
+    } | null;
 };
 export declare function measureHarnessUsage(root: string, sessionId: string): {
     aiCredits: number | null;
@@ -371,6 +535,31 @@ export declare function measureHarnessUsage(root: string, sessionId: string): {
     context: null;
     coverage?: never;
     cause?: string;
+    driven?: {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: number;
+        source: string;
+    } | {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: null;
+        source: string;
+    } | null;
     subagents: import("./subagent-budget.js").SubagentObservation;
     currentSession?: {
         available: boolean;
@@ -399,6 +588,31 @@ export declare function measureHarnessUsage(root: string, sessionId: string): {
     usage: import("./usage-observation.mjs").Usage;
     context: null;
     cause?: string;
+    driven?: {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: number;
+        source: string;
+    } | {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: null;
+        source: string;
+    } | null;
     subagents: import("./subagent-budget.js").SubagentObservation;
     currentSession?: {
         available: boolean;
@@ -431,6 +645,31 @@ export declare function measureHarnessUsage(root: string, sessionId: string): {
         classification: string;
     };
     cause?: string;
+    driven?: {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: number;
+        source: string;
+    } | {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: null;
+        source: string;
+    } | null;
     subagents: import("./subagent-budget.js").SubagentObservation;
     currentSession?: {
         available: boolean;
@@ -455,6 +694,31 @@ export declare function measureHarnessUsage(root: string, sessionId: string): {
     context: null;
     coverage?: never;
     cause?: string;
+    driven?: {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: number;
+        source: string;
+    } | {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: null;
+        source: string;
+    } | null;
     subagents: import("./subagent-budget.js").SubagentObservation;
     currentSession?: {
         available: boolean;
@@ -479,6 +743,31 @@ export declare function measureHarnessUsage(root: string, sessionId: string): {
     usage: import("./usage-observation.mjs").Usage;
     context: null;
     cause?: string;
+    driven?: {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: number;
+        source: string;
+    } | {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: null;
+        source: string;
+    } | null;
     subagents: import("./subagent-budget.js").SubagentObservation;
     currentSession?: {
         available: boolean;
@@ -507,6 +796,31 @@ export declare function measureHarnessUsage(root: string, sessionId: string): {
         classification: string;
     };
     cause?: string;
+    driven?: {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: number;
+        source: string;
+    } | {
+        count: number | null;
+        cap: number | null;
+        remaining: number | null;
+        countKind: "exact-observed" | "minimum-observed" | "unknown";
+        unresolvedAdmissions: number | null;
+        unlinkedChildren: number | null;
+        uncountedRemainder: "unknown";
+        reason?: string;
+        perSpawnerCap: number | null;
+        spawnsByWorker: null;
+        source: string;
+    } | null;
     subagents: import("./subagent-budget.js").SubagentObservation;
     currentSession?: {
         available: boolean;
@@ -591,6 +905,23 @@ export declare function releaseHarnessWriter(root: string, input: HarnessInput):
 export declare function pruneCompletedHarnessSession(root: string, sessionId: string, { dispatchEnded }?: {
     dispatchEnded?: boolean;
 }): string;
+/** The writer identity a phase session holds, for a driver comparing holders. */
+export declare const phaseActor: (sessionId: string) => string;
+export declare function phaseWriterView(root: string, launchpad: string): HarnessWriterView;
+export declare function beginCodexPhase(root: string, launchpad: string, session: string, role: string, controlRoot?: string): HarnessWriterView;
+export declare function phaseEntryReadback(root: string, launchpad: string, session: string): {
+    entered: boolean;
+    role: string | null;
+    workOrder: string | null;
+};
+export declare function phaseSessionReadback(root: string, launchpad: string, session: string): {
+    hookCalls: number;
+    refusedCalls: number;
+    effort: string[];
+    source: string;
+    subagents: import("./subagent-budget.js").SubagentObservation;
+};
+export declare function releasePhaseWriter(root: string, launchpad: string, session: string): void;
 /**
  * Operator-facing release from outside a governed session. The liveness
  * decision, the retirement and the recorded event describe one observed
@@ -606,6 +937,7 @@ export declare function releaseHarnessWriterByOperator(root: string, force?: boo
     contract: "harness-writer-v1";
     reserved: true;
     actorId: string;
+    agentId?: string;
     owner?: HarnessProcess;
     reservedAt?: string;
     liveness?: "unavailable";

@@ -21,6 +21,7 @@ export declare const harnessToolEffects: {
     readonly Bash: "shell";
     readonly Monitor: "shell";
     readonly TaskOutput: "read";
+    readonly SubagentHandback: "read";
     readonly KillShell: "stop";
     readonly TaskStop: "stop";
     readonly Agent: "spawn";
@@ -75,6 +76,11 @@ export declare function patchWriteTargets(source: string): readonly ShellWriteTa
  * arbitrary scripts and interpreters need their own reviewed path adapter.
  */
 export declare function shellWriteTargets(source: string): readonly ShellWriteTarget[] | null;
+export declare function drivenResearchCommandKind(source: string): "context7-library" | "context7-docs" | "github-search" | "github-read" | null;
+/** A tool result can attribute its exit to a dispatch only when the shell
+ * contains one literal invocation. Quoted source text and a compound line's
+ * aggregate failure cannot establish which helper ran or failed. */
+export declare function drivenLifecycleDispatch(source: string, launchpad: string): string | null;
 /** WO-144: the shell, not the program, opens a redirect, so a literal redirect
  * is a known destination on any program. This accessor names only those; the
  * program's own effects stay opaque, and shellWriteTargets keeps its contract
@@ -84,6 +90,16 @@ export declare function shellWriteTargets(source: string): readonly ShellWriteTa
  */
 export declare function shellRedirectTargets(source: string): readonly ShellWriteTarget[] | null;
 export declare function shellWritePaths(source: string): readonly string[] | null;
+/** Launchpad helpers a phase worker runs from a target worktree with their
+ * normal arguments. The hook admits these and the worker's note names them. */
+export declare const drivenHelperScripts: readonly ["sync", "work-orders", "meta", "check-publication", "adjacent-work", "reader"];
+/** What a launchpad script does when a phase worker or its helper runs it, or
+ * null when no driven lane admits the form. `read` changes no launchpad input. `write` does, so it waits for a live gate there. `gate` runs
+ * the target's own gate, which a launchpad gate does not hold up. */
+export declare function drivenCommandEffect(script: string, args: readonly string[], { role, workOrder }: {
+    readonly role: string;
+    readonly workOrder: string;
+}): "read" | "write" | "gate" | null;
 /** The fixed read-only list a live gate admits (WO-158 criterion 6). Adding a
  * program is a later order, not a session decision. */
 export declare const LIVE_GATE_READ_LIST = "cat, head, tail, wc, ls, grep, sed -n with a print-only script, git --no-pager diff|log|show|status|stash list, node scripts/harness.mjs writer --show|evidence --wait [--timeout seconds] and npm run resume --silent -- status";

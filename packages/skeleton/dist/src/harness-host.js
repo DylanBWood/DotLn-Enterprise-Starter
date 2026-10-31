@@ -18,12 +18,12 @@ import { applyFeedbackCorrection, compileFeedbackUnits, COMPILER_PACKAGE_VERSION
 import { harnessAuthorization } from "./reactor.js";
 import { personalFeedback } from "./loadouts/feedback.js";
 import { qualityPassGuidance } from "./document-quality.js";
-import { HarnessCommandRefused, LIVE_GATE_READ_LIST, harnessToolEffects, invocationEffects, liveGateReads, patchWriteTargets, shellRedirectTargets, shellWritePaths, shellWriteTargets, commitMessageInputs, shellDiagnostics, shellInvocations, executableShellInvocations, shellGuidance, } from "./harness-command.js";
+import { HarnessCommandRefused, drivenCommandEffect, drivenResearchCommandKind, LIVE_GATE_READ_LIST, harnessToolEffects, invocationEffects, liveGateReads, patchWriteTargets, shellRedirectTargets, shellWritePaths, shellWriteTargets, commitMessageInputs, shellDiagnostics, shellInvocations, executableShellInvocations, shellGuidance, } from "./harness-command.js";
 import { activeGateRuns, beginGateRun, gateInputPath, gateRecordPath, prospectiveRealpath, gateTreeHash, findGateCheck, readGateChecks, recordGateChecks, gateCodeIdentity, } from "./gate-evidence.mjs";
 import { collectSessionUsage, currentCopilotSession, usageObservation, recordUsageObservation, usageReadbackLine, usageSessionKey, } from "./usage-observation.mjs";
 import { FeedbackRefused, feedbackContentHash, feedbackWriterFacts, } from "./feedback-boundary.js";
 import { HARNESS_HOST_VERSION } from "./version.js";
-import { admitSubagentTool, initializeSubagentCounter, linkSubagentResult, subagentSummary, subagentUsage, } from "./subagent-budget.js";
+import { admitSubagentTool, admitDrivenTool, drivenWorkerContext, drivenSubagentUsage, linkDrivenResult, initializeSubagentCounter, linkSubagentResult, subagentSummary, subagentUsage, } from "./subagent-budget.js";
 import { observationBoundary, observeBackgroundTool, observeTypedCorrection, namedJudgmentUnits, observedFacts, transcriptMessages, } from "./observed-facts.js";
 export { HARNESS_HOST_VERSION } from "./version.js";
 export function harnessInputHarness(input, env = process.env) {
@@ -101,6 +101,7 @@ function decodeHarnessRecord(value, expectedEvent) {
         "SessionStart",
         "PermissionDenied",
         "PostToolUseFailure",
+        "SubagentStop",
     ].includes(value.hook_event_name))
         return fail("UNKNOWN_EVENT", "$.hook_event_name", "unsupported hook event");
     if (expectedEvent !== undefined && value.hook_event_name !== expectedEvent)
@@ -265,7 +266,22 @@ export const harnessStateDirectory = (root) => {
         ? target.directory
         : dispatchJournalDirectory(root);
 };
-const sessionKey = (input) => digest(input.session_id ?? "unknown");
+/** A lifecycle worker definition selects a role of its own. Every other spawned
+ * agent helps its spawner: it works inside that session, under its role, grants
+ * and writer, because the host ends a helper with no event that could release a
+ * reservation of its own. */
+export const routerPhrases = {
+    "resume: next": "dotln-executor",
+    "resume: fix": "dotln-executor",
+    "resume: verify": "dotln-verifier",
+    "resume: final review": "dotln-reviewer",
+    "resume: release close": "dotln-release-close",
+};
+const lifecycleWorker = (input) => Boolean(input.agent_id) &&
+    Object.values(routerPhrases).includes(input.agent_type ?? "");
+const sessionKey = (input) => digest(lifecycleWorker(input)
+    ? JSON.stringify([input.session_id, input.agent_id])
+    : (input.session_id ?? "unknown"));
 const statePath = (root, input) => join(harnessStateDirectory(root), `${sessionKey(input)}.json`);
 const git = (root, args, acceptFailure = false) => {
     const result = spawnSync("git", [...args], {
@@ -2363,6 +2379,7 @@ const writerView = (writer) => ({
     contract: "harness-writer-v1",
     reserved: true,
     actorId: writer.actorId,
+    ...(writer.agentId ? { agentId: writer.agentId } : {}),
     ...ownerFields(writer.owner),
     ...(writer.reservedAt ? { reservedAt: writer.reservedAt } : {}),
     ...(writer.liveness ? { liveness: writer.liveness } : {}),
@@ -2423,6 +2440,7 @@ function acquireHarnessWriter(root, input, actorId, options = {}) {
         : undefined;
     const fresh = {
         actorId,
+        ...(lifecycleWorker(input) ? { agentId: digest(input.agent_id) } : {}),
         worktree: root,
         owner,
         reservedAt: at,
@@ -2809,10 +2827,12 @@ export function openOverrideAdvisory(root) {
     entries.sort();
     return `DotLn advisory: an operator override entered ${entries[0]} remains open in this worktree; inspect its session and exit with operator override: off when recovery is complete.`;
 }
-export function beginHarnessSession(root, sessionId, role, adoptCurrent = false) {
-    return enterHarnessSession(root, sessionId, role, adoptCurrent, false);
+export function beginHarnessSession(root, sessionId, role, adoptCurrent = false, drivenOrder) {
+    return enterHarnessSession(root, sessionId, role, adoptCurrent, false, root, drivenOrder);
 }
-function enterHarnessSession(root, sessionId, role, adoptCurrent, allowRoleless) {
+function enterHarnessSession(root, sessionId, role, adoptCurrent, allowRoleless, controlRoot = root, 
+// A router runs in main, where no order is selected, so it is told its order.
+drivenOrder) {
     if (![
         "executor",
         "verifier",
@@ -2820,6 +2840,7 @@ function enterHarnessSession(root, sessionId, role, adoptCurrent, allowRoleless)
         "release-close",
         "planner",
         "refuter",
+        "router",
     ].includes(role) ||
         !sessionId)
         throw new Error("Invalid harness session");
@@ -2844,7 +2865,7 @@ function enterHarnessSession(root, sessionId, role, adoptCurrent, allowRoleless)
             : [];
     if (adopted.some((path) => typeof path !== "string" || !(path in snapshot)))
         throw new Error("Adopted outputs must name current changed files; inherited paths are not inferred");
-    const control = harnessControl(root);
+    const control = harnessControl(controlRoot);
     const expected = role === "executor"
         ? control.phase === "repairing"
             ? "RepairCompleted"
@@ -2866,14 +2887,16 @@ function enterHarnessSession(root, sessionId, role, adoptCurrent, allowRoleless)
                     : role === "release-close"
                         ? "resume: release close"
                         : role,
-        ...(control.workOrder ? { workOrder: control.workOrder } : {}),
+        ...(drivenOrder || control.workOrder
+            ? { workOrder: drivenOrder ?? control.workOrder }
+            : {}),
         ...(expected && !["closed", "withdrawn"].includes(control.phase)
             ? { expectedEvent: expected }
             : {}),
         startedAt: prior?.startedAt ?? new Date().toISOString(),
         usageSessionKey: prior?.usageSessionKey ??
             usageSessionKey(process.env.CODEX_THREAD_ID || sessionId),
-        startingEventCount: localEvents(root, control.workOrder).length,
+        startingEventCount: localEvents(controlRoot, control.workOrder).length,
         startingRevision: git(root, ["rev-parse", "HEAD"]).trim(),
         reads: prior?.reads ?? [],
         beforeOutputs: prior?.beforeOutputs ?? snapshot,
@@ -2920,9 +2943,9 @@ function enterHarnessSession(root, sessionId, role, adoptCurrent, allowRoleless)
 /** Lifecycle dispatches use the existing session without rewriting its entry
  * observation when a Codex thread repeats the same dispatch.
  */
-export function beginHarnessSessionOnce(root, sessionId, role) {
+export function beginHarnessSessionOnce(root, sessionId, role, controlRoot = root) {
     try {
-        return enterHarnessSession(root, sessionId, role, false, true);
+        return enterHarnessSession(root, sessionId, role, false, true, controlRoot);
     }
     catch (error) {
         if (error instanceof Error &&
@@ -2972,6 +2995,7 @@ export function measureHarnessSessionUsage(root, session, key, transcriptPath, c
     return {
         ...observation,
         subagents: subagentUsage(root, harnessStateDirectory(root), key, true),
+        ...(drivenWorkerContext() ? { driven: drivenSubagentUsage() } : {}),
     };
 }
 export function measureHarnessUsage(root, sessionId) {
@@ -3241,6 +3265,7 @@ function metadataCommand(command, repositoryCommands = true) {
     return (commands.length > 0 &&
         commands.every((part) => [
             "pwd",
+            "pwd -P",
             "git rev-parse --show-toplevel",
             "git rev-parse --abbrev-ref HEAD",
             "git status --short",
@@ -3254,9 +3279,27 @@ function metadataCommand(command, repositoryCommands = true) {
             (repositoryCommands &&
                 /^(?:node scripts\/resume\.mjs|npm run (?:--silent resume|resume(?: --silent)?) --) (?:status(?: --json)?|times|usage(?: --json)?|briefing|next|release-close)$/.test(part))));
 }
+function routerDriverCommand(root, command, launchOnly = false) {
+    const words = plainShellWords(command);
+    if (!words ||
+        words[0] !== "node" ||
+        resolve(root, words[1] ?? "") !== join(root, "scripts/drive.mjs"))
+        return false;
+    const args = words.slice(2);
+    if (args[0] === "status") {
+        if (launchOnly)
+            return false;
+        args.shift();
+    }
+    return (/^WO-\d{3}$/.test(args[0] ?? "") &&
+        (args.length === 1 ||
+            (args.length === 3 &&
+                args[1] === "--host" &&
+                ["claude", "codex"].includes(args[2]))));
+}
 /**
  * Writer facts for one tool invocation. Metadata and managed-usage commands
- * reserve nothing; any other shell or write invocation
+ * reserve nothing; a non-router's other shell or write invocation
  * reserves or refreshes this session's writer and reports every holder. The
  * reservation journals under the observed event, so a prompt dispatch admitted
  * through its equivalent invocation records its acquisition against the prompt.
@@ -3265,8 +3308,21 @@ function writerIsolationFacts(root, invocation, session, observed = invocation) 
     const actorId = sessionKey(observed);
     const command = String(invocation.tool_input?.command ?? "");
     if (invocation.tool_name === "Bash" &&
-        (metadataCommand(command) || managedUsageCommand(invocation, session)))
+        (metadataCommand(command) ||
+            (session.role === "router" &&
+                (routerDriverCommand(root, command) || listedRead(root, command))) ||
+            managedUsageCommand(invocation, session) ||
+            (targetState.getStore()?.root === root &&
+                drivenWorkerContext() &&
+                (drivenTargetRead(root, command) ||
+                    drivenResearchCommandKind(command)))))
         return { ...feedbackWriterFacts(root, actorId, []), writable: false };
+    // A router cannot become a writer while attempting an unsupported command.
+    // Observe existing ownership so its foreign-writer refusal still applies.
+    if (session.role === "router") {
+        const { writer } = observeWriterHolder(root);
+        return feedbackWriterFacts(root, actorId, writer ? [writer] : []);
+    }
     const location = feedbackWriterFacts(root, actorId, []);
     const target = targetState.getStore();
     // Detached source writers have a destination branch bound by a live host
@@ -3285,6 +3341,59 @@ function writerIsolationFacts(root, invocation, session, observed = invocation) 
         ...feedbackWriterFacts(root, actorId, reserveHarnessWriter(root, observed, actorId)),
         branch,
     };
+}
+const drivenHelperWrites = `a driven worker's helper agent writes nothing but its session scratch; its worker owns this order's worktrees. Its shell runs reads: ${LIVE_GATE_READ_LIST}`;
+const drivenHelper = (input) => Boolean(input.agent_id) && !lifecycleWorker(input);
+// The briefing spells every launchpad command with this literal assignment.
+// Only that exact form is removed; any other leading assignment leaves the line
+// unparsed, which refuses it.
+function drivenCommandWords(command, launchpad) {
+    return plainShellWords([launchpad, shellQuote(launchpad)].reduce((line, spelled) => line.startsWith(`DOTLN_LAUNCHPAD=${spelled} `)
+        ? line.slice(`DOTLN_LAUNCHPAD=${spelled} `.length)
+        : line, command));
+}
+function drivenLaunchpadEffect(words, driven) {
+    const script = words && ["node", process.execPath].includes(words[0] ?? "")
+        ? words[1]
+        : undefined;
+    return script?.endsWith(".mjs") &&
+        dirname(script) === join(driven.root, "scripts")
+        ? drivenCommandEffect(basename(script, ".mjs"), words.slice(2), driven)
+        : null;
+}
+function drivenTargetRead(root, command) {
+    // A relative script here would be the target's own, so a repository helper
+    // reads only through the launchpad's full path, below.
+    const reads = liveGateReads(command);
+    const driven = drivenWorkerContext();
+    return (metadataCommand(command, false) ||
+        Boolean(reads && !reads.helper && (!reads.git || !configuredGitPrograms(root))) ||
+        (driven !== null &&
+            drivenLaunchpadEffect(drivenCommandWords(command, driven.root), driven) === "read") ||
+        [
+            "printenv DOTLN_LAUNCHPAD",
+            "printenv CLAUDE_EFFORT",
+            "printenv DOTLN_LAUNCHPAD CLAUDE_EFFORT",
+            "git status",
+        ].includes(command.trim()));
+}
+/** A shell call shown to leave the checkout as it was: the live gate's own
+ * list, so a router or a helper reads exactly what a gate admits. */
+function listedRead(root, command) {
+    const reads = liveGateReads(command);
+    return (metadataCommand(command, false) ||
+        outputReadCommand(command) !== null ||
+        Boolean(reads && (!reads.git || !configuredGitPrograms(root))));
+}
+/** A helper reads, and it may research as its worker's note tells it to. */
+function helperShellRead(input, root, driven) {
+    const command = input.tool_input?.command ?? input.tool_input?.cmd;
+    if (typeof command !== "string")
+        return false;
+    const words = plainShellWords(command);
+    return (listedRead(root, command) ||
+        Boolean(drivenResearchCommandKind(command)) ||
+        drivenLaunchpadEffect(words && [words[0], resolve(root, words[1] ?? ""), ...words.slice(2)], driven) === "read");
 }
 /** Host fact collection is separate from the sole compiled feedback predicate. */
 export function harnessFeedbackFacts(policy, input, root, session) {
@@ -3911,6 +4020,27 @@ function registeredTargetWriteRoot(root, session) {
         };
     }
 }
+function recordedOrderRoots(root, order) {
+    if (!order || !/^WO-\d{3}$/.test(order))
+        return [];
+    const launchpad = targetState.getStore()?.launchpad ?? root;
+    const helper = join(launchpad, "scripts/lib/order-worktree-grants.mjs");
+    const result = spawnSync(process.execPath, [
+        "--input-type=module",
+        "-e",
+        "const {pathToFileURL}=await import('node:url');const {orderWorktreeGrants}=await import(pathToFileURL(process.argv[1]));process.stdout.write(JSON.stringify(orderWorktreeGrants(process.argv[2],process.argv[3])));",
+        helper,
+        launchpad,
+        order,
+    ], { cwd: launchpad, encoding: "utf8", timeout: 10000 });
+    if (result.status !== 0)
+        throw new Error("recorded order worktree roots unavailable");
+    const roots = JSON.parse(result.stdout);
+    if (!Array.isArray(roots) ||
+        !roots.every((item) => typeof item === "string" && isAbsolute(item)))
+        throw new Error("recorded order worktree roots malformed");
+    return roots;
+}
 function outsideWriteResponse(config, input, root, moved = false) {
     if (input.hook_event_name !== "PreToolUse")
         return {};
@@ -3963,6 +4093,7 @@ function outsideWriteResponse(config, input, root, moved = false) {
             }
             : config.envelope;
         const ungranted = [];
+        let orderRootsCause;
         const roots = grants
             .filter((grant) => {
             const effect = outsideWriteEffect(grant);
@@ -3972,6 +4103,17 @@ function outsideWriteResponse(config, input, root, moved = false) {
             .flatMap((grant) => {
             let path;
             switch (grant.kind) {
+                case "order-worktree":
+                    // Roots that cannot be resolved withhold this grant alone. The
+                    // other grants are still judged and the guard stays on.
+                    try {
+                        return recordedOrderRoots(root, session.workOrder).map((physical) => ({ ...grant, physical }));
+                    }
+                    catch (error) {
+                        orderRootsCause =
+                            error instanceof Error ? error.message : String(error);
+                        return [];
+                    }
                 case "system-temp":
                     path = tmpdir();
                     break;
@@ -4056,7 +4198,7 @@ function outsideWriteResponse(config, input, root, moved = false) {
         });
         if (!grant)
             return {
-                response: protocolRefusal(config.event, `DOTLN_HARNESS_REFUSED: outside-project write to ${destination.path} (physical destination ${destination.physical}) lacks an equipped outside-write grant for role ${session.role ?? "unknown"} (WO-144).${withheld ? ` Granted root ${withheld.path} grants nothing: ${withheld.cause} (WO-168).` : ""} Use operator override: for authorized recovery.`),
+                response: protocolRefusal(config.event, `DOTLN_HARNESS_REFUSED: outside-project write to ${destination.path} (physical destination ${destination.physical}) lacks an equipped outside-write grant for role ${session.role ?? "unknown"} (WO-144).${withheld ? ` Granted root ${withheld.path} grants nothing: ${withheld.cause} (WO-168).` : ""}${orderRootsCause ? ` Granted root order-worktree grants nothing: ${orderRootsCause}.` : ""} Use operator override: for authorized recovery.`),
             };
         const tools = config.tools ?? harnessToolEffects;
         if (tools[input.tool_name ?? ""] === "write")
@@ -4308,7 +4450,33 @@ async function evaluateExistingHarnessHook(config, input, root, boundary, outsid
         return override ? { systemMessage: override } : {};
     }
     const session = readJson(statePath(root, input), initialSession(), true);
+    // A lifecycle worker definition is a role selector, not the parent's
+    // session state. Root sessions retain their established identity.
+    if (lifecycleWorker(input)) {
+        const role = input.agent_type.slice("dotln-".length);
+        const level = input.effort?.level;
+        if (session.role !== role ||
+            (level && session.selectedEffort?.level !== level)) {
+            session.role = role;
+            if (level)
+                session.selectedEffort = { level, source: "hook-input" };
+            writeJson(statePath(root, input), session);
+        }
+    }
+    if (config.kind === "agent-finished") {
+        // A helper's actor is its spawner's, whose reservation is not its to release.
+        if (lifecycleWorker(input))
+            releaseHarnessWriter(root, input);
+        return {};
+    }
     if (config.kind === "denial") {
+        const routerLaunch = session.role === "router" &&
+            input.tool_name === "Bash" &&
+            routerDriverCommand(root, String(input.tool_input?.command ?? ""), true);
+        if (routerLaunch) {
+            session.routerLaunchRefused = true;
+            writeJson(statePath(root, input), session);
+        }
         const bytes = JSON.stringify(input.tool_input ?? {});
         const bracket = /\[([A-Za-z][A-Za-z -]{0,95})\]/.exec(input.reason ?? "")?.[0] ?? null;
         record(root, input, {
@@ -4322,7 +4490,9 @@ async function evaluateExistingHarnessHook(config, input, root, boundary, outsid
             rule: bracket,
         });
         return {
-            systemMessage: "DotLn advisory: host permission denied the call. The operator can run it with the ! prefix, or use /permissions → Recently denied to retry. No retry is requested by this hook.",
+            systemMessage: routerLaunch
+                ? "DotLn: host permission denied the canonical driver. Stop this router attempt; no retry or alternative launcher is admitted until a new operator drive phrase."
+                : "DotLn advisory: host permission denied the call. The operator can run it with the ! prefix, or use /permissions → Recently denied to retry. No retry is requested by this hook.",
         };
     }
     const gateRefusal = activeGateWriteRefusal(input, root, config.tools, session);
@@ -4371,10 +4541,10 @@ async function evaluateExistingHarnessHook(config, input, root, boundary, outsid
         const intent = harnessPromptIntent(input.prompt);
         const role = config.roles?.find((role) => role.intents.includes(intent)) ??
             config.roles?.find((role) => role.intents.includes(intent) ||
-                role.intents.some((prefix) => ["planning:", "ideation:"].includes(prefix) &&
+                role.intents.some((prefix) => ["planning:", "ideation:", "drive:"].includes(prefix) &&
                     intent.startsWith(prefix)));
         if (role) {
-            const auxiliary = ["planner", "refuter"].includes(role.name) ||
+            const auxiliary = ["planner", "refuter", "router"].includes(role.name) ||
                 ["resume: status", "resume: times"].includes(intent);
             let control = auxiliary
                 ? {
@@ -4405,17 +4575,23 @@ async function evaluateExistingHarnessHook(config, input, root, boundary, outsid
                 "resume: verify": "VerificationCompleted",
                 "resume: final review": "FinalReviewCompleted",
             };
-            if (!auxiliary || !session.role) {
+            if (!auxiliary || !session.role || role.name === "router") {
                 if (role.name !== "release-close")
                     delete session.releaseCloseDispatch;
                 if (!["resume: status", "resume: times"].includes(intent))
                     bindDispatchBound(root, session, role.name, intent, control.workOrder);
                 session.role = role.name;
+                delete session.routerLaunchRefused;
                 session.intent = intent;
                 session.startingEventCount = localEvents(root, control.workOrder).length;
                 session.startingRevision = git(root, ["rev-parse", "HEAD"]).trim();
-                if (control.workOrder)
-                    session.workOrder = control.workOrder;
+                // A router selects no order of its own; its phrase names the one it
+                // drives, and its usage belongs to that order.
+                const order = role.name === "router"
+                    ? (/^drive: (WO-\d{3})$/.exec(intent)?.[1] ?? control.workOrder)
+                    : control.workOrder;
+                if (order)
+                    session.workOrder = order;
                 session.startedAt ??= new Date().toISOString();
                 session.usageSessionKey = sessionKey(input);
                 session.beforeOutputs ??= outputSnapshot(root);
@@ -4533,8 +4709,10 @@ async function evaluateExistingHarnessHook(config, input, root, boundary, outsid
             return observeShellDiagnostics(root, input, session.role, observationScope);
         }
         if (input.hook_event_name === "PostToolUse" &&
-            ["Agent", "Task"].includes(input.tool_name ?? ""))
+            ["Agent", "Task"].includes(input.tool_name ?? "")) {
             linkSubagentResult(harnessStateDirectory(root), input);
+            linkDrivenResult(input);
+        }
         const before = session.reads.length;
         const authorship = observeAuthorship(input, root, session);
         if (input.hook_event_name === "PreToolUse") {
@@ -4686,7 +4864,37 @@ async function evaluateExistingHarnessHook(config, input, root, boundary, outsid
     if (config.kind === "permission") {
         if (!config.envelope)
             throw new Error("Missing compiled authority");
+        if (session.role === "router" && session.routerLaunchRefused)
+            return protocolRefusal(config.event, "DOTLN_ROUTER_LAUNCH_REFUSED: the host denied this router's launcher; stop until a new operator drive phrase.");
         const spawn = config.tools?.[input.tool_name ?? ""] === "spawn";
+        const phraseAgent = routerPhrases[String(input.tool_input?.prompt ?? "")];
+        if (spawn &&
+            !input.agent_id &&
+            session.role === "router" &&
+            (!phraseAgent || phraseAgent !== input.tool_input?.subagent_type))
+            return protocolRefusal(config.event, "DOTLN_ROUTER_SPAWN_REFUSED: a router worker receives exactly one lifecycle phrase and the agent type that phrase names; select the order by its recorded working directory.");
+        if (session.role === "router" && !input.agent_id) {
+            const tool = config.tools?.[input.tool_name ?? ""];
+            const command = String(input.tool_input?.command ?? input.tool_input?.cmd ?? "");
+            if (tool === "write" ||
+                (tool === "shell" &&
+                    !listedRead(root, command) &&
+                    !routerDriverCommand(root, command) &&
+                    !managedUsageCommand(input, session)))
+                return protocolRefusal(config.event, "DOTLN_ROUTER_WRITE_REFUSED: a router edits nothing and runs only reads, its driver and its usage command; its phase workers make every change.");
+        }
+        // A driven worker's helper reviews beside it; only the worker changes the
+        // order's worktrees. Its one write is its own session scratch.
+        const drivenLane = drivenHelper(input) ? drivenWorkerContext() : null;
+        if (drivenLane) {
+            const tool = config.tools?.[input.tool_name ?? ""];
+            const filePath = input.tool_input?.file_path;
+            if (tool === "write"
+                ? !(typeof filePath === "string" &&
+                    withinRoot(prospectiveRealpath(harnessSessionScratch(input.session_id)), prospectiveRealpath(resolve(root, filePath))))
+                : tool === "shell" && !helperShellRead(input, root, drivenLane))
+                return protocolRefusal(config.event, `DOTLN_HARNESS_REFUSED: ${drivenHelperWrites}`);
+        }
         let boundAdvisory;
         if (startsBoundedWork(input, spawn)) {
             try {
@@ -4712,6 +4920,10 @@ async function evaluateExistingHarnessHook(config, input, root, boundary, outsid
             : undefined;
         if (admission?.refusal)
             return protocolRefusal(config.event, admission.refusal);
+        // Charged last, so a spawn refused above costs the drive nothing.
+        const driven = admitDrivenTool(input, spawn);
+        if (driven?.refusal)
+            return protocolRefusal(config.event, driven.refusal);
         const liveGates = spawn ? activeGateRuns(root) : [];
         const gateAdvisory = liveGates.length
             ? `DotLn advisory: spawn admitted during live gate ${liveGates.map((run) => `${run.runId} (${run.kind ?? "unknown"})`).join(", ")}; probes under node, npm and harness bounded will be refused until it ends.`
@@ -5321,6 +5533,81 @@ export function pruneCompletedHarnessSession(root, sessionId, { dispatchEnded = 
         return `Session prune: retained; ${error instanceof Error ? error.message : "ownership observation unavailable"}.`;
     }
 }
+/** Release only the ended phase's own reservation in its actual state lane. */
+function inPhaseWorktree(root, launchpad, run) {
+    return root === launchpad
+        ? run()
+        : targetState.run({
+            root,
+            launchpad,
+            directory: join(launchpad, "docs/control/local/harness/targets", digest(root)),
+        }, run);
+}
+/** The writer identity a phase session holds, for a driver comparing holders. */
+export const phaseActor = (sessionId) => digest(sessionId);
+export function phaseWriterView(root, launchpad) {
+    return inPhaseWorktree(root, launchpad, () => harnessWriterView(root));
+}
+// Unhooked phase sessions enter from their own process so ownership is tied
+// to the native worker, including a fresh session continuing a briefing.
+export function beginCodexPhase(root, launchpad, session, role, controlRoot = root) {
+    return inPhaseWorktree(root, launchpad, () => {
+        beginHarnessSessionOnce(root, session, role, controlRoot);
+        const writer = reserveCodexDispatchWriter(root, session);
+        const file = statePath(root, {
+            cwd: root,
+            session_id: session,
+            hook_event_name: "UserPromptSubmit",
+        });
+        const state = readJson(file, null, true);
+        if (!state)
+            throw new Error("Native phase session state is missing");
+        writeJson(file, { ...state, nativePhaseEntered: true });
+        return writer;
+    });
+}
+export function phaseEntryReadback(root, launchpad, session) {
+    return inPhaseWorktree(root, launchpad, () => {
+        const state = readJson(statePath(root, {
+            cwd: root,
+            session_id: session,
+            hook_event_name: "UserPromptSubmit",
+        }), null, true);
+        return {
+            entered: state?.nativePhaseEntered === true,
+            role: state?.role ?? null,
+            workOrder: state?.workOrder ?? null,
+        };
+    });
+}
+export function phaseSessionReadback(root, launchpad, session) {
+    return inPhaseWorktree(root, launchpad, () => {
+        const file = join(harnessStateDirectory(root), `${digest(session)}.jsonl`);
+        const rows = existsSync(file)
+            ? readFileSync(file, "utf8")
+                .trim()
+                .split("\n")
+                .filter(Boolean)
+                .map((line) => JSON.parse(line))
+            : [];
+        return {
+            hookCalls: rows.filter((row) => row.event === "PreToolUse").length,
+            refusedCalls: rows.filter((row) => row.allowed === false).length,
+            effort: [
+                ...new Set(rows.flatMap((row) => typeof row.effort === "string" ? [row.effort] : [])),
+            ],
+            source: root === launchpad ? "project-hook-journal" : "target-hook-journal",
+            subagents: subagentUsage(launchpad, harnessStateDirectory(root), session),
+        };
+    });
+}
+export function releasePhaseWriter(root, launchpad, session) {
+    inPhaseWorktree(root, launchpad, () => releaseHarnessWriter(root, {
+        cwd: root,
+        session_id: session,
+        hook_event_name: "Stop",
+    }));
+}
 /**
  * Operator-facing release from outside a governed session. The liveness
  * decision, the retirement and the recorded event describe one observed
@@ -5359,24 +5646,104 @@ export function releaseHarnessWriterByOperator(root, force = false) {
     }
     throw new Error("Writer reservation release exceeded its retry budget");
 }
+function targetReviewerGit(root, input, tools) {
+    const driven = drivenWorkerContext();
+    const command = input.tool_input?.command ?? input.tool_input?.cmd;
+    if (driven?.role !== "reviewer" ||
+        tools?.[input.tool_name ?? ""] !== "shell" ||
+        typeof command !== "string")
+        return;
+    const words = plainShellWords(command);
+    if (words?.[0] !== "git" ||
+        words[1] !== "-C" ||
+        !words[2] ||
+        !["add", "commit"].includes(words[3] ?? ""))
+        return;
+    const roots = recordedOrderRoots(root, driven.workOrder);
+    const destination = prospectiveRealpath(resolve(root, words[2]));
+    if (!roots.includes(root) ||
+        !roots.includes(driven.root) ||
+        !roots.includes(destination))
+        throw new Error("Git destination is outside the recorded order pair");
+    // The generic classifier rejects cwd overrides. This adapter retains the
+    // physical destination for relative message files and all feedback checks.
+    const normalized = ["git", ...words.slice(3)];
+    return {
+        root: destination,
+        words: normalized,
+        input: {
+            ...input,
+            tool_input: {
+                ...input.tool_input,
+                command: normalized.map(shellQuote).join(" "),
+            },
+        },
+    };
+}
+/** Refuse a target-lane write the pair's live gate or the bundle protects. */
+function protectTargetWrite(input, root, orderRoots, candidate) {
+    const resolved = resolve(root, candidate);
+    const writeRoot = orderRoots.find((directory) => withinRoot(directory, prospectiveRealpath(resolved))) ?? root;
+    const path = contained(writeRoot, join(prospectiveRealpath(dirname(resolved)), basename(resolved)));
+    // The pair's launchpad runs its own gates; a live one protects
+    // its inputs from this hook exactly as it does from its own.
+    const gate = writeRoot === root
+        ? null
+        : activeGateWriteRefusal({
+            ...input,
+            tool_name: "Write",
+            tool_input: { file_path: path },
+        }, writeRoot, undefined, initialSession());
+    if (gate)
+        throw new Error(gate);
+    const local = relative(writeRoot, path).toLowerCase();
+    const protectedPaths = [
+        ".git",
+        "claude.local.md",
+        ".dotln",
+        ".claude/settings.json",
+        ".claude/target-worker-manifest.json",
+        ".claude/hooks/permissions.mjs",
+        ".claude/hooks/concurrent-work-requires-worktrees.mjs",
+        ".claude/hooks/no-attribution.mjs",
+    ];
+    if (protectedPaths.some((entry) => local === entry ||
+        local.startsWith(`${entry}/`) ||
+        entry.startsWith(`${local}/`)))
+        throw new Error("target bundle or host scratch is outside the writable surface");
+    let destination = writeRoot;
+    for (const part of relative(writeRoot, path).split(sep)) {
+        destination = join(destination, part);
+        const info = lstatSync(destination, { throwIfNoEntry: false });
+        if (info &&
+            (info.isSymbolicLink() ||
+                (!info.isDirectory() && (!info.isFile() || info.nlink !== 1))))
+            throw new Error("target write requires ordinary unlinked file paths");
+    }
+}
 /** The target's runtime is in the launchpad snapshot; only Git facts use target cwd. */
 export async function runTargetHarnessHook(config, boundary) {
     const deny = (reason) => protocolRefusal("PreToolUse", reason);
     let response;
+    let runtimeStage = "input";
     try {
         const decoded = decodeHarnessInput(JSON.parse(await streamText(process.stdin)), "PreToolUse");
         if (!decoded.ok)
             throw new Error("target hook input unavailable");
         const input = decoded.value;
+        runtimeStage = "worktree-binding";
         const root = harnessRoot(input.cwd);
         if (digest(root) !== config.runtime.targetId)
             throw new Error("target worktree binding differs");
+        runtimeStage = "runtime-binding";
         const snapshot = realpathSync(fileURLToPath(new URL("../../../../", import.meta.url)));
         const launchpad = realpathSync(join(snapshot, "../../.."));
         if (!config.runtime.snapshot ||
             realpathSync(join(launchpad, config.runtime.snapshot)) !== snapshot)
             throw new Error("target immutable runtime binding differs");
+        runtimeStage = "runtime-integrity";
         assertHarnessRuntime(config, launchpad);
+        runtimeStage = "state-directory";
         const directory = join(launchpad, "docs/control/local/harness/targets", digest(root));
         // Refuse symlinked local state rather than following a target-controlled route.
         let parent = launchpad;
@@ -5386,60 +5753,149 @@ export async function runTargetHarnessHook(config, boundary) {
             if (info && (!info.isDirectory() || info.isSymbolicLink()))
                 throw new Error("target state directory unavailable");
         }
+        runtimeStage = "hook-evaluation";
         response = await targetState.run({ root, directory, launchpad }, async () => {
             let result;
             try {
+                const pairedGit = targetReviewerGit(root, input, config.tools);
                 if (config.kind === "permission") {
                     if (!config.envelope)
                         throw new Error("compiled target authority missing");
-                    const effect = permissionEffect(input, root, config.tools);
+                    const driven = drivenWorkerContext();
+                    if (driven) {
+                        initializeSubagentCounter(harnessStateDirectory(root), input.session_id);
+                        admitSubagentTool(driven.root, harnessStateDirectory(root), input, config.tools?.[input.tool_name ?? ""] === "spawn", { cap: null });
+                    }
+                    const drivenAdmission = admitDrivenTool(input, config.tools?.[input.tool_name ?? ""] === "spawn");
+                    if (drivenAdmission?.refusal)
+                        throw new Error(drivenAdmission.refusal);
+                    const orderGrant = driven
+                        ? config.outsideWriteGrants
+                            ?.find((row) => row.role === driven.role)
+                            ?.grants.find((grant) => grant.kind === "order-worktree")
+                        : undefined;
+                    if (driven && !orderGrant)
+                        throw new Error("driven role has no admitted order-worktree grant");
+                    const orderRoots = driven
+                        ? recordedOrderRoots(root, driven.workOrder)
+                        : [];
+                    if (driven &&
+                        (!orderRoots.includes(root) || !orderRoots.includes(driven.root)))
+                        throw new Error("driven target worktree differs from its recorded roots");
+                    if (driven && orderGrant) {
+                        const session = readJson(statePath(root, input), initialSession(), true);
+                        writeJson(statePath(root, input), {
+                            ...session,
+                            role: driven.role,
+                            workOrder: driven.workOrder,
+                            outsideWriteGrants: [orderGrant],
+                        });
+                    }
+                    const filePath = input.tool_input?.file_path;
+                    // A target phase's one outside write beyond its pair is its own
+                    // session scratch; a helper may use that and nothing else.
+                    const scratchWrite = Boolean(driven) &&
+                        typeof filePath === "string" &&
+                        withinRoot(prospectiveRealpath(harnessSessionScratch(input.session_id)), prospectiveRealpath(resolve(root, filePath)));
+                    const outsideEffect = scratchWrite
+                        ? "outside.write:session-scratch"
+                        : typeof filePath === "string" &&
+                            orderRoots.some((directory) => withinRoot(directory, prospectiveRealpath(resolve(root, filePath))))
+                            ? "outside.write:order-worktree"
+                            : undefined;
+                    const tool = config.tools?.[input.tool_name ?? ""];
+                    const args = input.tool_input ?? {};
+                    const command = args.command ?? args.cmd;
+                    const orderLaunchpad = driven?.root ?? launchpad;
+                    const words = typeof command === "string"
+                        ? drivenCommandWords(command, orderLaunchpad)
+                        : null;
+                    const effect = permissionEffect(pairedGit
+                        ? pairedGit.input
+                        : typeof filePath === "string"
+                            ? {
+                                ...input,
+                                tool_input: {
+                                    ...input.tool_input,
+                                    file_path: prospectiveRealpath(resolve(root, filePath)),
+                                },
+                            }
+                            : input, pairedGit?.root ?? root, config.tools, outsideEffect);
                     if (!harnessAuthorization(config.envelope, effect, Date.now())
                         .authorized)
                         throw new Error(`compiled authority does not permit ${effect}`);
-                    const tool = config.tools?.[input.tool_name ?? ""];
-                    const args = input.tool_input ?? {};
-                    const protect = (candidate) => {
-                        const path = contained(root, candidate);
-                        const local = relative(root, path).toLowerCase();
-                        const protectedPaths = [
-                            ".git",
-                            "claude.local.md",
-                            ".dotln",
-                            ".claude/settings.json",
-                            ".claude/target-worker-manifest.json",
-                            ".claude/hooks/permissions.mjs",
-                            ".claude/hooks/concurrent-work-requires-worktrees.mjs",
-                            ".claude/hooks/no-attribution.mjs",
-                        ];
-                        if (protectedPaths.some((entry) => local === entry ||
-                            local.startsWith(`${entry}/`) ||
-                            entry.startsWith(`${local}/`)))
-                            throw new Error("target bundle or host scratch is outside the writable surface");
-                        let destination = root;
-                        for (const part of relative(root, path).split(sep)) {
-                            destination = join(destination, part);
-                            const info = lstatSync(destination, { throwIfNoEntry: false });
-                            if (info &&
-                                (info.isSymbolicLink() ||
-                                    (!info.isDirectory() &&
-                                        (!info.isFile() || info.nlink !== 1))))
-                                throw new Error("target write requires ordinary unlinked file paths");
-                        }
+                    const reservePairedWriter = () => {
+                        if (!driven)
+                            return;
+                        if (drivenHelper(input))
+                            throw new Error(`${drivenHelperWrites} From a target worktree, name a launchpad script by its full path.`);
+                        const writers = reserveHarnessWriter(driven.root, input, sessionKey(input));
+                        const foreign = writers.find((writer) => writer.actorId !== sessionKey(input));
+                        if (foreign)
+                            throw new Error(writerRefusal(foreign));
                     };
+                    if (tool === "write" && !scratchWrite)
+                        reservePairedWriter();
+                    const protect = (candidate) => protectTargetWrite(input, root, orderRoots, candidate);
                     if (tool === "write") {
                         const path = args.file_path ?? args.notebook_path;
                         if (typeof path !== "string")
                             throw new Error("target write path unavailable");
-                        protect(path);
+                        if (!scratchWrite)
+                            protect(path);
                     }
                     else if (tool === "shell") {
                         const cwd = args.workdir ?? args.cwd ?? root;
                         if (typeof cwd !== "string" ||
                             realpathSync(resolve(root, cwd)) !== root)
                             throw new Error("target shell requires worktree-root cwd");
-                        const command = args.command ?? args.cmd;
-                        const hostCommand = typeof command === "string" &&
-                            sourceChangeCommandEffect(launchpad, root, command);
+                        const script = words && ["node", process.execPath].includes(words[0] ?? "")
+                            ? words[1]
+                            : undefined;
+                        const lifecycleEffect = driven
+                            ? drivenLaunchpadEffect(words, driven)
+                            : null;
+                        let publication = false;
+                        if (driven?.role === "reviewer" &&
+                            words?.[2] === "publish" &&
+                            [
+                                join(launchpad, "scripts/worktree.mjs"),
+                                join(orderLaunchpad, "scripts/worktree.mjs"),
+                            ].includes(script ?? "")) {
+                            const admission = registeredTargetAdmission(driven.root, {
+                                ...input,
+                                tool_input: {
+                                    ...args,
+                                    command: words.map(shellQuote).join(" "),
+                                },
+                            }, {
+                                ...initialSession(),
+                                role: driven.role,
+                                workOrder: driven.workOrder,
+                            });
+                            if (!admission?.response)
+                                throw new Error(admission?.advisory ??
+                                    "registered target publication admission unavailable");
+                            publication = true;
+                        }
+                        const localRead = driven &&
+                            typeof command === "string" &&
+                            drivenTargetRead(root, command);
+                        const gitWords = pairedGit?.words ?? words;
+                        const localCommit = driven?.role === "reviewer" &&
+                            gitWords?.[0] === "git" &&
+                            ["add", "commit"].includes(gitWords[1] ?? "");
+                        const researchCommand = driven &&
+                            typeof command === "string" &&
+                            drivenResearchCommandKind(command);
+                        const hostCommand = localRead
+                            ? "repo.read"
+                            : localCommit
+                                ? "git.local"
+                                : lifecycleEffect || publication || researchCommand
+                                    ? "shell.run"
+                                    : typeof command === "string" &&
+                                        sourceChangeCommandEffect(launchpad, root, command);
                         if (hostCommand &&
                             !harnessAuthorization(config.envelope, hostCommand, Date.now())
                                 .authorized)
@@ -5451,16 +5907,28 @@ export async function runTargetHarnessHook(config, boundary) {
                                 : null;
                         if (paths === null)
                             throw new Error("target shell destinations unavailable; host must run opaque commands");
+                        // The launchpad's live gate protects its inputs from this lane
+                        // exactly as it does from its own, however the command got here.
+                        if (lifecycleEffect === "write" ||
+                            publication ||
+                            (localCommit && pairedGit && pairedGit.root !== root)) {
+                            const gate = activeGateWriteRefusal(input, orderLaunchpad, config.tools, initialSession());
+                            if (gate)
+                                throw new Error(gate);
+                        }
+                        if (hostCommand !== "repo.read" && !researchCommand)
+                            reservePairedWriter();
                         for (const path of paths)
                             protect(path);
                     }
-                    else if (tool === "spawn" || tool === "interaction") {
+                    else if ((tool === "spawn" && !driven) ||
+                        tool === "interaction") {
                         throw new Error("target delegation or interaction has no bounded worker adapter");
                     }
                     result = {};
                 }
                 else if (config.kind === "feedback" && config.policy) {
-                    const facts = harnessFeedbackFacts(config.policy, input, root, initialSession());
+                    const facts = harnessFeedbackFacts(config.policy, pairedGit?.input ?? input, pairedGit?.root ?? root, initialSession());
                     for (const fact of facts)
                         boundary(config.policy, fact, () => { });
                     result = {};
@@ -5485,8 +5953,14 @@ export async function runTargetHarnessHook(config, boundary) {
             return result;
         });
     }
-    catch {
-        response = deny("DOTLN_TARGET_RUNTIME_REFUSED: pinned launchpad runtime or target facts unavailable");
+    catch (error) {
+        const code = error &&
+            typeof error === "object" &&
+            "code" in error &&
+            ["EACCES", "EPERM", "ENOENT", "ENOTDIR", "ELOOP"].includes(String(error.code))
+            ? ` (${String(error.code)})`
+            : "";
+        response = deny(`DOTLN_TARGET_RUNTIME_REFUSED: pinned launchpad runtime or target facts unavailable at ${runtimeStage}${code}`);
     }
     process.stdout.write(JSON.stringify(response));
 }
