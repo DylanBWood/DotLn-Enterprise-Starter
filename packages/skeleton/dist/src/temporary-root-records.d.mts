@@ -1,4 +1,4 @@
-export type TemporaryClass = "gate-fixture" | "session-scratch" | "worker-capture" | "warm-fixture" | "coordination";
+export type TemporaryClass = "gate-fixture" | "session-scratch" | "worker-capture" | "warm-fixture" | "coordination" | "closed-journal";
 export type TemporaryOwner = {
     pid: number | null;
     birth: string | null;
@@ -6,6 +6,7 @@ export type TemporaryOwner = {
     gateId?: string;
     suite?: string;
     session?: string;
+    workOrder?: string;
 };
 export type TemporaryRecord = {
     schemaVersion: 1;
@@ -46,13 +47,18 @@ export type Inventory = {
     bytes: number;
     directories: number;
 };
-/** @typedef {"gate-fixture"|"session-scratch"|"worker-capture"|"warm-fixture"|"coordination"} TemporaryClass */
-/** @typedef {{pid: number|null, birth: string|null, repository: string, gateId?: string, suite?: string, session?: string}} TemporaryOwner */
+/** @typedef {"gate-fixture"|"session-scratch"|"worker-capture"|"warm-fixture"|"coordination"|"closed-journal"} TemporaryClass */
+/** @typedef {{pid: number|null, birth: string|null, repository: string, gateId?: string, suite?: string, session?: string, workOrder?: string}} TemporaryOwner */
 /** @typedef {{schemaVersion: 1, token: string, class: TemporaryClass, owner: TemporaryOwner, createdAt: string, retentionHours: number|null, retentionOverride?: number|null, fixtureOwner?: {token: string, gateId: string, suite?: string}, device: number, inode: number, endedAt?: string, endSource?: "completion"|"owner-death-observation", outcome?: "passed"|"failed"|"abandoned", cacheKey?: string}} TemporaryRecord */
 /** @typedef {{class: TemporaryClass, owner?: Partial<TemporaryOwner>, repository?: string, retentionHours?: number|null, cacheKey?: string, adoptExisting?: boolean}} TemporaryOptions */
 /** @typedef {{pid: number, birth: string, ppid?: number, command?: string}} ProcessIdentity */
 /** @typedef {{files: number, bytes: number, directories: number}} Inventory */
 export declare const TEMPORARY_OWNER_FILE = ".dotln-owner.json";
+/** Where a removal moves a root before deleting it: beside it, so the rename
+ * stays on its volume, under a name its token derives. A root already there
+ * is its own place aside.
+ * @param {string} path @param {string} token */
+export declare const temporaryRemovalAside: (path: string, token: string) => string;
 /** Call after initializing a synthetic Git repository. Keep cleanup metadata
  * out of its index without changing the fixture's tracked ignore rules.
  * @param {string} repository */
@@ -71,7 +77,15 @@ export declare const DEFAULT_RETENTION: Readonly<{
     "warm-fixture": 0;
     "legacy-backfill": 48;
     coordination: null;
+    "closed-journal": 720;
 }>;
+/** The entries a closed-journal root may hold beside its owner record: the
+ * session journals and other append-only logs, the session states and their
+ * per-session sidecars, the gate index, the suite-success and deadline
+ * directories, and a superseded state kept when a retried close merged a newer
+ * one. Anything else is not the close's to remove.
+ * @param {string} name @param {boolean} directory */
+export declare const closedJournalEntry: (name: string, directory: boolean) => boolean;
 export type Retention = Record<keyof typeof DEFAULT_RETENTION, number | null>;
 /** @template T @param {Partial<TemporaryOwner>} owner @param {() => T} operation @returns {T} */
 export declare const withTemporaryOwner: <T>(owner: Partial<TemporaryOwner>, operation: () => T) => T;
@@ -108,10 +122,27 @@ export declare const temporaryLedgerPath: (repository: string) => string;
  * not erase a descendant's independent retention or live ownership.
  * @param {string} path @returns {string[]} */
 export declare function nestedTemporaryRoots(path: string): string[];
-/** @param {string} path @returns {TemporaryRecord|null} */
+/** A root is its token and its inode. The token in the marker inside the
+ * directory proves it is the one that was created, since fixture copies exclude
+ * the marker and seeds keep it out of Git, and the inode says it was not
+ * replaced on its volume. A volume's device number is assigned at mount and a
+ * reboot can renumber it, so a device that differs while the inode matches is
+ * re-stamped through writeTemporaryOwner, never refused for that alone.
+ * @param {string} path @returns {TemporaryRecord|null} */
 export declare function readTemporaryOwner(path: string): TemporaryRecord | null;
-/** @param {string} path @param {TemporaryRecord} record */
-export declare function writeTemporaryOwner(path: string, record: TemporaryRecord): void;
+/** The ledger's word against a root's marker, for a judgment that may delete
+ * it. Where the owner repository exists, its ledger must register the
+ * marker's token at this path, so a record naming a repository that never
+ * registered it is refused; a root whose repository is gone, as after a closed
+ * worktree's removal, is judged by its marker alone.
+ * @param {string} path @param {TemporaryRecord} record @returns {string|null} */
+export declare function temporaryLedgerContradiction(path: string, record: TemporaryRecord): string | null;
+/** Writes the record over the marker of the directory it names. The inode must
+ * still match. A differing device is a renumbered volume: it is re-stamped only
+ * under the ledger binding above and recorded on the root's ledger segment with
+ * both numbers. Returns the record as written.
+ * @param {string} path @param {TemporaryRecord} record @returns {TemporaryRecord} */
+export declare function writeTemporaryOwner(path: string, record: TemporaryRecord): TemporaryRecord;
 /** Mark a fixed owned root, used for session scratch and cached fixtures.
  * An existing unmarked directory requires the owning protocol's explicit
  * adoption; normal fixture creation never adopts material.
@@ -142,6 +173,23 @@ export declare function makeTemporaryWritable(path: string): void;
  * liveness/retention checks before calling this identity-checked remover.
  * @param {string} path @param {string} [token] */
 export declare function removeTemporaryRoot(path: string, token?: string): Inventory;
+/** The act of a removal whose identity was read as `record`. Whatever holds
+ * the path when the act starts is moved aside by one atomic rename, so what is
+ * deleted is never chosen by a path a replacement could take after the
+ * identity was read: the moved directory must carry the record's inode and its
+ * marker the record's token, or it goes back to its path while that is still
+ * free and nothing is deleted. A parent that refuses the rename refuses before
+ * anything changes; a root already aside shows the same before any of it is
+ * deleted. Nothing inside is touched before the root is verified: owned roots
+ * nested in it go with it, and one that a stop leaves in its aside is bound
+ * through its parent's registration (ledgerBinding). The place aside is
+ * recorded before the rename, so their segments wait for it
+ * (retireTemporaryLedger). Any failure after the rename
+ * puts the root back at its path, and its owner record goes last, so a removal
+ * that stops leaves a root its marker still names: at its path, or, stopped by
+ * the process ending, aside where its ledger finds it (registeredTemporaryRoots).
+ * @param {string} path @param {TemporaryRecord} record */
+export declare function removeVerifiedTemporaryRoot(path: string, record: TemporaryRecord): Inventory;
 /** fs.rmSync-compatible creator cleanup, with measurements for owned material.
  * Removing unrelated files keeps fs.rmSync's ordinary behavior.
  * @param {import("node:fs").PathLike} path @param {import("node:fs").RmOptions} [options] */
