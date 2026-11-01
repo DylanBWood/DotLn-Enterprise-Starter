@@ -234,7 +234,9 @@ export function codexExecArgv(shape) {
         ...(shape.approval === undefined ? [] : ["-a", shape.approval]),
         "exec",
         ...(shape.leading ?? []),
-        ...CODEX_EXEC_SHARED_FLAGS,
+        ...(shape.ephemeral === false
+            ? CODEX_EXEC_SHARED_FLAGS.filter((flag) => flag !== "--ephemeral")
+            : CODEX_EXEC_SHARED_FLAGS),
         ...shape.rest,
     ];
 }
