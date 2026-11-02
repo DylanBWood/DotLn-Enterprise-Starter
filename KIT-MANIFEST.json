@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "commit": "e6aaeeccfca2441712cce6c0ed5578de7e04390b",
-  "tag": "v0.111.0",
+  "commit": "b9e843b6978e057d6794b9d0a76af557e9547ba0",
+  "tag": "v0.111.1",
   "files": [
     {
       "path": ".agents/skills/dotln-executor/SKILL.md",
@@ -189,7 +189,7 @@
     },
     {
       "path": "UPSTREAM.md",
-      "sha256": "2486a4cd94810af78afccacd0a765223e51f4bd77eb03c781c44b9d5e3a152d6"
+      "sha256": "91b19c2eabc9c3dca27b2dbcf1b33f89aed63f478722b2caf5ac24b4c94b70e2"
     },
     {
       "path": "corpus/fixtures/ids/command-id-vectors.jsonl",
@@ -237,11 +237,11 @@
     },
     {
       "path": "docs/product/07-execution-guide.md",
-      "sha256": "71957b9cad3211a4c5bb7b3caa954441baba8862afd7d159d8fddfa823b8c019"
+      "sha256": "5ef73fe6b9a3e9bd17fb6555badaaa82f7ba907f6bdc9e55bcb8e8dcd269ae05"
     },
     {
       "path": "docs/product/08-publication-compiler.md",
-      "sha256": "7e4a4dc52ed7259a5c2bb00f9f791cfc62a8bce532324349fd3256d82946b470"
+      "sha256": "285f256d0b630f9e5198319c21df0b05456a070f0e3b983814453afba7791039"
     },
     {
       "path": "docs/publication/implementation-overlay-template.md",
@@ -3497,7 +3497,7 @@
     },
     {
       "path": "scripts/lib/meta.mjs",
-      "sha256": "6a191fb3815271b362030a6fdaeb8c4bab04e54958b46a2dc994d55c8b367482"
+      "sha256": "59d25956da2af44bd0d185248e320f66e454eddf4dc68856a1df96a787c5aa13"
     },
     {
       "path": "scripts/lib/node-engines.mjs",
@@ -3889,7 +3889,7 @@
     },
     {
       "path": "scripts/release.mjs",
-      "sha256": "9890a499a725149c455c011bbe88965730f76abcb525f4fed252208fc46907be"
+      "sha256": "68534704501257a61cc9a42ae219848bce5093c8008d5c940a1d46374862e2b8"
     },
     {
       "path": "scripts/resident-bind.mjs",
@@ -4153,7 +4153,7 @@
     },
     {
       "path": "scripts/test-process-debt.mjs",
-      "sha256": "a917efd25981a6f72023f49db4accfa10639b65869c956ad0a84c84e5a3a98ba"
+      "sha256": "eff4f419002ac4544495275aab81dd86695fd4c52076ff1edc607ed125a81d05"
     },
     {
       "path": "scripts/test-publication.sh",
@@ -4181,7 +4181,7 @@
     },
     {
       "path": "scripts/test-release.sh",
-      "sha256": "bf370b77dfe2df1e2f3a755b3c1e69e33480e156cf109e00248c8bc97a079c51"
+      "sha256": "6940c9968d24af6529bc6fefa3ee0338f5e6e4d399dbc6a7afc71b1ec79d44ba"
     },
     {
       "path": "scripts/test-resident-bind.mjs",
@@ -4201,7 +4201,7 @@
     },
     {
       "path": "scripts/test-runner.mjs",
-      "sha256": "1fd8a631cf2be646f9d4642a25dd0e29cc4443858d8c76dc9c9f6f7734e0f2cb"
+      "sha256": "9a2a28049d91c9ecb9f59754021e2d02611ea8daa52aceccf5f16c1757b696e3"
     },
     {
       "path": "scripts/test-runner.test.fixture-inputs.json",
