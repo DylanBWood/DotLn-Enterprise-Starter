@@ -24,7 +24,7 @@ export interface HarnessProfile {
     readonly profileId: string;
     readonly harness: "claude-code" | "codex-cli" | "copilot-cli";
     readonly observedVersion: string;
-    readonly tools?: Readonly<Record<string, "read" | "write" | "shell" | "spawn" | "stop" | "interaction">>;
+    readonly tools?: Readonly<Record<string, "read" | "write" | "shell" | "spawn" | "stop" | "interaction" | "desktop">>;
     readonly events: Readonly<Record<HarnessEvent, HarnessObservation>>;
     /** Separately witnessed native compaction hooks; never enables Claude hooks. */
     readonly codexContinuation?: HarnessObservation & {
@@ -129,10 +129,18 @@ export interface HarnessProgram {
     readonly roles: readonly HarnessRole[];
     readonly facets: readonly HarnessFacet[];
     readonly correctionToken: string | null;
+    /** Instance election, supplied by the emitter; the compiler reads no files. */
+    readonly desktopControl?: boolean;
     /** Compatibility for programs declaring one default worker. */
     readonly worker?: HarnessWorker;
     readonly workers?: readonly HarnessWorker[];
 }
+/** Host tool namespaces that act in the operator's desktop or signed-in browser.
+ * The hook and host settings share this inventory; unrelated MCP tools keep
+ * their existing classification. */
+export declare const desktopControlToolPrefixes: readonly ["mcp__computer-use__", "mcp__remote-devices__computer_", "enable__mcp__remote-devices__computer", "mcp__claude-in-chrome__", "mcp__Claude_Browser__", "mcp__remote-devices__Claude_Browser__", "enable__mcp__claude-in-chrome", "enable__mcp__remote-devices__Claude_Browser"];
+export declare const desktopControlSkills: readonly ["anthropic-skills:computer-use", "anthropic-skills:chrome-browser", "anthropic-skills:built-in-browser", "claude-in-chrome"];
+export declare const desktopControlDenyRules: string[];
 export interface HarnessOrigin {
     readonly ids: readonly string[];
     readonly loadoutId: string;
@@ -189,5 +197,35 @@ export declare function assertHarnessProfile(profile: HarnessProfile): void;
 /** Pure, deterministic target lowering. Hook predicates stay in feedbackBoundary. */
 export declare function lowerToHarness(program: HarnessProgram, feedback: CompiledFeedback, envelope: AuthorityEnvelope, profile: HarnessProfile): HarnessBundle;
 export declare function verifyHarnessBundle(bundle: HarnessBundle): boolean;
+/** Each enforced class owns one row, so the count and provenance follow it. */
+export declare const HARNESS_REFUSALS: readonly [{
+    readonly id: "writer";
+    readonly source: "WO-135";
+    readonly clause: "reserves one writer per worktree on any branch, including main";
+}, {
+    readonly id: "gate";
+    readonly source: "WO-135";
+    readonly clause: "refuses writes to gate inputs or the success record during a live gate, admitting only the active order's own evidence, verification and final-review directories at the default document roots during a product gate";
+}, {
+    readonly id: "planning";
+    readonly source: "WO-135";
+    readonly clause: "on planning/ branches refuses repository writes outside docs/ and root Markdown";
+}, {
+    readonly id: "subagents";
+    readonly source: "WO-139";
+    readonly clause: "refuses observable subagent admissions beyond docs/control/budgets.json subagentCap (default 20; null disables)";
+}, {
+    readonly id: "outside-write";
+    readonly source: "WO-144";
+    readonly clause: "refuses known outside-project write destinations without a containing root granted by the active role or equipped support";
+}, {
+    readonly id: "dispatch-bound";
+    readonly source: "WO-234";
+    readonly clause: "refuses a complete gate, bounded probe or worker launch past the dispatch bound, naming analysis: and the operator's accept-overrun route";
+}, {
+    readonly id: "desktop-control";
+    readonly source: "WO-251";
+    readonly clause: "refuses desktop control and the operator's own browser sessions unless dotln.config.json elects features.desktop-control; an election still requires the operator's explicit request in the session, and browser verification uses the Playwright MCP in a browser the session launches or the project's browser tests";
+}];
 /** The shared instruction symlink contains all profile-qualified residue. */
 export declare function mergeHarnessFragments(bundles: readonly HarnessBundle[]): string;

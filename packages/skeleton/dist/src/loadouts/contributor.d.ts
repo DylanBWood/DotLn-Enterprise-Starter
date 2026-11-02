@@ -20,6 +20,7 @@ export type ContributorSupportSwitches = ExecutorSupportSwitches & Readonly<{
     "process-cost"?: boolean;
     "goal-alignment"?: boolean;
 }>;
+export declare const browserVerificationGuidance = "Browser verification uses a browser the session launches: inspect structured state, then the DOM and accessibility tree through the Playwright MCP snapshot, then network and event data, then take a screenshot and read it as an image, or use the project's own browser tests; desktop control (the operator's screen, clicks and typing outside that browser) and the operator's own browser sessions (Claude in Chrome or the desktop app's browser pane) are refused unless dotln.config.json elects features.desktop-control (off by default) and the operator explicitly requests their use in this session.";
 export declare const contributorRoles: readonly HarnessRole[];
 export declare const contributorEnvelope: AuthorityEnvelope;
 /** The Contributor build's absence policy is one read-only pulse: while the
@@ -40,6 +41,7 @@ export declare const contributorLoadoutBeforeMissionCheck: LoadoutGraph;
 export declare function contributorWithSupports(supportIds?: readonly string[]): LoadoutGraph;
 export declare function contributorRolesFor(program: CompiledProgram): readonly HarnessRole[];
 export interface ContributorBuildOverlay {
+    readonly desktopControl?: boolean;
     readonly identity?: LoadoutGraph["identity"];
     readonly narrow?: PresenceNarrowing;
     readonly grants?: readonly AuthorityGrant[];

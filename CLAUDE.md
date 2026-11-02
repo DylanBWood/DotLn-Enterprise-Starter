@@ -1,12 +1,11 @@
 # Launchpad
 
-This file is the operating contract every session in this repository reads;
-`AGENTS.md` is a symlink to it. The hand-written floor below is instance-owned:
-edit it here; an upstream kit update changes it only through explicitly
-opted-in instance actions. The marked blocks
-at the end are generated: the kit block by the export (its provenance) and the
-harness block by `node scripts/harness.mjs emit`, which `harness check`
-verifies.
+Every session reads this contract; `AGENTS.md` symlinks here. The instance owns
+the hand-written floor: edit it here; kit updates change it only through
+explicitly opted-in instance actions.
+
+Export generates the kit provenance block below; `node scripts/harness.mjs emit`
+generates the harness block, which `harness check` verifies.
 
 ## Clean Room — locked floor
 
@@ -30,9 +29,9 @@ and its terms are never printed.
 
 ## Start here
 
-Whole `resume:` phrases select their skill through canonical status
-(`npm run resume -- status --json` is the record). `@skills`: `.claude/skills`
-in Claude, `.agents/skills` in Codex. `AGENTS.md` symlinks here.
+Whole `resume:` phrases select skills through canonical status
+(`npm run resume -- status --json`). `@skills`: `.claude/skills` in Claude,
+`.agents/skills` in Codex.
 
 Expand skill read/review selectors from order/report paths. Read cited sections;
 name new inputs. A session that cannot load skills runs the
@@ -44,10 +43,17 @@ harness failures. Preserve work; invent no dispatch or pass. Exit: either prefix
 plus `off`. Codex: `node scripts/operator-control.mjs analysis|override|off|status`.
 Host permissions apply.
 
+Verify in a session-launched browser: structured state, then DOM and
+accessibility tree via the Playwright MCP snapshot, then network/event data,
+then a screenshot read as an image; or use project browser tests. Desktop
+control and the operator's own browser sessions require
+`features.desktop-control` in `dotln.config.json` (off by default) and the
+operator's explicit request in this session.
+
 <!-- dotln-kit:start -->
 Kit provenance (commit, tag, remote): UPSTREAM.md. Kit files and their hashes: KIT-MANIFEST.json. How to start: README.md.
-The control plane finds its documents through dotln.config.json at this root; its absence means the default layout under docs/ (dotln.config.example.json shows it).
-This export carries the compiled runtime under packages/<name>/dist/ (hashed in KIT-MANIFEST.json) and the Contributor harness bundle its own emit wrote from it; node scripts/harness.mjs check verifies the pinned runtime snapshot and every generated surface. The hooks import an ignored snapshot under .runtime/harness/: a fresh clone runs node scripts/bootstrap.mjs once (npm ci, then the emit that installs it); until then each hook reports snapshot-missing once per session and host permissions alone decide.
+Document roots: dotln.config.json, default docs/; see dotln.config.example.json.
+The export carries the compiled runtime in packages/<name>/dist/ (KIT-MANIFEST.json hashes) and its emitted Contributor harness bundle. node scripts/harness.mjs check verifies every generated surface and pinned runtime snapshot. Hooks import .runtime/harness/ (ignored). Fresh clones run node scripts/bootstrap.mjs once: npm ci, then emit installs the snapshot. Until then, hooks report snapshot-missing once per session; host permissions decide.
 <!-- dotln-kit:end -->
 
 <!-- dotln-harness:start -->
@@ -57,7 +63,7 @@ Read[reviewer]: `@skills/dotln-reviewer/SKILL.md` — final review.
 Read[release-close]: `@skills/dotln-release-close/SKILL.md` — release close.
 Read[planner]: `@skills/dotln-planner/SKILL.md` — planning or ideation.
 Capabilities and residue: .claude/harness-manifest.json; planning: refute[ full] selects dotln-refuter; drive: WO-NNN selects dotln-router.
-DotLn has six refusals (WO-135, WO-139, WO-144, WO-234): it reserves one writer per worktree on any branch, including main; refuses writes to gate inputs or the success record during a live gate, admitting only the active order's own evidence, verification and final-review directories at the default document roots during a product gate; on planning/ branches refuses repository writes outside docs/ and root Markdown; refuses observable subagent admissions beyond docs/control/budgets.json subagentCap (default 20; null disables); refuses known outside-project write destinations without a containing root granted by the active role or equipped support; and refuses a complete gate, bounded probe or worker launch past the dispatch bound, naming analysis: and the operator's accept-overrun route. Product tasks fail on observed reads of the admitted record paths; document and mixed review gates retain the full refusal. Literal redirects are judged on any program; expansions such as $PWD and a program's own effects remain unobserved under host permissions; grant failures admit with one advisory and preserve the other refusals, except an unresolvable order-worktree root, which withholds that grant alone. Descendants count at their first attributable tool call; unresolved direct/child overlap is a reported minimum, and unobserved agents remain unknown. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop; use operator override: for authorized recovery. Claude hooks enforce these six refusals at observed boundaries; under Codex a lifecycle dispatch reserves the writer and refuses a foreign holder, the gate, bounded wrapper and lifecycle enforce dispatch bounds in process; the other duties and grants are role text because Codex tool calls are unhooked. Copilot reuses the Claude registration: scripted denials hold with allow-all; missing tool-call and child identity leave subagent accounting advisory; WO-146 evidence records interactive qualification. Other tool and completion judgments are advisory and host permissions decide. The separate Codex compaction adapter restores an owned unfinished task and permits one continuation after premature stopping; it never dispatches a role or changes writer ownership.
+DotLn has 7 refusals (WO-135, WO-139, WO-144, WO-234, WO-251): it reserves one writer per worktree on any branch, including main; refuses writes to gate inputs or the success record during a live gate, admitting only the active order's own evidence, verification and final-review directories at the default document roots during a product gate; on planning/ branches refuses repository writes outside docs/ and root Markdown; refuses observable subagent admissions beyond docs/control/budgets.json subagentCap (default 20; null disables); refuses known outside-project write destinations without a containing root granted by the active role or equipped support; refuses a complete gate, bounded probe or worker launch past the dispatch bound, naming analysis: and the operator's accept-overrun route; refuses desktop control and the operator's own browser sessions unless dotln.config.json elects features.desktop-control; an election still requires the operator's explicit request in the session, and browser verification uses the Playwright MCP in a browser the session launches or the project's browser tests. Product tasks fail on observed reads of the admitted record paths; document and mixed review gates retain the full refusal. Literal redirects are judged on any program; expansions such as $PWD and a program's own effects remain unobserved under host permissions; grant failures admit with one advisory and preserve the other refusals, except an unresolvable order-worktree root, which withholds that grant alone. Descendants count at their first attributable tool call; unresolved direct/child overlap is a reported minimum, and unobserved agents remain unknown. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop; use operator override: for authorized recovery. Claude hooks enforce these 7 refusals at observed boundaries; under Codex a lifecycle dispatch reserves the writer and refuses a foreign holder, the gate, bounded wrapper and lifecycle enforce dispatch bounds in process; the other duties and grants are role text because Codex tool calls are unhooked. Copilot reuses the Claude registration: scripted denials hold with allow-all; missing tool-call and child identity leave subagent accounting advisory; WO-146 evidence records interactive qualification. Other tool and completion judgments are advisory and host permissions decide. The separate Codex compaction adapter restores an owned unfinished task and permits one continuation after premature stopping; it never dispatches a role or changes writer ownership.
 claude-code-2.1.263: clean-room: Source provenance needs operator judgment; the hand-written Clean Room floor stays locked.
 codex-cli-0.153.4: concurrent-work-requires-worktrees: No project hook fired in the bounded Codex probe; the role skill carries the remaining duty.
 codex-cli-0.153.4: no-attribution: No project hook fired in the bounded Codex probe; the role skill carries the remaining duty.

@@ -69,6 +69,7 @@ const disposableOutput = "At a target close, preservation is for operator materi
 // Every role in both harnesses carries this line (operator direction,
 // 2026-09-14, WO-044): a guess presented as a finding is a defect.
 const noGuessing = "Never guess: an unobserved value is `unknown`, `untested` or `blocked`; name the readable source tried before writing `unknown`, and correct an unfiled report in place instead of appending a correction.";
+export const browserVerificationGuidance = "Browser verification uses a browser the session launches: inspect structured state, then the DOM and accessibility tree through the Playwright MCP snapshot, then network and event data, then take a screenshot and read it as an image, or use the project's own browser tests; desktop control (the operator's screen, clicks and typing outside that browser) and the operator's own browser sessions (Claude in Chrome or the desktop app's browser pane) are refused unless dotln.config.json elects features.desktop-control (off by default) and the operator explicitly requests their use in this session.";
 const common = [
     "Before file changes or Git commands, resolve physical cwd and Git root. Stay in the selected worktree with one writable coding agent.",
     "Run `npm run resume --silent -- status --json`; use its canonical selected order, phase, report paths, and legal actions. A stale Markdown projection is repaired only by the next legal transition.",
@@ -556,6 +557,7 @@ const targetRoles = contributorRoles.map((role) => {
             ...role,
             procedure: [
                 role.procedure[0],
+                browserVerificationGuidance,
                 sessionCommands,
                 ...role.procedure.slice(1),
             ],
@@ -585,6 +587,7 @@ const targetRoles = contributorRoles.map((role) => {
             : {}),
         procedure: [
             procedure[0],
+            browserVerificationGuidance,
             sessionCommands,
             qualityPassGuidance,
             "Derive every artifact's shape from its contract and the check that judges it; a previous instance is evidence of what happened, never the pattern. If the contract is silent, say so and choose the structure that serves the reader's task. Preserve required content and judge usefulness by what the intended reader can understand, answer, decide, do, verify or recover from it. Retain context, evidence, examples and alternatives that serve those needs. Byte counts and structural passes do not establish usefulness or justify removing useful context.",
@@ -823,6 +826,7 @@ export const contributorProgram = (supportIds = defaultContributorSupportIds, ov
     }));
     return {
         contractVersion: "harness-v1",
+        desktopControl: overlay?.desktopControl === true,
         loadout,
         workers: [
             ...["executor", "verifier", "reviewer", "release-close"].map((role) => ({

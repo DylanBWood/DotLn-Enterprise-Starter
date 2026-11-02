@@ -1,4 +1,5 @@
 import { basename, isAbsolute, resolve } from "node:path";
+import { desktopControlSkills, desktopControlToolPrefixes, } from "@dotln/compiler";
 /** Classification could not establish an effect; generated hooks advise the host. */
 export class HarnessCommandRefused extends Error {
 }
@@ -7,6 +8,10 @@ export class HarnessCommandRefused extends Error {
  * are delegated to host permissions when their effects cannot be classified.
  */
 export const harnessToolEffects = {
+    ...Object.fromEntries(desktopControlToolPrefixes.map((prefix) => [
+        `${prefix}*`,
+        "desktop",
+    ])),
     Read: "read",
     // Native schema-result submission carries data only; it cannot execute or
     // mutate the worktree. WO-053 observed this tool denied by the unknown-tool
@@ -48,6 +53,12 @@ export const harnessToolEffects = {
     "functions.exec": "shell",
     "collaboration.spawn_agent": "spawn",
 };
+/** Prefix rules name host namespaces; Skill carries its selection in input. */
+export function isDesktopControlTool(name, input = {}) {
+    return (desktopControlToolPrefixes.some((prefix) => name.startsWith(prefix)) ||
+        (name === "Skill" &&
+            desktopControlSkills.some((skill) => input.skill === skill)));
+}
 const shellPrograms = new Set([
     "bash",
     "sh",

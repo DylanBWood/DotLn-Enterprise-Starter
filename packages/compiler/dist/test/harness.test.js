@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { compileFeedbackUnits, compileLoadout, lowerToHarness, mergeHarnessFragments, requireCompiled, seiriEnvironment, seiriLoadout, semanticHash, verifyHarnessBundle, assertOutsideWriteGrants, outsideWriteEffect, harnessPromptIntent, harnessPromptLine, projectAuthorityInspection, } from "../src/index.js";
+import { compileFeedbackUnits, compileLoadout, lowerToHarness, mergeHarnessFragments, HARNESS_REFUSALS, requireCompiled, seiriEnvironment, seiriLoadout, semanticHash, verifyHarnessBundle, assertOutsideWriteGrants, outsideWriteEffect, harnessPromptIntent, harnessPromptLine, projectAuthorityInspection, } from "../src/index.js";
 test("leading resume dispatch keeps following direction without matching quoted or continued phrases", () => {
     for (const phrase of [
         "next",
@@ -134,6 +134,39 @@ const feedback = compileFeedbackUnits([
     unit("semantic-correction"),
 ]);
 const lower = (input = program, policy = feedback, runtime = profile) => lowerToHarness(input, policy, input.loadout.authorityEnvelope, runtime);
+test("desktop control host denials follow the supplied instance election", () => {
+    const expected = [
+        "mcp__computer-use__*",
+        "mcp__remote-devices__computer_*",
+        "enable__mcp__remote-devices__computer*",
+        "mcp__claude-in-chrome__*",
+        "mcp__Claude_Browser__*",
+        "mcp__remote-devices__Claude_Browser__*",
+        "enable__mcp__claude-in-chrome*",
+        "enable__mcp__remote-devices__Claude_Browser*",
+        "Skill(anthropic-skills:computer-use)",
+        "Skill(anthropic-skills:computer-use *)",
+        "Skill(anthropic-skills:chrome-browser)",
+        "Skill(anthropic-skills:chrome-browser *)",
+        "Skill(anthropic-skills:built-in-browser)",
+        "Skill(anthropic-skills:built-in-browser *)",
+        "Skill(claude-in-chrome)",
+        "Skill(claude-in-chrome *)",
+    ];
+    const denies = (election) => JSON.parse(lower({
+        ...program,
+        ...(election === undefined ? {} : { desktopControl: election }),
+    }).files.find((file) => file.path === ".claude/settings.json").contents).permissions.deny;
+    const on = denies(true);
+    for (const off of [denies(), denies(false)]) {
+        for (const rule of expected)
+            assert.ok(off.includes(rule), rule);
+        assert.deepEqual(off.filter((rule) => !expected.includes(rule)), on);
+        assert.ok(!off.some((rule) => rule.includes("playwright")));
+    }
+    for (const rule of expected)
+        assert.ok(!on.includes(rule), rule);
+});
 test("WO-146 Copilot shares the observed Claude hook bytes, not a second registration", () => {
     const copilot = {
         ...profile,
@@ -479,7 +512,11 @@ test("WO-132 both harness roles receive identical duties and the shared instruct
     assert.match(merged, /active order's own evidence, verification and final-review directories at the default document roots during a product gate/);
     assert.match(merged, /document and mixed review gates retain the full refusal/);
     assert.match(merged, /node scripts\/harness\.mjs evidence --stop/);
-    assert.match(merged, /six refusals \(WO-135, WO-139, WO-144, WO-234\)/);
+    assert.ok(merged.includes(`DotLn has ${HARNESS_REFUSALS.length} refusals (`));
+    assert.ok(merged.includes(`Claude hooks enforce these ${HARNESS_REFUSALS.length} refusals`));
+    assert.ok(HARNESS_REFUSALS.some((row) => row.id === "desktop-control"));
+    for (const row of HARNESS_REFUSALS)
+        assert.ok(merged.includes(row.clause));
     assert.match(merged, /planning\/ branches refuses repository writes outside docs\/ and root Markdown/);
     assert.match(merged, /operator override:/);
     assert.match(merged, /under Codex a lifecycle dispatch reserves the writer and refuses a foreign holder, the gate, bounded wrapper and lifecycle enforce dispatch bounds in process; the other duties and grants are role text because Codex tool calls are unhooked/);

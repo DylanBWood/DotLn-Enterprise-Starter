@@ -125,7 +125,7 @@ interface HookConfig {
         readonly intents: readonly string[];
     }[];
     readonly instructionFile?: string;
-    readonly tools?: Readonly<Record<string, "read" | "write" | "shell" | "spawn" | "stop" | "interaction">>;
+    readonly tools?: Readonly<Record<string, "read" | "write" | "shell" | "spawn" | "stop" | "interaction" | "desktop">>;
 }
 interface ControlView {
     readonly workOrder: string | null;
