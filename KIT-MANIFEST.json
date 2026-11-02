@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "commit": "64286ff8940fdf6e16fb0c8785874269f913e544",
-  "tag": "v0.107.0",
+  "commit": "1464dc1a2a74118c3bd9a9cd280feae3dfda451e",
+  "tag": "v0.108.0",
   "files": [
     {
       "path": ".agents/skills/dotln-executor/SKILL.md",
@@ -189,7 +189,7 @@
     },
     {
       "path": "UPSTREAM.md",
-      "sha256": "833188514651fd0f625fd2b54a21904c654067f30b737b52c0dad10075447798"
+      "sha256": "d65408536b2d9eac307d9ad9f2444b110265f17adad211c54d61fa7f561e2177"
     },
     {
       "path": "corpus/fixtures/ids/command-id-vectors.jsonl",
@@ -228,12 +228,16 @@
       "sha256": "b2509b3e4ceca1820bc3205e772f76b373a64e042b849b7449918abafc11384a"
     },
     {
+      "path": "docs/KIT.md",
+      "sha256": "1cd7ec8594e79af4e3276bb9bb45ea66c58ae95dcc4d45bbb5a203f4765fdb70"
+    },
+    {
       "path": "docs/PLAYBOOK.md",
       "sha256": "261ee7ed5df6767dbbf18bffd4127af97ec4a7d397f360d0fe9c89b2c731bddd"
     },
     {
       "path": "docs/product/07-execution-guide.md",
-      "sha256": "f54fdd2745cb0b563cfe683ff47465f7a0dcdbe716c69aca474fd998be3fadaa"
+      "sha256": "ba969cc58dbb78ce7c39bda6016bc2462558477295ca2e9e0723627243f6e7f2"
     },
     {
       "path": "docs/product/08-publication-compiler.md",
@@ -2989,7 +2993,7 @@
     },
     {
       "path": "scripts/fixtures/launchpad-cases.json",
-      "sha256": "b76f8e1194c344ca2915a957304fce77c0aca0367b6550f69dd8fc14e78a9836"
+      "sha256": "41bd1dfae5e92be75d09e6e88e35b88b63bba7ab357070b1d082d046cb2c3fbe"
     },
     {
       "path": "scripts/fixtures/legacy-v0.81.0/README.client.md",
@@ -3125,7 +3129,7 @@
     },
     {
       "path": "scripts/kit/README.client.md",
-      "sha256": "c65134096188c0c51ef6349c13340ad07453ed2e3ab31c96b1b603516cc89310"
+      "sha256": "0f96422ceaf8e572acb8ad3a1a52d431b248460e0c10d17116817be6d54766c3"
     },
     {
       "path": "scripts/kit/budgets.template.json",
@@ -3157,7 +3161,7 @@
     },
     {
       "path": "scripts/launchpad.mjs",
-      "sha256": "8e98422421dcde2b0b592919271afaa2b879e746c3a163eca4d5c9c521dfad2a"
+      "sha256": "30ce481569d7a83776235ba22f4d51fc288dbcde486ce6faff605ed38d8443b7"
     },
     {
       "path": "scripts/lib/adjacent-queue.mjs",
@@ -3449,7 +3453,7 @@
     },
     {
       "path": "scripts/lib/launchpad-fixture.mjs",
-      "sha256": "5eebc64980f8897a42207b2afe647098749f73dd4b7a10e00561bc6ff32b54f3"
+      "sha256": "897f4c3c882e09be2421ad3bbd2b856487ab7c8f8d99a32e76e0226db251be7f"
     },
     {
       "path": "scripts/lib/legacy-cost.mjs",
@@ -3589,7 +3593,7 @@
     },
     {
       "path": "scripts/lib/release-preparation.mjs",
-      "sha256": "b52f97552c24de98d56245dca9ef4cfc0fb922bf43fbe24a41e3750edd9439f4"
+      "sha256": "0d17d2c2e8f5e29d99ad1a0425ac88216b37ba35b2d624b0faef5fbffebddfdf"
     },
     {
       "path": "scripts/lib/release-records.mjs",
@@ -3621,11 +3625,11 @@
     },
     {
       "path": "scripts/lib/starter-refresh.mjs",
-      "sha256": "5d7201124706926742a1227b04624fece1a1c7f48da4e6edbcb0945ccb138eab"
+      "sha256": "218cdc1fdaf6a5ed85ec2e0e8044dc921d41a846d26dcdc64bba781ecbd1d134"
     },
     {
       "path": "scripts/lib/starter-seeds.mjs",
-      "sha256": "98511b45118aab88278e5d88af070358277cc22b7eef643f98791fda43eba590"
+      "sha256": "4fdcc66e9ef9adb095420e7840670cdbb724c1d6fcd5a779bb19b6558ac35b72"
     },
     {
       "path": "scripts/lib/stash-drop.mjs",
@@ -3849,7 +3853,7 @@
     },
     {
       "path": "scripts/release.mjs",
-      "sha256": "590e8252c15b1a73f2a7fec3b89c89b3f8b21e1dc47b7110dcf698fd1ccebae4"
+      "sha256": "fcc5cdb17b552f3ead1ce9a862adc46fe6ef41e949e407d412409e97464799fc"
     },
     {
       "path": "scripts/resident-bind.mjs",
@@ -3893,7 +3897,7 @@
     },
     {
       "path": "scripts/test-authority-grants.mjs",
-      "sha256": "41934bc94f1ea4735bf54eff2efd94acc047412e63da76f1e1af997da7fcd2dd"
+      "sha256": "8a637bd40f9605e4964d426b3cd14c10acabc2d368d9a5ff674978a6011a4d18"
     },
     {
       "path": "scripts/test-authority-probe.mjs",
@@ -4045,7 +4049,7 @@
     },
     {
       "path": "scripts/test-launchpad-export.mjs",
-      "sha256": "031e3890ee908a40a366544baf378a0561abdc1221f27174a59ea6161a6732af"
+      "sha256": "daa83d9ff02dedd7fa0e4598769f980ebfc3bfa1993b5e09c5fd9e52d9e6785f"
     },
     {
       "path": "scripts/test-launchpad-planning.fixture-inputs.json",
@@ -4053,15 +4057,15 @@
     },
     {
       "path": "scripts/test-launchpad-planning.mjs",
-      "sha256": "dbccda59975b83d6f8dce831f0018090022de6f8022e9e0bbf8f476f63bcc3e7"
+      "sha256": "6799eee73453e7dcc332b5cfb73ae4e6a015b9038456541b8b43ce24060f2dde"
     },
     {
       "path": "scripts/test-launchpad-seeds.mjs",
-      "sha256": "26e4fee69a9af75721a5e6a71a1a6ccec428ebf222d830ddb42cc0245bdb0584"
+      "sha256": "541b5d8d39d29a9d37b2901963d469cb1f25e050ab83a77421e95e8eb8a91954"
     },
     {
       "path": "scripts/test-launchpad-update.mjs",
-      "sha256": "0ddd0e3dcf20d4cb6ea44b829aa080d4dee53c7958048cd7ec3608215ec83ae6"
+      "sha256": "033dc434ac5f1951516e85fdd7074cb2c9098d34e45917936813aa247c203817"
     },
     {
       "path": "scripts/test-launchpad.mjs",
@@ -4137,11 +4141,11 @@
     },
     {
       "path": "scripts/test-release-preparation.mjs",
-      "sha256": "2a0989fef472b0682eab5764788f2a1c35c62ef9d2e6ab94031f22de0410b784"
+      "sha256": "3c3da4cb610a8ac91b2f629645bc13a25f7825be2f30436cb7792a0e966148f7"
     },
     {
       "path": "scripts/test-release.sh",
-      "sha256": "69d2a9705fc085612e84468f04ced771d13c37659e693dd040b136439edcc49b"
+      "sha256": "89cdfc2cfcb08199a2aae8f08fcd803c05eb10d09313ecd34c1b554afb72a1a2"
     },
     {
       "path": "scripts/test-resident-bind.mjs",
@@ -4157,7 +4161,7 @@
     },
     {
       "path": "scripts/test-runner.mjs",
-      "sha256": "9a7eca55bd778461063db3253476157f2ac3f433f5554186f61c745d1ca313c5"
+      "sha256": "dc36e22e88074f55ad22f3918673113a2e6e7ab37530d363cd458181d8a0f2b1"
     },
     {
       "path": "scripts/test-runner.test.fixture-inputs.json",
