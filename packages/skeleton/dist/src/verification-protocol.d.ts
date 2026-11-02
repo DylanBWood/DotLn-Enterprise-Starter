@@ -6,6 +6,7 @@ import { type ReviewerOutput } from "./loadouts/entropy-reducer.js";
 import { type VerticalJudgmentRequest, type VerticalJudgmentResult } from "./vertical-judgment-protocol.js";
 import { type EntropyRefutationRequest, type EntropyRefutationResult, type EntropyReviewRequest } from "./entropy-review-protocol.js";
 import { type MissionCheckObserved, type MissionCheckRequest } from "./mission-check-protocol.js";
+import { type ChangeReviewRequest, type ChangeReviewResult } from "./change-review-protocol.js";
 import { type WriterRequest, type WriterResult, type WorkerEffort, type WorkerRequest, type WorkerResult, type WorkerTransportName } from "./worker-protocol.js";
 /** Fixed bound for the source-heavy feedback audit; other profiles keep WO-009 limits. */
 export declare const FEEDBACK_VERIFIER_LIMITS: {
@@ -138,9 +139,9 @@ export interface RepairWorkerResult {
     readonly replacements: readonly RepositoryFile[];
 }
 export type EvidenceWorkerResult = VerificationWorkerResult | RepairWorkerResult | BaselineWorkerResult | ReviewWorkerResult;
-export type TransportRequest = WorkerRequest | WriterRequest | EvidenceWorkerRequest | PlanRefutationRequest | MissionCheckRequest | EntropyReviewRequest | EntropyRefutationRequest | VerticalJudgmentRequest;
-export type TransportResult = WorkerResult | WriterResult | EvidenceWorkerResult | PlanRefutationResult | MissionCheckObserved | ReviewerOutput | EntropyRefutationResult | VerticalJudgmentResult;
-export type TransportResultFor<R extends TransportRequest> = R extends VerticalJudgmentRequest ? VerticalJudgmentResult : R extends EntropyReviewRequest ? ReviewerOutput : R extends EntropyRefutationRequest ? EntropyRefutationResult : R extends MissionCheckRequest ? MissionCheckObserved : R extends PlanRefutationRequest ? PlanRefutationResult : R extends EvidenceWorkerRequest ? EvidenceWorkerResult : R extends WriterRequest ? WriterResult : WorkerResult;
+export type TransportRequest = WorkerRequest | WriterRequest | EvidenceWorkerRequest | PlanRefutationRequest | MissionCheckRequest | EntropyReviewRequest | EntropyRefutationRequest | VerticalJudgmentRequest | ChangeReviewRequest;
+export type TransportResult = WorkerResult | WriterResult | EvidenceWorkerResult | PlanRefutationResult | MissionCheckObserved | ReviewerOutput | EntropyRefutationResult | VerticalJudgmentResult | ChangeReviewResult;
+export type TransportResultFor<R extends TransportRequest> = R extends ChangeReviewRequest ? ChangeReviewResult : R extends VerticalJudgmentRequest ? VerticalJudgmentResult : R extends EntropyReviewRequest ? ReviewerOutput : R extends EntropyRefutationRequest ? EntropyRefutationResult : R extends MissionCheckRequest ? MissionCheckObserved : R extends PlanRefutationRequest ? PlanRefutationResult : R extends EvidenceWorkerRequest ? EvidenceWorkerResult : R extends WriterRequest ? WriterResult : WorkerResult;
 export declare const isPlanRequest: (request: TransportRequest) => request is PlanRefutationRequest;
 export declare const isEvidenceRequest: (request: TransportRequest) => request is EvidenceWorkerRequest;
 /** Every contract reason an evidence result can be refused for. The list is

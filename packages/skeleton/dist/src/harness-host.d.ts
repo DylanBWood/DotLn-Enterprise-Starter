@@ -2,6 +2,7 @@ import type { DecodeResult } from "@dotln/kernel";
 import { type AuthorityEnvelope, type CompiledFeedback, type CorrectionState, type HarnessEvent, type RoleOutsideWriteGrants, type AuthorityGrant } from "@dotln/compiler";
 import { gateTreeHash } from "./gate-evidence.mjs";
 import { type FeedbackBoundaryRequest, type feedbackBoundary } from "./feedback-boundary.js";
+import { type KitHost, type UseAdmission } from "./subagent-budget.js";
 export { HARNESS_HOST_VERSION } from "./version.js";
 type HostHookEvent = HarnessEvent | "SessionStart" | "PermissionDenied" | "PostToolUseFailure" | "SubagentStop";
 export interface HarnessInput {
@@ -39,6 +40,26 @@ export interface HarnessCheck {
     readonly codeIdentity?: string;
     readonly durationMs?: number;
 }
+/** The gate a review or refutation worker's shell command would start, by
+ * its literal words, or null. The host names the agent's type on each of its
+ * tool calls; a lifecycle phase agent (dotln-executor and the other phase
+ * definitions) keeps its gates, and so does the session itself. What a
+ * program starts by itself stays unobserved, as for every hook refusal. */
+export declare function reviewWorkerGate(input: HarnessInput, tools?: HookConfig["tools"]): string | null;
+/** The workers a kit command launches, by its literal words: the change
+ * review helper (`npm run worker -- review`, `node scripts/worker.mjs
+ * review`) launches one and the planner's review (`npm run plan -- review`,
+ * `node scripts/refute-plan.mjs review`) three, on the host `--host` names;
+ * a `--dry-run` launches none. The helper's own process carries no session
+ * identity a hook could charge, so the hook charges its command. */
+export declare function kitWorkerLaunch(command: string): {
+    readonly uses: number;
+    readonly host: KitHost;
+} | null;
+/** What a tool call uses beyond a spawn: a re-task of an agent, or the
+ * workers a kit command launches. Both permission paths and the live-gate
+ * advisory read it from here, so they agree on what counts. */
+export declare function workerUse(input: HarnessInput, tools?: HookConfig["tools"]): UseAdmission;
 /** A dispatch gets its own budget anchor while session observations retain
  * their original lifetime. Repeating an unfinished phase cannot reset it. */
 export declare function bindDispatchBound(root: string, session: HarnessSession, role: string, intent: string, workOrder: string | null, now?: string): void;
@@ -125,7 +146,7 @@ interface HookConfig {
         readonly intents: readonly string[];
     }[];
     readonly instructionFile?: string;
-    readonly tools?: Readonly<Record<string, "read" | "write" | "shell" | "spawn" | "stop" | "interaction" | "desktop">>;
+    readonly tools?: Readonly<Record<string, "read" | "write" | "shell" | "spawn" | "retask" | "stop" | "interaction" | "desktop">>;
 }
 interface ControlView {
     readonly workOrder: string | null;
@@ -289,6 +310,9 @@ export declare function measureHarnessSessionUsage(root: string, session: Harnes
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: number;
@@ -301,6 +325,9 @@ export declare function measureHarnessSessionUsage(root: string, session: Harnes
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: null;
@@ -332,6 +359,9 @@ export declare function measureHarnessSessionUsage(root: string, session: Harnes
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: number;
@@ -344,6 +374,9 @@ export declare function measureHarnessSessionUsage(root: string, session: Harnes
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: null;
@@ -379,6 +412,9 @@ export declare function measureHarnessSessionUsage(root: string, session: Harnes
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: number;
@@ -391,6 +427,9 @@ export declare function measureHarnessSessionUsage(root: string, session: Harnes
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: null;
@@ -418,6 +457,9 @@ export declare function measureHarnessSessionUsage(root: string, session: Harnes
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: number;
@@ -430,6 +472,9 @@ export declare function measureHarnessSessionUsage(root: string, session: Harnes
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: null;
@@ -457,6 +502,9 @@ export declare function measureHarnessSessionUsage(root: string, session: Harnes
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: number;
@@ -469,6 +517,9 @@ export declare function measureHarnessSessionUsage(root: string, session: Harnes
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: null;
@@ -500,6 +551,9 @@ export declare function measureHarnessSessionUsage(root: string, session: Harnes
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: number;
@@ -512,6 +566,9 @@ export declare function measureHarnessSessionUsage(root: string, session: Harnes
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: null;
@@ -543,6 +600,9 @@ export declare function measureHarnessUsage(root: string, sessionId: string): {
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: number;
@@ -555,6 +615,9 @@ export declare function measureHarnessUsage(root: string, sessionId: string): {
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: null;
@@ -596,6 +659,9 @@ export declare function measureHarnessUsage(root: string, sessionId: string): {
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: number;
@@ -608,6 +674,9 @@ export declare function measureHarnessUsage(root: string, sessionId: string): {
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: null;
@@ -653,6 +722,9 @@ export declare function measureHarnessUsage(root: string, sessionId: string): {
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: number;
@@ -665,6 +737,9 @@ export declare function measureHarnessUsage(root: string, sessionId: string): {
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: null;
@@ -702,6 +777,9 @@ export declare function measureHarnessUsage(root: string, sessionId: string): {
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: number;
@@ -714,6 +792,9 @@ export declare function measureHarnessUsage(root: string, sessionId: string): {
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: null;
@@ -751,6 +832,9 @@ export declare function measureHarnessUsage(root: string, sessionId: string): {
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: number;
@@ -763,6 +847,9 @@ export declare function measureHarnessUsage(root: string, sessionId: string): {
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: null;
@@ -804,6 +891,9 @@ export declare function measureHarnessUsage(root: string, sessionId: string): {
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: number;
@@ -816,6 +906,9 @@ export declare function measureHarnessUsage(root: string, sessionId: string): {
         unresolvedAdmissions: number | null;
         unlinkedChildren: number | null;
         uncountedRemainder: "unknown";
+        launched?: number | null;
+        launchedByHost?: Readonly<Record<KitHost, number>> | null;
+        retasked?: number | null;
         reason?: string;
         perSpawnerCap: number | null;
         spawnsByWorker: null;

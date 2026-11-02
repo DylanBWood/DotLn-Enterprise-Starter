@@ -24,7 +24,7 @@ export interface HarnessProfile {
     readonly profileId: string;
     readonly harness: "claude-code" | "codex-cli" | "copilot-cli";
     readonly observedVersion: string;
-    readonly tools?: Readonly<Record<string, "read" | "write" | "shell" | "spawn" | "stop" | "interaction" | "desktop">>;
+    readonly tools?: Readonly<Record<string, "read" | "write" | "shell" | "spawn" | "retask" | "stop" | "interaction" | "desktop">>;
     readonly events: Readonly<Record<HarnessEvent, HarnessObservation>>;
     /** Separately witnessed native compaction hooks; never enables Claude hooks. */
     readonly codexContinuation?: HarnessObservation & {
@@ -226,6 +226,10 @@ export declare const HARNESS_REFUSALS: readonly [{
     readonly id: "desktop-control";
     readonly source: "WO-251";
     readonly clause: "refuses desktop control and the operator's own browser sessions unless dotln.config.json elects features.desktop-control; an election still requires the operator's explicit request in the session, and browser verification uses the Playwright MCP in a browser the session launches or the project's browser tests";
+}, {
+    readonly id: "worker-gate";
+    readonly source: "WO-250";
+    readonly clause: "refuses a review worker's test-runner gate";
 }];
 /** The shared instruction symlink contains all profile-qualified residue. */
 export declare function mergeHarnessFragments(bundles: readonly HarnessBundle[]): string;

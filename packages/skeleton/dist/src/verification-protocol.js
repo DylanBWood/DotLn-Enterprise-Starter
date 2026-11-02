@@ -5,6 +5,7 @@ import { validateReviewerOutput, } from "./loadouts/entropy-reducer.js";
 import { isVerticalJudgmentRequest, validateVerticalJudgmentRequest, validateVerticalJudgmentResult, verticalJudgmentPrompt, verticalJudgmentResultSchema, } from "./vertical-judgment-protocol.js";
 import { entropyRefutationPrompt, entropyRefutationResultSchema, entropyReviewPrompt, entropyReviewResultSchema, isEntropyRefutationRequest, isEntropyReviewRequest, validateEntropyRefutationRequest, validateEntropyRefutationResult, validateEntropyReviewRequest, } from "./entropy-review-protocol.js";
 import { isMissionCheckRequest, missionCheckPrompt, missionCheckResultSchema, validateMissionCheckRequest, validateMissionCheckResult, } from "./mission-check-protocol.js";
+import { isChangeReviewRequest, changeReviewPrompt, changeReviewResultSchema, validateChangeReviewRequest, validateChangeReviewResult, } from "./change-review-protocol.js";
 import { isWriterRequest, parseStoredWriterResult, validateWriterRequest, writerPrompt, writerResultSchema, parseWorkerResult, resultId, validateRequest, WorkerFailure, workerPrompt, workerResultSchema, } from "./worker-protocol.js";
 /** Fixed bound for the source-heavy feedback audit; other profiles keep WO-009 limits. */
 export const FEEDBACK_VERIFIER_LIMITS = {
@@ -593,6 +594,8 @@ function verificationReviewNotice(request) {
     return true;
 }
 export function validateTransportRequest(request) {
+    if (isChangeReviewRequest(request))
+        return validateChangeReviewRequest(request);
     if (isVerticalJudgmentRequest(request))
         return validateVerticalJudgmentRequest(request);
     if (isEntropyReviewRequest(request))
@@ -648,6 +651,8 @@ export function validateTransportRequest(request) {
     }
 }
 export function transportResultSchema(request) {
+    if (isChangeReviewRequest(request))
+        return changeReviewResultSchema();
     if (isVerticalJudgmentRequest(request))
         return verticalJudgmentResultSchema(request);
     if (isEntropyReviewRequest(request))
@@ -665,26 +670,30 @@ export function transportResultSchema(request) {
         : workerResultSchema(request);
 }
 export function parseTransportResult(value, request) {
-    return (isVerticalJudgmentRequest(request)
-        ? validateVerticalJudgmentResult(value, request)
-        : isEntropyReviewRequest(request)
-            ? validateReviewerOutput(value, {
-                workOrderId: request.workOrder.workOrderId,
-                episodeId: request.episodeId,
-            })
-            : isEntropyRefutationRequest(request)
-                ? validateEntropyRefutationResult(value, request)
-                : isMissionCheckRequest(request)
-                    ? validateMissionCheckResult(value, request.subject)
-                    : isWriterRequest(request)
-                        ? parseStoredWriterResult(value, request)
-                        : isPlanRequest(request)
-                            ? validatePlanResult(value, request.subject)
-                            : isEvidenceRequest(request)
-                                ? parseEvidenceResult(value, request)
-                                : parseWorkerResult(value, request));
+    return (isChangeReviewRequest(request)
+        ? validateChangeReviewResult(value, request)
+        : isVerticalJudgmentRequest(request)
+            ? validateVerticalJudgmentResult(value, request)
+            : isEntropyReviewRequest(request)
+                ? validateReviewerOutput(value, {
+                    workOrderId: request.workOrder.workOrderId,
+                    episodeId: request.episodeId,
+                })
+                : isEntropyRefutationRequest(request)
+                    ? validateEntropyRefutationResult(value, request)
+                    : isMissionCheckRequest(request)
+                        ? validateMissionCheckResult(value, request.subject)
+                        : isWriterRequest(request)
+                            ? parseStoredWriterResult(value, request)
+                            : isPlanRequest(request)
+                                ? validatePlanResult(value, request.subject)
+                                : isEvidenceRequest(request)
+                                    ? parseEvidenceResult(value, request)
+                                    : parseWorkerResult(value, request));
 }
 export function transportPrompt(request, harness) {
+    if (isChangeReviewRequest(request))
+        return changeReviewPrompt(request);
     if (isVerticalJudgmentRequest(request))
         return verticalJudgmentPrompt(request);
     if (isEntropyReviewRequest(request))

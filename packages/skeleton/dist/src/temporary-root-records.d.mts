@@ -82,8 +82,9 @@ export declare const DEFAULT_RETENTION: Readonly<{
 /** The entries a closed-journal root may hold beside its owner record: the
  * session journals and other append-only logs, the session states and their
  * per-session sidecars, the gate index, the suite-success and deadline
- * directories, and a superseded state kept when a retried close merged a newer
- * one. Anything else is not the close's to remove.
+ * directories, the order's change review reports, and a superseded state kept
+ * when a retried close merged a newer one. Anything else is not the close's
+ * to remove.
  * @param {string} name @param {boolean} directory */
 export declare const closedJournalEntry: (name: string, directory: boolean) => boolean;
 export type Retention = Record<keyof typeof DEFAULT_RETENTION, number | null>;

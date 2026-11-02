@@ -10,6 +10,10 @@ export interface SpawnInput {
     readonly tool_input?: Record<string, unknown>;
     readonly tool_response?: Record<string, unknown>;
 }
+/** The hosts a kit-launched worker runs on; `unattributed` is a launch whose
+ * command names no host. */
+export declare const KIT_HOSTS: readonly ["claude", "codex", "unattributed"];
+export type KitHost = (typeof KIT_HOSTS)[number];
 export interface SubagentObservation {
     count: number | null;
     cap: number | null;
@@ -18,17 +22,34 @@ export interface SubagentObservation {
     unresolvedAdmissions: number | null;
     unlinkedChildren: number | null;
     uncountedRemainder: "unknown";
+    /** Launches by host: agents the hooks saw are Claude's; kit launches name
+     * their host. Re-tasks are counted apart, and count = launched + re-tasked. */
+    launched?: number | null;
+    launchedByHost?: Readonly<Record<KitHost, number>> | null;
+    retasked?: number | null;
     reason?: string;
+}
+/** What a non-spawn tool call uses: a re-task of a known agent, or a kit
+ * command that launches `uses` workers on `host`. */
+export interface UseAdmission {
+    readonly retask?: boolean;
+    readonly kit?: {
+        readonly uses: number;
+        readonly host: KitHost;
+    };
 }
 export declare function readSubagentCap(root: string): number | null;
 export declare function initializeSubagentCounter(directory: string, session: string): string | null;
+/** One line for `harness usage`: every use the counter saw, by kind and host,
+ * against the cap. */
+export declare function workersLine(row: SubagentObservation): string;
 export declare function subagentUsage(root: string, directory: string, session: string, hashed?: boolean): SubagentObservation;
 export declare function subagentSummary(row: SubagentObservation): string;
 export declare function admitSubagentTool(root: string, directory: string, input: SpawnInput, spawn: boolean, options?: {
     cap?: number | null;
     spawnerCap?: number | null;
     spawner?: string;
-}): {
+} & UseAdmission): {
     refusal?: string;
     advisory?: string;
     usage: SubagentObservation;
@@ -53,6 +74,11 @@ export declare function drivenSubagentUsage(worker?: string): {
     unresolvedAdmissions: number | null;
     unlinkedChildren: number | null;
     uncountedRemainder: "unknown";
+    /** Launches by host: agents the hooks saw are Claude's; kit launches name
+     * their host. Re-tasks are counted apart, and count = launched + re-tasked. */
+    launched?: number | null;
+    launchedByHost?: Readonly<Record<KitHost, number>> | null;
+    retasked?: number | null;
     reason?: string;
     perSpawnerCap: number | null;
     spawnsByWorker: number;
@@ -65,12 +91,17 @@ export declare function drivenSubagentUsage(worker?: string): {
     unresolvedAdmissions: number | null;
     unlinkedChildren: number | null;
     uncountedRemainder: "unknown";
+    /** Launches by host: agents the hooks saw are Claude's; kit launches name
+     * their host. Re-tasks are counted apart, and count = launched + re-tasked. */
+    launched?: number | null;
+    launchedByHost?: Readonly<Record<KitHost, number>> | null;
+    retasked?: number | null;
     reason?: string;
     perSpawnerCap: number | null;
     spawnsByWorker: null;
     source: string;
 } | null;
-export declare function admitDrivenTool(input: SpawnInput, spawn: boolean): {
+export declare function admitDrivenTool(input: SpawnInput, spawn: boolean, use?: UseAdmission): {
     refusal?: string;
     advisory?: string;
     usage: SubagentObservation;

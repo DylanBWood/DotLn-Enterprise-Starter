@@ -515,6 +515,10 @@ test("WO-132 both harness roles receive identical duties and the shared instruct
     assert.ok(merged.includes(`DotLn has ${HARNESS_REFUSALS.length} refusals (`));
     assert.ok(merged.includes(`Claude hooks enforce these ${HARNESS_REFUSALS.length} refusals`));
     assert.ok(HARNESS_REFUSALS.some((row) => row.id === "desktop-control"));
+    // A review or refutation worker's gate is refused at the hook too, so the
+    // count above includes its row.
+    assert.ok(HARNESS_REFUSALS.some((row) => row.id === "worker-gate" &&
+        row.clause.includes("review worker's test-runner gate")));
     for (const row of HARNESS_REFUSALS)
         assert.ok(merged.includes(row.clause));
     assert.match(merged, /planning\/ branches refuses repository writes outside docs\/ and root Markdown/);

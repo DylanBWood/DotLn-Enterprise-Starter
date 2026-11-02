@@ -27,6 +27,7 @@ export declare const harnessToolEffects: {
     readonly Agent: "spawn";
     readonly Task: "spawn";
     readonly Workflow: "spawn";
+    readonly SendMessage: "retask";
     readonly Skill: "interaction";
     readonly TodoWrite: "interaction";
     readonly AskUserQuestion: "interaction";

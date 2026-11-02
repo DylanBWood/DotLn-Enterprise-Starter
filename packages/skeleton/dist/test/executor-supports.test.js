@@ -436,8 +436,8 @@ test("execution roles open with an ordered handoff and keep shared rules below i
             assert.match(steps[run + 1], /After the complete run passes/);
             assert.match(steps[run + 1], /Post-pass handoff write-backs are executor-owned/);
             assert.doesNotMatch(steps[run + 1], /same consistency reviewer check the final write-backs/);
-            assert.match(steps[format - 1], /Finish implementation or repair,.*authored outputs before launching or restarting all three/);
-            assert.match(steps[run], /on failure finish.*repair and its write-backs.*restart all three existing reviewers.*wait for all three to finish/);
+            assert.match(steps[format - 1], /Finish implementation or repair,.*authored outputs before the review ladder's first round; never use early scouting reviews/);
+            assert.match(steps[run], /on failure finish.*repair and its write-backs.*format.*review ladder and finish it before starting a fresh complete run/);
         }
         else if (name === "verifier") {
             assert.match(steps[run], /npm test -- --only <suite>/);
@@ -459,14 +459,15 @@ test("execution roles open with an ordered handoff and keep shared rules below i
     const executor = roles
         .find((row) => row.name === "executor")
         .procedure.join("\n");
-    assert.match(executor, /Every execution and fix requires three fresh independent `dotln-worker` agents/);
+    assert.match(executor, /Every execution and fix runs its independent reviews as a ladder with an end/);
+    assert.match(executor, /Round 1: three fresh independent `dotln-worker` reviewers over the whole diff/);
     assert.match(executor, /nonoverlapping briefs/);
-    assert.match(executor, /Launch or restart them only after implementation or repair and its write-backs are complete, never as early scouts/);
+    assert.match(executor, /only after implementation or repair and its write-backs are complete, never as early scouts/);
     assert.match(executor, /criteria adversary seeks concrete counterexamples, failed acceptance criteria and missing regression tests; exclude design cleanup/);
     assert.match(executor, /design improver seeks simpler structure, coupling, error handling and six-month maintainability; exclude criterion verdicts and adversarial test design/);
     assert.match(executor, /consistency reviewer solely verifies write-backs, dependencies and versions/);
     assert.match(executor, /test dependencies, fixture inputs\/manifests\/pins, generated test baselines and evidence-source declarations/);
-    const consistencyBrief = executor.match(/The consistency reviewer[\s\S]+?(?=Transfer findings)/)?.[0];
+    const consistencyBrief = executor.match(/The consistency reviewer[\s\S]+?(?=Fix or record every finding)/)?.[0];
     assert.ok(consistencyBrief);
     assert.match(consistencyBrief, /changed document, emitted output and helper.*every consuming test/);
     assert.match(consistencyBrief, /old\/new text and byte\/count pins/);
@@ -478,7 +479,7 @@ test("execution roles open with an ordered handoff and keep shared rules below i
     const verifier = roles
         .find((row) => row.name === "verifier")
         .procedure.join("\n");
-    assert.match(verifier, /your own probes and the executor's three worker reports/);
+    assert.match(verifier, /your own probes and the executor's review reports, every round's in `docs\/control\/local\/reviews\/WO-NNN\/`/);
     assert.match(verifier, /Spawn a worker only to reproduce one named claim/);
     assert.match(verifier, /breaks no criterion and no behavior `main` had is a follow-up, never blocking/);
 });

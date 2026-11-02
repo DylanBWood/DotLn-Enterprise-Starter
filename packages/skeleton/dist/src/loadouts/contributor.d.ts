@@ -20,6 +20,16 @@ export type ContributorSupportSwitches = ExecutorSupportSwitches & Readonly<{
     "process-cost"?: boolean;
     "goal-alignment"?: boolean;
 }>;
+/** The three independent reviewers' briefs. The executor's role text and the
+ * kit's review helper (`npm run worker -- review`) render these same strings,
+ * so a review launched through either route reads one brief. */
+export declare const reviewerBriefs: {
+    readonly criteria: "The criteria adversary seeks concrete counterexamples, failed acceptance criteria and missing regression tests; exclude design cleanup.";
+    readonly design: "The design improver seeks simpler structure, coupling, error handling and six-month maintainability; exclude criterion verdicts and adversarial test design.";
+    readonly consistency: "The consistency reviewer solely verifies write-backs, dependencies and versions: product and operational docs, decisions, indexes, cross-references, package and lockfile versions, release metadata, generated artifacts and installed guidance, test dependencies, fixture inputs/manifests/pins, generated test baselines and evidence-source declarations. Give that reviewer the corresponding source and generated surfaces. Trace each changed document, emitted output and helper to every consuming test by path, symbol, old/new text and byte/count pins; follow transitive imports and fixture copy/export manifests. Check oracle selectors, command/field inventories, runtime setup, gate environment and timing assumptions. Use relevant retained gate failures to search for the same failure shapes. Preserve intentional contract pins; update expectations from requirements, replacing incidental prose coupling with semantic assertions. Report concrete producer/consumer pairs, their disposition and unsearched boundaries.";
+};
+/** What a recheck and the last combined round admit; it is what ends them. */
+export declare const reviewAdmissionRule = "a new finding is admitted only when it breaks an acceptance criterion or a behavior `main` had, and any other new finding is recorded in the handoff, not fixed";
 export declare const browserVerificationGuidance = "Browser verification uses a browser the session launches: inspect structured state, then the DOM and accessibility tree through the Playwright MCP snapshot, then network and event data, then take a screenshot and read it as an image, or use the project's own browser tests; desktop control (the operator's screen, clicks and typing outside that browser) and the operator's own browser sessions (Claude in Chrome or the desktop app's browser pane) are refused unless dotln.config.json elects features.desktop-control (off by default) and the operator explicitly requests their use in this session.";
 export declare const contributorRoles: readonly HarnessRole[];
 export declare const contributorEnvelope: AuthorityEnvelope;
