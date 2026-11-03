@@ -139,9 +139,13 @@ export declare function readTemporaryOwner(path: string): TemporaryRecord | null
  * @param {string} path @param {TemporaryRecord} record @returns {string|null} */
 export declare function temporaryLedgerContradiction(path: string, record: TemporaryRecord): string | null;
 /** Writes the record over the marker of the directory it names. The inode must
- * still match. A differing device is a renumbered volume: it is re-stamped only
- * under the ledger binding above and recorded on the root's ledger segment with
- * both numbers. Returns the record as written.
+ * still match. A differing device is a renumbered volume. Where the owner
+ * repository exists it is re-stamped only under the ledger binding above and
+ * recorded on the root's ledger segment with both numbers. Where the owner
+ * repository is gone, as after a closed worktree's removal, no ledger remains
+ * to hold it, and the second proof is the marker inside the directory: it
+ * must carry the record's token, beside the inode compared here, before the
+ * device is re-stamped. Returns the record as written.
  * @param {string} path @param {TemporaryRecord} record @returns {TemporaryRecord} */
 export declare function writeTemporaryOwner(path: string, record: TemporaryRecord): TemporaryRecord;
 /** Mark a fixed owned root, used for session scratch and cached fixtures.
@@ -191,6 +195,17 @@ export declare function removeTemporaryRoot(path: string, token?: string): Inven
  * the process ending, aside where its ledger finds it (registeredTemporaryRoots).
  * @param {string} path @param {TemporaryRecord} record */
 export declare function removeVerifiedTemporaryRoot(path: string, record: TemporaryRecord): Inventory;
+/** Whether a directory is what a removal leaves when it stops after deleting
+ * the owner record and before the directory itself: named for a token's aside
+ * and empty, so nothing in it remains to retain.
+ * @param {string} path */
+export declare function temporaryRemovalRemains(path: string): boolean;
+/** Removes such remains with rmdir, which refuses anything that has since
+ * appeared inside, after checking the directory judged is the one present.
+ * Where the given repository's ledger registers that token, its registration
+ * ends here as removed.
+ * @param {string} path @param {number} inode @param {string} repository */
+export declare function removeTemporaryRemovalRemains(path: string, inode: number, repository: string): void;
 /** fs.rmSync-compatible creator cleanup, with measurements for owned material.
  * Removing unrelated files keeps fs.rmSync's ordinary behavior.
  * @param {import("node:fs").PathLike} path @param {import("node:fs").RmOptions} [options] */
@@ -199,7 +214,9 @@ export declare function removeTemporaryPath(path: import("node:fs").PathLike, op
 export declare function temporaryLedger(repository: string): Array<Record<string, any>>;
 /** Metrics are durable before a gate retires its completed segments. Other
  * cleanup retires only absent roots with a proven dead owner; live segments
- * are append-only and are never rewritten by a concurrent census.
+ * are append-only and are never rewritten by a concurrent census. A segment
+ * waits while its root may still be held inside a removal aside: its own,
+ * wherever the removal recorded it, or an ancestor's.
  * @param {string} repository @param {string} [gateId] */
 export declare function retireTemporaryLedger(repository: string, gateId?: string): void;
 /** Current root registrations, not individual file deletions.
