@@ -133,6 +133,38 @@ export const entropyReducerLensBriefs = [
         wordBudget: 650,
         noFix: true,
     },
+    // The document lens asks what the kinds contract asks of every document: a
+    // standing document states what is so for a reader, a record is reached by
+    // link, and a document no reader reaches is a removal candidate. The whole
+    // document base is not an admitted scope, so the lens names its standing
+    // roots and the two root instruction pages.
+    {
+        lensId: "documents-and-readers",
+        files: [
+            "docs/product/",
+            "docs/planning/",
+            "docs/workstreams/",
+            "docs/repositories/",
+            "README.md",
+            "CLAUDE.md",
+        ],
+        questions: [
+            "Which standing document carries a dated history of what happened instead of the current state its reader needs?",
+            "Which document has no reader: no entry point names it, no standing page a reader reaches links to it and no session reads it?",
+            "Which record does a session read at start, through an entry point or a read list that should name a standing document?",
+        ],
+        outputShape: [
+            "criterion",
+            "severity",
+            "observed",
+            "expected",
+            "reproduction",
+            "evidenceRefs",
+            "surface",
+        ],
+        wordBudget: 650,
+        noFix: true,
+    },
 ];
 export const lensBriefSchema = {
     $id: "dotln.entropy-reducer.lens-brief.v1",
@@ -501,11 +533,13 @@ export const entropyReducerSupports = {
     },
     lensChecklist: {
         ...supportDefaults,
+        // v2 (WO-238): at most five lenses, the fifth on documents and readers.
+        version: 2,
         supportFacetId: "entropy-reducer.lens-checklist",
         name: "Lens Checklist",
         supportedTags: ["observe"],
         semanticsAdded: [
-            "work at most four read-only lenses serially with fixed briefs and word budgets",
+            "work at most five read-only lenses serially with fixed briefs and word budgets",
         ],
         authorityChanges: [],
         emissions: [
@@ -520,7 +554,7 @@ export const entropyReducerSupports = {
                 emissionId: "lens-checklist.constraint",
                 field: "constraints",
                 values: [
-                    "Work at most four read-only lenses serially as the reviewer; every checklist item declares files, questions, output shape, word budget, and no-fix",
+                    "Work at most five read-only lenses serially as the reviewer; every checklist item declares files, questions, output shape, word budget, and no-fix",
                 ],
                 order: 20,
             },
@@ -533,11 +567,11 @@ export const entropyReducerSupports = {
         cost: {
             mechanismType: "work-order",
             promptTokens: 38,
-            runtimeCost: { quantity: 4, unit: "lens-checklist-items-maximum" },
+            runtimeCost: { quantity: 5, unit: "lens-checklist-items-maximum" },
             extraEpisodes: 0,
         },
         inspection: {
-            restrictions: ["At most four no-fix, read-only lens checklist items"],
+            restrictions: ["At most five no-fix, read-only lens checklist items"],
         },
     },
     mutationDrill: {
@@ -781,7 +815,8 @@ export function entropyReducerLoadout(episodeEndsAt, route = "claude-cli-print")
             {
                 activeMechanicId: "seiso-shine",
                 // v3 (WO-165): the admitted routes work lens briefs serially.
-                version: 3,
+                // v4 (WO-238): the checklist holds a fifth lens, on documents.
+                version: 4,
                 name: "Seisō (Shine)",
                 tags: ["observe", "research", "plan", "verify", "narrate"],
                 requiredCapabilities: [],
@@ -845,7 +880,7 @@ export function entropyReducerLoadout(episodeEndsAt, route = "claude-cli-print")
                     grants: [
                         "Read repository evidence",
                         "Run bounded scratch probes",
-                        "Work up to four read-only lens checklist items serially",
+                        "Work up to five read-only lens checklist items serially",
                         "Emit a validated report",
                     ],
                     restrictions: [
@@ -975,7 +1010,7 @@ export function validateLensBrief(value) {
         noFix: true,
     };
 }
-export function validateLensBriefs(values, maximum = 4) {
+export function validateLensBriefs(values, maximum = 5) {
     if (!Array.isArray(values))
         throw new OutputValidationError("lens briefs must be an array");
     if (values.length > maximum)

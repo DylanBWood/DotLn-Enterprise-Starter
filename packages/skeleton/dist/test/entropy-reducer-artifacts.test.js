@@ -174,7 +174,7 @@ test("[document] WO-023 AC7 review receipt preserves the pinned actor, exact com
         workOrderId: "wo_entropy_review_1",
         episodeId: "ep_entropy_reducer_20260904_001",
     }), receipt.reviewerOutput);
-    assert.equal(compileReviewerWorkOrder(receipt.subject.compileInputs).semanticHash, "fnv1a64:ecb0eca5675332f7", "Serial routes (WO-165), Shape-First v2 (WO-142) and the Opus 5.5 reviewer pin (WO-100) advance the current subject without rewriting the historical reviewed hash");
+    assert.equal(compileReviewerWorkOrder(receipt.subject.compileInputs).semanticHash, "fnv1a64:5eb5ef63f30ee460", "Serial routes (WO-165), Shape-First v2 (WO-142), the Opus 5.5 reviewer pin (WO-100) and the fifth lens's five-lens checklist (WO-238) advance the current subject without rewriting the historical reviewed hash");
 });
 test("[document] WO-023 AC6 refutation receipt rebuilds exactly and promotes only survived findings", async () => {
     const review = JSON.parse(await readFile(reviewRunUrl, "utf8"));

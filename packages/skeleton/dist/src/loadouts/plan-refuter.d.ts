@@ -32,5 +32,5 @@ export declare function compilePlanRefuter(revision: string, dispatchedAt: numbe
         readonly guardedFailureMode: "lens budget creep";
         readonly guard: "Work the fixed lens checklist serially, respecting every word budget and no-fix boundary.";
     };
-    lens: "architecture-and-semantics" | "maintainability-and-friction" | "runtime-and-authority" | "verification-and-evidence";
+    lens: "architecture-and-semantics" | "documents-and-readers" | "maintainability-and-friction" | "runtime-and-authority" | "verification-and-evidence";
 };

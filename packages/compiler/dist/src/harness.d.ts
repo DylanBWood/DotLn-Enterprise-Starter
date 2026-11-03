@@ -231,5 +231,7 @@ export declare const HARNESS_REFUSALS: readonly [{
     readonly source: "WO-250";
     readonly clause: "refuses a review worker's test-runner gate";
 }];
-/** The shared instruction symlink contains all profile-qualified residue. */
+/** The shared instruction symlink carries every profile's residue on one line
+ * per profile. Rule ids that share a reason are named together before it, so
+ * a reason several rules share is printed once; the manifest keeps each item. */
 export declare function mergeHarnessFragments(bundles: readonly HarnessBundle[]): string;

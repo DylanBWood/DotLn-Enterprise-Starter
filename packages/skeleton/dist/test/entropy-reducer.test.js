@@ -256,7 +256,7 @@ test("WO-023 AC1 assembles the full deferred Program and once cadence", () => {
     }), /No Invoke continuation for result failed/u);
     const lenses = compiled.program.programs[1];
     assert.ok(lenses?.kind === "Sequence");
-    assert.equal(lenses.programs.length, 4);
+    assert.equal(lenses.programs.length, 5);
     assert.ok(lenses.programs.every((program) => program.kind === "Invoke" &&
         program.command.effect === "repo.read.lens" &&
         program.command.resource === undefined));
@@ -449,7 +449,7 @@ test("WO-165 rejects sparse lens and required-string arrays", () => {
 test("WO-165 rejects non-array iterables before applying the lens ceiling", () => {
     const iterable = new Set([
         ...entropyReducerLensBriefs,
-        { ...entropyReducerLensBriefs[0], lensId: "fifth-lens" },
+        { ...entropyReducerLensBriefs[0], lensId: "sixth-lens" },
     ]);
     assert.throws(() => validateLensBriefs(iterable), /must be an array/u);
     assert.throws(() => compileReviewerWorkOrder({
@@ -457,7 +457,7 @@ test("WO-165 rejects non-array iterables before applying the lens ceiling", () =
         lensBriefs: iterable,
     }), /must be an array/u);
 });
-test("WO-023 AC4 enforces every lens-brief field, no-fix, uniqueness, and the four-brief ceiling", () => {
+test("WO-023 AC4 enforces every lens-brief field, no-fix, uniqueness, and the five-brief ceiling", () => {
     const valid = entropyReducerLensBriefs[0];
     assert.deepEqual(validateLensBrief(valid), valid);
     assert.equal(lensBriefSchema.properties.files.items.minLength, 1);
@@ -480,10 +480,17 @@ test("WO-023 AC4 enforces every lens-brief field, no-fix, uniqueness, and the fo
     assert.throws(() => validateLensBrief({ ...valid, noFix: false }), /noFix must be true/u);
     assert.throws(() => validateLensBriefs([
         ...entropyReducerLensBriefs,
-        { ...valid, lensId: "fifth-lens" },
-    ]), /exceeds lens checklist limit 4/u);
+        { ...valid, lensId: "sixth-lens" },
+    ]), /exceeds lens checklist limit 5/u);
     assert.throws(() => validateLensBriefs([valid, valid]), /lens brief ids must be unique/u);
-    assert.equal(compileReviewer().lensBriefs.length, 4);
+    assert.equal(compileReviewer().lensBriefs.length, 5);
+    // The fifth lens asks the document questions and stays inside admitted
+    // scopes: never the whole document base and never intake.
+    const documents = entropyReducerLensBriefs.find((brief) => brief.lensId === "documents-and-readers");
+    assert.ok(documents.questions.some((question) => /dated history/u.test(question)));
+    assert.ok(documents.questions.some((question) => /no reader/u.test(question)));
+    assert.ok(documents.questions.some((question) => /record does a session read at start/u.test(question)));
+    assert.deepEqual(validateLensBrief(documents), documents);
     assert.ok(entropyReducerLensBriefs.every((brief) => !brief.files.includes("docs/") &&
         brief.files.every((file) => !file.startsWith("docs/intake"))), "default review scopes must not include ignored intake");
     for (const scope of [

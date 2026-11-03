@@ -163,10 +163,16 @@ export declare function readSharedRefs(root: string): SharedRefs;
  * directory is private source material, not a candidate Git entry; tracked
  * intake files and ordinary untracked source still participate. Git filters
  * are applied by hash-object; this never writes
- * the shared object database or the user's index.
+ * the shared object database or the user's index. `exclude` names directory
+ * prefixes left out: the document gate also records the tree without the
+ * active order's own evidence directory, so that order's later record writes
+ * do not stale the row its completion consumes.
  * @param {string} root
+ * @param {{exclude?: string[]}} [options]
  */
-export declare function gateTreeHash(root: string): string;
+export declare function gateTreeHash(root: string, { exclude }?: {
+    exclude?: string[];
+}): string;
 /** @param {string} root */
 export declare const checksPath: (root: string) => string;
 /** @param {string} root @param {{runId:string,treeHash:string,status:"passed"|"failed"|"no-row"}} outcome */

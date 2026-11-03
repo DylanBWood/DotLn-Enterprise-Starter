@@ -73,6 +73,13 @@ export declare const entropyReducerLensBriefs: readonly [{
     readonly outputShape: readonly ["criterion", "severity", "observed", "expected", "reproduction", "evidenceRefs", "surface"];
     readonly wordBudget: 650;
     readonly noFix: true;
+}, {
+    readonly lensId: "documents-and-readers";
+    readonly files: readonly ["docs/product/", "docs/planning/", "docs/workstreams/", "docs/repositories/", "README.md", "CLAUDE.md"];
+    readonly questions: readonly ["Which standing document carries a dated history of what happened instead of the current state its reader needs?", "Which document has no reader: no entry point names it, no standing page a reader reaches links to it and no session reads it?", "Which record does a session read at start, through an entry point or a read list that should name a standing document?"];
+    readonly outputShape: readonly ["criterion", "severity", "observed", "expected", "reproduction", "evidenceRefs", "surface"];
+    readonly wordBudget: 650;
+    readonly noFix: true;
 }];
 export declare const lensBriefSchema: {
     readonly $id: "dotln.entropy-reducer.lens-brief.v1";
@@ -778,7 +785,6 @@ export declare const entropyReducerSupports: {
         };
     };
     readonly lensChecklist: {
-        readonly version: 1;
         readonly requiredCapabilities: readonly [];
         readonly semanticsModified: readonly [];
         readonly evidenceRequirements: readonly [];
@@ -787,10 +793,11 @@ export declare const entropyReducerSupports: {
         readonly preservesDeterminism: true;
         readonly commutativity: "commutative";
         readonly claims: readonly [];
+        readonly version: 2;
         readonly supportFacetId: "entropy-reducer.lens-checklist";
         readonly name: "Lens Checklist";
         readonly supportedTags: readonly ["observe"];
-        readonly semanticsAdded: readonly ["work at most four read-only lenses serially with fixed briefs and word budgets"];
+        readonly semanticsAdded: readonly ["work at most five read-only lenses serially with fixed briefs and word budgets"];
         readonly authorityChanges: readonly [];
         readonly emissions: readonly [{
             readonly kind: "evidence-schema";
@@ -844,7 +851,7 @@ export declare const entropyReducerSupports: {
             readonly kind: "work-order";
             readonly emissionId: "lens-checklist.constraint";
             readonly field: "constraints";
-            readonly values: readonly ["Work at most four read-only lenses serially as the reviewer; every checklist item declares files, questions, output shape, word budget, and no-fix"];
+            readonly values: readonly ["Work at most five read-only lenses serially as the reviewer; every checklist item declares files, questions, output shape, word budget, and no-fix"];
             readonly order: 20;
         }, {
             readonly kind: "prompt-fragment";
@@ -855,13 +862,13 @@ export declare const entropyReducerSupports: {
             readonly mechanismType: "work-order";
             readonly promptTokens: 38;
             readonly runtimeCost: {
-                readonly quantity: 4;
+                readonly quantity: 5;
                 readonly unit: "lens-checklist-items-maximum";
             };
             readonly extraEpisodes: 0;
         };
         readonly inspection: {
-            readonly restrictions: readonly ["At most four no-fix, read-only lens checklist items"];
+            readonly restrictions: readonly ["At most five no-fix, read-only lens checklist items"];
         };
     };
     readonly mutationDrill: {
