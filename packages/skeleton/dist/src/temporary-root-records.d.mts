@@ -119,10 +119,39 @@ export declare function markUnindexed(repository: string): void;
  * rewrites another process's live segment.
  * @param {string} repository */
 export declare const temporaryLedgerPath: (repository: string) => string;
+export type WalkOptions = {
+    budget?: (path: string) => void;
+    repair?: boolean;
+    chmod?: (path: string, mode: number) => void;
+    repaired?: Array<{
+        path: string;
+        mode: number;
+    }>;
+};
+/** What a walk over an owned root may be given. `budget` is called before
+ * each directory is listed or entry examined, and throws once a prune's time
+ * is spent. `repair` lets the walk grant the owner access to an entry the
+ * owner cannot read, through `chmod` (chmodSync unless a fixture makes it
+ * fail), and `repaired` collects each grant's path and former mode, so a
+ * caller that then keeps the root can put them back.
+ * @typedef {{budget?: (path: string) => void, repair?: boolean, chmod?: (path: string, mode: number) => void, repaired?: Array<{path: string, mode: number}>}} WalkOptions */
 /** Nearest nested owner boundaries, including invalid markers. A parent must
- * not erase a descendant's independent retention or live ownership.
- * @param {string} path @returns {string[]} */
-export declare function nestedTemporaryRoots(path: string): string[];
+ * not erase a descendant's independent retention or live ownership. A
+ * directory its owner cannot list stops the walk as a restricted entry,
+ * unless `repair` is set: the walk then grants the owner read, write and
+ * search on it and lists it.
+ * @param {string} path @param {WalkOptions} [options] @returns {string[]} */
+export declare function nestedTemporaryRoots(path: string, options?: WalkOptions): string[];
+/** Code of the refusal a walk or removal raises for an entry its owner
+ * cannot read and, where asked, could not repair. */
+export declare const RESTRICTED_ENTRY = "RESTRICTED_ENTRY";
+/** Puts back the modes a walk granted, newest first. What can no longer be
+ * changed back, as an entry since removed, is left as it is.
+ * @param {Array<{path: string, mode: number}>} repaired */
+export declare function restoreTemporaryRepairs(repaired: Array<{
+    path: string;
+    mode: number;
+}>): void;
 /** A root is its token and its inode. The token in the marker inside the
  * directory proves it is the one that was created, since fixture copies exclude
  * the marker and seeds keep it out of Git, and the inode says it was not
@@ -171,13 +200,28 @@ export declare function promoteTemporaryRoot(path: string): void;
 /** Links are counted as entries, never followed, including node_modules links.
  * @param {string} path @param {Set<string>} [excluded] @returns {Inventory} */
 export declare function temporaryInventory(path: string, excluded?: Set<string>): Inventory;
-/** Change directory permissions only, never a link target or file contents.
- * @param {string} path */
-export declare function makeTemporaryWritable(path: string): void;
+/** Removes a tree, or a single file, that its caller has already judged
+ * removable: each directory is made writable, then each entry is deleted.
+ * With a `budget`, both walks ask it before every entry, so a bounded removal
+ * stops inside the tree, leaving it partly deleted at its path for the
+ * caller's next run to judge and finish. Without one this is one recursive
+ * rmSync. Links are deleted, never followed.
+ * @param {string} path @param {RemovalOptions} [options] */
+export declare function removeTree(path: string, options?: RemovalOptions): void;
 /** Explicit creator teardown. The pruning judge performs its additional
  * liveness/retention checks before calling this identity-checked remover.
- * @param {string} path @param {string} [token] */
-export declare function removeTemporaryRoot(path: string, token?: string): Inventory;
+ * @param {string} path @param {string} [token] @param {RemovalOptions} [options] */
+export declare function removeTemporaryRoot(path: string, token?: string, options?: RemovalOptions): Inventory;
+export type RemovalOptions = {
+    budget?: (path: string) => void;
+    chmod?: (path: string, mode: number) => void;
+};
+/** One walk before a removal, or before the byte proof of a root about to
+ * go: an entry its owner cannot read is granted what reading and deleting
+ * need, and every entry is counted as temporaryInventory counts it. Links are
+ * counted, never followed or changed.
+ * @param {string} path @param {RemovalOptions} [options] @returns {Inventory} */
+export declare function prepareTemporaryRemoval(path: string, options?: RemovalOptions): Inventory;
 /** The act of a removal whose identity was read as `record`. Whatever holds
  * the path when the act starts is moved aside by one atomic rename, so what is
  * deleted is never chosen by a path a replacement could take after the
@@ -193,8 +237,10 @@ export declare function removeTemporaryRoot(path: string, token?: string): Inven
  * puts the root back at its path, and its owner record goes last, so a removal
  * that stops leaves a root its marker still names: at its path, or, stopped by
  * the process ending, aside where its ledger finds it (registeredTemporaryRoots).
- * @param {string} path @param {TemporaryRecord} record */
-export declare function removeVerifiedTemporaryRoot(path: string, record: TemporaryRecord): Inventory;
+ * So does a removal a prune's budget or an unrepairable entry stops: the
+ * entries already deleted stay deleted, and the next prune finishes the rest.
+ * @param {string} path @param {TemporaryRecord} record @param {RemovalOptions} [options] */
+export declare function removeVerifiedTemporaryRoot(path: string, record: TemporaryRecord, options?: RemovalOptions): Inventory;
 /** Whether a directory is what a removal leaves when it stops after deleting
  * the owner record and before the directory itself: named for a token's aside
  * and empty, so nothing in it remains to retain.
@@ -216,12 +262,28 @@ export declare function temporaryLedger(repository: string): Array<Record<string
  * cleanup retires only absent roots with a proven dead owner; live segments
  * are append-only and are never rewritten by a concurrent census. A segment
  * waits while its root may still be held inside a removal aside: its own,
- * wherever the removal recorded it, or an ancestor's.
- * @param {string} repository @param {string} [gateId] */
-export declare function retireTemporaryLedger(repository: string, gateId?: string): void;
+ * wherever the removal recorded it, or an ancestor's. A caller that already
+ * holds a process table passes it, so one observation serves a whole prune
+ * (null is an unavailable table, which proves no owner dead); `gateIds`
+ * retires several finished gates' segments in one reading of the ledger.
+ * @param {string} repository @param {string} [gateId]
+ * @param {{table?: ProcessIdentity[]|null, gateIds?: Set<string>}} [options] */
+export declare function retireTemporaryLedger(repository: string, gateId?: string, options?: {
+    table?: ProcessIdentity[] | null;
+    gateIds?: Set<string>;
+}): void;
+/** The ledger segment files of a repository, one per token. A prune reads
+ * them one at a time, so its budget can stop the listing between two.
+ * @param {string} repository @returns {string[]} */
+export declare function temporaryLedgerSegments(repository: string): string[];
+/** The root one segment still registers, or null: its creation not followed
+ * by a removal or promotion of that path, at its path or, where a stopped
+ * removal left it, aside. A segment holds one token's rows.
+ * @param {string} file @returns {Record<string, any>|null} */
+export declare function registeredTemporaryRootOf(file: string): Record<string, any> | null;
 /** Current root registrations, not individual file deletions.
  * @param {string} repository */
-export declare function registeredTemporaryRoots(repository: string): any[];
+export declare function registeredTemporaryRoots(repository: string): Record<string, any>[];
 /** File inventories count each deleted incarnation and remaining entries once;
  * overwrites and material removed outside the helper are explicitly unobserved.
  * @param {string} repository @param {string} gateId */
