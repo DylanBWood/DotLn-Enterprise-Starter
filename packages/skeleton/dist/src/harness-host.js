@@ -3,7 +3,7 @@ import { DispatchJournalError, dispatchJournalDirectory, readDispatchJournals, }
 import { boundedCommand, completeTestSelection, diagnosticTestSelection, gateInvocation, nodeScriptArgs, npmScriptArgs, } from "./test-selection.mjs";
 import { formatDuration } from "./duration.mjs";
 import { observedSpawnSync as spawnSync } from "./gate-deadlines.mjs";
-import { withWriterRegistration } from "./writer-teardown.mjs";
+import { withWriterRegistration, zombieProcessState, } from "./writer-teardown.mjs";
 import { ensureTemporaryRoot, pruneSessionTemporaryRoots, temporaryProcessIdentity, temporaryRepository, } from "./temporary-roots.js";
 import { sourceChangeCommandEffect, sourceChangeWriterBranch, } from "./source-change-command.js";
 import { createHash, randomBytes } from "node:crypto";
@@ -14,11 +14,11 @@ import { basename, dirname, isAbsolute, join, relative, resolve, sep, } from "no
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { text as streamText } from "node:stream/consumers";
 import { TARGET_PUBLICATION_EFFECTS, targetPublicationRefusal, } from "./target-publication-policy.js";
-import { applyFeedbackCorrection, compileFeedbackUnits, COMPILER_PACKAGE_VERSION, fnv1a64, canonicalStringify, showHarnessAdvisory, harnessPromptIntent, harnessPromptLine, assertOutsideWriteGrants, outsideWriteEffect, } from "@dotln/compiler";
+import { applyFeedbackCorrection, compileFeedbackUnits, COMPILER_PACKAGE_VERSION, fnv1a64, canonicalStringify, showHarnessAdvisory, harnessPromptIntent, harnessPromptLine, operatorMessageClass, harnessSessionPhase, OPERATOR_QUESTION_CONTEXT, assertOutsideWriteGrants, outsideWriteEffect, } from "@dotln/compiler";
 import { harnessAuthorization } from "./reactor.js";
 import { personalFeedback } from "./loadouts/feedback.js";
 import { qualityPassGuidance } from "./document-quality.js";
-import { HarnessCommandRefused, drivenCommandEffect, drivenResearchCommandKind, LIVE_GATE_READ_LIST, harnessToolEffects, isDesktopControlTool, invocationEffects, liveGateReads, patchWriteTargets, shellRedirectTargets, shellWritePaths, shellWriteTargets, commitMessageInputs, shellDiagnostics, shellInvocations, executableShellInvocations, shellGuidance, } from "./harness-command.js";
+import { HarnessCommandRefused, HOST_DECIDED_CLASSIFICATIONS, drivenCommandEffect, drivenResearchCommandKind, LIVE_GATE_READ_LIST, harnessToolEffects, isDesktopControlTool, invocationEffects, liveGateReads, patchWriteTargets, shellRedirectTargets, shellWritePaths, shellWriteTargets, commitMessageInputs, shellDiagnostics, shellInvocations, executableShellInvocations, shellGuidance, } from "./harness-command.js";
 import { activeGateRuns, beginGateRun, gateInputPath, gateRecordPath, prospectiveRealpath, gateTreeHash, findGateCheck, readGateChecks, recordGateChecks, gateCodeIdentity, } from "./gate-evidence.mjs";
 import { collectSessionUsage, currentCopilotSession, usageObservation, recordUsageObservation, usageReadbackLine, usageSessionKey, } from "./usage-observation.mjs";
 import { FeedbackRefused, feedbackContentHash, feedbackWriterFacts, } from "./feedback-boundary.js";
@@ -872,27 +872,12 @@ const record = (root, input, value) => {
         ...value,
     }) + "\n", { mode: 0o600 });
 };
-// WO-178: constrained metadata, never prompt, input or reason prose. The
-// prefix is a control-language classification, not a semantic classifier.
-const operatorPrefixes = {
-    "resume:": "direction",
-    "planning:": "direction",
-    "ideation:": "ideation",
-    "analysis:": "question",
-    "operator override:": "override",
-    "scope expand:": "scope expansion",
-    "conversation only:": "other step",
-    "quality pass:": "direction",
+/** An operator message with no control prefix that ends in a question mark. */
+const unprefixedQuestion = (prompt) => {
+    const message = operatorMessageClass(prompt);
+    return message.prefix === null && message.class === "question";
 };
-const observationPhase = (session) => session.intent === "resume: fix"
-    ? "repair"
-    : ({
-        executor: "implementation",
-        verifier: "verification",
-        reviewer: "finalReview",
-    }[session.role ?? ""] ??
-        session.role ??
-        "unknown");
+const observationPhase = (session) => harnessSessionPhase(session);
 const observationContext = (session) => ({
     workOrder: session.workOrder ?? null,
     role: session.role ?? "unknown",
@@ -1002,8 +987,10 @@ export function recordOperatorMessage(root, input, source = harnessInputHarness(
         !input.session_id)
         return;
     const session = readJson(statePath(root, input), initialSession(), true);
-    const firstLine = harnessPromptLine(input.prompt);
-    const prefix = Object.keys(operatorPrefixes).find((prefix) => firstLine.text.startsWith(prefix)) ?? null;
+    // Constrained metadata, never prompt, input or reason prose: the class is
+    // read from the message's form (its prefix or closing question mark), not
+    // from what it means.
+    const classified = operatorMessageClass(input.prompt);
     const route = source === "codex-dispatch-phrase"
         ? {
             route: "unknown",
@@ -1020,9 +1007,7 @@ export function recordOperatorMessage(root, input, source = harnessInputHarness(
             ? "host-task-notification"
             : source,
         ...route,
-        prefix,
-        prefixLine: prefix ? firstLine.index : null,
-        class: prefix ? operatorPrefixes[prefix] : "unclassified",
+        ...classified,
         digest: textDigest(input.prompt),
         bytes: Buffer.byteLength(input.prompt),
     });
@@ -1058,6 +1043,26 @@ export function recordCodexDispatch(root, sessionId, action, workOrder) {
     session.role = role;
     if (selected.workOrder)
         session.workOrder = selected.workOrder;
+    // Each dispatch starts its own phase, as the Claude prompt path records it:
+    // a session that verified and then repairs awaits the repair's completion,
+    // counted from the repair's dispatch, not the verification's.
+    const expected = {
+        next: "ImplementationReady",
+        fix: "RepairCompleted",
+        verify: "VerificationCompleted",
+        "final-review": "FinalReviewCompleted",
+    }[action];
+    if (expected && !["closed", "withdrawn"].includes(selected.phase))
+        session.expectedEvent = expected;
+    else
+        delete session.expectedEvent;
+    session.startingEventCount = localEvents(root, selected.workOrder).length;
+    // A checkout with no commit yet has no revision to start from.
+    const head = git(root, ["rev-parse", "--verify", "--quiet", "HEAD"], true).trim();
+    if (head)
+        session.startingRevision = head;
+    else
+        delete session.startingRevision;
     writeJson(statePath(root, input), session);
     const advisory = dispatchBindingAdvisory(session);
     if (advisory)
@@ -1703,7 +1708,8 @@ const shells = new Set([
 const validPid = (value) => Number.isSafeInteger(value) && value > 1;
 /** Best effort: some sandboxes refuse `ps`. An empty table means unknown, never dead. */
 function processTable() {
-    const result = spawnSync("ps", ["-axo", "pid=,ppid=,lstart=,comm="], {
+    // The command column stays last: macOS ps truncates it when another follows.
+    const result = spawnSync("ps", ["-axo", "pid=,ppid=,stat=,lstart=,comm="], {
         encoding: "utf8",
         timeout: 5000,
         maxBuffer: 32 * 1024 * 1024,
@@ -1711,14 +1717,15 @@ function processTable() {
     if (result.error || result.status !== 0)
         return [];
     return result.stdout.split("\n").flatMap((line) => {
-        const match = /^\s*(\d+)\s+(\d+)\s+(\S{3}\s+\S{3}\s+\d+\s+\d\d:\d\d:\d\d\s+\d{4})\s+(.*)$/.exec(line);
+        const match = /^\s*(\d+)\s+(\d+)\s+(\S+)\s+(\S{3}\s+\S{3}\s+\d+\s+\d\d:\d\d:\d\d\s+\d{4})\s+(.*)$/.exec(line);
         return match
             ? [
                 {
                     pid: Number(match[1]),
                     ppid: Number(match[2]),
-                    startedAt: match[3],
-                    command: match[4].trim(),
+                    state: match[3],
+                    startedAt: match[4],
+                    command: match[5].trim(),
                 },
             ]
             : [];
@@ -1842,7 +1849,9 @@ export function codexHostProcess(parent = process.ppid, table = processTable()) 
     }
     return { source: "thread" };
 }
-/** Signal-zero existence, then a start-time comparison when the process table is readable. */
+/** Signal-zero existence, then, when the process table is readable, its state
+ * and start time: a zombie row is a process that has exited, and a different
+ * start time is another process that reused the pid. */
 export function harnessProcessAlive(owner) {
     if (!validPid(owner.pid))
         return false;
@@ -1854,6 +1863,8 @@ export function harnessProcessAlive(owner) {
             return false;
     }
     const row = processTable().find((entry) => entry.pid === owner.pid);
+    if (row && zombieProcessState(row.state))
+        return false;
     return !(owner.startedAt !== undefined &&
         row !== undefined &&
         row.startedAt !== owner.startedAt);
@@ -2490,7 +2501,15 @@ const ownerDead = (writer) => writer.owner !== undefined &&
     validPid(writer.owner.pid) &&
     writer.liveness !== "unavailable" &&
     !harnessProcessAlive(writer.owner);
-const writerRefusal = (writer) => {
+const writerShowCommand = "node scripts/harness.mjs writer --show";
+const writerReleaseCommand = "node scripts/harness.mjs writer --release";
+/**
+ * Who holds the worktree and what clears it. The session form names the
+ * commands the writer guard admits from the refused session itself, each as
+ * that exact command with nothing beside it; the operator form is printed by
+ * the release command an operator runs.
+ */
+const writerRefusal = (writer, reader = "session") => {
     const age = writer.reservedAt ? Date.parse(writer.reservedAt) : Number.NaN;
     const ageText = Number.isFinite(age)
         ? formatDuration(Math.max(0, Date.now() - age))
@@ -2506,8 +2525,39 @@ const writerRefusal = (writer) => {
         : writer.owner?.source === "thread"
             ? "thread owner is of unknown liveness"
             : "host process is not recorded";
-    return `the worktree is reserved by another session (actor ${writer.actorId.slice(0, 12)}; ${owner}). Owner ${JSON.stringify(writer.owner ?? { source: "unknown" })}; reservedAt ${writer.reservedAt ?? "unknown"}; age ${ageText}. Inspect with node scripts/harness.mjs writer --show or release from an operator terminal with node scripts/harness.mjs writer --release${alive === true ? " --force" : ""}`;
+    const remedy = reader === "operator"
+        ? `Inspect with ${writerShowCommand} or release from an operator terminal with ${writerReleaseCommand}${alive === true ? " --force" : ""}`
+        : alive === false
+            ? `This session may run ${writerShowCommand} and ${writerReleaseCommand}, each as that exact command with no pipe, redirect or other command beside it; the release retires the stale reservation and logs it`
+            : `This session may run ${writerShowCommand}, as that exact command with no pipe, redirect or other command beside it; ${alive === true ? `a live holder is released only by the operator, from an operator terminal: ${writerReleaseCommand} --force` : `the operator releases a holder of unknown liveness from an operator terminal: ${writerReleaseCommand}`}`;
+    return `the worktree is reserved by another session (actor ${writer.actorId.slice(0, 12)}; ${owner}). Owner ${JSON.stringify(writer.owner ?? { source: "unknown" })}; reservedAt ${writer.reservedAt ?? "unknown"}; age ${ageText}. ${remedy}`;
 };
+/**
+ * The two writer commands a refusal names, judged by their exact argv through
+ * the shell-word classifier: node, this checkout's scripts/harness.mjs, and
+ * `writer --show` or `writer --release` with nothing else. A pipe, redirect,
+ * second command or `--force` is a different command and is judged as one.
+ */
+function writerRecoveryCommand(root, command) {
+    const words = plainShellWords(command);
+    if (!words ||
+        words.length !== 4 ||
+        words[0] !== "node" ||
+        resolve(root, words[1]) !== join(root, "scripts/harness.mjs") ||
+        words[2] !== "writer")
+        return null;
+    return words[3] === "--show"
+        ? "show"
+        : words[3] === "--release"
+            ? "release"
+            : null;
+}
+/** Another session's reservation whose owner the process table proves
+ * exited, dead or a zombie: its release needs no force and no reclaim. */
+function staleForeignWriter(root, actorId) {
+    const { writer } = observeWriterHolder(root);
+    return Boolean(writer && writer.actorId !== actorId && ownerDead(writer));
+}
 function acquireHarnessWriter(root, input, actorId, options = {}) {
     const at = new Date().toISOString();
     const owner = options.owner ?? harnessHostProcess();
@@ -2725,6 +2775,31 @@ export function reserveCodexDispatchWriter(root, sessionId) {
     if (foreign)
         throw new Error(writerRefusal(foreign));
     return harnessWriterView(root);
+}
+/**
+ * A dispatch that stopped lets its writer go. When a Codex session's role
+ * command ends without its completion event, or its turn ends with that event
+ * still outstanding, the host process that stays open must not keep every
+ * other session out: this session's own reservation is released and the stop
+ * is journaled. Another session's reservation is never touched.
+ */
+export function releaseStoppedDispatch(root, sessionId, stop) {
+    if (!sessionId)
+        throw new Error("A session id is required to release a stopped dispatch");
+    const input = {
+        cwd: root,
+        session_id: sessionId,
+        hook_event_name: "Stop",
+    };
+    const actorId = sessionKey(input);
+    const held = observeWriterHolder(root).writer?.actorId === actorId;
+    if (held)
+        releaseHarnessWriter(root, input);
+    const released = held && observeWriterHolder(root).writer?.actorId !== actorId;
+    record(root, input, {
+        dispatchStopped: { ...stop, writerHeld: held, writerReleased: released },
+    });
+    return { held, released };
 }
 /** A command aimed at a sibling worktree uses that worktree's writer lock.
  * An existing reservation of this session survives the command; a temporary
@@ -3386,8 +3461,17 @@ function routerDriverCommand(root, command, launchOnly = false) {
 function writerIsolationFacts(root, invocation, session, observed = invocation) {
     const actorId = sessionKey(observed);
     const command = String(invocation.tool_input?.command ?? "");
+    // The refusal's own remedy runs where the refusal is read: the view from
+    // any session, and the release of a holder the process table proves
+    // exited, which it retires and logs instead of this session reclaiming it
+    // first. A live or unknown holder's release stays the operator's.
+    const recovery = invocation.tool_name === "Bash"
+        ? writerRecoveryCommand(root, command)
+        : null;
     if (invocation.tool_name === "Bash" &&
         (metadataCommand(command) ||
+            recovery === "show" ||
+            (recovery === "release" && staleForeignWriter(root, actorId)) ||
             (session.role === "router" &&
                 (routerDriverCommand(root, command) || listedRead(root, command))) ||
             managedUsageCommand(invocation, session) ||
@@ -4788,6 +4872,12 @@ async function evaluateExistingHarnessHook(config, input, root, boundary, outsid
                 harnessPromptLine(input.prompt).text.startsWith("quality pass:")
                 ? qualityPassGuidance
                 : undefined,
+            // An unprefixed message that ends in a question mark is answered and
+            // changes nothing by itself; a request inside it is still a request.
+            input.hook_event_name === "UserPromptSubmit" &&
+                unprefixedQuestion(input.prompt)
+                ? OPERATOR_QUESTION_CONTEXT
+                : undefined,
             observationBoundary(root, observationScope(), {
                 ...(input.prompt ? { prompt: input.prompt } : {}),
                 ...(input.transcript_path
@@ -4966,7 +5056,7 @@ async function evaluateExistingHarnessHook(config, input, root, boundary, outsid
         }
         return {
             systemMessage: [
-                subagentSummary(subagentUsage(root, harnessStateDirectory(root), input.session_id)),
+                subagentSummary(subagentUsage(root, harnessStateDirectory(root), input.session_id), root),
                 observation,
                 ...(unmet.length
                     ? [
@@ -5404,6 +5494,8 @@ export async function runHarnessHook(config, boundary, decodedInput, inputText, 
     const overrideExit = operatorOverrideExit(operatorControl);
     let observed;
     let response = {};
+    // An advisory that is journaled but not shown: host permissions decide it.
+    let quietAdvisory;
     let reasonClass = config.kind === "permission" ? "authority" : config.kind;
     // WO-168 (WO-158-D028 c): the mode is already normal when an override
     // exits, so its exit message and record command print ahead of the refusal.
@@ -5487,9 +5579,18 @@ export async function runHarnessHook(config, boundary, decodedInput, inputText, 
                     ? error.message
                     : `${reasonClass}: host facts or pinned runtime unavailable (${failure}); run node scripts/bootstrap.mjs to prepare this worktree`;
         // An override's exit is never withheld; its record degrades to the command.
+        // The three shell forms the classifier leaves to host permissions on
+        // nearly every compound call are journaled and not shown; an advisory
+        // that names a refusal is shown as before.
+        const hostDecided = error instanceof HarnessCommandRefused &&
+            HOST_DECIDED_CLASSIFICATIONS.has(error.message);
+        if (hostDecided && !overrideExit)
+            quietAdvisory = protocolAdvisory(reason).systemMessage;
         response = overrideExit
             ? overrideAdvisory(overrideExit, reason)
-            : protocolAdvisory(reason);
+            : hostDecided
+                ? {}
+                : protocolAdvisory(reason);
     }
     finally {
         if (observed) {
@@ -5509,10 +5610,12 @@ export async function runHarnessHook(config, boundary, decodedInput, inputText, 
                 const refused = response.decision === "block" ||
                     permission?.permissionDecision === "deny";
                 record(root, input, {
-                    ...(typeof response.systemMessage === "string" &&
-                        response.systemMessage.includes("DotLn advisory:")
-                        ? { advisory: response.systemMessage, delegated: true }
-                        : {}),
+                    ...(quietAdvisory
+                        ? { advisory: quietAdvisory, delegated: true, shown: false }
+                        : typeof response.systemMessage === "string" &&
+                            response.systemMessage.includes("DotLn advisory:")
+                            ? { advisory: response.systemMessage, delegated: true }
+                            : {}),
                     // Retain each hook outcome but correlate denials of the same tool use.
                     // Raw tool/session identities and command bytes stay out of the row.
                     ...(refused
@@ -5759,7 +5862,7 @@ export function releaseHarnessWriterByOperator(root, force = false) {
             };
         const view = writerView(writer);
         if (view.alive === true && !force)
-            throw new Error(`Writer reservation owner is alive; end that session or use the forced operator release: ${writerRefusal(writer)}`);
+            throw new Error(`Writer reservation owner is alive; end that session or use the forced operator release: ${writerRefusal(writer, "operator")}`);
         const retired = observation.state === "held"
             ? retireWriterInstance(root, observation.instance)
             : unlinkIfPresent(legacyWriterLock(root));

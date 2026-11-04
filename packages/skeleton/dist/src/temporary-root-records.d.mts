@@ -95,6 +95,14 @@ export declare const withTemporaryOwner: <T>(owner: Partial<TemporaryOwner>, ope
 export declare function temporaryRepository(start?: string): string;
 /** @param {unknown} input @returns {Retention} */
 export declare function validateRetention(input: unknown): Retention;
+/** The repository's control directory, relative to it, as `dotln.config.json`
+ * places it: `roots.control`, else `roots.docs` with `/control`, else
+ * `docs/control`. This module also runs while the control plane is being
+ * loaded, so it resolves the one configured path itself instead of importing
+ * that partly initialized module graph; every runtime reader of the control
+ * budgets resolves through it.
+ * @param {string} repository */
+export declare function configuredControlDirectory(repository: string): string;
 /** @param {string} repository */
 export declare function readRetention(repository: string): Retention;
 /** @param {string} [repository] @returns {ProcessIdentity[]|null} */

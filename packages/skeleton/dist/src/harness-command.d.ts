@@ -1,6 +1,14 @@
 /** Classification could not establish an effect; generated hooks advise the host. */
 export declare class HarnessCommandRefused extends Error {
 }
+/** The three shell forms the classifier leaves to the host's permissions on
+ * nearly every compound call: control syntax, a dynamic substitution and a
+ * working-directory override. Each names no refusal, so a hook journals it
+ * and shows nothing; every other classification advisory is still shown. */
+export declare const SHELL_CONTROL_SYNTAX = "Shell control syntax requires an explicit effect adapter";
+export declare const DYNAMIC_SHELL_SUBSTITUTION = "Dynamic shell substitution requires an explicit effect adapter";
+export declare const SHELL_WORKING_DIRECTORY = "Shell working-directory override needs a separately reviewed host adapter";
+export declare const HOST_DECIDED_CLASSIFICATIONS: ReadonlySet<string>;
 /** Effect inventory for the tools exposed by the observed harness profiles.
  * Unknown names are never presumed to be reads. Opaque shell/delegation routes
  * are delegated to host permissions when their effects cannot be classified.
@@ -39,7 +47,8 @@ export declare const harnessToolEffects: {
     readonly "functions.exec": "shell";
     readonly "collaboration.spawn_agent": "spawn";
 };
-/** Prefix rules name host namespaces; Skill carries its selection in input. */
+/** Prefix rules name host namespaces; Skill carries its selection in input,
+ * judged under every name the host documents for a listed skill. */
 export declare function isDesktopControlTool(name: string, input?: Readonly<Record<string, unknown>>): boolean;
 /** Public token view for diagnostics; classification uses the provenance above. */
 export declare function shellInvocations(source: string): string[][];

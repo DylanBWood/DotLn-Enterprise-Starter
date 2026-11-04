@@ -38,13 +38,17 @@ export interface UseAdmission {
         readonly host: KitHost;
     };
 }
+/** The control budgets file the spawn cap reads, relative to the root: the
+ * configured control root's, the same file the process and retention readers
+ * use. */
+export declare const subagentBudgetsPath: (root: string) => string;
 export declare function readSubagentCap(root: string): number | null;
 export declare function initializeSubagentCounter(directory: string, session: string): string | null;
 /** One line for `harness usage`: every use the counter saw, by kind and host,
  * against the cap. */
 export declare function workersLine(row: SubagentObservation): string;
 export declare function subagentUsage(root: string, directory: string, session: string, hashed?: boolean): SubagentObservation;
-export declare function subagentSummary(row: SubagentObservation): string;
+export declare function subagentSummary(row: SubagentObservation, root?: string): string;
 export declare function admitSubagentTool(root: string, directory: string, input: SpawnInput, spawn: boolean, options?: {
     cap?: number | null;
     spawnerCap?: number | null;

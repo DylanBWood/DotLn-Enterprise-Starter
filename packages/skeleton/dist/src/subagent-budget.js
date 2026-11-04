@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import { lstatSync, mkdirSync, readFileSync, renameSync, rmdirSync, writeFileSync, } from "node:fs";
 import { join } from "node:path";
+import { configuredControlDirectory } from "./temporary-root-records.mjs";
 /** The hosts a kit-launched worker runs on; `unattributed` is a launch whose
  * command names no host. */
 export const KIT_HOSTS = ["claude", "codex", "unattributed"];
@@ -13,10 +14,24 @@ const paths = (directory, session) => {
         started: join(directory, `${key}.subagents.started`),
     };
 };
+/** The control budgets file the spawn cap reads, relative to the root: the
+ * configured control root's, the same file the process and retention readers
+ * use. */
+export const subagentBudgetsPath = (root) => `${configuredControlDirectory(root)}/budgets.json`;
+/** The path a message names; a configuration that cannot be read names the
+ * default layout's file. */
+const budgetsLabel = (root) => {
+    try {
+        return subagentBudgetsPath(root);
+    }
+    catch {
+        return "docs/control/budgets.json";
+    }
+};
 export function readSubagentCap(root) {
     let value;
     try {
-        value = JSON.parse(readFileSync(join(root, "docs/control/budgets.json"), "utf8"));
+        value = JSON.parse(readFileSync(join(root, subagentBudgetsPath(root)), "utf8"));
     }
     catch (error) {
         if (error.code === "ENOENT")
@@ -212,12 +227,12 @@ export function subagentUsage(root, directory, session, hashed = false) {
         return unknown(cap, cause(error));
     }
 }
-export function subagentSummary(row) {
+export function subagentSummary(row, root) {
     const hosts = row.launchedByHost;
     const breakdown = row.count === null || !hosts
         ? ""
         : ` uses (launched ${row.launched}: claude ${hosts.claude}, codex ${hosts.codex}${hosts.unattributed ? `, unattributed ${hosts.unattributed}` : ""}; re-tasked ${row.retasked ?? 0})`;
-    return `Subagents: ${row.countKind === "minimum-observed" ? "at least " : ""}${row.count ?? "unknown"}/${capLabel(row)}${breakdown}; key docs/control/budgets.json subagentCap; uncounted remainder unknown (agents without attributable hooks; unresolved direct/child overlap ${row.unresolvedAdmissions ?? "unknown"}/${row.unlinkedChildren ?? "unknown"})${row.reason ? `; ${row.reason}` : ""}.`;
+    return `Subagents: ${row.countKind === "minimum-observed" ? "at least " : ""}${row.count ?? "unknown"}/${capLabel(row)}${breakdown}; key ${root ? budgetsLabel(root) : "docs/control/budgets.json"} subagentCap; uncounted remainder unknown (agents without attributable hooks; unresolved direct/child overlap ${row.unresolvedAdmissions ?? "unknown"}/${row.unlinkedChildren ?? "unknown"})${row.reason ? `; ${row.reason}` : ""}.`;
 }
 export function admitSubagentTool(root, directory, input, spawn, options = {}) {
     let cap = null;
@@ -228,7 +243,7 @@ export function admitSubagentTool(root, directory, input, spawn, options = {}) {
             const refuse = () => {
                 save(p.counter, counter);
                 return {
-                    refusal: `DOTLN_SUBAGENT_CAP_REFUSED: count ${observation(counter, cap).countKind === "minimum-observed" ? "at least " : ""}${observation(counter, cap).count}, cap ${cap}; docs/control/budgets.json subagentCap would be exceeded. Every launch, re-task and kit launch counts one use; batch the remaining work into fewer uses.`,
+                    refusal: `DOTLN_SUBAGENT_CAP_REFUSED: count ${observation(counter, cap).countKind === "minimum-observed" ? "at least " : ""}${observation(counter, cap).count}, cap ${cap}; ${budgetsLabel(root)} subagentCap would be exceeded. Every launch, re-task and kit launch counts one use; batch the remaining work into fewer uses.`,
                     usage: observation(counter, cap),
                 };
             };
@@ -350,7 +365,7 @@ export function admitSubagentTool(root, directory, input, spawn, options = {}) {
             return {
                 usage,
                 ...(usage.countKind === "minimum-observed"
-                    ? { advisory: `DotLn advisory: ${subagentSummary(usage)}` }
+                    ? { advisory: `DotLn advisory: ${subagentSummary(usage, root)}` }
                     : {}),
             };
         });
@@ -358,7 +373,7 @@ export function admitSubagentTool(root, directory, input, spawn, options = {}) {
     catch (error) {
         const reason = cause(error);
         return {
-            advisory: `DotLn advisory: subagent cap unavailable: ${reason}; admitted, uncounted remainder unknown (docs/control/budgets.json subagentCap).`,
+            advisory: `DotLn advisory: subagent cap unavailable: ${reason}; admitted, uncounted remainder unknown (${budgetsLabel(root)} subagentCap).`,
             usage: unknown(cap, reason),
         };
     }

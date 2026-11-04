@@ -1,3 +1,14 @@
+/** The process table's state column (`ps -o stat=` on macOS and Linux) opens
+ * with `Z` for a zombie: a process that has exited and waits only for its
+ * parent to collect its status. Signal zero still finds it, but it holds no
+ * file, runs nothing and can write nothing again, so a writer reservation it
+ * owns is stale however long its row lingers in the table.
+ * @param {unknown} state */
+export declare const zombieProcessState: (state: unknown) => boolean;
+/** One process's table state, or undefined when the table cannot say: an
+ * absent row or a refused `ps` is unknown, never dead.
+ * @param {number} pid */
+export declare function processTableState(pid: number): string | undefined;
 /** Registration attempts may overlap: their existing conditional instance
  * protocol chooses the writer. A lease prevents teardown during that attempt.
  * Publishing the lease before checking the exclusive lock closes both races.

@@ -5,7 +5,7 @@ import { spawn } from "node:child_process";
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { admitSubagentTool, admitDrivenTool, linkDrivenResult, drivenSubagentUsage, initializeSubagentCounter, linkSubagentResult, subagentUsage, subagentSummary, workersLine, } from "../src/subagent-budget.js";
+import { admitSubagentTool, admitDrivenTool, linkDrivenResult, drivenSubagentUsage, initializeSubagentCounter, linkSubagentResult, readSubagentCap, subagentBudgetsPath, subagentUsage, subagentSummary, workersLine, } from "../src/subagent-budget.js";
 function fixture(t, cap = 3) {
     const root = createFixtureRoot(join(tmpdir(), "dotln-subagent-budget-"));
     const directory = join(root, "docs/control/local/harness");
@@ -28,6 +28,25 @@ function fixture(t, cap = 3) {
         usage: () => subagentUsage(root, directory, "root"),
     };
 }
+test("WO-254 the spawn cap reads the configured control root's budgets, as the process readers do", (t) => {
+    const f = fixture(t, 5);
+    // The default file says 5; the instance relocates its control root, whose
+    // budgets say 1. The relocated file is the one the cap counts against.
+    writeFileSync(join(f.root, "dotln.config.json"), JSON.stringify({ version: 1, roots: { control: "records/control" } }));
+    mkdirSync(join(f.root, "records/control"), { recursive: true });
+    writeFileSync(join(f.root, "records/control/budgets.json"), JSON.stringify({ subagentCap: 1 }));
+    assert.equal(readSubagentCap(f.root), 1);
+    assert.equal(subagentBudgetsPath(f.root), "records/control/budgets.json");
+    assert.equal(f.admit("first").refusal, undefined);
+    const refused = f.admit("second").refusal ?? "";
+    assert.match(refused, /DOTLN_SUBAGENT_CAP_REFUSED: count 1, cap 1/u);
+    assert.match(refused, /records\/control\/budgets\.json subagentCap/u);
+    assert.match(subagentSummary(f.usage(), f.root), /key records\/control\/budgets\.json subagentCap/u);
+    // Without a configuration the default layout's file is read.
+    writeFileSync(join(f.root, "dotln.config.json"), JSON.stringify({ version: 1 }));
+    assert.equal(readSubagentCap(f.root), 5);
+    assert.equal(subagentBudgetsPath(f.root), "docs/control/budgets.json");
+});
 test("a driven session keeps each spawning worker's cap and one ceiling for their total", (t) => {
     const f = fixture(t, 2);
     const admit = (id, spawner) => admitSubagentTool(f.root, f.directory, { session_id: "root", tool_use_id: id, tool_name: "Agent" }, true, { cap: 5, spawnerCap: 2, spawner });

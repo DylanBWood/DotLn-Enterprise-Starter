@@ -10,6 +10,33 @@ export declare function harnessPromptLine(prompt: string | undefined): {
     text: string;
     index: number;
 };
+/**
+ * The control-language class of one operator message, read from its form and
+ * never its meaning: a recognized prefix on the first content line decides
+ * it; otherwise a message that ends in a question mark is a `question`, and
+ * any other is `unclassified`. An interrogative opening alone ("Do not ...",
+ * "Can you ...") makes no question, and a question may still ask for an
+ * action. The function is self-contained so the generated Codex hook embeds
+ * it with the line reader it is given.
+ */
+export declare function operatorMessageClass(prompt: string | undefined, promptLine?: typeof harnessPromptLine): {
+    prefix: string | null;
+    prefixLine: number | null;
+    class: string;
+};
+/**
+ * The journal's phase for a dispatched session: a repair dispatch is the
+ * repair phase, and otherwise each role names its own. Claude's hook and the
+ * generated Codex hook both use it, the latter by embedding this
+ * self-contained function, so their journal rows name a phase alike.
+ */
+export declare function harnessSessionPhase(session: {
+    readonly intent?: string | null;
+    readonly role?: string | null;
+}): string;
+/** What the hook adds for an unprefixed question; the role text carries the
+ * same two pathways for hosts whose prompts are unhooked. */
+export declare const OPERATOR_QUESTION_CONTEXT = "Operator question: read it as a smell. Your next message answers it one of two ways, with the evidence: why the current course is right, or what the question changes in your reading and what you will now do differently. Keep working either way; if the message also asks for an action, including to pause, stop or wait, do that, since a request is explicit whatever its grammar; it records no rule.";
 /** A dispatch may lead following direction after a semicolon or newline.
  * The worker opt-in is a selection, not part of the lifecycle action. */
 export declare function harnessPromptIntent(prompt: string | undefined): string;
@@ -140,6 +167,12 @@ export interface HarnessProgram {
  * their existing classification. */
 export declare const desktopControlToolPrefixes: readonly ["mcp__computer-use__", "mcp__remote-devices__computer_", "enable__mcp__remote-devices__computer", "mcp__claude-in-chrome__", "mcp__Claude_Browser__", "mcp__remote-devices__Claude_Browser__", "enable__mcp__claude-in-chrome", "enable__mcp__remote-devices__Claude_Browser"];
 export declare const desktopControlSkills: readonly ["anthropic-skills:computer-use", "anthropic-skills:chrome-browser", "anthropic-skills:built-in-browser", "claude-in-chrome"];
+/** Each listed skill under every name the host documents for it: a skill
+ * synced from claude.ai as `anthropic-skills:<name>` also answers to its short
+ * `<name>` and to the `<name>:<name>` plugin form Claude Desktop delivers it
+ * as. The hook classifies all of them; the host's parameter rule below covers
+ * any alias or display name besides. */
+export declare function desktopControlSkillNames(skill: string): readonly string[];
 export declare const desktopControlDenyRules: string[];
 export interface HarnessOrigin {
     readonly ids: readonly string[];

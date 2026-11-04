@@ -216,6 +216,8 @@ export declare function recordCodexDispatch(root: string, sessionId: string, act
 interface ProcessRow {
     readonly pid: number;
     readonly ppid: number;
+    /** The table's state column; a leading `Z` is a zombie, an exited process. */
+    readonly state?: string;
     readonly startedAt: string;
     readonly command: string;
 }
@@ -236,7 +238,9 @@ export declare function harnessHostProcess(env?: NodeJS.ProcessEnv, parent?: num
  * ancestor may own its reservation; an unreadable chain is a thread owner with
  * unknown liveness, never the command process that exits at dispatch. */
 export declare function codexHostProcess(parent?: number, table?: readonly ProcessRow[]): HarnessProcess;
-/** Signal-zero existence, then a start-time comparison when the process table is readable. */
+/** Signal-zero existence, then, when the process table is readable, its state
+ * and start time: a zombie row is a process that has exited, and a different
+ * start time is another process that reused the pid. */
 export declare function harnessProcessAlive(owner: Pick<HarnessProcess, "pid" | "startedAt">): boolean;
 /** WO-172: the local lane of what the shell said about commands as written.
  * A row holds its class and its scope, never a pattern or a command's text,
@@ -248,6 +252,17 @@ export declare function seedHarnessWriter(root: string, writer: HarnessWriter): 
 export declare function harnessWriterView(root: string): HarnessWriterView;
 /** Lifecycle dispatches reserve before they can append a control event. */
 export declare function reserveCodexDispatchWriter(root: string, sessionId: string): HarnessWriterView;
+/**
+ * A dispatch that stopped lets its writer go. When a Codex session's role
+ * command ends without its completion event, or its turn ends with that event
+ * still outstanding, the host process that stays open must not keep every
+ * other session out: this session's own reservation is released and the stop
+ * is journaled. Another session's reservation is never touched.
+ */
+export declare function releaseStoppedDispatch(root: string, sessionId: string, stop: Readonly<Record<string, unknown>>): {
+    readonly held: boolean;
+    readonly released: boolean;
+};
 /** A command aimed at a sibling worktree uses that worktree's writer lock.
  * An existing reservation of this session survives the command; a temporary
  * command reservation is released even when integration needs continuation. */
