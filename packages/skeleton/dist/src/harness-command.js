@@ -325,6 +325,53 @@ function shellWords(source) {
 export function shellInvocations(source) {
     return shellWords(source).map(({ words }) => words.map((word) => word.value));
 }
+/** Every command a line would run, read without refusing any form: control
+ * syntax, a substitution and a script handed to a shell or to eval are read,
+ * so a program inside one is found, while quoted text stays its command's
+ * argument. Text the shell substitutes stands as U+0000. Unlike the effect
+ * classification this is for a judgment of one program's literal words; a line
+ * too deep to read holds no commands. */
+export function writtenCommands(source) {
+    let reading;
+    try {
+        reading = readShellCommand(source);
+    }
+    catch (error) {
+        if (error instanceof ShellReadingLimit)
+            return [];
+        throw error;
+    }
+    const rows = [];
+    const assignments = new Map();
+    // A substitution inside a word advances the reading's command number, so
+    // the words after it are joined to their command by the scope they stand in.
+    const latest = new Map();
+    for (const { position, scope, command, text } of reading.words) {
+        const word = asWritten(text);
+        if (position === "assignment")
+            assignments.set(command, [...(assignments.get(command) ?? []), word]);
+        else if (position === "head") {
+            const words = [word];
+            rows.push({ assignments: assignments.get(command) ?? [], words });
+            latest.set(scope, words);
+        }
+        else if (position === "argument")
+            latest.get(scope)?.push(word);
+    }
+    return rows.map((row) => {
+        try {
+            return {
+                ...row,
+                program: invocationProgram(row.words.map(literal)).map(({ value }) => value),
+            };
+        }
+        catch (error) {
+            if (error instanceof HarnessCommandRefused)
+                return { ...row, program: [] };
+            throw error;
+        }
+    });
+}
 /** Normalize executable operands for admission without requiring an effect
  * adapter for every operand. Effect classification keeps its own full checks. */
 export function executableShellInvocations(source) {

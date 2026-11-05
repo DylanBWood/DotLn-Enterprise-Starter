@@ -64,7 +64,10 @@ export interface HarnessProfile {
     readonly settings: HarnessObservation & {
         readonly path: string;
         readonly deny: boolean;
+        /** Whether the settings file carries the publish helpers' allow rules. */
         readonly allow: boolean;
+        /** Where the host's contract for those rules was read. */
+        readonly allowEvidence?: string;
     };
     readonly instruction: HarnessObservation & {
         readonly path: string;
@@ -230,6 +233,13 @@ export declare function assertHarnessProfile(profile: HarnessProfile): void;
 /** Pure, deterministic target lowering. Hook predicates stay in feedbackBoundary. */
 export declare function lowerToHarness(program: HarnessProgram, feedback: CompiledFeedback, envelope: AuthorityEnvelope, profile: HarnessProfile): HarnessBundle;
 export declare function verifyHarnessBundle(bundle: HarnessBundle): boolean;
+/** The launchpad's own publish helpers by their node spelling. Claude Code's
+ * auto-mode page says a narrow Bash allow rule is resolved before its classifier
+ * and a wildcarded interpreter is suspended; that a rule naming one script after
+ * node counts as narrow is an inference, never probed live. No rule names
+ * `git push` or `gh`, because one for either would admit every push or gh call
+ * unjudged. Copilot's shared settings file carries the same bytes. */
+export declare const PUBLISH_HELPER_ALLOW_RULES: readonly ["Bash(node scripts/launchpad.mjs update --publish *)", "Bash(node scripts/refute-plan.mjs publish *)"];
 /** Each enforced class owns one row, so the count and provenance follow it. */
 export declare const HARNESS_REFUSALS: readonly [{
     readonly id: "writer";
@@ -263,6 +273,10 @@ export declare const HARNESS_REFUSALS: readonly [{
     readonly id: "worker-gate";
     readonly source: "WO-250";
     readonly clause: "refuses a review worker's test-runner gate";
+}, {
+    readonly id: "gh-repository";
+    readonly source: "WO-246";
+    readonly clause: "refuses a gh pr or gh issue command naming no repository in a clone whose origin and upstream differ and whose gh default is unset";
 }];
 /** The shared instruction symlink carries every profile's residue on one line
  * per profile. Rule ids that share a reason are named together before it, so

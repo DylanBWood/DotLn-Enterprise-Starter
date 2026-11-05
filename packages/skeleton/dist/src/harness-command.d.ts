@@ -52,6 +52,23 @@ export declare const harnessToolEffects: {
 export declare function isDesktopControlTool(name: string, input?: Readonly<Record<string, unknown>>): boolean;
 /** Public token view for diagnostics; classification uses the provenance above. */
 export declare function shellInvocations(source: string): string[][];
+/** One command a shell line would run, by the words the line wrote. */
+export interface WrittenCommand {
+    /** The `NAME=value` words before its first word. */
+    readonly assignments: readonly string[];
+    /** Its words as the line wrote them, a wrapper among them. */
+    readonly words: readonly string[];
+    /** The program behind any wrapper, named without its path, and its operands;
+     * empty when a wrapper's options cannot be read. */
+    readonly program: readonly string[];
+}
+/** Every command a line would run, read without refusing any form: control
+ * syntax, a substitution and a script handed to a shell or to eval are read,
+ * so a program inside one is found, while quoted text stays its command's
+ * argument. Text the shell substitutes stands as U+0000. Unlike the effect
+ * classification this is for a judgment of one program's literal words; a line
+ * too deep to read holds no commands. */
+export declare function writtenCommands(source: string): WrittenCommand[];
 /** Normalize executable operands for admission without requiring an effect
  * adapter for every operand. Effect classification keeps its own full checks. */
 export declare function executableShellInvocations(source: string): string[][];
