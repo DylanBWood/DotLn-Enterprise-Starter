@@ -4,11 +4,23 @@ import type { AuthorityEnvelope, AuthorityGrant, CompiledProgram } from "./types
  * Observation failures show the message; they never alter a permission decision.
  */
 export declare function showHarnessAdvisory(sessionId: string | undefined, event: string, cause: string, claimMarker: (key: string) => boolean): boolean;
-/** Read only the first content line, allowing blanks and one opening paste
- * fence. A later quoted dispatch never becomes the operator's instruction. */
+/** Read only the first content line, allowing blanks, the host's own elements
+ * before the operator's text and one opening paste fence. Claude Code hands a
+ * pasted message wrapped in a `pasted_content` element, whose opening tag is
+ * skipped so the paste's own first line is read, and can write a slash
+ * command's output block (`local-command-caveat`, `command-name`,
+ * `command-message`, `command-args` and `local-command-stdout`) before the
+ * operator's text, each skipped as a whole element. Nothing else about the
+ * line changes: a later quoted dispatch never becomes the operator's
+ * instruction, and a first content line that opens any other element, or a
+ * known element whose closing tag never comes, is reported by that element's
+ * name, so a changed host shape is read at the next pass instead of failing
+ * silently; text after a closing tag on its own line is read. The function
+ * is self-contained so the generated Codex hook embeds it. */
 export declare function harnessPromptLine(prompt: string | undefined): {
     text: string;
     index: number;
+    element: string | null;
 };
 /**
  * The control-language class of one operator message, read from its form and
@@ -23,6 +35,7 @@ export declare function operatorMessageClass(prompt: string | undefined, promptL
     prefix: string | null;
     prefixLine: number | null;
     class: string;
+    leadingElement?: string;
 };
 /**
  * The journal's phase for a dispatched session: a repair dispatch is the
@@ -256,13 +269,16 @@ export declare function assertHarnessProfile(profile: HarnessProfile): void;
 /** Pure, deterministic target lowering. Hook predicates stay in feedbackBoundary. */
 export declare function lowerToHarness(program: HarnessProgram, feedback: CompiledFeedback, envelope: AuthorityEnvelope, profile: HarnessProfile): HarnessBundle;
 export declare function verifyHarnessBundle(bundle: HarnessBundle): boolean;
-/** The launchpad's own publish helpers by their node spelling. Claude Code's
- * auto-mode page says a narrow Bash allow rule is resolved before its classifier
- * and a wildcarded interpreter is suspended; that a rule naming one script after
- * node counts as narrow is an inference, never probed live. No rule names
- * `git push` or `gh`, because one for either would admit every push or gh call
- * unjudged. Copilot's shared settings file carries the same bytes. */
-export declare const PUBLISH_HELPER_ALLOW_RULES: readonly ["Bash(node scripts/launchpad.mjs update --publish *)", "Bash(node scripts/refute-plan.mjs publish *)"];
+/** The launchpad's own publish helpers by their node spelling: the update
+ * and planning publishes (WO-246) and the target publish (WO-257). Claude
+ * Code's auto-mode page says a narrow Bash allow rule is resolved before its
+ * classifier and a wildcarded interpreter is suspended; that a rule naming one
+ * script after node counts as narrow is an inference, never probed live. No
+ * rule names `git push` or `gh`, because one for either would admit every push
+ * or gh call unjudged. Copilot's shared settings file carries the same bytes,
+ * and a release that changes them says a new session reads the emitted
+ * settings. */
+export declare const PUBLISH_HELPER_ALLOW_RULES: readonly ["Bash(node scripts/launchpad.mjs update --publish *)", "Bash(node scripts/refute-plan.mjs publish *)", "Bash(node scripts/worktree.mjs publish *)"];
 /** Each enforced class owns one row, so the count and provenance follow it. */
 export declare const HARNESS_REFUSALS: readonly [{
     readonly id: "writer";

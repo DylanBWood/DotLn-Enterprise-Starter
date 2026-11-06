@@ -4043,7 +4043,7 @@ function desktopControlResponse(event, input, root) {
     let on = false;
     let unavailable;
     try {
-        const { readFeatures } = createRequire(import.meta.url)(join(root, "scripts/lib/config.mjs"));
+        const { readFeatures } = createRequire(import.meta.url)(join(root, "scripts/lib/features.mjs"));
         on = readFeatures(root)["desktop-control"];
     }
     catch (error) {
