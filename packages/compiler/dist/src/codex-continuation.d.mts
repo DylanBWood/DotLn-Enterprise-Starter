@@ -12,6 +12,8 @@
  * dispatch is still outstanding reserves it again, as Claude's hooks do around
  * each turn. Only a session whose prompt hook has been observed releases, so a
  * host that delivers no prompt event keeps the reservation until completion.
+ * A `resume:` or `planning:` line also journals the worker options it names,
+ * which the kit's review helper reads when its launch names no model.
  * Missing observations leave native stopping available.
  * @param {Record<string, any>} input
  * @param {typeof import('./operator-control.mjs').operatorControl} operatorControl
@@ -19,6 +21,8 @@
  * @param {(root: string) => Promise<Record<string, any> | null>} [loadRuntime]
  * @param {(session: { intent?: string, role?: string }) => string} [phaseOf]
  *   The harness's own phase resolver, so both journal writers name a phase alike.
+ * @param {(prompt: string) => Record<string, string> | null} [workerWords]
+ *   The harness's own reader of a dispatch line's worker options.
  * @returns {Promise<Record<string, any>>}
  */
 export declare function codexContinuation(input: Record<string, any>, operatorControl: typeof import('./operator-control.mjs').operatorControl, classify?: (prompt: string) => {
@@ -28,4 +32,4 @@ export declare function codexContinuation(input: Record<string, any>, operatorCo
 }, loadRuntime?: (root: string) => Promise<Record<string, any> | null>, phaseOf?: (session: {
     intent?: string;
     role?: string;
-}) => string): Promise<Record<string, any>>;
+}) => string, workerWords?: (prompt: string) => Record<string, string> | null): Promise<Record<string, any>>;

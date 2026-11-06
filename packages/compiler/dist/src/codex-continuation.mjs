@@ -12,6 +12,8 @@
  * dispatch is still outstanding reserves it again, as Claude's hooks do around
  * each turn. Only a session whose prompt hook has been observed releases, so a
  * host that delivers no prompt event keeps the reservation until completion.
+ * A `resume:` or `planning:` line also journals the worker options it names,
+ * which the kit's review helper reads when its launch names no model.
  * Missing observations leave native stopping available.
  * @param {Record<string, any>} input
  * @param {typeof import('./operator-control.mjs').operatorControl} operatorControl
@@ -19,9 +21,11 @@
  * @param {(root: string) => Promise<Record<string, any> | null>} [loadRuntime]
  * @param {(session: { intent?: string, role?: string }) => string} [phaseOf]
  *   The harness's own phase resolver, so both journal writers name a phase alike.
+ * @param {(prompt: string) => Record<string, string> | null} [workerWords]
+ *   The harness's own reader of a dispatch line's worker options.
  * @returns {Promise<Record<string, any>>}
  */
-export async function codexContinuation(input, operatorControl, classify, loadRuntime, phaseOf) {
+export async function codexContinuation(input, operatorControl, classify, loadRuntime, phaseOf, workerWords) {
     const event = input?.hook_event_name;
     if (!["PostCompact", "SessionStart", "Stop", "UserPromptSubmit"].includes(event) ||
         typeof input.session_id !== "string" ||
@@ -97,7 +101,7 @@ export async function codexContinuation(input, operatorControl, classify, loadRu
         return { text: bytes.subarray(0, end).toString("utf8"), truncated: true };
     };
     /** The checkout's ignored harness lane, or null when it has none. */
-    const lane = () => {
+    const lane = ({ create = false } = {}) => {
         const cwd = fs.realpathSync(input.cwd);
         const git = spawnSync("git", ["rev-parse", "--show-toplevel"], {
             cwd,
@@ -108,6 +112,19 @@ export async function codexContinuation(input, operatorControl, classify, loadRu
             return null;
         const root = fs.realpathSync(git.stdout.trim());
         const directory = join(root, "docs/control/local/harness");
+        // A checkout that has never held a journal gets its lane when a line has
+        // something to keep there, made one level at a time inside the checkout
+        // and never through a link, as the harness makes it.
+        if (create && !fs.existsSync(directory)) {
+            let at = root;
+            for (const part of ["docs", "control", "local", "harness"]) {
+                at = join(at, part);
+                if (!fs.existsSync(at))
+                    fs.mkdirSync(at, { mode: 0o700 });
+                else if (fs.realpathSync(at) !== at)
+                    return null;
+            }
+        }
         return fs.existsSync(directory) && fs.realpathSync(directory) === directory
             ? { root, directory }
             : null;
@@ -171,11 +188,25 @@ export async function codexContinuation(input, operatorControl, classify, loadRu
         // for a compaction to restore, and a resumed turn reserves its writer.
         // Each step fails alone, so a lost capture never costs the writer and an
         // unreadable state never withholds the operator's prompt.
+        // Every dispatch line states its selection, an empty one included, so a
+        // later dispatch that names no option returns to the defaults.
+        let options = null;
+        try {
+            options =
+                typeof workerWords === "function"
+                    ? workerWords(typeof input.prompt === "string" ? input.prompt : "")
+                    : null;
+        }
+        catch {
+            // The selection is an observation; the launch then takes its default.
+        }
         let found = null;
         /** @type {Record<string, any> | null} */
         let session = null;
         try {
-            found = lane();
+            // A dispatch line makes the lane in a checkout that has none yet, so
+            // the first line's selection is kept for the session's launches.
+            found = lane({ create: Boolean(options) });
             if (found)
                 session = read(join(found.directory, `${key}.json`));
         }
@@ -186,6 +217,18 @@ export async function codexContinuation(input, operatorControl, classify, loadRu
             return control ?? {};
         const { root, directory } = found;
         const journal = join(directory, `${key}.jsonl`);
+        try {
+            if (options)
+                append(journal, {
+                    event,
+                    typedEvent: "WorkerOptionsSelected",
+                    options,
+                    source: "codex-prompt-hook",
+                });
+        }
+        catch {
+            // The selection is an observation; the launch then takes its default.
+        }
         if (!session || !/^WO-\d{3}$/.test(session.workOrder ?? "")) {
             try {
                 append(journal, { event, codexPromptObserved: true });

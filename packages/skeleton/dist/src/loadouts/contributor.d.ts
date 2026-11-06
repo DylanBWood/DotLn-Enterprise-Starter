@@ -1,13 +1,48 @@
 import { type AuthorityGrant, type AuthorityEnvelope, type CompiledProgram, type HarnessProfile, type HarnessProgram, type HarnessRole, type LoadoutGraph, type PresencePolicy, type PresenceNarrowing } from "@dotln/compiler";
 import { type ExecutorSupportSwitches } from "./executor-supports.js";
-export declare const contributorWorkerPins: {
-    readonly claude: {
+/** The operator's four options for a worker a session launches (direction of
+ * 2026-11-03), two per host; the first of each host is its default and the
+ * other runs only when a launch or the dispatch line names it. The generated
+ * worker definitions, the review helper and the refuter all read this table;
+ * `workerType` is what a refutation receipt records for that launch. */
+export declare const contributorWorkerOptions: {
+    readonly opus: {
+        readonly host: "claude";
         readonly model: "claude-opus-5-5";
         readonly effort: "xhigh";
+        readonly workerType: "dotln-worker";
     };
-    readonly codex: {
+    readonly fable: {
+        readonly host: "claude";
+        readonly model: "claude-fable-5-1";
+        readonly effort: "xhigh";
+        readonly workerType: "dotln-worker-fable";
+    };
+    readonly sol: {
+        readonly host: "codex";
         readonly model: "gpt-6.1-sol";
         readonly effort: "max";
+        readonly workerType: "codex-spawn-agent";
+    };
+    readonly astra: {
+        readonly host: "codex";
+        readonly model: "gpt-6-astra";
+        readonly effort: "max";
+        readonly workerType: "dotln-worker-astra";
+    };
+};
+export declare const contributorWorkerDefaults: {
+    readonly claude: "opus";
+    readonly codex: "sol";
+};
+export declare const contributorWorkerPins: {
+    readonly claude: {
+        model: "claude-fable-5-1" | "claude-opus-5-5" | "gpt-6-astra" | "gpt-6.1-sol";
+        effort: "max" | "xhigh";
+    };
+    readonly codex: {
+        model: "claude-fable-5-1" | "claude-opus-5-5" | "gpt-6-astra" | "gpt-6.1-sol";
+        effort: "max" | "xhigh";
     };
 };
 /** Independent verification runs at this effort on every host (product 07). */
@@ -26,7 +61,7 @@ export type ContributorSupportSwitches = ExecutorSupportSwitches & Readonly<{
 export declare const reviewerBriefs: {
     readonly criteria: "The criteria adversary seeks concrete counterexamples, failed acceptance criteria and missing regression tests; exclude design cleanup.";
     readonly design: "The design improver seeks simpler structure, coupling, error handling and six-month maintainability; exclude criterion verdicts and adversarial test design.";
-    readonly consistency: "The consistency reviewer solely verifies write-backs, dependencies and versions: product and operational docs, decisions, indexes, cross-references, package and lockfile versions, release metadata, generated artifacts and installed guidance, test dependencies, fixture inputs/manifests/pins, generated test baselines and evidence-source declarations. Give that reviewer the corresponding source and generated surfaces. Trace each changed document, emitted output and helper to every consuming test by path, symbol, old/new text and byte/count pins; follow transitive imports and fixture copy/export manifests. Check oracle selectors, command/field inventories, runtime setup, gate environment and timing assumptions. Use relevant retained gate failures to search for the same failure shapes. Preserve intentional contract pins; update expectations from requirements, replacing incidental prose coupling with semantic assertions. Report concrete producer/consumer pairs, their disposition and unsearched boundaries.";
+    readonly consistency: "The consistency reviewer solely verifies write-backs, dependencies and versions: product and operational docs, decisions, indexes, cross-references, package and lockfile versions, release metadata, generated artifacts and installed guidance, test dependencies, fixture inputs/manifests/pins, generated test baselines and evidence-source declarations. Give that reviewer the corresponding source and generated surfaces. Trace each changed document, emitted output and helper to every consuming test by path, symbol, old/new text and byte/count pins; follow transitive imports and fixture copy/export manifests. Check oracle selectors, command/field inventories, runtime setup, gate environment and timing assumptions. Use relevant retained gate failures to search for the same failure shapes. Preserve intentional contract pins; update expectations from requirements, replacing incidental prose coupling with semantic assertions. Report concrete producer/consumer pairs, their disposition and unsearched boundaries in a `Traced consumers` table (changed contract, consumer, command, result) with a generated pages row and a fixture manifests row, each naming the command run; a consistency report without that table is not recorded.";
 };
 /** What a recheck and the last combined round admit; it is what ends them. */
 export declare const reviewAdmissionRule = "a new finding is admitted only when it breaks an acceptance criterion or a behavior `main` had, and any other new finding is recorded in the handoff, not fixed";

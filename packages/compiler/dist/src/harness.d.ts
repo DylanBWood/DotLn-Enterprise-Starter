@@ -38,8 +38,25 @@ export declare function harnessSessionPhase(session: {
  * same two pathways for hosts whose prompts are unhooked. */
 export declare const OPERATOR_QUESTION_CONTEXT = "Operator question: read it as a smell. Your next message answers it one of two ways, with the evidence: why the current course is right, or what the question changes in your reading and what you will now do differently. Keep working either way; if the message also asks for an action, including to pause, stop or wait, do that, since a request is explicit whatever its grammar; it records no rule.";
 /** A dispatch may lead following direction after a semicolon or newline.
- * The worker opt-in is a selection, not part of the lifecycle action. */
+ * The worker opt-ins are a selection, not part of the lifecycle action. */
 export declare function harnessPromptIntent(prompt: string | undefined): string;
+/**
+ * The worker options a dispatch line names, by the host whose launches they
+ * select: `fable` picks Claude's opt-in worker and `astra` Codex's. Only the
+ * words that close a `resume:` or `planning:` line select, the way a pass's
+ * label names its worker, and those that close the dispatch phrase before
+ * the line's first semicolon, where a lifecycle phrase carries its suffix
+ * ahead of direction; a model named mid-line as a topic selects nothing. A
+ * version after the word and a joining "and" belong to a closing run. A line
+ * that names neither selects both hosts' defaults, so each dispatch states
+ * its own choice; any other message returns null and changes nothing. The
+ * function is self-contained so the generated Codex hook embeds it with the
+ * line reader it is given.
+ */
+export declare function harnessWorkerWords(prompt: string | undefined, promptLine?: typeof harnessPromptLine): {
+    claude?: "fable";
+    codex?: "astra";
+} | null;
 export type HarnessEvent = "PreToolUse" | "PostToolUse" | "Stop" | "UserPromptSubmit";
 export interface HarnessObservation {
     readonly available: boolean;
@@ -136,9 +153,15 @@ export type HarnessFacet = {
 }));
 export interface HarnessWorker {
     readonly name: string;
+    /** The host that launches it: a Claude agent type (the default) or a Codex
+     * custom agent. */
+    readonly host?: "claude" | "codex";
     readonly model: string;
     readonly effort: "low" | "medium" | "high" | "xhigh" | "max";
     readonly optIn?: boolean;
+    /** How an opt-in worker's definition names the dispatch word that selects
+     * it; every opt-in worker carries one. */
+    readonly optInLabel?: string;
     readonly description?: string;
     readonly skills?: readonly string[];
     readonly body?: string;
