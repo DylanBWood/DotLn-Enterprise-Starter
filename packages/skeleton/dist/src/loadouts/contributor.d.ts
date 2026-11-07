@@ -87,6 +87,7 @@ export declare function contributorWithSupports(supportIds?: readonly string[]):
 export declare function contributorRolesFor(program: CompiledProgram): readonly HarnessRole[];
 export interface ContributorBuildOverlay {
     readonly desktopControl?: boolean;
+    readonly planFirst?: boolean;
     readonly identity?: LoadoutGraph["identity"];
     readonly narrow?: PresenceNarrowing;
     readonly grants?: readonly AuthorityGrant[];

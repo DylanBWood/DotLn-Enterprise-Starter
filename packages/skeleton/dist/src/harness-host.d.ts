@@ -153,6 +153,10 @@ interface ControlView {
     readonly workOrderPath: string | null;
     readonly phase: string;
     readonly latestVerdict: string | null;
+    readonly planFirst?: {
+        readonly proposedAt: string | null;
+        readonly approvedAt: string | null;
+    };
     readonly legalNextActions?: readonly string[];
     readonly latestVerification?: string | null;
     readonly finalReview?: string | null;
