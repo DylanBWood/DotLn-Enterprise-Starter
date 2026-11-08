@@ -106,6 +106,10 @@ export interface HarnessSession {
         workOrder: string;
         recordedAt: string;
     };
+    pendingReleaseClose?: {
+        recordedAt: string;
+        reason: string;
+    };
     pendingCliDispatch?: {
         toolUseId: string;
         command: string;

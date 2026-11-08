@@ -1,13 +1,24 @@
 import { existsSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { join } from "node:path";
+/** The election read by the lifecycle's own reader, so a value it refuses
+ * (`"on"`, `"true"`, `1`) throws the message the lifecycle prints and is never
+ * read as off. An absent configuration elects nothing and loads no reader. A
+ * root that carries no lifecycle feature reader (a synthetic launchpad) has
+ * no lifecycle message to agree with and keeps the direct read the hook made
+ * before (WO-258-D031). */
 export function planFirstElected(root) {
     const configPath = join(root, "dotln.config.json");
     if (!existsSync(configPath))
         return false;
-    const config = JSON.parse(readFileSync(configPath, "utf8"));
-    const feature = config.features?.["plan-first"];
-    return feature === true || (typeof feature === "object" && feature.on);
+    const reader = join(root, "scripts/lib/features.mjs");
+    if (!existsSync(reader)) {
+        const feature = JSON.parse(readFileSync(configPath, "utf8")).features?.["plan-first"];
+        return (feature === true ||
+            (typeof feature === "object" && feature !== null && Boolean(feature.on)));
+    }
+    const { readFeatures } = createRequire(import.meta.url)(reader);
+    return readFeatures(root)["plan-first"] === true;
 }
 /** The runtime and the lifecycle use the same freshness judgment. Off keeps
  * old consumers independent of the new helper, including historical fixtures. */

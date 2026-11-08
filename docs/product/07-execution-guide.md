@@ -1872,7 +1872,13 @@ sequence and then the open members of each `track: separate` workstream, in
 the workstream's member order, so those members are judged and inside
 `amend-order`'s horizon; a closed member and an order of a workstream
 without that track are not added (WO-257, the fork's items of 2026-11-04
-and 2026-11-05).
+and 2026-11-05). `plan check` builds the subject it compares with a receipt
+under that receipt's own rule: a receipt filed before the separate-track
+projection judged the sequence alone, so a member filed since waits for the
+next receipt rather than failing the comparison ([decision](../evidence/WO-258/decisions.md#wo-258-d016)).
+The sequence holds 0 to 100 orders: once the last order has closed, a pass
+may let it leave and file none, and the refuter's prompt names the empty
+sequence as its subject ([decision](../evidence/WO-258/decisions.md#wo-258-d015)).
 
 After drafting, commit the planning subject locally and use this background
 worker workflow for independent refutation. External review through
@@ -2532,10 +2538,28 @@ and retention, including null policies. An independent cache keeps its freshness
 protocol and independent coordination keeps its owning protocol.
 
 Final review publishes the reviewed work-order branch and PR; the operator
-retains merge authority. After merge, `resume: release close` authorizes the
+retains merge authority. After merge, update main first (`git pull --ff-only`
+in the main checkout); `resume: release close` then authorizes the
 exact helper command printed by `resume release-close` in main or `worktree publish`.
 Run main's helper with main as the working directory; retries use the same
-updated main after the subject is removed.
+updated main after the subject is removed. A phrase typed in main before the
+merge reaches it is journaled as a pending release-close dispatch with the
+role resolved, since main holds none of the merged order's records yet: the
+first admission admits the merged order's exact helper, and the helper, dry
+run included, fast-forwards main and records the dispatch through `npm run
+resume -- release-close --work-order WO-NNN` from the session's pending row,
+which then keys every later admission; nothing is retyped
+([decision](../evidence/WO-258/decisions.md#wo-258-d007)). When main's status
+still selects an earlier closed order, the phrase records that order's
+dispatch and also stays pending. Admission stays with the recorded order, so
+the merged order's helper goes to host permissions. Its close then records
+the merged order's dispatch the same way. The publishing close of the
+recorded order consumes the pending phrase, so a later helper needs a new
+phrase ([decision](../evidence/WO-258/decisions.md#wo-258-d028)).
+
+For a matching dispatched order whose helper is hidden behind a pipe, a
+redirect or a prefix, the advisory names the same mismatch class and both
+expected spellings ([decision](../evidence/WO-258/decisions.md#wo-258-d008)).
 
 Run the printed `--publish` helper once, exactly as printed, with no redirect,
 prefix, `cd` or pipe. `--dry-run` is optional when a prerequisite such as egress
@@ -3167,7 +3191,18 @@ decisions, the pass's document, a verification or a receipt (§Operator-opened
 planning pass, item 7, which also names the kinds, the reader entry points,
 the read census and the red tags). The final reviewer judges a changed
 standing document's diff: a replacement passes, and a dated account added
-under a standing heading returns to repair. A document that moves keeps its
+under a standing heading returns to repair. No operator message is saved
+verbatim in a committed artifact (operator direction, 2026-11-07, ignored
+capture SHA-256
+`123eb18018301f41fb4b107f0fb0ad53eb40eb38b13c75a906f588dc913c6cd6`): a
+committed document, record or source file paraphrases the operator and
+cites the ignored intake capture by its digest; a quotation is written only
+where the operator asks in the session for that message to be saved,
+recorded as an `operatorQuote` naming the capture's digest and the
+request's, or where a clone or fork has turned the rule off in its
+configuration; [WO-259](../work-orders/WO-259-committed-words-and-filed-records.md)
+carries the check, the election and the typed exception, and until it
+lands the role text and the reviewer carry the rule. A document that moves keeps its
 bytes, and [`docs/control/document-moves.json`](../control/document-moves.json)
 names where it went. Every reader of a reference gives it one meaning: the
 link check, the entry points, the reader bindings, the red tags, the read
@@ -5159,6 +5194,20 @@ Report the host's readback or that it reports none; a root's own selection
 does not decide the worker's. A script that regenerates a dated record keeps the
 model that record names and says so beside it; the attestation records what
 ran.
+
+**Hosts are elections.** A host's surfaces are emitted only where the
+instance runs it: `features.host-codex` and `features.host-copilot` are off by
+default, and an undeclared row is inferred on from the instance's own
+committed record, an attestation whose harness names the host in its control
+log (`resume.jsonl` or an order segment) or an observed version in
+`docs/discovery/environment.json`; the ignored session journals are never
+read, so a clone and its origin infer alike. Claude's profile is always in the
+bundle; the Codex profile (`.codex/`, `.agents/skills/` and the
+`dotln-worker-astra` agent it contributes) and the Copilot profile join it
+when their rows are on, and the manifest's `profiles` and residue name only
+those. This repository's record shows all three hosts, so its bundle is
+unchanged; a fresh export is Claude-only
+([decision](../evidence/WO-258/decisions.md#wo-258-d003)).
 
 **Codex CLI 0.166.0 and the driven close (WO-247, read 2026-11-01).** Under
 the default `drive.sandbox: host` election a Codex phase runs under automatic

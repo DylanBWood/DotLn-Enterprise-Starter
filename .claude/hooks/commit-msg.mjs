@@ -1,6 +1,6 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:f294438e4b870c21"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/722c29f673a8aa6a/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/722c29f673a8aa6a/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/17ebc7a688965867/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/17ebc7a688965867/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
   "compilerPackageVersion": "0.42.1",
   "runtime": {
@@ -37,7 +37,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:b33756b74bd1100d"
+        "hash": "fnv1a64:fdf1fe7577ccf604"
       },
       {
         "path": "packages/skeleton/dist/src/subagent-budget.js",
@@ -73,7 +73,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/gate-evidence.mjs",
-        "hash": "fnv1a64:a6bbb14768d6ac9d"
+        "hash": "fnv1a64:2e01377739f0551b"
       },
       {
         "path": "packages/skeleton/dist/src/gate-deadlines.mjs",
@@ -176,7 +176,7 @@ await runCommitMessageHook({
         "hash": "fnv1a64:5ad495017c40b9b2"
       }
     ],
-    "snapshot": ".runtime/harness/722c29f673a8aa6a"
+    "snapshot": ".runtime/harness/17ebc7a688965867"
   },
   "policy": {
     "contractVersion": "feedback-v1",
