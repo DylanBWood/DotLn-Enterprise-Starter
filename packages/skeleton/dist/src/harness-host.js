@@ -906,8 +906,12 @@ const record = (root, input, value) => {
         ...value,
     }) + "\n", { mode: 0o600 });
 };
-/** An operator message with no control prefix that ends in a question mark. */
+/** An operator message with no control prefix that ends in a question mark;
+ * the host's notification and a worker's hand-back are never the operator's
+ * question, whatever their last character. */
 const unprefixedQuestion = (prompt) => {
+    if (agentHandback(prompt) || terminalTaskNotification(prompt))
+        return false;
     const message = operatorMessageClass(prompt);
     return message.prefix === null && message.class === "question";
 };
@@ -955,12 +959,55 @@ function terminalTaskNotification(prompt) {
         identity.length > 0 &&
         identity.every((value) => value.length <= 256 && !/[\s<>\p{Cc}]/u.test(value)));
 }
+/**
+ * A background worker's final report as Claude Code hands it back: each
+ * block opens with an `agent-message` element naming the worker in its `from`
+ * attribute, then the host's frame line under the `[Subagent hand-back]`
+ * label, then the report with every line indented by the host, then the
+ * closing tag. Several hand-backs may arrive in one prompt. The host queues
+ * this in the same prompt mode as the operator's own queued messages, so the
+ * envelope decides; a line typed at column zero inside it would break the
+ * shape, so nothing written inside a report can pass for the frame.
+ */
+function agentHandback(prompt) {
+    if (typeof prompt !== "string")
+        return false;
+    const lines = prompt.replace(/\r\n/gu, "\n").trim().split("\n");
+    let at = 0;
+    let blocks = 0;
+    while (at < lines.length) {
+        if (!/^<agent-message from="[^"<>\s]{1,256}">$/u.test(lines[at]) ||
+            !lines[at + 1]?.startsWith("[Subagent hand-back]"))
+            return false;
+        at += 2;
+        while (at < lines.length && lines[at] !== "</agent-message>") {
+            if (lines[at].trim() && !/^[ \t]/u.test(lines[at]))
+                return false;
+            at++;
+        }
+        if (at >= lines.length)
+            return false;
+        blocks++;
+        at++;
+        while (at < lines.length && !lines[at].trim())
+            at++;
+    }
+    return blocks > 0;
+}
 function promptRoute(input) {
-    // UserPromptSubmit has no documented route field. The latest native message
-    // with the same bytes establishes authorship ahead of envelope inference.
-    // A bounded terminal notification can arrive before its transcript row;
-    // other prompts without transcript evidence remain unattributed. No
-    // transcript text leaves here.
+    // UserPromptSubmit has no documented route field. A worker's hand-back is
+    // the host's by its envelope whatever the transcript says, because the host
+    // queues it as a prompt. Otherwise the latest native message with the same
+    // bytes establishes authorship ahead of envelope inference. A bounded
+    // terminal notification can arrive before its transcript row; other
+    // prompts without transcript evidence remain unattributed. No transcript
+    // text leaves here.
+    if (agentHandback(input.prompt))
+        return {
+            route: "mid-turn",
+            routeSource: "host-agent-handback-envelope",
+            attribution: "host",
+        };
     const queued = (mode) => mode === "task-notification" ? "host-task-notification" : "operator";
     try {
         const row = input.transcript_path
@@ -1035,11 +1082,14 @@ export function recordOperatorMessage(root, input, source = harnessInputHarness(
     record(root, input, {
         typedEvent: "OperatorMessageObserved",
         ...observationContext(session),
-        // The host's own notification is journaled under its own source, which
-        // the intervention count leaves out.
+        // The host's own notification and a worker's hand-back are journaled
+        // under their own sources, which the intervention count leaves out and
+        // a recorded rule cannot cite.
         source: route.attribution === "host-task-notification"
             ? "host-task-notification"
-            : source,
+            : route.routeSource === "host-agent-handback-envelope"
+                ? "host-agent-handback"
+                : source,
         ...route,
         ...classified,
         digest: textDigest(input.prompt),

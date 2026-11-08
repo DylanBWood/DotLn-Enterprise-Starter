@@ -179,6 +179,15 @@ export interface HarnessWorker {
     readonly skills?: readonly string[];
     readonly body?: string;
 }
+/** No operator message is saved verbatim in committed text (the operator's
+ * rule of 2026-11-07). Every role and every worker carries this sentence, and
+ * the document gate compares the files a branch changes with the ignored
+ * captures. */
+export declare const operatorWordsRule = "Committed text (a document, record or source file) paraphrases the operator and cites the ignored intake capture by its SHA-256; the operator's words stay in ignored intake. A quotation is written only when the operator asks in the session to save that message, as an `operatorQuote` with `captureSha256` and `requestedIn` (the request's capture), or where the instance elects `features.verbatim-operator-words`.";
+/** What a worker never reads or prints: the ignored local lane holds session
+ * journals, ledgers and the private terms list, and a commit header carries an
+ * author's name and address. Every role and every worker carries both. */
+export declare const workerNoPrintRules = "A worker never reads or prints the contents of `docs/control/local/` (journals, ledgers, the terms list, the reviews lane beyond the report it was given) and never prints a commit header or an author line: `git log` takes a format naming only the hash and subject (`--format='%h %s'`), and `git show` takes `--format=` so it prints no header.";
 /** The generated Markdown and print-session transport consume one worker contract. */
 export declare function workerSpecification(worker: HarnessWorker): {
     name: string;
