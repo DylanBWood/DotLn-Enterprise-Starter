@@ -207,6 +207,14 @@ export declare const harnessStateDirectory: (root: string) => string;
  * and writer, because the host ends a helper with no event that could release a
  * reservation of its own. */
 export declare const routerPhrases: Readonly<Record<string, string>>;
+/** The main checkout's ignored intake directory, which the `main-intake`
+ * outside-write grant admits. The main checkout is the first record's first
+ * line of `git worktree list --porcelain`. Without -z (a Git 2.36 option) a
+ * path holding a newline spans lines, so that line is the whole path only
+ * when the record's HEAD or bare line follows it. A path that is not plain
+ * and absolute, or a checkout that does not ignore its intake, leaves the
+ * grant unresolved. */
+export declare function mainCheckoutIntake(root: string): string;
 export declare function harnessRoot(cwd: string): string;
 export declare function harnessControl(root: string, workOrder?: string): ControlView;
 /**

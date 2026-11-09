@@ -183,6 +183,17 @@ export declare function recordGateOutcome(root: string, outcome: {
 }): void;
 /** @param {string} root @param {string} treeHash @param {readonly string[]} [runIds] */
 export declare function latestGateOutcome(root: string, treeHash: string, runIds?: readonly string[]): any;
+/** `git check-attr -z` output for the identity's two attributes over `paths`:
+ * the working tree's attributes, or with `revision` that commit's own
+ * .gitattributes, read through a temporary index populated from it
+ * (`read-tree`, then `check-attr --cached`), which every Git from the
+ * declared floor up supports; `check-attr --source` arrived in Git 2.40. The
+ * index lives in an owned temporary root removed on every exit. A failing Git
+ * names its command, exit code and words, and a release close classes the
+ * stop as the host's runtime, not as its own fault.
+ * @param {string} root @param {string|undefined} revision @param {string[]} paths
+ * @returns {string} */
+export declare function codeAttributes(root: string, revision: string | undefined, paths: string[]): string;
 /** Product evidence follows tracked and non-ignored untracked source bytes,
  * independent of staging, reports and generated projections. A path Git marks
  * `dotln-documentation` (the package
