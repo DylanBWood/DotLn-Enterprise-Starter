@@ -1,13 +1,51 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { existsSync, readFileSync } from "node:fs";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join } from "node:path";
 import { editionStream, storeFromLog } from "../src/collect.js";
 import { available } from "../src/values.js";
 export const root = fileURLToPath(new URL("../../../../", import.meta.url));
 export const fixtureRoot = join(root, "packages/console/fixtures");
+/** The repository's Markdown reader, as the collector's script runs it: a
+ * recorded authored document reaches the board as its structure. */
+export const { markdownStructure } = (await import(pathToFileURL(join(root, "scripts/lib/markdown-structure.mjs")).href));
 export const readFixtureManifest = () => JSON.parse(readFileSync(join(fixtureRoot, "manifest.json"), "utf8"));
+/** The recorded manifest with the self-host case's three inputs taken from
+ * the feedback edition the evidence selection names now. The recorded case
+ * reads a fixed copy; the board's property checks read this as well, so the
+ * console is still exercised against live evidence. A schema 2 edition names
+ * its live audit, which a carried edition keeps in another directory. */
+export async function currentSelfhostManifest() {
+    const { currentEvidence } = (await import(pathToFileURL(join(root, "packages/skeleton/src/evidence-editions.mjs"))
+        .href));
+    const selected = currentEvidence(root, "feedback");
+    const record = join(root, selected.directory, "edition.json");
+    const live = existsSync(record)
+        ? JSON.parse(readFileSync(record, "utf8")).liveAudit
+        : undefined;
+    const manifest = readFixtureManifest();
+    for (const [key, name, recorded] of [
+        ["selfhostAudit", "selfhost-audit.jsonl", live?.audit.path],
+        [
+            "selfhostVerifier",
+            "selfhost-verification.jsonl",
+            live?.verification.path,
+        ],
+        ["maturity", "feedback.json", undefined],
+    ]) {
+        const path = recorded ?? `${selected.directory}/${name}`;
+        manifest.inputs[key] = {
+            ...manifest.inputs[key],
+            path,
+            ref: path,
+            sha256: createHash("sha256")
+                .update(readFileSync(join(root, path)))
+                .digest("hex"),
+        };
+    }
+    return manifest;
+}
 export function loadFixture(name, manifest = readFixtureManifest()) {
     const fixture = manifest.cases[name];
     assert.ok(fixture, `unknown fixture ${name}`);
@@ -20,7 +58,11 @@ export function loadFixture(name, manifest = readFixtureManifest()) {
         const text = bytes.toString("utf8");
         return {
             ref: source.ref,
-            value: source.format === "json" ? JSON.parse(text) : text,
+            value: source.format === "json"
+                ? JSON.parse(text)
+                : source.format === "markdown"
+                    ? markdownStructure(text)
+                    : text,
         };
     };
     const entries = [];

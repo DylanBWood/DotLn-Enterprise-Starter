@@ -1,12 +1,11 @@
-/** Classification could not establish an effect; generated hooks advise the host. */
-export declare class HarnessCommandRefused extends Error {
-}
+import { DYNAMIC_SHELL_SUBSTITUTION, HarnessCommandRefused, SHELL_CONTROL_SYNTAX, readShellText, writtenText } from "./shell-reading.mjs";
+import type { ReadHeredoc, ReadWord, ShellReading } from "./shell-reading.mjs";
+export { DYNAMIC_SHELL_SUBSTITUTION, HarnessCommandRefused, SHELL_CONTROL_SYNTAX, readShellText, writtenText, };
+export type { ReadHeredoc, ReadWord, ShellReading };
 /** The three shell forms the classifier leaves to the host's permissions on
  * nearly every compound call: control syntax, a dynamic substitution and a
  * working-directory override. Each names no refusal, so a hook journals it
  * and shows nothing; every other classification advisory is still shown. */
-export declare const SHELL_CONTROL_SYNTAX = "Shell control syntax requires an explicit effect adapter";
-export declare const DYNAMIC_SHELL_SUBSTITUTION = "Dynamic shell substitution requires an explicit effect adapter";
 export declare const SHELL_WORKING_DIRECTORY = "Shell working-directory override needs a separately reviewed host adapter";
 export declare const HOST_DECIDED_CLASSIFICATIONS: ReadonlySet<string>;
 /** Effect inventory for the tools exposed by the observed harness profiles.
@@ -58,17 +57,31 @@ export interface WrittenCommand {
     readonly assignments: readonly string[];
     /** Its words as the line wrote them, a wrapper among them. */
     readonly words: readonly string[];
+    /** For each of its words, whether the shell expands a parameter in it or
+     * substitutes a command or arithmetic. */
+    readonly expanded: readonly boolean[];
+    /** Where its program's word starts in the text read. */
+    readonly start: number;
     /** The program behind any wrapper, named without its path, and its operands;
      * empty when a wrapper's options cannot be read. */
     readonly program: readonly string[];
+    /** The here-documents it reads, in order. */
+    readonly heredocs: readonly ReadHeredoc[];
 }
 /** Every command a line would run, read without refusing any form: control
  * syntax, a substitution and a script handed to a shell or to eval are read,
  * so a program inside one is found, while quoted text stays its command's
  * argument. Text the shell substitutes stands as U+0000. Unlike the effect
  * classification this is for a judgment of one program's literal words; a line
- * too deep to read holds no commands. */
-export declare function writtenCommands(source: string): WrittenCommand[];
+ * too deep to read holds no commands. `whole` reads a script of any length. */
+export declare function writtenCommands(source: string, options?: {
+    readonly whole?: boolean;
+}): WrittenCommand[];
+/** The commands of a reading, as writtenCommands gives them, for a reader
+ * that also needs the reading's comments or here-documents: the shell
+ * reader's commands, each with the program the classifier finds behind any
+ * wrapper. */
+export declare function readingCommands(reading: ShellReading): WrittenCommand[];
 /** Normalize executable operands for admission without requiring an effect
  * adapter for every operand. Effect classification keeps its own full checks. */
 export declare function executableShellInvocations(source: string): string[][];
@@ -157,4 +170,3 @@ export declare function commitMessageInputs(source: string): {
     files: string[];
 }[];
 export declare function invocationEffects(source: string): string[];
-export {};

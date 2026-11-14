@@ -9,10 +9,12 @@ import { validatePlanResult, } from "./plan-refutation-protocol.js";
 import { WorkerFailure } from "./worker-protocol.js";
 import { normalizeWorkerEffort, } from "./worker-transport.js";
 /** A one-shot counterpart of the blinded verification capsule host. */
-export async function runPlanRefutation(subject, transport, model, effort, now = Date.now, retentionDirectory = join(process.cwd(), "docs/control/local/refutations")) {
+export async function runPlanRefutation(subject, transport, model, effort, now = Date.now, retentionDirectory = join(process.cwd(), "docs/control/local/refutations"), 
+// Whether the root is core's own, which decides one known fact of the brief.
+core = false) {
     const selection = normalizeWorkerEffort(effort);
     const dispatchedAt = now();
-    const compiled = compilePlanRefuter(subject.revision, dispatchedAt);
+    const compiled = compilePlanRefuter(subject.revision, dispatchedAt, core);
     const episodeId = `ep_plan_${subject.hash.slice(7, 23)}`;
     const grant = planRefutationAuthorization(compiled.program.authorityEnvelope, subject.hash, episodeId, "read", dispatchedAt);
     if (!grant.authorized)

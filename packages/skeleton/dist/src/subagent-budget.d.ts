@@ -43,6 +43,13 @@ export interface UseAdmission {
  * use. */
 export declare const subagentBudgetsPath: (root: string) => string;
 export declare function readSubagentCap(root: string): number | null;
+/** The cap a session's dispatch runs under: the budgets file's value, or the
+ * ceiling the operator's acceptance recorded for that dispatch since its
+ * phase began (`npm run resume -- accept-overrun subagentCap`). Every reader
+ * of the cap (the hook's admission, the usage readback, the review helper's
+ * own count) takes it here, so no session edits the budgets file for one
+ * order. `sessionKey` is the digest the session's journal is filed under. */
+export declare function dispatchSubagentCap(root: string, sessionKey: string): number | null;
 export declare function initializeSubagentCounter(directory: string, session: string): string | null;
 /** One line for `harness usage`: every use the counter saw, by kind and host,
  * against the cap. */

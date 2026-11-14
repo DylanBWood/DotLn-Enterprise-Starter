@@ -67,17 +67,21 @@ test("WO-119 actual bounded program discovers the pinned six candidates with res
         evidenceCount: report.evidence.length,
     }));
 });
-test("WO-119 repo defaults and Markdown profile conventions; empty repository is an empty observation", (t) => {
+test("WO-119 repo defaults and a declared JSON profile; a Markdown profile is refused; empty repository is an empty observation", (t) => {
     const root = scratch(t);
     assert.deepEqual(discover(root).candidates, []);
     const conventions = seed(root);
     unlinkSync(join(root, ".dotln/discovery.json"));
     const defaults = discover(root);
     assert.deepEqual(defaults.candidates.map((c) => c.kind), ["failing-lint", "failing-test", "repeated-repair"]);
+    writeFileSync(join(root, "profile.json"), JSON.stringify(conventions));
+    assert.deepEqual(projection(discover(root, undefined, { profilePath: "profile.json" })), fixture.expected);
+    // Discovery reads the conventions record, never a document around it: a
+    // Markdown profile carrying the same conventions in a block is refused.
     writeFileSync(join(root, "profile.md"), "# Commands and conventions\n\n```dotln-discovery\n" +
         JSON.stringify(conventions) +
         "\n```\n");
-    assert.deepEqual(projection(discover(root, undefined, { profilePath: "profile.md" })), fixture.expected);
+    assert.throws(() => discover(root, undefined, { profilePath: "profile.md" }), /profile must be a JSON conventions record/);
     assert.throws(() => discover(root, undefined, { profilePath: "missing.md" }), /profile missing/);
 });
 test("WO-119 observations disappear when facts change; references and one-off repairs are not candidates", (t) => {

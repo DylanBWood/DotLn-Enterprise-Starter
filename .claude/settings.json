@@ -42,18 +42,28 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": ".*",
+        "matcher": "^(?!(?:Agent|AskUserQuestion|EnterPlanMode|ExitPlanMode|Glob|Grep|KillShell|ListMcpResourcesTool|Read|ReadMcpResourceTool|SendMessage|Skill|StructuredOutput|SubagentHandback|Task|TaskOutput|TaskStop|TodoWrite|ToolSearch|WebFetch|WebSearch|Workflow|collaboration\\.spawn_agent|enable__mcp__claude-in-chrome[\\s\\S]*|enable__mcp__remote-devices__Claude_Browser[\\s\\S]*|enable__mcp__remote-devices__computer[\\s\\S]*|mcp__Claude_Browser__[\\s\\S]*|mcp__claude-in-chrome__[\\s\\S]*|mcp__computer-use__[\\s\\S]*|mcp__remote-devices__Claude_Browser__[\\s\\S]*|mcp__remote-devices__computer_[\\s\\S]*)$)[\\s\\S]*$",
         "hooks": [
           {
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/concurrent-work-requires-worktrees.mjs\"",
             "timeout": 15
-          },
+          }
+        ]
+      },
+      {
+        "matcher": "^(?!(?:Agent|AskUserQuestion|Edit|EnterPlanMode|ExitPlanMode|Glob|Grep|KillShell|ListMcpResourcesTool|NotebookEdit|Read|ReadMcpResourceTool|SendMessage|Skill|StructuredOutput|SubagentHandback|Task|TaskOutput|TaskStop|TodoWrite|ToolSearch|WebFetch|WebSearch|Workflow|Write|apply_patch|collaboration\\.spawn_agent|enable__mcp__claude-in-chrome[\\s\\S]*|enable__mcp__remote-devices__Claude_Browser[\\s\\S]*|enable__mcp__remote-devices__computer[\\s\\S]*|mcp__Claude_Browser__[\\s\\S]*|mcp__claude-in-chrome__[\\s\\S]*|mcp__computer-use__[\\s\\S]*|mcp__remote-devices__Claude_Browser__[\\s\\S]*|mcp__remote-devices__computer_[\\s\\S]*)$)[\\s\\S]*$",
+        "hooks": [
           {
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/no-attribution.mjs\"",
             "timeout": 15
-          },
+          }
+        ]
+      },
+      {
+        "matcher": ".*",
+        "hooks": [
           {
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/permissions.mjs\"",
@@ -63,32 +73,27 @@
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/write-observer.mjs\"",
             "timeout": 15
-          },
-          {
-            "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/presence-pretooluse.mjs\"",
-            "timeout": 15
           }
         ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": ".*",
+        "matcher": "^(?!(?:Agent|AskUserQuestion|Bash|EnterPlanMode|ExitPlanMode|Glob|Grep|KillShell|ListMcpResourcesTool|Monitor|Read|ReadMcpResourceTool|SendMessage|Skill|StructuredOutput|SubagentHandback|Task|TaskOutput|TaskStop|TodoWrite|ToolSearch|WebFetch|WebSearch|Workflow|collaboration\\.spawn_agent|enable__mcp__claude-in-chrome[\\s\\S]*|enable__mcp__remote-devices__Claude_Browser[\\s\\S]*|enable__mcp__remote-devices__computer[\\s\\S]*|exec_command|functions\\.exec|mcp__Claude_Browser__[\\s\\S]*|mcp__claude-in-chrome__[\\s\\S]*|mcp__computer-use__[\\s\\S]*|mcp__remote-devices__Claude_Browser__[\\s\\S]*|mcp__remote-devices__computer_[\\s\\S]*|write_stdin)$)[\\s\\S]*$",
         "hooks": [
           {
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/no-lint-type-disables-as-fixes.mjs\"",
             "timeout": 15
-          },
+          }
+        ]
+      },
+      {
+        "matcher": ".*",
+        "hooks": [
           {
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/read-observer.mjs\"",
-            "timeout": 15
-          },
-          {
-            "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/presence-posttooluse.mjs\"",
             "timeout": 15
           }
         ]
@@ -136,11 +141,6 @@
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/session.mjs\"",
             "timeout": 600
-          },
-          {
-            "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/presence-userpromptsubmit.mjs\"",
-            "timeout": 15
           }
         ]
       }
@@ -162,11 +162,6 @@
           {
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/finish.mjs\"",
-            "timeout": 15
-          },
-          {
-            "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/presence-stop.mjs\"",
             "timeout": 15
           }
         ]

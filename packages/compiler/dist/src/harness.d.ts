@@ -51,25 +51,15 @@ export declare function harnessSessionPhase(session: {
  * same two pathways for hosts whose prompts are unhooked. */
 export declare const OPERATOR_QUESTION_CONTEXT = "Operator question: read it as a smell. Your next message answers it one of two ways, with the evidence: why the current course is right, or what the question changes in your reading and what you will now do differently. Keep working either way; if the message also asks for an action, including to pause, stop or wait, do that, since a request is explicit whatever its grammar; it records no rule.";
 /** A dispatch may lead following direction after a semicolon or newline.
- * The worker opt-ins are a selection, not part of the lifecycle action. */
-export declare function harnessPromptIntent(prompt: string | undefined): string;
-/**
- * The worker options a dispatch line names, by the host whose launches they
- * select: `fable` picks Claude's opt-in worker and `astra` Codex's. Only the
- * words that close a `resume:` or `planning:` line select, the way a pass's
- * label names its worker, and those that close the dispatch phrase before
- * the line's first semicolon, where a lifecycle phrase carries its suffix
- * ahead of direction; a model named mid-line as a topic selects nothing. A
- * version after the word and a joining "and" belong to a closing run. A line
- * that names neither selects both hosts' defaults, so each dispatch states
- * its own choice; any other message returns null and changes nothing. The
- * function is self-contained so the generated Codex hook embeds it with the
- * line reader it is given.
- */
-export declare function harnessWorkerWords(prompt: string | undefined, promptLine?: typeof harnessPromptLine): {
-    claude?: "fable";
-    codex?: "astra";
-} | null;
+ * Between the lifecycle phrase and that direction the operator may name the
+ * workers the session is to launch: a closing run of words that opens with
+ * one of `names`, the instance's workers and models, and holds nothing but
+ * such names, a version number after one and a joining "and". The run marks
+ * where the phrase ends and selects nothing: which worker a launch takes is
+ * the session's judgment over the same words. With no names given, or any
+ * other word after the phrase, the line is prose. The function is
+ * self-contained, since the generated hooks embed it. */
+export declare function harnessPromptIntent(prompt: string | undefined, names?: readonly string[]): string;
 export type HarnessEvent = "PreToolUse" | "PostToolUse" | "Stop" | "UserPromptSubmit";
 export interface HarnessObservation {
     readonly available: boolean;
@@ -81,6 +71,17 @@ export interface HarnessProfile {
     readonly profileId: string;
     readonly harness: "claude-code" | "codex-cli" | "copilot-cli";
     readonly observedVersion: string;
+    /** The kinds of tool each feedback unit's facts read, by unit: a unit
+     * named here is registered for the tools of those kinds and for any name
+     * the table below does not hold; a unit not named is registered for every
+     * tool. */
+    readonly unitToolKinds?: Readonly<Record<string, readonly string[]>>;
+    /** Whether this host was observed to read a matcher that leaves names out.
+     * Where it was, a narrowed hook's matcher is that exclusion, and a name the
+     * tool table does not hold still starts the hook; where it was not, or no
+     * observation is given, the matcher lists the names of the kinds the unit
+     * judges, the form every host documents. */
+    readonly matcherExclusion?: HarnessObservation;
     readonly tools?: Readonly<Record<string, "read" | "write" | "shell" | "spawn" | "retask" | "stop" | "interaction" | "desktop">>;
     readonly events: Readonly<Record<HarnessEvent, HarnessObservation>>;
     /** Separately witnessed native compaction hooks; never enables Claude hooks. */
@@ -171,10 +172,6 @@ export interface HarnessWorker {
     readonly host?: "claude" | "codex";
     readonly model: string;
     readonly effort: "low" | "medium" | "high" | "xhigh" | "max";
-    readonly optIn?: boolean;
-    /** How an opt-in worker's definition names the dispatch word that selects
-     * it; every opt-in worker carries one. */
-    readonly optInLabel?: string;
     readonly description?: string;
     readonly skills?: readonly string[];
     readonly body?: string;
@@ -209,6 +206,10 @@ export interface HarnessProgram {
     /** Compatibility for programs declaring one default worker. */
     readonly worker?: HarnessWorker;
     readonly workers?: readonly HarnessWorker[];
+    /** The names an operator may close a dispatch line with: the instance's
+     * workers and models, supplied by the emitter. The session hook reads them
+     * to tell where the lifecycle phrase ends. */
+    readonly workerNames?: readonly string[];
 }
 /** Host tool namespaces that act in the operator's desktop or signed-in browser.
  * The hook and host settings share this inventory; unrelated MCP tools keep
@@ -272,6 +273,28 @@ export interface HarnessBundle {
 export declare function assertOutsideWriteGrants(value: unknown): asserts value is readonly OutsideWriteGrant[];
 /** Exact effects keep the existing envelope's GRANTS projection authoritative. */
 export declare const outsideWriteEffect: (grant: OutsideWriteGrant) => string;
+/** The matcher every tool matches. */
+export declare const EVERY_TOOL = ".*";
+/** The matcher of a unit's hook. A unit that states no kinds is registered
+ * for every tool, and so is one whose kinds cover every name of the table.
+ *
+ * With `exclusion`, for a host observed to read one, a unit that states its
+ * kinds is registered for every name but those the profile's table maps to
+ * another kind, as one anchored pattern: a name the table does not hold
+ * still starts the hook and is judged as before, and a table name that ends
+ * in `*` leaves out every name with that prefix. The anchors are what make
+ * the exclusion hold on a host that reads a pattern as a search, and "any
+ * character" is written `[\s\S]`, which a line break in a name does not
+ * stop as it stops a dot.
+ *
+ * Without it the matcher lists the names the table maps to the unit's kinds,
+ * joined by `|`: the form the hosts document, which needs no lookahead and
+ * so compiles wherever a pattern does. A name the table does not hold then
+ * starts no narrowed hook. Each name is written as it is, which a host that
+ * compares names and a host that reads a pattern both take, so a listed name
+ * holds only letters, digits, `_`, `.` and `-`; a dot read as a pattern
+ * admits more names and loses none. */
+export declare function unitMatcher(tools: HarnessProfile["tools"], kinds: readonly string[] | undefined, exclusion?: boolean): string;
 export declare const HARNESS_START = "<!-- dotln-harness:start -->";
 export declare const HARNESS_END = "<!-- dotln-harness:end -->";
 export declare function assertHarnessProfile(profile: HarnessProfile): void;
@@ -304,7 +327,7 @@ export declare const HARNESS_REFUSALS: readonly [{
 }, {
     readonly id: "subagents";
     readonly source: "WO-139";
-    readonly clause: "refuses observable subagent admissions beyond docs/control/budgets.json subagentCap (default 20; null disables)";
+    readonly clause: "refuses observable subagent admissions beyond docs/control/budgets.json subagentCap (default 20; null disables) or the cap the operator's accept-overrun records for the dispatch";
 }, {
     readonly id: "outside-write";
     readonly source: "WO-144";

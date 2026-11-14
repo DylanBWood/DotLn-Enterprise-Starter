@@ -1,5 +1,13 @@
-import { type MissionCheckObserved, type MissionSource } from "../src/mission-check-protocol.js";
+import { type MissionCheckObserved, type MissionCheckPin, type MissionSource } from "../src/mission-check-protocol.js";
+import { type MissionDocumentReader } from "../src/mission-check-source.js";
 import type { ProcessRunner } from "../src/worker-transport.js";
+/** The repository's reader of the documents a mission check judges, which
+ * the resident's launcher and bind command hand the package; the package
+ * itself reads no Markdown. */
+export declare const missionDocumentReader: MissionDocumentReader;
+/** The capsule a dispatch observes now, its documents read through that
+ * reader. */
+export declare const observeSubject: (source: MissionSource, pin: MissionCheckPin) => import("../src/mission-check-protocol.js").MissionCheckSubject;
 export declare const MISSION_SURFACE = "fixture.mission";
 export declare function missionFixture(options?: {
     outsideSurface?: boolean;
@@ -26,7 +34,7 @@ export declare function missionFixture(options?: {
     work: string;
     git: (...args: string[]) => string;
     source: MissionSource;
-    pin: import("../src/mission-check-protocol.js").MissionCheckPin;
+    pin: MissionCheckPin;
     subject: import("../src/mission-check-protocol.js").MissionCheckSubject;
     request: import("../src/mission-check-protocol.js").MissionCheckRequest;
     contractPath: string;

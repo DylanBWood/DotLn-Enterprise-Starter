@@ -29,7 +29,7 @@ process.on("message", (message) => {
     assertCliActorSpec(message.spec);
     if (isMissionCheckRequest(message.spec.request))
         assertMissionSource(message.missionSource);
-    active = startCliEpisode(message.spec, message.context, undefined, undefined, message.missionSource);
+    active = startCliEpisode(message.spec, message.context, undefined, undefined, message.missionSource, message.missionDocuments);
     void active.completed.then((result) => {
         if (process.connected)
             process.send(result, () => {

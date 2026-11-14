@@ -25,6 +25,18 @@ function unit(unitId, handler, sourceRefs, summary, undesiredBehavior, desiredBe
         proseEquivalent: `${undesiredBehavior} ${desiredBehavior}`,
     };
 }
+/** The kinds of tool each unit's facts read, by the kinds of the hosts' tool
+ * table: a unit named here judges a call only where the tool is of one of
+ * these kinds, so its hook is registered for those tools and for any name
+ * the table does not hold. The attribution unit reads a shell command's
+ * commit message; the lint-directive unit reads a file a write changed; the
+ * writer unit reads what a shell command or a write may change. A unit not
+ * named judges at an event that is no tool call, or judges every tool. */
+export const feedbackUnitToolKinds = {
+    "no-attribution": ["shell"],
+    "no-lint-type-disables-as-fixes": ["write"],
+    "concurrent-work-requires-worktrees": ["shell", "write"],
+};
 /** Exactly WO-011's ten units. Source accounts stay at their canonical references. */
 export const retainedFeedbackUnitsV1 = [
     unit("anti-oscillation", "decision-lineage", [lineage, "docs/evidence/WO-031/ideation.md"], "The publication correction rejected verbose titles, then rejected an invented length limit without restoring the original verbosity. WO-011 also distinguishes optional organization from a mandatory cleanup project.", "Do not restore a rejected approach or turn an example into a new hard constraint when correcting behavior.", "Preserve desired outcomes and rejection reasons; replacing a rejected decision needs explicit supersession from the operator.", "A pre-effect lineage guard compares explicit decisions; a text lint cannot decide which prior rejection applies.", [

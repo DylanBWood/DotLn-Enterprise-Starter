@@ -1,5 +1,9 @@
 import { type FSWatcher } from "node:fs";
 import { type RuntimeStatusV1 } from "@dotln/skeleton/dist/src/runtime-status-contract.js";
+/** A work-order source's reason as a reader meets it. A resident started
+ * through the package's own entry has no card source: the reason then names
+ * the launcher that hands it one. */
+export declare const workOrderSourceReason: (reason: string) => string;
 export declare const RUNTIME_STATUS_FILE = "runtime-status-v1.json";
 export declare function readRuntimeStatus(directory: string): RuntimeStatusV1;
 export declare function renderRuntimeStatus(view: RuntimeStatusV1): string;

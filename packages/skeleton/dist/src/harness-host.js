@@ -1,7 +1,7 @@
 import { planFirstBoundary, planFirstElected } from "./plan-first-boundary.js";
 import { createRequire } from "node:module";
-import { DispatchJournalError, dispatchJournalDirectory, readDispatchJournals, } from "./dispatch-journal.mjs";
-import { boundedCommand, completeTestSelection, diagnosticTestSelection, gateInvocation, nodeScriptArgs, npmScriptArgs, } from "./test-selection.mjs";
+import { DispatchJournalError, dispatchJournalDirectory, dispatchNamesOrder, readDispatchJournals, readJournalRows, } from "./dispatch-journal.mjs";
+import { boundedArgReadings, boundedCommand, completeTestSelection, diagnosticTestSelection, gateInvocation, managerRuns, nodeRunScriptArgs, nodeScriptArgs, packageScriptArgReadings, } from "./test-selection.mjs";
 import { formatDuration } from "./duration.mjs";
 import { observedSpawnSync as spawnSync } from "./gate-deadlines.mjs";
 import { withWriterRegistration, zombieProcessState, } from "./writer-teardown.mjs";
@@ -15,17 +15,17 @@ import { basename, dirname, isAbsolute, join, relative, resolve, sep, } from "no
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { text as streamText } from "node:stream/consumers";
 import { TARGET_PUBLICATION_EFFECTS, targetPublicationRefusal, } from "./target-publication-policy.js";
-import { applyFeedbackCorrection, compileFeedbackUnits, COMPILER_PACKAGE_VERSION, fnv1a64, canonicalStringify, showHarnessAdvisory, harnessPromptIntent, harnessPromptLine, harnessWorkerWords, operatorMessageClass, harnessSessionPhase, OPERATOR_QUESTION_CONTEXT, assertOutsideWriteGrants, outsideWriteEffect, } from "@dotln/compiler";
+import { applyFeedbackCorrection, compileFeedbackUnits, COMPILER_PACKAGE_VERSION, fnv1a64, canonicalStringify, showHarnessAdvisory, harnessPromptIntent, harnessPromptLine, operatorMessageClass, harnessSessionPhase, OPERATOR_QUESTION_CONTEXT, assertOutsideWriteGrants, outsideWriteEffect, } from "@dotln/compiler";
 import { harnessAuthorization } from "./reactor.js";
 import { personalFeedback } from "./loadouts/feedback.js";
 import { qualityPassGuidance } from "./document-quality.js";
-import { HarnessCommandRefused, HOST_DECIDED_CLASSIFICATIONS, drivenCommandEffect, drivenResearchCommandKind, LIVE_GATE_READ_LIST, harnessToolEffects, isDesktopControlTool, invocationEffects, liveGateReads, patchWriteTargets, shellRedirectTargets, shellWritePaths, shellWriteTargets, commitMessageInputs, shellDiagnostics, shellInvocations, executableShellInvocations, shellGuidance, writtenCommands, } from "./harness-command.js";
+import { HarnessCommandRefused, HOST_DECIDED_CLASSIFICATIONS, drivenCommandEffect, drivenResearchCommandKind, LIVE_GATE_READ_LIST, harnessToolEffects, isDesktopControlTool, invocationEffects, liveGateReads, patchWriteTargets, shellRedirectTargets, shellWritePaths, shellWriteTargets, commitMessageInputs, shellDiagnostics, shellInvocations, executableShellInvocations, shellGuidance, writtenCommands, readShellText, writtenText, } from "./harness-command.js";
 import { activeGateRuns, beginGateRun, gateInputPath, gateRecordPath, prospectiveRealpath, gateTreeHash, findGateCheck, readGateChecks, recordGateChecks, gateCodeIdentity, } from "./gate-evidence.mjs";
 import { collectSessionUsage, currentCopilotSession, usageObservation, recordUsageObservation, usageReadbackLine, usageSessionKey, } from "./usage-observation.mjs";
 import { FeedbackRefused, feedbackContentHash, feedbackWriterFacts, } from "./feedback-boundary.js";
 import { HARNESS_HOST_VERSION } from "./version.js";
-import { admitSubagentTool, admitDrivenTool, drivenWorkerContext, drivenSubagentUsage, linkDrivenResult, initializeSubagentCounter, linkSubagentResult, subagentSummary, subagentUsage, } from "./subagent-budget.js";
-import { observationBoundary, observeBackgroundTool, observeTypedCorrection, namedJudgmentUnits, observedFacts, transcriptMessages, } from "./observed-facts.js";
+import { admitSubagentTool, admitDrivenTool, drivenWorkerContext, drivenSubagentUsage, linkDrivenResult, initializeSubagentCounter, linkSubagentResult, subagentBudgetsPath, subagentSummary, subagentUsage, } from "./subagent-budget.js";
+import { backgroundTaskKey, journalRows, observationBoundary, renderDailyUse, observeBackgroundTool, terminalTaskState, observeTypedCorrection, namedJudgmentUnits, observedFacts, transcriptMessages, } from "./observed-facts.js";
 export { HARNESS_HOST_VERSION } from "./version.js";
 export function harnessInputHarness(input, env = process.env) {
     return (typeof env.COPILOT_PROJECT_DIR === "string" &&
@@ -71,6 +71,7 @@ function decodeHarnessRecord(value, expectedEvent) {
         "tool_response",
         "effort",
         "stop_hook_active",
+        "background_tasks",
     ]) {
         const descriptor = Object.getOwnPropertyDescriptor(value, key);
         if (descriptor && !("value" in descriptor))
@@ -133,6 +134,8 @@ function decodeHarnessRecord(value, expectedEvent) {
     if ("stop_hook_active" in value &&
         typeof value.stop_hook_active !== "boolean")
         return fail("EXPECTED_BOOLEAN", "$.stop_hook_active", "expected a boolean");
+    if ("background_tasks" in value && !Array.isArray(value.background_tasks))
+        return fail("EXPECTED_ARRAY", "$.background_tasks", "expected an array");
     const decoded = value;
     let normalized = patch === undefined
         ? decoded
@@ -157,6 +160,36 @@ function decodeHarnessRecord(value, expectedEvent) {
 async function dispatchBounds(root) {
     return import(pathToFileURL(join(root, "scripts/lib/dispatch-bound.mjs")).href);
 }
+/** The day's use beside the instance's figure, for the facts a prompt
+ * carries, or nothing where the budgets declare no figure. The budgets
+ * file's own key is read first, so the usage ledger is read only where a
+ * figure is declared. The figure's shape is the budget loader's judgment and
+ * the day's use is the usage report's reading, both from the root that
+ * carries them. A failure is one line and withholds nothing. */
+async function dailyUseLine(root, now = new Date()) {
+    let budgets;
+    try {
+        budgets = JSON.parse(readFileSync(join(root, subagentBudgetsPath(root)), "utf8"));
+    }
+    catch {
+        // No budgets document declares no figure; its own readers name a
+        // damaged one.
+        return undefined;
+    }
+    if (budgets?.spend === undefined)
+        return undefined;
+    try {
+        const load = (file) => import(pathToFileURL(join(root, file)).href);
+        const figure = (await load("scripts/lib/process-budget.mjs")).dailySpend(budgets);
+        if (!figure ||
+            (typeof figure.tokens !== "number" && typeof figure.usd !== "number"))
+            return undefined;
+        return renderDailyUse(figure, (await load("scripts/lib/meta.mjs")).dayUse(root, { now }));
+    }
+    catch (error) {
+        return `Day's use: unknown (${error instanceof Error ? error.message : String(error)}).`;
+    }
+}
 function startsBoundedWork(input, spawn) {
     if (spawn)
         return true;
@@ -165,19 +198,15 @@ function startsBoundedWork(input, spawn) {
         return false;
     try {
         return executableShellInvocations(command).some((words) => {
-            if ((words[0] === "node" || words[0] === process.execPath) &&
-                /(?:^|\/)harness(?:-entry)?\.mjs$/u.test(words[1] ?? "") &&
-                words[2] === "bounded") {
-                const separator = words.indexOf("--", 3);
-                return (separator === -1 ||
-                    !diagnosticTestSelection(words.slice(separator + 1)));
-            }
-            const harnessArgs = npmScriptArgs(words, "harness");
-            if (harnessArgs?.includes("bounded")) {
-                const separator = harnessArgs.indexOf("--", harnessArgs.indexOf("bounded") + 1);
-                return (separator === -1 ||
-                    !diagnosticTestSelection(harnessArgs.slice(separator + 1)));
-            }
+            // The probe wrapper under any spelling that runs it. Where npm's line
+            // reads two ways, bounded work under either is bounded work.
+            const bounded = boundedArgReadings(words);
+            if (bounded.length)
+                return bounded.some((rest) => {
+                    const separator = rest.indexOf("--");
+                    return (separator === -1 ||
+                        !diagnosticTestSelection(rest.slice(separator + 1)));
+                });
             return completeTestSelection(words);
         });
     }
@@ -212,12 +241,15 @@ export function reviewWorkerGate(input, tools = harnessToolEffects) {
     }
 }
 const workerGateRefusal = (gate) => `DOTLN_WORKER_GATE_REFUSED: a review or refutation worker never starts a test-runner gate (${gate}); probe one test with node scripts/harness.mjs bounded -- node --test --test-name-pattern <name> <suite file>. A gate holds the worktree's live-gate refusal against the session that launched you for its whole run, and that session owns the gate.`;
-/** The workers a kit command launches, by its literal words: the change
+/** The worker a kit command launches, by its literal words: the change
  * review helper (`npm run worker -- review`, `node scripts/worker.mjs
- * review`) launches one and the planner's review (`npm run plan -- review`,
- * `node scripts/refute-plan.mjs review`) three, on the host `--host` names;
- * a `--dry-run` launches none. The helper's own process carries no session
- * identity a hook could charge, so the hook charges its command. */
+ * review`, `node --run worker -- review`) launches one, on the host `--host` names; a `--dry-run` launches
+ * none. npm's own flags are read past wherever npm takes them (before the
+ * verb, before the script's name, between it and the separator), the first
+ * separator ends them wherever it stands, and its aliases of `run` are read
+ * as `run`, so each spelling of one launch counts as the plain one does. Where a flag may or may not take the next word, a
+ * launch under either reading is a launch. The helper's own process carries
+ * no session identity a hook could charge, so the hook charges its command. */
 export function kitWorkerLaunch(command) {
     let invocations;
     try {
@@ -233,21 +265,25 @@ export function kitWorkerLaunch(command) {
         let words = written;
         for (let inner = boundedCommand(words); inner; inner = boundedCommand(words))
             words = inner;
-        const script = (name, file) => npmScriptArgs(words, name) ?? nodeScriptArgs(words, file);
-        for (const [args, count] of [
-            [script("worker", /(?:^|\/)scripts\/worker\.mjs$/u), 1],
-            [script("plan", /(?:^|\/)scripts\/refute-plan\.mjs$/u), 3],
-        ]) {
-            const rest = args?.[0] === "--" ? args.slice(1) : args;
-            if (!rest || rest[0] !== "review" || rest.includes("--dry-run"))
-                continue;
-            const named = rest[rest.indexOf("--host") + 1];
-            const launched = rest.includes("--host") && (named === "claude" || named === "codex")
-                ? named
-                : "unattributed";
-            uses += count;
-            host = host === null || host === launched ? launched : "unattributed";
-        }
+        // The line as written, and what pnpm or yarn runs for it as a program.
+        const rest = [words, ...managerRuns(words)]
+            .flatMap((form) => {
+            const direct = nodeScriptArgs(form, /(?:^|\/)scripts\/worker\.mjs$/u);
+            // Node's own runner of a package script is a third spelling.
+            const ran = nodeRunScriptArgs(form, "worker");
+            return (packageScriptArgReadings(form, "worker") ??
+                (ran ? [ran] : direct ? [direct] : []));
+        })
+            .find((args) => args[0] === "review" && !args.includes("--dry-run"));
+        if (!rest)
+            continue;
+        // The helper keeps the last --host it is given.
+        const named = rest[rest.lastIndexOf("--host") + 1];
+        const launched = rest.includes("--host") && (named === "claude" || named === "codex")
+            ? named
+            : "unattributed";
+        uses += 1;
+        host = host === null || host === launched ? launched : "unattributed";
     }
     return uses && host ? { uses, host } : null;
 }
@@ -317,9 +353,15 @@ export function bindDispatchBound(root, session, role, intent, workOrder, now = 
         unavailable = new DispatchJournalError(relative(root, error.file), error.detail).message;
         journals = [];
     }
+    // A dispatch that names no order starts at this session: a planning pass
+    // shares no attempt with an earlier pass on the same dispatch line, so no
+    // other session's journal gives it a start or its complete runs. The line
+    // decides, not the order the control record selects for the checkout.
     const anchors = [
         ...(previous && sameAttempt(previous) ? [previous] : []),
-        ...journals.map(({ journal }) => journal).filter(sameAttempt),
+        ...(dispatchNamesOrder(intent)
+            ? journals.map(({ journal }) => journal).filter(sameAttempt)
+            : []),
     ].sort((a, b) => Date.parse(a.startedAt ?? "") - Date.parse(b.startedAt ?? ""));
     session.boundDispatch = {
         role,
@@ -917,6 +959,13 @@ const record = (root, input, value) => {
         recordedAt: new Date().toISOString(),
         event: input.hook_event_name,
         ...(input.tool_name ? { tool: input.tool_name } : {}),
+        // The call a tool row belongs to, as a digest: a call's start rows and
+        // end rows carry the same one, so a reader pairs them exactly.
+        ...(input.tool_name &&
+            typeof input.tool_use_id === "string" &&
+            input.tool_use_id
+            ? { call: digest(input.tool_use_id).slice(0, 16) }
+            : {}),
         ...(input.effort?.level &&
             ["low", "medium", "high", "xhigh", "max"].includes(input.effort.level)
             ? { effort: input.effort.level }
@@ -1209,11 +1258,16 @@ function releaseCloseAdmission(root, input, session) {
         return missing("typed correction freezes destructive effects");
     const order = pending ?? dispatch.workOrder;
     const helper = `${prefix}${order}`;
-    let exact = command === `${helper} --publish` || command === `${helper} --dry-run`;
+    // A target's merged change named by its commit closes the command, as the
+    // close's own refusal prints it: one id of seven to sixty-four lower-case
+    // hexadecimal digits and nothing after it. The helper judges the commit.
+    const named = / --merged-as [0-9a-f]{7,64}$/u.exec(command)?.[0] ?? "";
+    const spelled = named ? command.slice(0, -named.length) : command;
+    let exact = spelled === `${helper} --publish` || spelled === `${helper} --dry-run`;
     // Material paths are one canonical single-quoted shell word, no expansions,
     // operators or extra flags. The helper itself validates the disposition.
-    if (!exact && command.startsWith(`${helper} --publish --material `)) {
-        const rest = command.slice(`${helper} --publish`.length);
+    if (!exact && spelled.startsWith(`${helper} --publish --material `)) {
+        const rest = spelled.slice(`${helper} --publish`.length);
         exact =
             /^(?: --material '(?:[^'\r\n\u0000]|'\\'')+=(?:disposable|preserve)')+$/.test(rest);
     }
@@ -1237,7 +1291,7 @@ function releaseCloseAdmission(root, input, session) {
                 : /(?:^|\s)--material(?:\s|$)/u.test(remainder)
                     ? "non-canonical material flag quoting or value"
                     : "extra or non-canonical words or whitespace after the helper";
-        return missing(`byte-exact helper spelling missing (${mismatch}); expected ${helper} --publish OR ${helper} --dry-run; material arguments use --publish --material '<path>=disposable|preserve'`);
+        return missing(`byte-exact helper spelling missing (${mismatch}); expected ${helper} --publish OR ${helper} --dry-run; material arguments use --publish --material '<path>=disposable|preserve'; a target's merged commit follows last as --merged-as <commit id>`);
     }
     try {
         const main = git(root, ["worktree", "list", "--porcelain"])
@@ -1285,44 +1339,44 @@ function releaseCloseAdmission(root, input, session) {
     }
 }
 /** Split one plain command into words: single and double quotes group, no
- * expansion, operator or redirect is admitted, and anything else is `null`. */
+ * expansion, operator or redirect is admitted, and anything else is `null`.
+ * The shell reader splits the words. The command is plain where its text is
+ * its own words and the blanks between them, so a separator, a redirection,
+ * a here-document, a comment or a substitution leaves text outside them; no
+ * backslash or `!` stands outside single quotes; no word holds a
+ * continuation or a $'...' quote, either of which makes its text differ from
+ * what it wrote by more than its quotes; and nothing the shell might expand
+ * stands outside quotes, nor a `$` inside double quotes. With `limit`, the
+ * words up to the limit are judged when a blank follows the last of them,
+ * whatever comes after. */
 function plainShellWords(command, limit = Infinity) {
-    const words = [];
-    let current = "";
-    let quoted = false;
-    let index = 0;
-    while (index < command.length) {
-        const char = command[index];
-        if (char === "'" || char === '"') {
-            const end = command.indexOf(char, index + 1);
-            if (end < 0)
-                return null;
-            const body = command.slice(index + 1, end);
-            if (char === '"' && /[$`\\!]/.test(body))
-                return null;
-            current += body;
-            quoted = true;
-            index = end + 1;
-            continue;
-        }
-        if (char === " " || char === "\t") {
-            if (current || quoted)
-                words.push(current);
-            if (words.length === limit)
-                return words;
-            current = "";
-            quoted = false;
-            index += 1;
-            continue;
-        }
-        if (/[;&|<>()`$\\*?[\]{}~#!\n\r]/.test(char))
+    const reading = readShellText(command);
+    if (!reading)
+        return null;
+    // The command's own words: a substitution's words and a script's that a
+    // shell or eval runs belong to other commands.
+    const words = reading.words.filter((word) => word.command === 0 && word.scope === "");
+    const last = words[limit - 1];
+    if (last && last.end < command.length)
+        return /[ \t]/.test(command[last.end])
+            ? plainShellWords(command.slice(0, last.end))
+            : null;
+    if (reading.unmatchedQuotes.length)
+        return null;
+    let at = 0;
+    for (const word of words) {
+        const quotes = word.bare.split("\u0000").length - 1;
+        if (!/^[ \t]*$/.test(command.slice(at, word.start)) ||
+            word.raw.length !== word.text.length + 2 * quotes ||
+            /[;&|<>()`$\\*?[\]{}~#!\n\r]/.test(word.bare) ||
+            word.text.includes("$"))
             return null;
-        current += char;
-        index += 1;
+        at = word.end;
     }
-    if (current || quoted)
-        words.push(current);
-    return words.length && !words[0].includes("=") ? words : null;
+    if (!/^[ \t]*$/.test(command.slice(at)) || /[\\!]/.test(reading.plain))
+        return null;
+    const plain = words.map((word) => writtenText(word.text));
+    return plain.length && !plain[0].includes("=") ? plain : null;
 }
 /** Diagnose a recognizable helper without interpreting or admitting its shell.
  * Only this advisory strips prefixes; the permission parsers never do. */
@@ -3181,18 +3235,53 @@ export async function withHarnessCommandWriter(root, sessionId, operation) {
     }
 }
 export const harnessSubject = gateTreeHash;
-export function harnessOutputs(root, since = "HEAD") {
+/** The span within which a file's times cannot tell two writes apart: the
+ * coarsest timestamp of a file system the kit runs on (two seconds), which
+ * also covers a kernel clock that runs a little behind the process's. */
+export const OUTPUT_STATE_TICK_MS = 2000;
+export function harnessOutputs(root, since = "HEAD", cache) {
     const changed = [
         ...git(root, ["diff", since, "--name-only", "--diff-filter=AM", "-z"], true).split("\0"),
         ...git(root, ["ls-files", "--others", "--exclude-standard", "-z"]).split("\0"),
     ].filter(Boolean);
-    return [...new Set(changed)].sort().flatMap((path) => {
+    const next = {};
+    const outputs = [...new Set(changed)].sort().flatMap((path) => {
         const absolute = contained(root, path);
-        if (!existsSync(absolute) || !lstatSync(absolute).isFile())
+        if (!existsSync(absolute))
             return [];
+        // The entry's time is taken before the file's state: a write after it
+        // leaves times within the tick, and the file is read again.
+        const at = Date.now();
+        const info = lstatSync(absolute, { bigint: true });
+        if (!info.isFile())
+            return [];
+        const state = [
+            info.dev,
+            info.ino,
+            info.size,
+            info.mtimeNs,
+            info.ctimeNs,
+        ].join(":");
+        const known = cache?.states[path];
+        const latest = info.mtimeNs > info.ctimeNs ? info.mtimeNs : info.ctimeNs;
+        if (known &&
+            known[0] === state &&
+            Number(latest / 1000000n) + OUTPUT_STATE_TICK_MS < known[2]) {
+            next[path] = known;
+            return [{ path, hash: known[1], bytes: Number(info.size) }];
+        }
         const bytes = readFileSync(absolute);
-        return [{ path, hash: feedbackContentHash(bytes), bytes: bytes.length }];
+        const hash = feedbackContentHash(bytes);
+        if (cache) {
+            cache.filesRead += 1;
+            cache.bytesRead += bytes.length;
+            next[path] = [state, hash, at];
+        }
+        return [{ path, hash, bytes: bytes.length }];
     });
+    if (cache)
+        cache.states = next;
+    return outputs;
 }
 export function harnessOutputObligations(root, session) {
     const budget = readJson(join(root, "docs/control/budgets.json"), {});
@@ -3242,7 +3331,13 @@ function observeAuthorship(input, root, session) {
     if (!["Edit", "Write", "Bash", "NotebookEdit"].includes(input.tool_name ?? ""))
         return;
     const started = performance.now();
-    const outputs = harnessOutputs(root);
+    const cache = {
+        states: session.outputStates ?? {},
+        filesRead: 0,
+        bytesRead: 0,
+    };
+    const outputs = harnessOutputs(root, "HEAD", cache);
+    session.outputStates = cache.states;
     const snapshot = Object.fromEntries(outputs.map(({ path, hash }) => [path, hash]));
     if (input.hook_event_name === "PreToolUse")
         session.beforeOutputs = snapshot;
@@ -3290,6 +3385,9 @@ function observeAuthorship(input, root, session) {
         files: outputs.length,
         bytes: outputs.reduce((total, output) => total + output.bytes, 0),
         commands: 2,
+        // What this snapshot read; the rest kept the hash of an unchanged state.
+        filesRead: cache.filesRead,
+        bytesRead: cache.bytesRead,
     };
 }
 /** Explicit entry for harnesses without automatic hooks. Existing dirt is a
@@ -3406,7 +3504,12 @@ drivenOrder) {
         beforeOutputs: prior?.beforeOutputs ?? snapshot,
         authoredPaths: [...new Set([...(prior?.authoredPaths ?? []), ...adopted])],
     };
-    bindDispatchBound(root, session, role, session.intent ?? role, control.workOrder);
+    // A router begun by the command drives the order it was given, and is
+    // bound by that drive's line as the prompt route binds one: a second
+    // session of the same drive keeps its start, on either route, and a drive
+    // of another order shares none.
+    const drive = role === "router" && drivenOrder ? `drive: ${drivenOrder}` : null;
+    bindDispatchBound(root, session, role, drive ?? session.intent ?? role, drive ? null : control.workOrder);
     writeJson(statePath(root, input), session);
     const counterWarning = initializeSubagentCounter(harnessStateDirectory(root), sessionId);
     if (counterWarning)
@@ -4320,6 +4423,90 @@ const protocolRefusal = (event, reason) => event === "PreToolUse"
             : event === "PostToolUse" || event === "PostToolUseFailure"
                 ? {}
                 : protocolAdvisory(reason);
+/**
+ * A worker hands back with nothing of its own running. Its stop is refused
+ * once while a background task it started is live, naming each task and the
+ * tool that stops it; the re-entry is admitted, since refusing again would
+ * hold the worker until the operator interrupts. Either way the tasks are
+ * written to the parent session's journal with the worker's key, so the facts
+ * the parent's next prompt prints name them whether or not the host held the
+ * worker. Only the worker's own tasks count: a task the journal shows another
+ * actor's call started is that actor's, and one no journaled call started is
+ * recorded and refuses nothing. The host's list is the session's and holds
+ * the stopping worker itself under its agent id; that entry is the worker,
+ * never a task it left running, and is not read.
+ */
+function workerStopJudgment(root, input, context) {
+    if (input.hook_event_name !== "SubagentStop" || !input.agent_id)
+        return {};
+    const live = (input.background_tasks ?? []).filter((task) => task !== null &&
+        typeof task === "object" &&
+        task.id !== input.agent_id &&
+        !terminalTaskState(task.status));
+    const reentry = input.stop_hook_active === true;
+    if (!live.length && !reentry)
+        return {};
+    const worker = textDigest(input.agent_id);
+    // The journals say who started what: the first dispatch row of a task
+    // carries its starter, absent for the session's own call. A lifecycle
+    // worker's calls are in a journal of its own and the session's in the
+    // parent's, so both are read; any other worker shares the parent's.
+    const starters = new Map();
+    const parentKey = digest(input.session_id ?? "unknown");
+    for (const row of [sessionKey(input), parentKey]
+        .filter((key, index, keys) => keys.indexOf(key) === index)
+        .flatMap((key) => journalRows(root, { sessionKey: key, ...context }))) {
+        const task = row.backgroundTask;
+        if (typeof task?.key === "string" &&
+            task.dispatchedAt &&
+            !starters.has(task.key))
+            starters.set(task.key, task.startedBy ?? null);
+    }
+    const tasks = live.map((task) => {
+        const key = typeof task.id === "string" ? backgroundTaskKey(task.id) : null;
+        return {
+            id: typeof task.id === "string" ? task.id : null,
+            key,
+            type: typeof task.type === "string" ? task.type : "unknown",
+            status: typeof task.status === "string" ? task.status : "unknown",
+            owner: key === null || !starters.has(key)
+                ? "unknown"
+                : starters.get(key) === worker
+                    ? "worker"
+                    : "other",
+        };
+    });
+    const own = tasks.filter((task) => task.owner === "worker");
+    const refused = own.length > 0 && !reentry;
+    // The parent's journal, also for a lifecycle worker that keeps its own.
+    const journal = join(harnessStateDirectory(root), `${digest(input.session_id)}.jsonl`);
+    mkdirSync(dirname(journal), { recursive: true, mode: 0o700 });
+    appendFileSync(journal, `${JSON.stringify({
+        recordedAt: new Date().toISOString(),
+        event: input.hook_event_name,
+        ...context,
+        workerStop: {
+            agent: worker,
+            agentType: /^[A-Za-z0-9_.:-]{1,64}$/u.test(input.agent_type ?? "")
+                ? input.agent_type
+                : "worker",
+            reentry,
+            refused,
+            tasks: tasks.map(({ key, type, status, owner }) => ({
+                key,
+                type,
+                status,
+                owner,
+            })),
+        },
+    })}\n`, { mode: 0o600 });
+    if (!refused)
+        return {};
+    return {
+        decision: "block",
+        reason: `DOTLN_WORKER_TASKS_RUNNING: this worker started ${own.length === 1 ? "a background task that is" : `${own.length} background tasks that are`} still running: ${own.map((task) => `${task.type} ${task.id}`).join(", ")}. Stop ${own.length === 1 ? "it" : "each"} with the host's task-stop tool (TaskStop with that task id), then hand back; a worker hands back with nothing of its own running.`,
+    };
+}
 /** Recovery is advisory: the host retains its own sandbox and approval. */
 export const BOOTSTRAP_HATCH_TEXT = "Run node scripts/bootstrap.mjs to prepare this worktree; host permissions decide tool access.";
 /** The session's own stop request is admitted while its gate holds inputs. */
@@ -4329,6 +4516,12 @@ const GATE_STOP_COMMANDS = [
 ];
 export const GATE_STOP_TEXT = `Stop that gate from this session with ${GATE_STOP_COMMANDS[0]} (admitted now; it ends at its next boundary and records completed tasks as stopped, supplying no pass) or the harness's own task-stop tool, or wait for it to finish.`;
 const gateStopCommand = (command) => typeof command === "string" && GATE_STOP_COMMANDS.includes(command.trim());
+/** The kind the profile's table gives a tool's name, and none for a name the
+ * table does not hold. */
+const toolKind = (input, tools) => {
+    const inventory = tools ?? harnessToolEffects;
+    return inventory[input.tool_name ?? ""];
+};
 /** WO-135: plan start records document-only authority through planning/*.
  * Known tool destinations are checked; opaque effects retain host delegation.
  */
@@ -4337,8 +4530,7 @@ function knownWriteDestinations(input, root, tools,
 // redirect on a program outside the vocabulary. The planning refusal keeps
 // its root-relative, whole-command reading.
 outside) {
-    const inventory = tools ?? harnessToolEffects;
-    const tool = inventory[input.tool_name ?? ""];
+    const tool = toolKind(input, tools);
     if (tool !== "write" && tool !== "shell")
         return { destinations: [], partial: false };
     const args = input.tool_input ?? {};
@@ -4396,6 +4588,13 @@ const withinRoot = (root, path) => {
 };
 function planningWriteRefusal(input, root, tools) {
     if (input.hook_event_name !== "PreToolUse")
+        return null;
+    // The tool's kind is in the input already held, and the branch costs a Git
+    // process: a tool the table maps to a kind that writes nothing has no
+    // destination on any branch, so the branch is not asked. A name the table
+    // does not hold counts as a write and is judged as it always was.
+    const kind = toolKind(input, tools);
+    if (kind !== undefined && kind !== "write" && kind !== "shell")
         return null;
     if (!git(root, ["symbolic-ref", "--quiet", "--short", "HEAD"], true)
         .trim()
@@ -5093,10 +5292,20 @@ async function evaluateExistingHarnessHook(config, input, root, boundary, outsid
         }
     }
     if (config.kind === "agent-finished") {
-        // A helper's actor is its spawner's, whose reservation is not its to release.
-        if (lifecycleWorker(input))
+        // The stop is read in the parent's facts, so it is filed under the
+        // parent's scope: a lifecycle worker keeps a session state of its own,
+        // whose phase is the worker's and never the parent's.
+        const parent = lifecycleWorker(input)
+            ? readJson(join(harnessStateDirectory(root), `${digest(input.session_id ?? "unknown")}.json`), initialSession(), true)
+            : session;
+        const judgment = workerStopJudgment(root, input, observationContext(parent));
+        // A helper's actor is its spawner's, whose reservation is not its to
+        // release. A lifecycle worker's reservation ends with the stop the host
+        // admits: a stop refused for the worker's own running task leaves the
+        // worker at work, and the worktree's writer with it.
+        if (lifecycleWorker(input) && judgment.decision !== "block")
             releaseHarnessWriter(root, input);
-        return {};
+        return judgment;
     }
     if (config.kind === "denial") {
         const routerLaunch = session.role === "router" &&
@@ -5139,10 +5348,7 @@ async function evaluateExistingHarnessHook(config, input, root, boundary, outsid
     const scope = readJson(join(harnessStateDirectory(root), "read-scope.json"), null);
     const journal = join(harnessStateDirectory(root), `${sessionKey(input)}.jsonl`);
     if (existsSync(journal)) {
-        const observations = readFileSync(journal, "utf8")
-            .split("\n")
-            .filter(Boolean)
-            .map((line) => JSON.parse(line));
+        const observations = readJournalRows(journal);
         session.reads = observations.flatMap((row) => row.receipts ?? []);
         session.byteReads = observations.flatMap((row) => row.byteReads ?? []);
     }
@@ -5167,24 +5373,9 @@ async function evaluateExistingHarnessHook(config, input, root, boundary, outsid
         let additionalContext;
         let receipt;
         let scratchAdvisory;
-        const intent = harnessPromptIntent(input.prompt);
-        // Each dispatch line journals the worker options it names, an empty
-        // selection included, so a later dispatch that names none returns the
-        // kit's launches to their hosts' defaults.
-        const workerOptions = input.hook_event_name === "UserPromptSubmit" && !input.agent_id
-            ? harnessWorkerWords(input.prompt)
-            : null;
-        if (workerOptions)
-            try {
-                record(root, input, {
-                    typedEvent: "WorkerOptionsSelected",
-                    options: workerOptions,
-                    source: "claude-prompt-hook",
-                });
-            }
-            catch {
-                // The selection is an observation; a launch then takes its default.
-            }
+        // The instance's worker and model names mark where a dispatch phrase
+        // ends; which worker a launch takes is the session's own reading.
+        const intent = harnessPromptIntent(input.prompt, config.workerNames ?? []);
         const role = config.roles?.find((role) => role.intents.includes(intent)) ??
             config.roles?.find((role) => role.intents.includes(intent) ||
                 role.intents.some((prefix) => ["planning:", "ideation:", "drive:"].includes(prefix) &&
@@ -5307,6 +5498,9 @@ async function evaluateExistingHarnessHook(config, input, root, boundary, outsid
         // The session hook owns the standard token's measurement, with or without
         // the separately configured correction-effect hook.
         observeTypedCorrection(root, observationScope(), input.prompt ?? "");
+        const daily = input.hook_event_name === "UserPromptSubmit"
+            ? await dailyUseLine(root)
+            : undefined;
         additionalContext = [
             additionalContext,
             // A quality pass is requested by the prompt's own first content line,
@@ -5323,19 +5517,12 @@ async function evaluateExistingHarnessHook(config, input, root, boundary, outsid
                 unprefixedQuestion(input.prompt)
                 ? OPERATOR_QUESTION_CONTEXT
                 : undefined,
-            workerOptions && Object.keys(workerOptions).length
-                ? `DotLn: this dispatch line selects the opt-in worker ${[
-                    workerOptions.claude ? "fable for Claude launches" : null,
-                    workerOptions.codex ? "astra for Codex launches" : null,
-                ]
-                    .filter(Boolean)
-                    .join(" and ")}; \`npm run worker -- review --host\` with that host and \`npm run plan -- refute\` (directly for this session's own host, with \`--transport\` for the other) take it when a launch names no --model.`
-                : undefined,
             observationBoundary(root, observationScope(), {
                 ...(input.prompt ? { prompt: input.prompt } : {}),
                 ...(input.transcript_path
                     ? { transcriptPath: input.transcript_path }
                     : {}),
+                ...(daily ? { daily } : {}),
             }),
         ]
             .filter(Boolean)
@@ -5399,7 +5586,7 @@ async function evaluateExistingHarnessHook(config, input, root, boundary, outsid
             role: session.role,
             workOrder: observationScope().workOrder,
             phase: observationScope().phase,
-            ...(observeBackgroundTool(input.tool_name ?? "", input.tool_input ?? {}, input.tool_response ?? {}, new Date().toISOString(), input.tool_use_id) ?? {}),
+            ...(observeBackgroundTool(input.tool_name ?? "", input.tool_input ?? {}, input.tool_response ?? {}, new Date().toISOString(), input.tool_use_id, input.agent_id) ?? {}),
             ...(authorship ? { authorship } : {}),
             receipts: session.reads.slice(before),
             byteReads: session.byteReads?.slice(rangesBefore) ?? [],
@@ -5947,6 +6134,35 @@ function recordOperatorOverride(config, input, root, boundary, exit) {
         },
     };
 }
+/** The events a presence heartbeat is recorded at. */
+const HEARTBEAT_EVENTS = [
+    "PreToolUse",
+    "PostToolUse",
+    "UserPromptSubmit",
+    "Stop",
+];
+/** The presence heartbeat of a target worktree, whose bundle holds no
+ * observer hook: its permission hook records it, after its decision is
+ * written, so that a heartbeat that fails or is slow changes nothing the hook
+ * decided. (A launchpad hook's own file records the heartbeat, after it has
+ * answered, so that it is recorded under operator control and with the
+ * adapter unavailable, as the presence hooks recorded it.) Without a
+ * resident's store named in the environment this does nothing and loads
+ * nothing; a heartbeat that fails says so on standard error. */
+export async function rideHeartbeat(event, input, environment = process.env) {
+    if (!environment["DOTLN_RESIDENT_STORE"] || !HEARTBEAT_EVENTS.includes(event))
+        return;
+    try {
+        // The answer already written leaves the process before the heartbeat's
+        // work begins.
+        await new Promise((resolve) => process.stdout.write("", resolve));
+        const { recordHarnessHeartbeat } = await import("./presence-heartbeat.js");
+        await recordHarnessHeartbeat(event, input, environment);
+    }
+    catch {
+        process.stderr.write("DotLn advisory: presence heartbeat unavailable\n");
+    }
+}
 export async function runHarnessHook(config, boundary, decodedInput, inputText, operatorControl) {
     const overrideExit = operatorOverrideExit(operatorControl);
     let observed;
@@ -6276,13 +6492,7 @@ export function phaseEntryReadback(root, launchpad, session) {
 export function phaseSessionReadback(root, launchpad, session) {
     return inPhaseWorktree(root, launchpad, () => {
         const file = join(harnessStateDirectory(root), `${digest(session)}.jsonl`);
-        const rows = existsSync(file)
-            ? readFileSync(file, "utf8")
-                .trim()
-                .split("\n")
-                .filter(Boolean)
-                .map((line) => JSON.parse(line))
-            : [];
+        const rows = readJournalRows(file);
         return {
             hookCalls: rows.filter((row) => row.event === "PreToolUse").length,
             refusedCalls: rows.filter((row) => row.allowed === false).length,
@@ -6419,8 +6629,13 @@ export async function runTargetHarnessHook(config, boundary) {
     const deny = (reason) => protocolRefusal("PreToolUse", reason);
     let response;
     let runtimeStage = "input";
+    // A target worktree's bundle holds no observer hook: its permission hook
+    // carries the heartbeat, for whatever input it was given, as the presence
+    // hook did. An input this hook refuses to decode still names its session.
+    let given;
     try {
-        const decoded = decodeHarnessInput(JSON.parse(await streamText(process.stdin)), "PreToolUse");
+        given = JSON.parse(await streamText(process.stdin));
+        const decoded = decodeHarnessInput(given, "PreToolUse");
         if (!decoded.ok)
             throw new Error("target hook input unavailable");
         const input = decoded.value;
@@ -6672,4 +6887,7 @@ export async function runTargetHarnessHook(config, boundary) {
         response = deny(`DOTLN_TARGET_RUNTIME_REFUSED: pinned launchpad runtime or target facts unavailable at ${runtimeStage}${code}`);
     }
     process.stdout.write(JSON.stringify(response));
+    // The decision is written: the heartbeat follows it and decides nothing.
+    if (config.kind === "permission")
+        await rideHeartbeat("PreToolUse", given);
 }

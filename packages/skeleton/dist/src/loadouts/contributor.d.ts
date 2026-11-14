@@ -1,52 +1,11 @@
 import { type AuthorityGrant, type AuthorityEnvelope, type CompiledProgram, type HarnessProfile, type HarnessProgram, type HarnessRole, type LoadoutGraph, type PresencePolicy, type PresenceNarrowing } from "@dotln/compiler";
 import { type ExecutorSupportSwitches } from "./executor-supports.js";
-/** The operator's four options for a worker a session launches (direction of
- * 2026-11-03), two per host; the first of each host is its default and the
- * other runs only when a launch or the dispatch line names it. The generated
- * worker definitions, the review helper and the refuter all read this table;
- * `workerType` is what a refutation receipt records for that launch. */
-export declare const contributorWorkerOptions: {
-    readonly opus: {
-        readonly host: "claude";
-        readonly model: "claude-opus-5-5";
-        readonly effort: "xhigh";
-        readonly workerType: "dotln-worker";
-    };
-    readonly fable: {
-        readonly host: "claude";
-        readonly model: "claude-fable-5-1";
-        readonly effort: "xhigh";
-        readonly workerType: "dotln-worker-fable";
-    };
-    readonly sol: {
-        readonly host: "codex";
-        readonly model: "gpt-6.1-sol";
-        readonly effort: "max";
-        readonly workerType: "codex-spawn-agent";
-    };
-    readonly astra: {
-        readonly host: "codex";
-        readonly model: "gpt-6-astra";
-        readonly effort: "max";
-        readonly workerType: "dotln-worker-astra";
-    };
-};
-export declare const contributorWorkerDefaults: {
-    readonly claude: "opus";
-    readonly codex: "sol";
-};
-export declare const contributorWorkerPins: {
-    readonly claude: {
-        model: "claude-fable-5-1" | "claude-opus-5-5" | "gpt-6-astra" | "gpt-6.1-sol";
-        effort: "max" | "xhigh";
-    };
-    readonly codex: {
-        model: "claude-fable-5-1" | "claude-opus-5-5" | "gpt-6-astra" | "gpt-6.1-sol";
-        effort: "max" | "xhigh";
-    };
-};
-/** Independent verification runs at this effort on every host (product 07). */
-export declare const contributorVerifierEffort = "xhigh";
+import { workerTable } from "../worker-catalog.mjs";
+/** What the emitter supplies of an instance's worker choices: the named
+ * workers of its configuration and the rows of its models file, as the
+ * configuration module judged them. The worker table reads them over the
+ * kit's own (`worker-catalog.mjs`); this loadout names no model. */
+export type ContributorWorkersDeclared = NonNullable<Parameters<typeof workerTable>[0]>;
 /** Operator-authorized policy input; never inferred from a submitted support. */
 export declare const contributorOutsideAuthority: readonly AuthorityGrant[];
 export declare const contributorSupportIds: string[];
@@ -65,7 +24,31 @@ export declare const reviewerBriefs: {
 };
 /** What a recheck and the last combined round admit; it is what ends them. */
 export declare const reviewAdmissionRule = "a new finding is admitted only when it breaks an acceptance criterion or a behavior `main` had, and any other new finding is recorded in the handoff, not fixed";
+/** What a finding names to block, in every round of every ladder: the
+ * verifier's supported-input rule, stated to the reviewer in its brief and to
+ * the executor in its role text. */
+export declare const reviewBlockingRule = "a finding blocks when it names the acceptance criterion it fails and an input the kit's writers or an author's ordinary text produce, or a leak (a copy, a broken link or a wrong pass admitted), or behavior `main` had with the probe that shows it; anything else is reported as a recorded finding";
+/** The roles a shared rule can bind: every role but the router, whose root
+ * is written whole below and is no composition of these. */
+export declare const SHARED_RULE_ROLES: readonly ["executor", "verifier", "reviewer", "release-close", "planner", "refuter"];
+export type SharedRuleRole = (typeof SHARED_RULE_ROLES)[number];
+/** A shared rule: text that several roles' roots hold, under an identifier,
+ * with the roles it binds. A role's emitted root holds the rules that name
+ * it, each whole and once, and no other shared rule. A rule names a role
+ * when that role's procedure reaches the command, the phase or the host the
+ * rule governs; the reason for each role, kept or left out, is a cell of the
+ * rule-by-role table, which an order that adds or edits a record changes
+ * with it (WO-276, Part F). A rule is never reworded for one role. */
+export interface SharedRule {
+    readonly id: string;
+    readonly roles: readonly SharedRuleRole[];
+    readonly text: string;
+}
 export declare const browserVerificationGuidance = "Browser verification uses a browser the session launches: inspect structured state, then the DOM and accessibility tree through the Playwright MCP snapshot, then network and event data, then take a screenshot and read it as an image, or use the project's own browser tests; desktop control (the operator's screen, clicks and typing outside that browser) and the operator's own browser sessions (Claude in Chrome or the desktop app's browser pane) are refused unless dotln.config.json elects features.desktop-control (off by default) and the operator explicitly requests their use in this session.";
+/** The parent's steps of a refutation, as the refuter's root states them.
+ * `npm run plan -- refute` prints them beside the prompt, so a planning pass
+ * reaches its refutation by that command and loads no second skill. */
+export declare const refutationParentSteps: readonly ["Resolve cwd and Git root. The parent coordinates one fresh background refuter without inherited conversation (Codex: spawn_agent with fork_turns none; Claude: a fresh background agent). Give it only the canonical prompt, its result schema and the shared goal card; no planner narrative, prior receipts or other subject preread. The parent remains the sole repository writer. A worker already given that prompt judges it directly; it does not spawn another refuter.", "Run `npm run plan -- refute` for planning: refute, or add `--scope full` for planning: refute full; --direct remains an alias. The helper verifies committed/workspace equality and prints the canonical prompt and closed JSON schema. Pass scope judges changed orders and sequence; other verdicts carry by hash. The worker returns its frozen JSON and a truthful single-line statement of at most 4000 characters to the parent, using scratch files if needed, with no repository or Git writes. While it runs, complete independent closeout work without changing the frozen subject.", "The parent saves the worker's result and statement in ignored local files and runs `npm run plan -- receipt <result.json> --statement <statement.txt> [--dispositions <file>]`. The helper validates, screens, files and commits the immutable pair and runs the plan check. Preserve aligned, aligned-with-findings or observed-evidence misaligned verdicts. Hypotheticals are known issues with reopening observations. Record criterion-bound dispositions using `npm run plan -- dispose <receipt-id> <hold-id> <reason>`; they discharge holds without another judgment. Apply only operator-authorized overrides. No third-hold or duration refusal applies. Repair formatting with the same worker without rerolling the judgment. Report scope, elapsed time and actual result. Use no ad hoc receipt script. External `refute --transport <name>` requires an explicit operator request; do not fall back to it after a worker failure. If background workers are unavailable, report that limitation and preserve the pending review."];
 export declare const contributorRoles: readonly HarnessRole[];
 export declare const contributorEnvelope: AuthorityEnvelope;
 /** The Contributor build's absence policy is one read-only pulse: while the
@@ -84,10 +67,16 @@ export declare const contributorLoadout: LoadoutGraph;
 export declare const contributorLoadoutBeforeMissionCheck: LoadoutGraph;
 /** Keep the original saved build intact; equipment creates a new build. */
 export declare function contributorWithSupports(supportIds?: readonly string[]): LoadoutGraph;
+/** Every shared rule, in the order a root holds them: the operator's
+ * controls, the rules above, the session's boundaries and the corrections. */
+export declare const sharedRules: readonly SharedRule[];
 export declare function contributorRolesFor(program: CompiledProgram): readonly HarnessRole[];
 export interface ContributorBuildOverlay {
     readonly desktopControl?: boolean;
     readonly planFirst?: boolean;
+    /** The instance's named workers and model rows, supplied by the emitter;
+     * the worker definitions carry what its table resolves to. */
+    readonly workers?: ContributorWorkersDeclared;
     readonly identity?: LoadoutGraph["identity"];
     readonly narrow?: PresenceNarrowing;
     readonly grants?: readonly AuthorityGrant[];

@@ -33,10 +33,14 @@ export interface WorkerRequest {
 export declare const HEARTBEAT_MS = 1000;
 export declare const LEASE_MS = 5000;
 export declare const WORKER_TIMEOUT_MS = 180000;
+/** Every way a worker's run fails, as an observation records it: one list
+ * the failure's type and the contracts that check a recorded code read. */
+export declare const WORKER_FAILURE_CODES: readonly ["model-unavailable", "transport-failed", "interrupted", "invalid-result", "deadline-exceeded", "output-limit", "profile-refused", "documents-unread", "contract-unreadable"];
+export type WorkerFailureCode = (typeof WORKER_FAILURE_CODES)[number];
 export declare class WorkerFailure extends Error {
-    readonly code: "model-unavailable" | "transport-failed" | "interrupted" | "invalid-result" | "deadline-exceeded" | "output-limit" | "profile-refused";
+    readonly code: WorkerFailureCode;
     readonly detail?: string | undefined;
-    constructor(code: "model-unavailable" | "transport-failed" | "interrupted" | "invalid-result" | "deadline-exceeded" | "output-limit" | "profile-refused", detail?: string | undefined);
+    constructor(code: WorkerFailureCode, detail?: string | undefined);
 }
 export declare const resultId: (command: Command) => string;
 export declare function workerResultSchema(request: WorkerRequest): object;

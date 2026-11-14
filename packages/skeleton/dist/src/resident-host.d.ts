@@ -26,7 +26,8 @@ export interface ResidentHostOptions {
     directory: string;
     policyId: string;
     commandRoot?: string;
-    workOrderIndexPath?: string;
+    /** The work-order cards, handed in by the script-side launcher. */
+    workOrderCards?: () => string;
     workOrderIndexError?: import("./runtime-status-contract.js").WorkOrderSourceReason;
     configuration?: ResidentConfiguration;
     now?: () => number;

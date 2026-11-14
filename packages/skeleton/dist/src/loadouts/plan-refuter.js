@@ -17,7 +17,12 @@ export const PLAN_REFUTER_DENIED = [
     "decision.*",
     "decision.edit",
 ];
-export function planRefuterLoadout(expiresAt) {
+/** The refuter's loadout. `core` is whether the root is core's own: one
+ * known fact names the order of core's that built this refuter and is judged
+ * by it there. An instance's refuter is not told it, so an instance's order
+ * of that number is judged as any other; said by no caller, the root is not
+ * core's. */
+export function planRefuterLoadout(expiresAt, core = false) {
     const base = entropyReducerLoadout(expiresAt);
     const active = base.activeMechanics[0];
     return {
@@ -76,7 +81,7 @@ export function planRefuterLoadout(expiresAt) {
                     acceptanceCriteria: [...PLAN_REFUTER_QUESTIONS],
                     knownFacts: [
                         "Only the compiled subject is visible",
-                        "WO-041's own verdict is advisory",
+                        ...(core ? ["WO-041's own verdict is advisory"] : []),
                     ],
                     decisions: ["Contra-Auguste mask; architecture-and-semantics lens"],
                     constraints: [
@@ -109,8 +114,8 @@ export function planRefuterLoadout(expiresAt) {
         resourceModel: { ...base.resourceModel, capacities: {}, reservations: [] },
     };
 }
-export function compilePlanRefuter(revision, dispatchedAt) {
-    const compiled = compileLoadout(planRefuterLoadout(dispatchedAt + PLAN_REFUTATION_LIMITS.timeoutMs), {
+export function compilePlanRefuter(revision, dispatchedAt, core = false) {
+    const compiled = compileLoadout(planRefuterLoadout(dispatchedAt + PLAN_REFUTATION_LIMITS.timeoutMs, core), {
         environmentId: "plan-refutation-v1",
         version: 1,
         capabilities: [],

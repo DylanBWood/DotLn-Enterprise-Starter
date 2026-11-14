@@ -925,7 +925,7 @@ const foldWalkingEvent = (state, worker, event, env, compiled) => {
 };
 const walkingDecision = (state, worker, event, env) => {
     if (event.type === "ArtifactIdentityEnforcementStarted") {
-        if (canonicalStringify(event.payload) !== '{"payloadVersion":1}')
+        if (!same(event.payload, { payloadVersion: 1 }))
             return artifactRefused(state, event, "ArtifactIdentityInvalid", "invalid enforcement boundary");
         if (state.identityEnforcementEventId !== null)
             return observed(state, event, "already-enforced");

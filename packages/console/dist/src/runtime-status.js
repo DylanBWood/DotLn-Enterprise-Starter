@@ -1,6 +1,12 @@
 import { readFileSync, watch } from "node:fs";
 import { join, resolve } from "node:path";
 import { decodeRuntimeStatus, } from "@dotln/skeleton/dist/src/runtime-status-contract.js";
+/** A work-order source's reason as a reader meets it. A resident started
+ * through the package's own entry has no card source: the reason then names
+ * the launcher that hands it one. */
+export const workOrderSourceReason = (reason) => reason === "binding-unavailable"
+    ? `${reason}; start the resident with scripts/resident.mjs`
+    : reason;
 export const RUNTIME_STATUS_FILE = "runtime-status-v1.json";
 export function readRuntimeStatus(directory) {
     return decodeRuntimeStatus(JSON.parse(readFileSync(join(directory, RUNTIME_STATUS_FILE), "utf8")));
@@ -34,7 +40,7 @@ export function renderRuntimeStatus(view) {
         "Budget (portfolio actors only; intent admissions excluded)",
         `  ${view.budget.status} · episodes ${amount(view.budget.episodes)} · wall ${amount(view.budget.wallMs)} ms · tokens ${amount(view.budget.tokens)}`,
         "",
-        `Open work orders (${view.workOrders.status}${view.workOrders.reason ? `: ${view.workOrders.reason}` : ""})`,
+        `Open work orders (${view.workOrders.status}${view.workOrders.reason ? `: ${workOrderSourceReason(view.workOrders.reason)}` : ""})`,
         ...(view.workOrders.items.length
             ? view.workOrders.items.map((order) => `  ${order.order}: ${display(order.phase)} · dependencies ${order.dependency} · verdict ${label(order.verdict)}`)
             : ["  none available"]),

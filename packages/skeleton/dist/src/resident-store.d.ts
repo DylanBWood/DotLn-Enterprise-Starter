@@ -63,27 +63,62 @@ export declare class ResidentTransaction {
  * Presence only takes the latter, so it remains usable during a running episode. */
 export declare class ResidentStore {
     private readonly predicates;
-    private readonly indexPath?;
+    /** The work-order cards, as the index command prints them with `--json`,
+     * which the script-side launcher hands the resident: this package reads
+     * no page and no Markdown. A helper over the same store has none and
+     * reads the copy the owner keeps beside its binding. */
+    private readonly cardSource?;
     private readonly indexError?;
     readonly store: WorkerStore;
     private readonly appendStore;
     private observedBytes;
-    constructor(directory: string, predicates?: PredicateRegistry, indexPath?: string | undefined, indexError?: WorkOrderSourceReason | undefined);
+    /** The newest reading the owner's card source has given. */
+    private newest;
+    constructor(directory: string, predicates?: PredicateRegistry, 
+    /** The work-order cards, as the index command prints them with `--json`,
+     * which the script-side launcher hands the resident: this package reads
+     * no page and no Markdown. A helper over the same store has none and
+     * reads the copy the owner keeps beside its binding. */
+    cardSource?: (() => string) | undefined, indexError?: WorkOrderSourceReason | undefined);
     private get sourcePath();
+    /** The owner's copy of the cards its launcher last gave it, inside the
+     * store: what a helper reads through the binding. */
+    private get cardsPath();
     private readRegular;
+    /** The cards, read and nothing written, so a transaction can read them
+     * before it takes its lock: what the owner's launcher source gives, or a
+     * helper's copy through the owner's binding. */
     private readIndex;
     private sweepStatusTemporaries;
     /** Only the lifetime owner selects the source. Helpers, including installed
-     * harness snapshots, read this private binding instead of their own checkout. */
+     * harness snapshots, read this private binding instead of their own checkout.
+     * It holds the cards' availability with their place: the reason the owner
+     * has none, at launch or at its last read, or where its copy is. */
     private bindIndex;
+    /** Inside the lock, what the owner's source gave is kept where a helper
+     * reads it: a copy of the cards beside the binding, and the binding. */
+    private keepCards;
     /** Readers see the old complete file or the new complete file. The log is
-     * authoritative; an interrupted projection write is rebuilt next transaction. */
+     * authoritative; an interrupted projection write is rebuilt next
+     * transaction. `index` is the cards' reading the transaction took before
+     * its lock. */
     private publish;
     private replaceProjection;
     /** `observe: false` leaves the host's change baseline alone, so another
      * in-process writer (the console's receipts) cannot hide a concurrent
-     * append such as a served presence change from a running tick. */
-    transaction<T>(operation: (tx: ResidentTransaction) => T, { observe }?: {
+     * append such as a served presence change from a running tick.
+     *
+     * An owner whose launcher hands it a card source reads the work-order cards
+     * before the append lock is taken: that source runs the index command
+     * whenever a file the cards derive from has changed, for seconds, and a
+     * helper waiting for the lock (a presence command, a hook's heartbeat)
+     * gives up after two. Nothing the transaction appends changes the cards,
+     * and every status it publishes holds the newest reading this owner has
+     * taken, so a slower transaction never writes an older one back. A helper
+     * reads the owner's copy through the binding inside the lock, as before:
+     * a cheap read, and the order that keeps it from cards older than a
+     * failure the owner has bound. */
+    transaction<T>(operation: (tx: ResidentTransaction, publishWith: (tx: ResidentTransaction) => void) => T, { observe }?: {
         observe?: boolean;
     }): Promise<T>;
     acquire(): Promise<void>;

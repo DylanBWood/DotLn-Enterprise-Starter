@@ -3,8 +3,13 @@ import { Cadence } from "@dotln/kernel";
 export declare const PLAN_REFUTER_QUESTIONS: readonly ["For each order, which critical-path gate does it unblock and what is the NoOp cost in the records?", "How do all eight system traps apply to the order's own process cost?", "Does the Cost line name a removal larger than the addition?", "Does failure of the mechanism degrade to the old behavior rather than refusing?"];
 export declare const PLAN_REFUTER_ALLOWED: readonly ["repo.read*", "report.emit"];
 export declare const PLAN_REFUTER_DENIED: readonly ["repo.write*", "git.mutate*", "remote.*", "settings.*", "decision.*", "decision.edit"];
-export declare function planRefuterLoadout(expiresAt: number): LoadoutGraph;
-export declare function compilePlanRefuter(revision: string, dispatchedAt: number): {
+/** The refuter's loadout. `core` is whether the root is core's own: one
+ * known fact names the order of core's that built this refuter and is judged
+ * by it there. An instance's refuter is not told it, so an instance's order
+ * of that number is judged as any other; said by no caller, the root is not
+ * core's. */
+export declare function planRefuterLoadout(expiresAt: number, core?: boolean): LoadoutGraph;
+export declare function compilePlanRefuter(revision: string, dispatchedAt: number, core?: boolean): {
     ok: true;
     program: import("@dotln/compiler").CompiledProgram;
     semanticHash: string;

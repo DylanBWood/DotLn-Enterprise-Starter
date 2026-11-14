@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { appendFileSync, closeSync, existsSync, fstatSync, lstatSync, mkdirSync, openSync, readFileSync, readSync, readdirSync, } from "node:fs";
 import { join } from "node:path";
+import { readJournalRows } from "./dispatch-journal.mjs";
 import { readGateChecks } from "./gate-evidence.mjs";
 import { sessionTranscript, usageSessionKey } from "./usage-observation.mjs";
 const digest = (value) => createHash("sha256").update(value).digest("hex");
@@ -10,24 +11,7 @@ const journalPath = (root, scope) => {
         throw new Error("Invalid observation session");
     return join(directory(root), `${scope.sessionKey}.jsonl`);
 };
-const rows = (path) => {
-    if (!existsSync(path))
-        return [];
-    if (!lstatSync(path).isFile() || lstatSync(path).isSymbolicLink())
-        throw new Error("Observation source is not a regular file");
-    return readFileSync(path, "utf8")
-        .split("\n")
-        .filter(Boolean)
-        .flatMap((line) => {
-        try {
-            const value = JSON.parse(line);
-            return value && typeof value === "object" ? [value] : [];
-        }
-        catch {
-            return [];
-        }
-    });
-};
+const rows = (path) => readJournalRows(path);
 export const journalRows = (root, scope) => rows(journalPath(root, scope));
 export function appendObservation(root, scope, row, now = new Date().toISOString()) {
     const path = journalPath(root, scope);
@@ -59,8 +43,15 @@ const terminalStates = new Set(["completed", "failed", "stopped", "killed"]);
 const taskInScope = (row, scope) => row.workOrder === scope.workOrder &&
     row.phase === scope.phase &&
     (!scope.startedAt || row.recordedAt >= scope.startedAt);
+/** The key a background task is journaled under: a digest of the host's
+ * identifier, never the identifier. */
+export const backgroundTaskKey = (id) => digest(id);
+/** Whether a state the host or the journal gives a task is a finished one. */
+export const terminalTaskState = (state) => terminalStates.has(state);
 // Positive tool metadata projection: no prompts, results or native task IDs.
-export function observeBackgroundTool(tool, input, output, at, invocationId) {
+// `agentId` is the worker whose call started the task, kept as a digest so a
+// stopping worker's own tasks can be told from the session's.
+export function observeBackgroundTool(tool, input, output, at, invocationId, agentId) {
     const task = output.task ?? output;
     const id = task.backgroundTaskId ??
         task.agentId ??
@@ -101,6 +92,7 @@ export function observeBackgroundTool(tool, input, output, at, invocationId) {
             ...(tool === "spawn_agent" ? { reusable: true } : {}),
             state,
             ...(dispatch ? { dispatchedAt: at } : {}),
+            ...(dispatch && agentId ? { startedBy: digest(agentId) } : {}),
             observedAt: at,
         },
     };
@@ -143,16 +135,48 @@ export function observedFacts(root, scope, now = new Date().toISOString()) {
         .at(-1);
     const gates = readGateChecks(root).filter((row) => row.workOrder === scope.workOrder &&
         (!scope.startedAt || row.recordedAt >= scope.startedAt));
+    const labelled = [...tasks.values()].map((task, index) => ({
+        ...task,
+        label: `task ${index + 1}`,
+        elapsedMs: Number.isFinite(Date.parse(task.dispatchedAt))
+            ? Date.parse(terminalStates.has(task.state) ? task.observedAt : now) -
+                Date.parse(task.dispatchedAt)
+            : null,
+    }));
+    // A worker's last stop, where it left tasks running: its own, by the call
+    // that started each, or tasks nobody's call is on record for. A task a
+    // later observation shows finished is no longer listed.
+    const lastStops = new Map();
+    for (const row of journal) {
+        const stop = row.workerStop;
+        if (!taskInScope(row, scope) || typeof stop?.agent !== "string")
+            continue;
+        lastStops.set(stop.agent, { ...stop, at: row.recordedAt });
+    }
+    const workerStops = [...lastStops.values()].flatMap((stop) => {
+        const running = (Array.isArray(stop.tasks) ? stop.tasks : []).filter((task) => task.owner !== "other" &&
+            !terminalStates.has(tasks.get(task.key)?.state));
+        return running.length
+            ? [
+                {
+                    agent: stop.agent,
+                    agentType: stop.agentType,
+                    at: stop.at,
+                    refused: stop.refused === true,
+                    reentry: stop.reentry === true,
+                    tasks: running.map((task) => ({
+                        type: task.type,
+                        owner: task.owner,
+                        label: labelled.find((known) => known.key === task.key)?.label ?? null,
+                    })),
+                },
+            ]
+            : [];
+    });
     return {
         now,
-        tasks: [...tasks.values()].map((task, index) => ({
-            ...task,
-            label: `task ${index + 1}`,
-            elapsedMs: Number.isFinite(Date.parse(task.dispatchedAt))
-                ? Date.parse(terminalStates.has(task.state) ? task.observedAt : now) -
-                    Date.parse(task.dispatchedAt)
-                : null,
-        })),
+        tasks: labelled,
+        workerStops,
         gates,
         usage: usage?.observation ?? null,
     };
@@ -166,11 +190,57 @@ export function renderObservedFacts(facts) {
         ...(facts.tasks.length
             ? facts.tasks.map((task) => `${task.label}: dispatched ${task.dispatchedAt ?? "unknown (dispatch-unavailable)"}; last observed state ${task.state}; elapsed ${terminalStates.has(task.state) ? "to terminal observation" : "since dispatch"} ${value(task.elapsedMs, "dispatch-unavailable")} ms; state observed ${task.observedAt}.`)
             : ["Background tasks: unknown (no-session-task-observation)."]),
+        ...facts.workerStops.map((stop) => {
+            const named = (owner) => stop.tasks
+                .filter((task) => task.owner === owner)
+                .map((task) => `${task.label ?? "a task"} (${task.type})`);
+            const [own, unknown] = [named("worker"), named("unknown")];
+            return `Worker ${stop.agentType} ${stop.agent.slice(0, 8)} stopped at ${stop.at}${own.length ? ` with ${own.length} background ${own.length === 1 ? "task" : "tasks"} of its own still running: ${own.join(", ")}` : ""}${unknown.length ? `${own.length ? "; and" : ""} while ${unknown.length} running ${unknown.length === 1 ? "task" : "tasks"} could not be attributed: ${unknown.join(", ")}` : ""}. Its claim to have stopped them is not this observation; stop each with the host's task-stop tool.`;
+        }),
         ...(facts.gates.length
             ? facts.gates.map((gate) => `Gate ${gate.checkId}: ${value(gate.durationMs, "gate-duration-unavailable")} ms; recorded ${gate.recordedAt}.`)
             : ["Gate durations: unknown (no-session-gate-row)."]),
         `Usage: ${["inputTokens", "cachedInputTokens", "cacheWriteInputTokens", "outputTokens", "reasoningOutputTokens", "totalTokens", "costUsd"].map((key) => `${key} ${value(facts.usage?.usage?.[key], "counter-unavailable")}`).join("; ")}; source ${facts.usage?.source ?? "unavailable"}; scope ${facts.usage?.scope ?? "unknown"}; cutoff ${facts.usage?.observedAt ?? "unknown (usage-unavailable)"}.`,
     ].join("\n");
+}
+/** The line a prompt's facts carry where the instance declares what a day may
+ * use: the day's use so far and the figure, in tokens, in dollars at the
+ * instance's declared prices, or both. Where a dollar figure meets a day
+ * whose sessions ran a model with no declared price, attest no model or hold
+ * no count, the estimate reads `unknown` beside the day's tokens, with what
+ * the priced sessions alone come to where that is known. At or above a
+ * figure, by the estimate or by that least amount, the line says to finish
+ * the step in hand, write the standing and end the turn. It is advisory and
+ * refuses nothing. */
+export function renderDailyUse(figure, use) {
+    const tokens = `${use.partial ? "at least " : ""}${use.totalTokens} tokens${use.partial ? " (an observation of the day holds no count)" : ""}`;
+    const dollars = (amount) => `$${amount.toFixed(2)}`;
+    const parts = [];
+    let reached = false;
+    if (typeof figure.tokens === "number") {
+        parts.push(`${tokens} of a daily figure of ${figure.tokens} tokens`);
+        reached ||= use.totalTokens >= figure.tokens;
+    }
+    if (typeof figure.usd === "number") {
+        const said = typeof figure.tokens === "number" ? "" : `${tokens}, `;
+        if (use.estimateUsd === null) {
+            const causes = [
+                ...(use.unpriced.length
+                    ? [`no price declared for ${use.unpriced.join(", ")}`]
+                    : []),
+                ...(use.unattested ? ["a session of the day attests no model"] : []),
+                ...(use.partial ? ["an observation of the day holds no count"] : []),
+            ];
+            const least = use.pricedUsd ?? 0;
+            parts.push(`${said}estimate unknown (${causes.join("; ") || "no estimate available"})${least > 0 ? `, at least ${dollars(least)} for the sessions that have one,` : ""} against a daily figure of ${dollars(figure.usd)}`);
+            reached ||= least >= figure.usd;
+        }
+        else {
+            parts.push(`${said}an estimated ${dollars(use.estimateUsd)} of a daily figure of ${dollars(figure.usd)}`);
+            reached ||= use.estimateUsd >= figure.usd;
+        }
+    }
+    return `Day's use (${use.day}, local calendar day): ${parts.join("; ")}.${reached ? " The daily figure is reached: finish the step in hand, write the standing and end the turn. This is advisory and refuses nothing." : ""}`;
 }
 function prose(text) {
     let fence = "";
@@ -663,7 +733,9 @@ export function observationBoundary(root, scope, options = {}) {
             scanCause =
                 "Final-message scan: unknown (session-observation-unavailable).";
         }
-        return [factsText, pending, scanCause].filter(Boolean).join("\n");
+        return [factsText, options.daily, pending, scanCause]
+            .filter(Boolean)
+            .join("\n");
     }
     catch {
         return "Observed facts: unknown (session-observation-unavailable); advisory only, no turn held.";

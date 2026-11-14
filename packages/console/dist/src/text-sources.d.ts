@@ -1,29 +1,43 @@
+import type { DocumentCell, DocumentStructure } from "./types.js";
 export interface TextRow {
     readonly key: string;
     readonly line: number;
     readonly values: Readonly<Record<string, string>>;
 }
-/** These are pinned repository formats, not a general Markdown implementation. */
-export declare function tableRows(text: string, header: readonly string[]): readonly TextRow[];
-export declare const plainText: (value: string) => string;
-export declare const markdownLinks: (value: string) => readonly string[];
+/** One row of a document table: its first cell, its line and every cell by
+ * its column's header. */
+export interface TableRow {
+    readonly key: DocumentCell;
+    readonly line: number;
+    readonly values: Readonly<Record<string, DocumentCell>>;
+}
+/** A document's structure as the collector received it, checked before any
+ * projection reads it. */
+export declare function documentStructure(value: unknown): DocumentStructure;
+/** A cell's text on one line: a line break in a table cell reads as "; ". */
+export declare const cellText: (cell: DocumentCell) => string;
+/** The rows of every table whose header row is `header`, in document order;
+ * a row with another column count refuses. */
+export declare function tableRows(document: DocumentStructure, header: readonly string[]): readonly TableRow[];
 export declare const CAPABILITY_HEADER: readonly ["Capability and declared scope", "Current level", "Target level", "Required dimensions", "Evidence links", "Dependencies", "Last change", "Next smallest promotable increment", "Blocking gate", "Efficiency"];
 export declare const PUBLICATION_HEADER: readonly ["Section", "Audiences", "Status"];
-export declare function parseCapabilities(text: string): readonly TextRow[];
-/** The generated index's two pages (WO-190) share one card format; each
- * page is pinned by its own title. A page without cards is a valid state (an
- * empty queue, or a fresh instance's history page). */
-export declare const INDEX_PAGE_TITLES: {
-    readonly index: "# Work orders";
-    readonly history: "# Work-order history";
-};
-export declare function parseWorkOrderIndex(text: string, title?: string): readonly TextRow[];
-/** Workstream cells come from the index's committed JSON observation, never
- * from prose or a live target checkout. Older indexes have no groups. */
-export declare function parseWorkstreams(text: string): readonly TextRow[];
+/** Every row of the capability table's recognized tables, in line order, each
+ * with the assessment its nearest level-two heading names. A table with any
+ * other header refuses. */
+export declare function parseCapabilities(value: unknown): readonly TableRow[];
+/** One workstream member: its `WS-NNN/WO-NNN` key and its cells. */
+export interface WorkstreamRow {
+    readonly key: string;
+    readonly values: Readonly<Record<string, string>>;
+}
+/** Workstream cells come from the index record's workstream observation,
+ * never from prose or a live target checkout. */
+export declare function parseWorkstreams(text: string): readonly WorkstreamRow[];
 export declare function parseReleases(text: string): readonly TextRow[];
 export declare function parseConstellation(text: string): readonly TextRow[];
-export declare function parsePendingRungs(text: string): readonly TextRow[];
+/** The roadmap's pending application rungs: each level-two heading that
+ * names an application version still pending. */
+export declare function parsePendingRungs(value: unknown): readonly TextRow[];
 export interface RefutationSummary {
     readonly receipt: string;
     readonly format: string;

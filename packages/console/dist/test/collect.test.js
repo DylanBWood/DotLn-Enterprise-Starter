@@ -17,6 +17,10 @@ const realGit = execFileSync("sh", ["-c", "command -v git"], {
 const cache = "docs/control/local/cache/release-list.json";
 // One range selection per tag and one tree per unique historical view.
 // Tag objects, control blobs and note diffs each use bounded batches.
+// Every collection starts the same node processes, whatever the order and tag
+// counts: the status fold, usage, the constellation, the release list, one
+// read of the authored documents' structure and the index's own cards.
+const nodeSpawns = 6;
 const gitPerNewTag = 2;
 const batchGit = 4; // tag batch, control batch, note batch, boundary view
 // Every warm collection, whatever the order and tag counts: the branch, the
@@ -142,10 +146,10 @@ test("WO-164 console collection spawns a constant number of processes and Git re
             `${saved.NODE_OPTIONS ?? ""} --import=${pathToFileURL(join(base, "node-census.mjs")).href}`.trim();
         process.env["DOTLN_LAUNCHPAD"] = repo;
         const cold = await census();
-        assert.equal(cold.node.length, 4, cold.node.join("\n"));
+        assert.equal(cold.node.length, nodeSpawns, cold.node.join("\n"));
         assert.ok(cold.git.length <= warmGit.length + gitPerNewTag * 4 + batchGit, `cold collection starts ${cold.git.length} Git processes:\n${cold.git.join("\n")}`);
         const warm = await census();
-        assert.equal(warm.node.length, 4, warm.node.join("\n"));
+        assert.equal(warm.node.length, nodeSpawns, warm.node.join("\n"));
         assert.deepEqual(warm.subcommands, warmGit, warm.git.join("\n"));
         assert.equal(releases(warm.sources), releases(cold.sources));
         assert.equal(git("status", "--porcelain"), "");
@@ -153,11 +157,11 @@ test("WO-164 console collection spawns a constant number of processes and Git re
         for (let index = 5; index <= 8; index += 1)
             release(index);
         const grown = await census();
-        assert.equal(grown.node.length, 4, grown.node.join("\n"));
+        assert.equal(grown.node.length, nodeSpawns, grown.node.join("\n"));
         assert.ok(grown.git.length > warm.git.length);
         assert.ok(grown.git.length - warm.git.length <= gitPerNewTag * 4 + batchGit, `four new tags cost ${grown.git.length - warm.git.length} Git spawns:\n${grown.git.join("\n")}`);
         const steady = await census();
-        assert.equal(steady.node.length, 4, steady.node.join("\n"));
+        assert.equal(steady.node.length, nodeSpawns, steady.node.join("\n"));
         assert.deepEqual(steady.subcommands, warmGit, steady.git.join("\n"));
         t.diagnostic(`node/Git spawns: cold 5 orders 4 tags ${cold.node.length}/${cold.git.length}; warm ${warm.node.length}/${warm.git.length}; four new tags ${grown.node.length}/${grown.git.length}; warm 9 orders 8 tags ${steady.node.length}/${steady.git.length}`);
         const statuses = steady.sources.controlStatus;
@@ -199,7 +203,7 @@ test("WO-164 console collection spawns a constant number of processes and Git re
         writeFileSync(resumeModule, failingFold);
         const fellBack = await census();
         writeFileSync(resumeModule, resumeSource);
-        assert.equal(fellBack.node.length, 4 + ids.length, fellBack.node.join("\n"));
+        assert.equal(fellBack.node.length, nodeSpawns + ids.length, fellBack.node.join("\n"));
         const fallback = fellBack.sources.controlStatus;
         if (fallback?.status !== "available")
             assert.fail(`status unavailable: ${JSON.stringify(fallback)}`);
@@ -263,7 +267,7 @@ test("WO-164 console collection spawns a constant number of processes and Git re
         tagRelease("v0.1.9", { release: { previousRelease: "side-boundary" } });
         const many = await census();
         assert.match(releases(many.sources), row("v0.1.9", "v0.1.9", "WO-979,WO-980"));
-        assert.equal(many.node.length, 4);
+        assert.equal(many.node.length, nodeSpawns);
         assert.ok(many.git.length <= warmGit.length + 21 + 1 + 5, `one new tag over 20 commits starts ${many.git.length} Git processes`);
         assert.equal(releases(many.sources), listCold());
         // Optional aggregate reads must not reject a history that fits the

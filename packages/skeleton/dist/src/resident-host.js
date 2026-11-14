@@ -164,6 +164,26 @@ function observationDeadline(state) {
         .map((actor) => actor.lastHeartbeatAt +
         (state.configuration?.heartbeatBudgetMs ?? 30000)));
 }
+// Every option the host reads, held to the interface by the compiler: a key
+// the interface gains or loses is a compile error here until this follows.
+const HOST_OPTIONS = {
+    directory: true,
+    policyId: true,
+    commandRoot: true,
+    workOrderCards: true,
+    workOrderIndexError: true,
+    configuration: true,
+    now: true,
+    catalog: true,
+    predicates: true,
+    capabilities: true,
+    portfolio: true,
+    vertical: true,
+};
+// An option a release removed, with what replaced it.
+const REPLACED_OPTIONS = {
+    workOrderIndexPath: "workOrderCards, a function that returns the work-order cards: scripts/resident.mjs hands the resident workOrderCardSource from scripts/lib/work-order-cards.mjs",
+};
 export class ResidentHost {
     options;
     store;
@@ -174,7 +194,15 @@ export class ResidentHost {
     started = false;
     constructor(options) {
         this.options = options;
-        this.store = new ResidentStore(options.directory, options.predicates, options.workOrderIndexPath, options.workOrderIndexError);
+        // A caller written against another release's options is refused by name:
+        // an option the host does not read would otherwise be dropped in silence,
+        // and what it was meant to give would read as unavailable.
+        for (const key of Object.keys(options))
+            if (!Object.hasOwn(HOST_OPTIONS, key))
+                throw new Error(REPLACED_OPTIONS[key]
+                    ? `resident host option ${key} was replaced by ${REPLACED_OPTIONS[key]}`
+                    : `unknown resident host option: ${key}`);
+        this.store = new ResidentStore(options.directory, options.predicates, options.workOrderCards, options.workOrderIndexError);
         this.now = options.now ?? Date.now;
         this.catalog =
             options.catalog ??

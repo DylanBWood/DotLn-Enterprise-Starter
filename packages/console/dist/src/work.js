@@ -1,44 +1,46 @@
 import { array, fact, id, known, object, string, unknown, } from "./values.js";
-import { INDEX_PAGE_TITLES, markdownLinks, parseConstellation, parseReleases, parseWorkOrderIndex, parseWorkstreams, plainText, } from "./text-sources.js";
-/** The generated index's two pages (WO-190), each its own section. */
+import { readWorkOrderCards } from "@dotln/skeleton/dist/src/runtime-status-contract.js";
+import { parseConstellation, parseReleases, parseWorkstreams, } from "./text-sources.js";
+/** The generated index's two pages (WO-190), each its own section. Their
+ * cards are read from the index command's own output, which the collector
+ * runs, and each card's evidence names its page and line. */
+const WORK_ORDER_INDEX = "work-orders:index--json";
 const INDEX_PAGES = {
     index: {
         sectionId: "work-order-index",
         title: "Work-order evidence index",
         ref: "docs/work-orders/README.md",
-        pageTitle: INDEX_PAGE_TITLES.index,
+        page: "index",
     },
     history: {
         sectionId: "work-order-history",
         title: "Work-order history index",
         ref: "docs/work-orders/HISTORY.md",
-        pageTitle: INDEX_PAGE_TITLES.history,
+        page: "history",
     },
 };
 /** One generated index page as a section; the two pages partition the
  * orders, so a card the other page already holds makes this section
  * unavailable before any of its rows enters the shared map. */
 function indexPage(ctx, indexed, page, source) {
-    return ctx.section(page.sectionId, page.title, source, page.ref, (text, ref) => {
-        const rows = parseWorkOrderIndex(text, page.pageTitle);
-        for (const row of rows)
-            if (indexed.has(row.key))
-                throw new Error(`work-order card ${row.key} is on both pages`);
-        return rows.map((row) => {
-            const evidence = ctx.ref(ref, `line:${row.line} (${row.key})`);
-            const links = Object.values(row.values)
-                .flatMap(markdownLinks)
-                .map((link) => ({
-                label: `Evidence: ${link}`,
-                target: ctx.ref(ref, `link:${link}`)[0],
-            }));
+    return ctx.section(page.sectionId, page.title, source, WORK_ORDER_INDEX, (text) => {
+        const ref = page.ref;
+        const cards = readWorkOrderCards(text, page.page);
+        for (const card of cards)
+            if (indexed.has(card.id))
+                throw new Error(`work-order card ${card.id} is on both pages`);
+        return cards.map((card) => {
+            const evidence = ctx.ref(ref, `line:${card.line} (${card.id})`);
             const result = {
-                id: id("indexed-order", row.key),
-                title: row.key,
-                cells: Object.entries(row.values).map(([key, value]) => known(key, key, plainText(value), evidence)),
-                links,
+                id: id("indexed-order", card.id),
+                title: card.id,
+                cells: Object.entries({ title: card.title, ...card.fields }).map(([key, value]) => known(key, key, value, evidence)),
+                links: card.links.map((link) => ({
+                    label: `Evidence: ${link}`,
+                    target: ctx.ref(ref, `link:${link}`)[0],
+                })),
             };
-            indexed.set(row.key, result);
+            indexed.set(card.id, result);
             return result;
         });
     });
@@ -47,7 +49,7 @@ export function projectWork(ctx, sources) {
     const indexed = new Map();
     // Both pages are indexed before the status and release rows link to them.
     const index = indexPage(ctx, indexed, INDEX_PAGES.index, sources.workOrderIndex);
-    const history = indexPage(ctx, indexed, INDEX_PAGES.history, sources.workOrderHistory);
+    const history = indexPage(ctx, indexed, INDEX_PAGES.history, sources.workOrderIndex);
     const status = ctx.section("orders", "Orders and legal actions", sources.controlStatus, "resume:status--json", (values, ref) => {
         const ids = new Set();
         return values.map((value) => {
@@ -162,7 +164,7 @@ export function projectWork(ctx, sources) {
             }),
         ];
     });
-    const workstreams = ctx.section("workstreams", "Workstreams", sources.workOrderIndex, INDEX_PAGES.index.ref, (text, ref) => parseWorkstreams(text).map((row) => {
+    const workstreams = ctx.section("workstreams", "Workstreams", sources.workOrderIndex, WORK_ORDER_INDEX, (text, ref) => parseWorkstreams(text).map((row) => {
         const detail = indexed.get(row.values["workOrder"]);
         return {
             id: id("workstream-member", row.key),

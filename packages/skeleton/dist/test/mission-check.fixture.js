@@ -5,8 +5,16 @@ import { mkdirSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { buildMissionCheckRequest } from "../src/mission-check-host.js";
-import { missionPinFromSource, observeMissionSubject, } from "../src/mission-check-source.js";
+import { missionPinFromSource, observeMissionDocuments, observeMissionSubject, } from "../src/mission-check-source.js";
 import { decodeResidentConfiguration } from "../src/resident-state.js";
+/** The repository's reader of the documents a mission check judges, which
+ * the resident's launcher and bind command hand the package; the package
+ * itself reads no Markdown. */
+export const missionDocumentReader = (await import(new URL("../../../../scripts/lib/mission-documents.mjs", import.meta.url)
+    .href)).missionDocumentReader;
+/** The capsule a dispatch observes now, its documents read through that
+ * reader. */
+export const observeSubject = (source, pin) => observeMissionSubject(source, pin, observeMissionDocuments(source, missionDocumentReader));
 export const MISSION_SURFACE = "fixture.mission";
 const CONTRACT = `# WO-999 — Fixture order
 
@@ -99,8 +107,8 @@ export function missionFixture(options = {}) {
         visionPath: "docs/product/00-vision.md",
         thesisHeadings: [["the-core-bet", "The core bet"]],
     };
-    const pin = missionPinFromSource(source, "WO-999");
-    const subject = observeMissionSubject(source, pin);
+    const pin = missionPinFromSource(source, "WO-999", missionDocumentReader);
+    const subject = observeSubject(source, pin);
     const request = buildMissionCheckRequest({
         subject,
         model: options.model ?? "fixture-model",

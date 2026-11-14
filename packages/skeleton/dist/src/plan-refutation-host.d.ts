@@ -1,7 +1,7 @@
 import { type PlanRefutationRequest, type PlanSubject } from "./plan-refutation-protocol.js";
 import { type WorkOrderTransport } from "./worker-transport.js";
 /** A one-shot counterpart of the blinded verification capsule host. */
-export declare function runPlanRefutation(subject: PlanSubject, transport: WorkOrderTransport<PlanRefutationRequest>, model: string, effort: string, now?: () => number, retentionDirectory?: string): Promise<{
+export declare function runPlanRefutation(subject: PlanSubject, transport: WorkOrderTransport<PlanRefutationRequest>, model: string, effort: string, now?: () => number, retentionDirectory?: string, core?: boolean): Promise<{
     effort: string;
     mode?: "subagents";
     raw?: string;

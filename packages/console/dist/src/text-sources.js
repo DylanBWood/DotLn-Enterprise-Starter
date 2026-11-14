@@ -1,49 +1,66 @@
-import { array, object, optionalString, string, strings } from "./values.js";
-/** These are pinned repository formats, not a general Markdown implementation. */
-export function tableRows(text, header) {
-    const result = [];
-    let matched = false;
-    let reading = false;
-    for (const [index, line] of text.split("\n").entries()) {
-        if (!line.startsWith("|")) {
-            reading = false;
-            continue;
-        }
-        const cells = line
-            .trim()
-            .slice(1, -1)
-            .split(/(?<!\\)\|/u)
-            .map((cell) => cell.trim().replaceAll("\\|", "|"));
-        if (cells.every((cell) => /^:?-+:?$/u.test(cell)))
-            continue;
-        if (cells.length === header.length &&
-            cells.every((cell, i) => cell === header[i])) {
-            matched = true;
-            reading = true;
-            continue;
-        }
-        if (!reading)
-            continue;
-        if (cells.length !== header.length)
-            throw new Error("table column count changed");
-        result.push({
-            key: cells[0],
-            line: index + 1,
-            values: Object.fromEntries(header.map((key, i) => [key, cells[i]])),
-        });
-    }
-    if (!matched)
-        throw new Error("expected table header is absent");
-    return result;
+import { readWorkOrderIndexRecord } from "@dotln/skeleton/dist/src/runtime-status-contract.js";
+import { array, number, object, optionalString, string, strings, } from "./values.js";
+/** A document's structure as the collector received it, checked before any
+ * projection reads it. */
+export function documentStructure(value) {
+    const record = object(value);
+    const cell = (item) => {
+        const entry = object(item);
+        return {
+            source: string(entry["source"]),
+            text: string(entry["text"]),
+            links: strings(entry["links"]),
+        };
+    };
+    return {
+        headings: array(record["headings"]).map((item) => {
+            const heading = object(item);
+            return {
+                depth: number(heading["depth"]),
+                title: string(heading["title"]),
+                line: number(heading["line"]),
+            };
+        }),
+        tables: array(record["tables"]).map((item) => {
+            const table = object(item);
+            return {
+                line: number(table["line"]),
+                rows: array(table["rows"]).map((item) => {
+                    const row = object(item);
+                    return {
+                        line: number(row["line"]),
+                        cells: array(row["cells"]).map(cell),
+                    };
+                }),
+            };
+        }),
+    };
 }
-export const plainText = (value) => value
-    .replace(/<br\s*\/?\s*>/giu, "; ")
-    .replace(/\[([^\]]+)\]\([^\s)]+\)/gu, "$1")
-    .replace(/`([^`]+)`/gu, "$1")
-    .replace(/\*\*([^*]+)\*\*/gu, "$1")
-    .replace(/\\([|_])/gu, "$1")
-    .trim();
-export const markdownLinks = (value) => [...value.matchAll(/\[[^\]]+\]\(([^\s)]+)\)/gu)].map((match) => match[1]);
+/** A cell's text on one line: a line break in a table cell reads as "; ". */
+export const cellText = (cell) => cell.text.replaceAll("\n", "; ");
+/** The document opens with this title, at depth one, on its first line. */
+function requireTitle(document, title) {
+    const first = document.headings[0];
+    if (first?.depth !== 1 || first.line !== 1 || first.title !== title)
+        throw new Error(`expected a document titled "${title}"`);
+}
+/** The rows of every table whose header row is `header`, in document order;
+ * a row with another column count refuses. */
+export function tableRows(document, header) {
+    const tables = document.tables.filter((table) => table.rows[0]?.cells.map((cell) => cell.source).join("\0") ===
+        header.join("\0"));
+    if (!tables.length)
+        throw new Error("expected table header is absent");
+    return tables.flatMap((table) => table.rows.slice(1).map((row) => {
+        if (row.cells.length !== header.length)
+            throw new Error("table column count changed");
+        return {
+            key: row.cells[0],
+            line: row.line,
+            values: Object.fromEntries(header.map((label, index) => [label, row.cells[index]])),
+        };
+    }));
+}
 export const CAPABILITY_HEADER = [
     "Capability and declared scope",
     "Current level",
@@ -57,48 +74,41 @@ export const CAPABILITY_HEADER = [
     "Efficiency",
 ];
 export const PUBLICATION_HEADER = ["Section", "Audiences", "Status"];
-export function parseCapabilities(text) {
-    if (!text.startsWith("# Capability table v1\n"))
-        throw new Error("capability format changed");
-    const headers = [
-        CAPABILITY_HEADER,
-        [
-            "Capability key",
-            "New staged evidence",
-            "Blocking-gate reassessment",
-            "Disposition",
-        ],
-        [
-            "Capability and scope",
-            "Current level",
-            "Target",
-            "Evidence",
-            "Next increment and dependencies",
-            "Blocking gate",
-        ],
-        [
-            "Capability and scope",
-            "Current assessment",
-            "Evidence and remaining gate",
-        ],
-        [
-            "Capability and scope",
-            "Current level",
-            "Target",
-            "Evidence and remaining gate",
-        ],
-    ];
-    const lines = text.split("\n");
+// The capability table's other recognized tables: its later assessments.
+const CAPABILITY_HEADERS = [
+    CAPABILITY_HEADER,
+    [
+        "Capability key",
+        "New staged evidence",
+        "Blocking-gate reassessment",
+        "Disposition",
+    ],
+    [
+        "Capability and scope",
+        "Current level",
+        "Target",
+        "Evidence",
+        "Next increment and dependencies",
+        "Blocking gate",
+    ],
+    ["Capability and scope", "Current assessment", "Evidence and remaining gate"],
+    [
+        "Capability and scope",
+        "Current level",
+        "Target",
+        "Evidence and remaining gate",
+    ],
+];
+/** Every row of the capability table's recognized tables, in line order, each
+ * with the assessment its nearest level-two heading names. A table with any
+ * other header refuses. */
+export function parseCapabilities(value) {
+    const document = documentStructure(value);
+    requireTitle(document, "Capability table v1");
     const used = [];
-    for (let index = 0; index < lines.length - 1; index++) {
-        if (!lines[index].startsWith("|") ||
-            !/^\|[ :|\-]+\|$/u.test(lines[index + 1]))
-            continue;
-        const cells = lines[index].trim()
-            .slice(1, -1)
-            .split(/(?<!\\)\|/u)
-            .map((cell) => cell.trim());
-        const header = headers.find((candidate) => candidate.join("\0") === cells.join("\0"));
+    for (const table of document.tables) {
+        const cells = table.rows[0]?.cells.map((cell) => cell.source) ?? [];
+        const header = CAPABILITY_HEADERS.find((candidate) => candidate.join("\0") === cells.join("\0"));
         if (!header)
             throw new Error("unrecognized capability table header");
         if (!used.includes(header))
@@ -107,79 +117,27 @@ export function parseCapabilities(text) {
     if (!used.includes(CAPABILITY_HEADER))
         throw new Error("capability inventory is absent");
     return used
-        .flatMap((header) => tableRows(text, header))
+        .flatMap((header) => tableRows(document, header))
         .sort((left, right) => left.line - right.line)
-        .map((row) => ({
-        ...row,
-        values: {
-            Assessment: lines
-                .slice(0, row.line)
-                .filter((line) => line.startsWith("## "))
-                .at(-1)
-                ?.slice(3) ?? "unknown",
-            ...row.values,
-        },
-    }));
+        .map((row) => {
+        const assessment = document.headings
+            .filter((heading) => heading.depth === 2 && heading.line < row.line)
+            .at(-1)?.title ?? "unknown";
+        return {
+            ...row,
+            values: {
+                Assessment: { source: assessment, text: assessment, links: [] },
+                ...row.values,
+            },
+        };
+    });
 }
-/** The generated index's two pages (WO-190) share one card format; each
- * page is pinned by its own title. A page without cards is a valid state (an
- * empty queue, or a fresh instance's history page). */
-export const INDEX_PAGE_TITLES = {
-    index: "# Work orders",
-    history: "# Work-order history",
-};
-export function parseWorkOrderIndex(text, title = INDEX_PAGE_TITLES.index) {
-    if (!text.startsWith(`${title}\n`) ||
-        !text.includes("This file is generated by"))
-        throw new Error(`expected a generated work-order page starting "${title}"`);
-    const rows = [];
-    const lines = text.split("\n");
-    for (let i = 0; i < lines.length; i++) {
-        const heading = lines[i].match(/^### (WO-\d{3})$/u);
-        if (!heading)
-            continue;
-        const values = {};
-        const start = i;
-        // A card ends at the next heading or at the page's link definitions.
-        while (i + 1 < lines.length &&
-            !/^#{1,3} /u.test(lines[i + 1]) &&
-            !/^\[WO-\d{3}\]: /u.test(lines[i + 1])) {
-            const line = lines[++i];
-            const field = line.match(/^- ([^:]+(?:\([^)]*\))?): (.+)$/u);
-            if (field)
-                values[field[1]] = field[2];
-            if (/^\[WO-\d{3} [^\]]*\]\(/u.test(line))
-                values["title"] = plainText(line);
-        }
-        if (!values["State"] || !values["Authority"])
-            throw new Error("incomplete work-order index row");
-        rows.push({ key: heading[1], line: start + 1, values });
-    }
-    return rows;
-}
-/** Workstream cells come from the index's committed JSON observation, never
- * from prose or a live target checkout. Older indexes have no groups. */
+/** Workstream cells come from the index record's workstream observation,
+ * never from prose or a live target checkout. */
 export function parseWorkstreams(text) {
-    if (!text.startsWith(`${INDEX_PAGE_TITLES.index}\n`) ||
-        !text.includes("This file is generated by"))
-        throw new Error("expected a generated work-order index");
-    const markers = text
-        .split("\n")
-        .flatMap((line, index) => line.includes("<!-- dotln-workstreams:")
-        ? [{ line, number: index + 1 }]
-        : []);
-    if (!markers.length)
-        return [];
-    const prefix = "<!-- dotln-workstreams: ";
-    const marker = markers[0];
-    if (markers.length !== 1 ||
-        !marker.line.startsWith(prefix) ||
-        !marker.line.endsWith(" -->"))
-        throw new Error("invalid workstream marker");
-    const record = object(JSON.parse(marker.line.slice(prefix.length, -4)));
     const seen = new Set();
     const streams = new Set();
-    return array(record["workstreams"]).flatMap((value) => {
+    return readWorkOrderIndexRecord(text).workstreams.flatMap((value) => {
         const stream = object(value);
         const workstream = string(stream["id"]);
         if (!/^WS-\d{3}$/u.test(workstream) || streams.has(workstream))
@@ -216,7 +174,7 @@ export function parseWorkstreams(text) {
                             : "yes"))
                 throw new Error("invalid or duplicate workstream member");
             seen.add(key);
-            return { key, line: marker.number, values };
+            return { key, values };
         });
     });
 }
@@ -305,21 +263,19 @@ export function parseConstellation(text) {
         };
     });
 }
-export function parsePendingRungs(text) {
-    if (!text.startsWith("# Roadmap — application release ladder\n"))
-        throw new Error("roadmap heading changed");
-    return text.split("\n").flatMap((line, index) => line.startsWith("## Application version pending — ")
-        ? [
-            {
-                key: line.slice(3),
-                line: index + 1,
-                values: {
-                    rung: line.slice(3),
-                    status: "pending (roadmap heading)",
-                },
-            },
-        ]
-        : []);
+/** The roadmap's pending application rungs: each level-two heading that
+ * names an application version still pending. */
+export function parsePendingRungs(value) {
+    const document = documentStructure(value);
+    requireTitle(document, "Roadmap — application release ladder");
+    return document.headings
+        .filter((heading) => heading.depth === 2 &&
+        heading.title.startsWith("Application version pending — "))
+        .map((heading) => ({
+        key: heading.title,
+        line: heading.line,
+        values: { rung: heading.title, status: "pending (roadmap heading)" },
+    }));
 }
 /** Latest is selected by the dated immutable filename, never by a prose verdict. */
 export function parseRefutation(ref, value) {

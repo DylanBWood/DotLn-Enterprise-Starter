@@ -128,7 +128,7 @@ const ignoredInventory = (source, surfaces) => {
 };
 /** Bounded projection of the documented work-order shape. Prose that is not
  * one of these clauses never becomes a contract clause. */
-export function missionClauses(markdown, declaredSurfaces) {
+export function missionClauses(contract, declaredSurfaces) {
     const surfaces = `Declared surfaces: ${[...declaredSurfaces].join(", ")}`;
     if (surfaces.length > MISSION_CAPSULE_BOUNDS.clauseChars)
         refuse("mission contract declares more surfaces than one clause can name");
@@ -138,7 +138,10 @@ export function missionClauses(markdown, declaredSurfaces) {
     // A clause longer than the bound is carried in parts, never cut: the pinned
     // and observed projections must still differ when the operator edits a
     // contract past that bound, which is the whole mid-episode change rule.
-    const push = (id, kind, text) => {
+    const push = (id, kind, value) => {
+        const text = value === null ? "" : collapse(value);
+        if (!text)
+            return;
         const limit = MISSION_CAPSULE_BOUNDS.clauseChars;
         if (text.length <= limit) {
             clauses.push({ id, kind, text });
@@ -151,34 +154,23 @@ export function missionClauses(markdown, declaredSurfaces) {
                 text: text.slice(at, at + limit),
             });
     };
-    // `$` means end of line under the m flag, which would truncate every block
-    // at its first newline. End of input is the explicit alternative here.
-    const END = "(?![\\s\\S])";
-    const block = (label) => {
-        const match = markdown.match(new RegExp(`^\\*\\*${label}:?\\*\\*([\\s\\S]*?)(?=\\n\\n\\*\\*|\\n\\n#|${END})`, "mu"));
-        const text = match?.[1] && collapse(match[1]);
-        return text || undefined;
-    };
-    const objective = block("Objective");
-    if (objective)
-        push("contract:objective", "objective", objective);
-    const criteria = markdown.match(new RegExp(`^\\*\\*Acceptance criteria[^*]*\\*\\*\\r?\\n([\\s\\S]*?)(?=\\n\\*\\*|\\n## |${END})`, "mu"))?.[1];
-    for (const [, index, text] of (criteria ?? "").matchAll(new RegExp(`^(\\d+)\\.\\s([\\s\\S]*?)(?=\\n\\d+\\.\\s|${END})`, "gmu")))
-        push(`contract:criterion:${index}`, "criterion", collapse(text));
-    const nonGoals = block("Non-goals");
-    if (nonGoals)
-        push("contract:non-goals", "non-goal", nonGoals);
-    const evidence = block("Evidence gate");
-    if (evidence)
-        push("contract:evidence-gate", "constraint", evidence);
+    push("contract:objective", "objective", contract.objective);
+    // A criterion's id is the number written before it, so renumbering a
+    // criterion is a change the pinned contract does not carry.
+    for (const criterion of contract.criteria)
+        push(`contract:criterion:${criterion.number}`, "criterion", criterion.text);
+    push("contract:non-goals", "non-goal", contract.nonGoals);
+    push("contract:evidence-gate", "constraint", contract.evidenceGate);
     if (clauses.length < 2)
         refuse("mission contract projection found no objective or criterion");
     return clauses;
 }
-/** Structured decision receipts, newest last, bounded to the declared window. */
-export function missionDecisions(markdown, limit) {
+/** Structured decision receipts, newest last, bounded to the declared
+ * window: each JSON block that parses to an object with a string `id` and
+ * `decision`. */
+export function missionDecisions(blocks, limit) {
     const rows = [];
-    for (const [, block] of markdown.matchAll(/```json\r?\n([\s\S]*?)```/gu)) {
+    for (const block of blocks) {
         let decision;
         try {
             decision = JSON.parse(block);
@@ -186,7 +178,7 @@ export function missionDecisions(markdown, limit) {
         catch {
             continue;
         }
-        if (typeof decision.id === "string" &&
+        if (typeof decision?.id === "string" &&
             typeof decision.decision === "string")
             rows.push({
                 id: decision.id,
@@ -197,9 +189,15 @@ export function missionDecisions(markdown, limit) {
     const window = Math.min(limit, MISSION_CAPSULE_BOUNDS.decisions);
     return window > 0 ? rows.slice(-window) : [];
 }
-export function missionTheses(markdown, headings) {
+/** The declared theses, each the text under the vision's level-two or
+ * level-three heading of that title; a heading the vision does not carry is
+ * skipped. */
+export function missionTheses(vision, headings) {
     const theses = headings.flatMap(([id, title]) => {
-        const text = section(markdown, title);
+        const text = vision.sections
+            .find((section) => section.title === title &&
+            (section.depth === 2 || section.depth === 3))
+            ?.body.trim();
         return text
             ? [
                 {
@@ -214,41 +212,39 @@ export function missionTheses(markdown, headings) {
         refuse("mission capsule found no vision thesis");
     return theses;
 }
-export function missionExclusions(markdown) {
-    const source = section(markdown, "What DotLn is not");
-    const exclusions = [
-        ...(source ?? "").matchAll(/^- ([\s\S]*?)(?=^- |\n\n|(?![\s\S]))/gmu),
-    ].map((match, index) => ({
+/** What DotLn is not, one exclusion per item of the vision's list. */
+export function missionExclusions(vision) {
+    const exclusions = vision.exclusions.map((item, index) => ({
         id: `what-dotln-is-not:${index + 1}`,
-        text: contextText(collapse(match[1]), MISSION_CAPSULE_BOUNDS.clauseChars),
+        text: contextText(collapse(item), MISSION_CAPSULE_BOUNDS.clauseChars),
     }));
     if (!exclusions.length)
         refuse("mission capsule found no vision exclusion");
     return exclusions.slice(0, 50);
 }
-function section(markdown, title) {
-    const escaped = title.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
-    return markdown.match(new RegExp(`^#{2,3} ${escaped}\\s*\\n([\\s\\S]*?)(?=\\n#{2,3} |(?![\\s\\S]))`, "mu"))?.[1];
-}
-const contractOf = (source, workOrderId) => ({
+const contractOf = (contract, source, workOrderId) => ({
     workOrderId,
-    clauses: missionClauses(read(source.root, source.contractPath), source.declaredSurfaces),
+    clauses: missionClauses(contract, source.declaredSurfaces),
     declaredSurfaces: [...source.declaredSurfaces],
 });
-const storyOf = (source) => source.storyPath
+const storyOf = (story, source) => source.storyPath && story
     ? {
         storyId: source.storyPath,
-        clauses: missionClauses(read(source.root, source.storyPath), source.declaredSurfaces),
+        clauses: missionClauses(story, source.declaredSurfaces),
     }
     : null;
 /** Pinned when the actor is declared: what the episode is told the work is. */
-export function missionPinFromSource(source, workOrderId) {
-    const vision = read(source.root, source.visionPath);
+export function missionPinFromSource(source, workOrderId, reader) {
+    const contract = reader.contract(read(source.root, source.contractPath));
+    const story = source.storyPath
+        ? reader.contract(read(source.root, source.storyPath))
+        : null;
+    const vision = reader.vision(read(source.root, source.visionPath));
     const ignoredSalt = randomBytes(32).toString("hex");
     return {
         schemaVersion: "mission-check-v1",
-        contract: contractOf(source, workOrderId),
-        storyContract: storyOf(source),
+        contract: contractOf(contract, source, workOrderId),
+        storyContract: storyOf(story, source),
         theses: missionTheses(vision, source.thesisHeadings),
         exclusions: missionExclusions(vision),
         ignoredSalt,
@@ -258,9 +254,75 @@ export function missionPinFromSource(source, workOrderId) {
         })),
     };
 }
+/** The documents a dispatch-time observation judges, read now inside the
+ * worktree's bounds and structured by the caller's reader. A zero decision
+ * window declares that no decision is required, so none is read. */
+export function observeMissionDocuments(source, reader) {
+    const contract = reader.contract(read(source.root, source.contractPath));
+    const story = source.storyPath
+        ? reader.contract(read(source.root, source.storyPath))
+        : null;
+    const history = source.decisionsPath && source.decisionLimit > 0
+        ? readDecisions(source)
+        : { text: "", omitted: null };
+    return {
+        contract,
+        story,
+        decisions: history.text ? reader.decisions(history.text) : [],
+        omittedDecisions: history.omitted,
+    };
+}
+/** The documents for the episode's process: read and structured by the
+ * resident, which holds the reader, or the refusal that met them. A resident
+ * started without a reader cannot judge a mission and says so. */
+export function settleMissionDocuments(source, reader) {
+    try {
+        if (!reader)
+            throw new WorkerFailure("documents-unread", "mission documents unread: this resident was started without a document reader; start it with scripts/resident.mjs");
+        return { documents: observeMissionDocuments(source, reader) };
+    }
+    catch (error) {
+        return {
+            failure: error instanceof WorkerFailure
+                ? { code: error.code, detail: error.detail ?? null }
+                : // The repository's reader refuses a criteria list it cannot
+                    // read whole (scripts/lib/work-order-document.mjs, the code
+                    // LIST_UNREAD); the check then has no contract to judge.
+                    error?.code ===
+                        "DOTLN_ORDER_LIST_UNREAD"
+                        ? { code: "contract-unreadable", detail: null }
+                        : { code: "transport-failed", detail: null },
+        };
+    }
+}
+const isText = (value) => typeof value === "string";
+const isContract = (value) => {
+    const contract = value;
+    return (typeof contract === "object" &&
+        contract !== null &&
+        [contract.objective, contract.nonGoals, contract.evidenceGate].every((field) => field === null || isText(field)) &&
+        Array.isArray(contract.criteria) &&
+        contract.criteria.every((row) => Number.isSafeInteger(row?.number) && isText(row?.text)));
+};
+/** The documents a resident sent with the episode, or the refusal it met,
+ * raised here as the failure the episode records. */
+export function missionDocumentsOf(result) {
+    const value = result;
+    if (value?.failure)
+        throw new WorkerFailure(value.failure.code, value.failure.detail ?? undefined);
+    const documents = value?.documents;
+    if (!documents ||
+        !isContract(documents.contract) ||
+        !(documents.story === null || isContract(documents.story)) ||
+        !Array.isArray(documents.decisions) ||
+        !documents.decisions.every(isText) ||
+        !(documents.omittedDecisions === null || isText(documents.omittedDecisions)))
+        throw new WorkerFailure("profile-refused", "mission documents absent");
+    return documents;
+}
 /** Observed at dispatch: the contract as it reads now, the current diff and
  * the last N decisions. Nothing here is a model claim. */
-export function observeMission(source, pin) {
+export function observeMission(source, pin, documents) {
     const tracked = zero(missionGit(source, "diff", "--no-ext-diff", "--no-textconv", "--no-renames", "--name-only", "-z", source.baseCommit, "--"));
     // Branch commits are forbidden before final review, so new work is ordinarily
     // untracked during the very interval this episode supervises. A diff that
@@ -328,12 +390,8 @@ export function observeMission(source, pin) {
         .map((path) => sections.get(path))
         .join("");
     const omittedPaths = changedPaths.filter((path) => !carried.has(path));
-    // A zero window declares that no decision is required, so none is read.
-    const history = source.decisionsPath && source.decisionLimit > 0
-        ? readDecisions(source)
-        : { text: "", omitted: null };
     return {
-        contract: contractOf(source, pin.contract.workOrderId),
+        contract: contractOf(documents.contract, source, pin.contract.workOrderId),
         diff: {
             baseCommit: missionGit(source, "rev-parse", source.baseCommit).trim(),
             revision: missionGit(source, "rev-parse", "--short", "HEAD").trim(),
@@ -342,8 +400,8 @@ export function observeMission(source, pin) {
             omittedPaths,
             ignoredEntries,
         },
-        decisions: missionDecisions(history.text, source.decisionLimit),
-        omittedDecisions: history.omitted,
+        decisions: missionDecisions(documents.decisions, source.decisionLimit),
+        omittedDecisions: documents.omittedDecisions,
     };
 }
 /** Untracked work rendered as the new file Git would record. `null` when the
@@ -442,4 +500,4 @@ const readDecisions = (source) => {
         return omitted(error);
     }
 };
-export const observeMissionSubject = (source, pin) => missionSubject(pin, observeMission(source, pin));
+export const observeMissionSubject = (source, pin, documents) => missionSubject(pin, observeMission(source, pin, documents));

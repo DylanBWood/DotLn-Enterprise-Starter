@@ -5,7 +5,7 @@ import { assertActorSpec } from "./actor-contract.js";
 import { DETACHED_LAUNCH_ROWS, cliActorRequest, } from "./cli-actor-contract.js";
 import { isMissionCheckRequest, missionPin, } from "./mission-check-protocol.js";
 import { buildMissionCheckRequest, missionCheckScratch, } from "./mission-check-host.js";
-import { observeMissionSubject } from "./mission-check-source.js";
+import { missionDocumentsOf, observeMissionSubject, settleMissionDocuments, } from "./mission-check-source.js";
 import { WorkerFailure } from "./worker-protocol.js";
 import { ClaudeCliPrintWorkOrderTransport, CodexCliExecWorkOrderTransport, runWorkerProcess, } from "./worker-transport.js";
 const emptyDigest = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
@@ -30,7 +30,7 @@ function claims(spec, context, harnessVersion) {
     };
 }
 /** Used by the disposable supervisor in production and by process doubles. */
-export function startCliEpisode(spec, context, runner = runWorkerProcess, version, missionSource) {
+export function startCliEpisode(spec, context, runner = runWorkerProcess, version, missionSource, missionDocuments) {
     const stamped = (launch) => runner({
         ...launch,
         resident: { store: context.residentStore, episodeId: context.episodeId },
@@ -66,7 +66,7 @@ export function startCliEpisode(spec, context, runner = runWorkerProcess, versio
         if (isMissionCheckRequest(spec.request)) {
             if (!missionSource)
                 throw new WorkerFailure("profile-refused", "mission source absent");
-            subject = observeMissionSubject(missionSource, missionPin(spec.request.subject));
+            subject = observeMissionSubject(missionSource, missionPin(spec.request.subject), missionDocumentsOf(missionDocuments));
             scratch = missionCheckScratch();
             // The authorization is bound to the capsule it judges, so the whole
             // request is rebuilt here from the dispatch-time subject and this
@@ -128,8 +128,14 @@ export function cliWorkerAdapter(options = {}) {
             const unavailable = this.available(spec);
             if (unavailable)
                 throw new Error(unavailable);
+            // The episode's process holds no Markdown reader, so the resident reads
+            // and structures the documents a mission check judges and hands the
+            // structure over with the source.
+            const missionDocuments = spec.missionSource && isMissionCheckRequest(spec.worker.request)
+                ? settleMissionDocuments(spec.missionSource, options.missionDocuments)
+                : undefined;
             if (options.runner)
-                return startCliEpisode(spec.worker, context, options.runner, options.version, spec.missionSource);
+                return startCliEpisode(spec.worker, context, options.runner, options.version, spec.missionSource, missionDocuments);
             const child = fork(fileURLToPath(new URL("./cli-episode.js", import.meta.url)), [], {
                 execArgv: [],
                 stdio: ["ignore", "ignore", "ignore", "ipc"],
@@ -152,6 +158,7 @@ export function cliWorkerAdapter(options = {}) {
                 spec: spec.worker,
                 context,
                 ...(spec.missionSource ? { missionSource: spec.missionSource } : {}),
+                ...(missionDocuments ? { missionDocuments } : {}),
             });
             return {
                 completed,

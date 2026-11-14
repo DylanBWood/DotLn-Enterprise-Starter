@@ -24,8 +24,22 @@ export interface HarnessInput {
     readonly harness_version?: string;
     /** Claude sets this when it re-enters Stop because a Stop hook refused. */
     readonly stop_hook_active?: boolean;
+    /** The background tasks the host lists as the session's at a stop or a
+     * worker's stop. Each entry is read field by field: a host that changes an
+     * entry's shape leaves that task unattributed, never the stop refused. */
+    readonly background_tasks?: readonly HarnessBackgroundTask[];
     /** The failed-command event carries the host's error text here. */
     readonly error?: string;
+}
+/** One background task as the host lists it at a stop (the shape recorded
+ * by the subagent probes): an identifier the task-stop tool takes, a kind and
+ * a status. The identifier is the one the task's start returned, and a
+ * worker is listed under its own agent id. Its description, command and
+ * agent type are never read. */
+export interface HarnessBackgroundTask {
+    readonly id?: unknown;
+    readonly type?: unknown;
+    readonly status?: unknown;
 }
 export declare function harnessInputHarness(input: Pick<HarnessInput, "cwd" | "session_id">, env?: NodeJS.ProcessEnv): "claude-code" | "copilot-cli";
 /** Decode declared host fields; unconsumed native metadata is forward-compatible. */
@@ -46,12 +60,15 @@ export interface HarnessCheck {
  * definitions) keeps its gates, and so does the session itself. What a
  * program starts by itself stays unobserved, as for every hook refusal. */
 export declare function reviewWorkerGate(input: HarnessInput, tools?: HookConfig["tools"]): string | null;
-/** The workers a kit command launches, by its literal words: the change
+/** The worker a kit command launches, by its literal words: the change
  * review helper (`npm run worker -- review`, `node scripts/worker.mjs
- * review`) launches one and the planner's review (`npm run plan -- review`,
- * `node scripts/refute-plan.mjs review`) three, on the host `--host` names;
- * a `--dry-run` launches none. The helper's own process carries no session
- * identity a hook could charge, so the hook charges its command. */
+ * review`, `node --run worker -- review`) launches one, on the host `--host` names; a `--dry-run` launches
+ * none. npm's own flags are read past wherever npm takes them (before the
+ * verb, before the script's name, between it and the separator), the first
+ * separator ends them wherever it stands, and its aliases of `run` are read
+ * as `run`, so each spelling of one launch counts as the plain one does. Where a flag may or may not take the next word, a
+ * launch under either reading is a launch. The helper's own process carries
+ * no session identity a hook could charge, so the hook charges its command. */
 export declare function kitWorkerLaunch(command: string): {
     readonly uses: number;
     readonly host: KitHost;
@@ -93,6 +110,9 @@ export interface HarnessSession {
     correction?: CorrectionState;
     authoredPaths?: string[];
     beforeOutputs?: Record<string, string>;
+    /** Each output's file state with the hash computed for it, by path: what
+     * the next authorship snapshot compares before it reads a file again. */
+    outputStates?: Record<string, OutputState>;
     remainingWork?: string[];
     startedAt?: string;
     usageSessionKey?: string;
@@ -126,6 +146,8 @@ interface HarnessByteRead {
     readonly endByte: number;
 }
 interface HookConfig {
+    /** The instance's worker and model names, on the session hook. */
+    readonly workerNames?: readonly string[];
     readonly outsideWriteGrants?: readonly RoleOutsideWriteGrants[];
     readonly grants?: readonly AuthorityGrant[];
     readonly compilerPackageVersion: string;
@@ -284,7 +306,25 @@ export declare function releaseStoppedDispatch(root: string, sessionId: string, 
  * command reservation is released even when integration needs continuation. */
 export declare function withHarnessCommandWriter<T>(root: string, sessionId: string, operation: () => Promise<T>): Promise<T>;
 export declare const harnessSubject: typeof gateTreeHash;
-export declare function harnessOutputs(root: string, since?: string): readonly {
+/** The span within which a file's times cannot tell two writes apart: the
+ * coarsest timestamp of a file system the kit runs on (two seconds), which
+ * also covers a kernel clock that runs a little behind the process's. */
+export declare const OUTPUT_STATE_TICK_MS = 2000;
+/** What the file system reported for an output when its hash was computed
+ * (device, inode, size, modification time and change time, as one string),
+ * that hash, and when the entry was made. */
+export type OutputState = readonly [state: string, hash: string, at: number];
+/** The file states an authorship snapshot starts from and leaves, with what
+ * it read: a file whose state is the entry's, and whose times lie more than a
+ * tick before the entry was made, keeps the entry's hash unread. A file
+ * written within that tick is read again, because a second write of the same
+ * size could have left the same times. */
+export interface OutputStateCache {
+    states: Record<string, OutputState>;
+    filesRead: number;
+    bytesRead: number;
+}
+export declare function harnessOutputs(root: string, since?: string, cache?: OutputStateCache): readonly {
     path: string;
     hash: string;
     bytes: number;
@@ -1017,6 +1057,15 @@ export declare function grantedSessionRoot(path: string, prefix: string): {
     readonly cause?: string;
 };
 export declare function evaluateHarnessHook(config: HookConfig, input: HarnessInput, root: string, boundary: typeof feedbackBoundary, moved?: unknown): Promise<Record<string, unknown>>;
+/** The presence heartbeat of a target worktree, whose bundle holds no
+ * observer hook: its permission hook records it, after its decision is
+ * written, so that a heartbeat that fails or is slow changes nothing the hook
+ * decided. (A launchpad hook's own file records the heartbeat, after it has
+ * answered, so that it is recorded under operator control and with the
+ * adapter unavailable, as the presence hooks recorded it.) Without a
+ * resident's store named in the environment this does nothing and loads
+ * nothing; a heartbeat that fails says so on standard error. */
+export declare function rideHeartbeat(event: string, input: unknown, environment?: Readonly<Record<string, string | undefined>>): Promise<void>;
 export declare function runHarnessHook(config: HookConfig, boundary: typeof feedbackBoundary, decodedInput?: unknown, inputText?: string, operatorControl?: unknown): Promise<void>;
 export declare function runCommitMessageHook(config: Pick<HookConfig, "compilerPackageVersion" | "runtime"> & {
     readonly policy: CompiledFeedback;

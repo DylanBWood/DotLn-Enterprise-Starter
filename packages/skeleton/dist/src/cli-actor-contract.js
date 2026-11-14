@@ -1,5 +1,5 @@
 import { assertMissionSubjectExtends, isMissionCheckRequest, validateMissionCheckRequest, validateMissionCheckResult, } from "./mission-check-protocol.js";
-import { isWriterRequest, validateRequest, validateWriterRequest, parseWorkerResult, parseStoredWriterResult, } from "./worker-protocol.js";
+import { isWriterRequest, validateRequest, validateWriterRequest, parseWorkerResult, parseStoredWriterResult, WORKER_FAILURE_CODES, } from "./worker-protocol.js";
 export const DETACHED_LAUNCH_ROWS = {
     "claude-cli-print": {
         row: "C-U1",
@@ -85,17 +85,10 @@ export function assertCliObservation(value, spec, episodeId) {
         (v.isolation !== undefined &&
             (spec.transport !== "codex-cli-exec" || !isolationShaped(v.isolation))))
         throw new Error("invalid CLI actor observation");
+    // A worker's failure codes, and the supervisor's own for a process that
+    // ended with no result.
     if (v.failure !== undefined &&
-        ![
-            "model-unavailable",
-            "transport-failed",
-            "interrupted",
-            "invalid-result",
-            "deadline-exceeded",
-            "output-limit",
-            "profile-refused",
-            "supervisor-lost",
-        ].includes(v.failure))
+        ![...WORKER_FAILURE_CODES, "supervisor-lost"].includes(v.failure))
         throw new Error("invalid CLI failure code");
     if (isMissionCheckRequest(spec.request)) {
         // The pinned capsule may be completed by a dispatch-time observation; it

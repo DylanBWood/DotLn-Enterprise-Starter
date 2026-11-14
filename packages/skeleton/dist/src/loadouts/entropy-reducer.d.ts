@@ -6,8 +6,8 @@ export declare const ENTROPY_REDUCER_WORK_ORDER_ID = "wo_entropy_review_1";
 export declare const ENTROPY_REDUCER_REFERENCE_EPISODE_ID = "ep_entropy_reducer_reference";
 export declare const ENTROPY_REDUCER_REFERENCE_DISPATCH_AT = 0;
 export declare const ENTROPY_REDUCER_REFERENCE_EPISODE_ENDS_AT = 86400000;
-export declare const ENTROPY_REDUCER_REVIEWER_MODEL = "claude-opus-5-5";
-export declare const ENTROPY_REDUCER_REVIEWER_EFFORT = "xhigh";
+export declare const ENTROPY_REDUCER_REVIEWER_MODEL: string;
+export declare const ENTROPY_REDUCER_REVIEWER_EFFORT: string;
 export declare const ENTROPY_REDUCER_ALLOWED_EFFECTS: readonly ["repo.read*", "probe.run:scratch*", "intake.capture", "report.emit"];
 export declare const ENTROPY_REDUCER_DENIED_EFFECTS: readonly ["repo.write*", "git.mutate*", "remote.*", "settings.*", "decision.edit"];
 export interface EntropyReducerMask {
@@ -1796,16 +1796,16 @@ export interface ReviewerCompileOptions {
 }
 export interface ReviewerRequirement {
     readonly harness: "claude-code";
-    readonly model: "claude-opus-5-5";
-    readonly displayModel: "Claude Opus 5.5";
-    readonly effort: "xhigh";
+    readonly model: string;
+    readonly displayModel: string;
+    readonly effort: string;
     readonly substitutionPolicy: "different-reviewer-and-must-be-attested";
 }
 export declare const entropyReducerReviewerRequirement: {
     readonly harness: "claude-code";
-    readonly model: "claude-opus-5-5";
-    readonly displayModel: "Claude Opus 5.5";
-    readonly effort: "xhigh";
+    readonly model: string;
+    readonly displayModel: string;
+    readonly effort: string;
     readonly substitutionPolicy: "different-reviewer-and-must-be-attested";
 };
 export interface ReviewerExecutionBoundary {

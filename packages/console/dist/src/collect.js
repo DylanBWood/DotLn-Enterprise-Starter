@@ -11,7 +11,7 @@ import { currentEvidence } from "@dotln/skeleton/dist/src/evidence-editions.mjs"
 import { editionBodies, resolveEditionLog, } from "@dotln/skeleton/dist/src/feedback-selfhost.js";
 import { feedbackEditionLog } from "@dotln/skeleton/dist/src/feedback-edition-log.js";
 import { exportedLoadouts } from "./builds.js";
-import { array, available, object, readFailureReason, string, unavailable, } from "./values.js";
+import { array, available, object, optionalObject, readFailureReason, string, unavailable, } from "./values.js";
 function attempt(ref, read) {
     try {
         return available(ref, read());
@@ -91,6 +91,24 @@ export async function collectSources(root, requestedStores = []) {
         env: { ...process.env, GIT_OPTIONAL_LOCKS: "0" },
     });
     const text = (ref) => attempt(ref, () => readFile(join(root, ref)));
+    // The authored documents the board shows arrive already parsed: one run of
+    // the repository's Markdown reader reports each document's structure or the
+    // error code that kept it unread.
+    const authored = [
+        "docs/planning/capability-table.md",
+        "docs/publication/audience-status-index.md",
+        "docs/product/06-roadmap.md",
+    ];
+    const structures = attempt("markdown-structure", () => object(JSON.parse(command("markdown-structure.mjs", authored))));
+    const structure = (ref) => {
+        if (structures.status === "unavailable")
+            return unavailable(ref, structures.reason);
+        const entry = structures.value[ref];
+        const code = optionalObject(entry)["error"];
+        return code === undefined
+            ? attempt(ref, () => object(entry))
+            : unavailable(ref, readFailureReason({ code }));
+    };
     const controlLog = attempt("control:canonical-segments", () => {
         const paths = controlRoots(root);
         const directory = lstatSync(join(root, paths.orders), {
@@ -208,11 +226,12 @@ export async function collectSources(root, requestedStores = []) {
         maturity: feedback.status === "unavailable"
             ? feedback
             : attempt(`${feedback.value.directory}/feedback.json`, () => JSON.parse(readFile(join(root, feedback.value.directory, "feedback.json")))),
-        workOrderIndex: text("docs/work-orders/README.md"),
-        workOrderHistory: text("docs/work-orders/HISTORY.md"),
-        capabilities: text("docs/planning/capability-table.md"),
-        publication: text("docs/publication/audience-status-index.md"),
-        roadmap: text("docs/product/06-roadmap.md"),
+        // The cards and the workstream observation are the index command's own
+        // output; no page is read and no file records them.
+        workOrderIndex: attempt("work-orders:index--json", () => command("work-orders.mjs", ["index", "--json"], 64_000_000)),
+        capabilities: structure("docs/planning/capability-table.md"),
+        publication: structure("docs/publication/audience-status-index.md"),
+        roadmap: structure("docs/product/06-roadmap.md"),
         refutations: attempt("docs/planning/refutations/", () => readdirSync(join(root, "docs/planning/refutations"))
             .filter((name) => name.endsWith(".json"))
             .sort()
