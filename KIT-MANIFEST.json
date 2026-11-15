@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "commit": "ed66a822c1690ee96f1db4cde0af6320fe83388e",
-  "tag": "v1.0.0",
+  "commit": "5edc7798b9eccaa880467d41a28b6a43f4b54226",
+  "tag": "v1.0.1",
   "files": [
     {
       "path": ".claude/agents/dotln-executor.md",
@@ -133,7 +133,7 @@
     },
     {
       "path": "UPSTREAM.md",
-      "sha256": "61e442a399bbf4323f5ae32aaa739c931a8c2f00774b75c85615564adc03c50b"
+      "sha256": "61a66d61a7b4d78a7935959eb9253aae69e5b66c0b54d98c8331d0523bdbe40f"
     },
     {
       "path": "corpus/fixtures/ids/command-id-vectors.jsonl",
@@ -173,11 +173,11 @@
     },
     {
       "path": "docs/KIT.md",
-      "sha256": "d63272d0564f6120f52dd72f4be7358e688fd923e0b15c0a286b0c231c153139"
+      "sha256": "09147e2230fe478e1195cbd6e4c34bd9ba7d5243e3e76091a5d452897e638471"
     },
     {
       "path": "docs/OPERATOR.md",
-      "sha256": "db18b5ab9b7633f8b55bcbf952a9725fa66ba341f078f064f6e0db7a5e292666"
+      "sha256": "874635cc92db6456869a883d2117cd64781499d881a281002a7ca54f3f3c702c"
     },
     {
       "path": "docs/PLAYBOOK.md",
@@ -185,7 +185,7 @@
     },
     {
       "path": "docs/product/07-execution-guide.md",
-      "sha256": "6e181612b3d0a73e80850f463f614b4d250941038aa1bef7373032885ea110dc"
+      "sha256": "cfa9d3e267e460372a118254ece63da6c8bf2e8d56d1fc8d5274dc6c16da5b82"
     },
     {
       "path": "docs/product/08-publication-compiler.md",
@@ -3001,7 +3001,7 @@
     },
     {
       "path": "scripts/kit/README.client.md",
-      "sha256": "4b60b964df6168c2d9ddef3b806d051d9f3b0e2be5ea40dfef10760909ab9699"
+      "sha256": "7b2c2d3210e0593b93eb11cba7f49d2f6ed968aabbaf6c680c8b5beffdafad9e"
     },
     {
       "path": "scripts/kit/budgets.template.json",
@@ -3445,7 +3445,7 @@
     },
     {
       "path": "scripts/lib/meta.mjs",
-      "sha256": "ded4f68389aff17de466ee2634384fa0a072fc051b5bfcbfdbde36a9197bfd46"
+      "sha256": "5d362f1c7257c956b0077cff2e7b50595c7e0d49fa00ba70e1670fdc678ab27a"
     },
     {
       "path": "scripts/lib/mission-documents.mjs",
@@ -3521,7 +3521,7 @@
     },
     {
       "path": "scripts/lib/plan-subject.mjs",
-      "sha256": "4ccfcfed5b890599c7caad8d446186812c60fa02b98b49aaaec08d7574aff29d"
+      "sha256": "9237ca3503303a264d75e50f48b5b75e16d5ce747caaf5ef01cb4ed8a0d55c20"
     },
     {
       "path": "scripts/lib/planning-conditions.mjs",
@@ -4149,7 +4149,7 @@
     },
     {
       "path": "scripts/test-launchpad-export.mjs",
-      "sha256": "e27d7d93f8836a9153e16f017af99bf90078c8b4597d924a40fddbe7bd805b29"
+      "sha256": "d414705efe344eca68505b623126593f43b74225c628de1303e37bf976a254f4"
     },
     {
       "path": "scripts/test-launchpad-planning.fixture-inputs.json",
@@ -4225,7 +4225,7 @@
     },
     {
       "path": "scripts/test-process-debt.mjs",
-      "sha256": "f88ebb294ce4304ee458500a844627089dffe77dca50292e280b9d36980d0a6b"
+      "sha256": "ce865d4ea4b0f950e424a2eb097c4c8e51421454fae92c11217ef24075ec4d9e"
     },
     {
       "path": "scripts/test-publication.sh",
