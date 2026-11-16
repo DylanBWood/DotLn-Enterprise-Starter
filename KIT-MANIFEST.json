@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "commit": "b77e5173ec8564f3f1f0ddda432edac53ad9098f",
-  "tag": "v1.1.0",
+  "commit": "38c333ab27a010113bf46e01386e2668b75103ab",
+  "tag": "v1.2.0",
   "files": [
     {
       "path": ".claude/agents/dotln-executor.md",
@@ -133,7 +133,7 @@
     },
     {
       "path": "UPSTREAM.md",
-      "sha256": "563c397fd615158124c5388ae0fc9a39a32c66d7e732eec98d4662b7ab7bcf58"
+      "sha256": "6c2d357e709e39acb858e08614233b9772cd28ecb6f8983ea34774b536452b3a"
     },
     {
       "path": "corpus/fixtures/ids/command-id-vectors.jsonl",
@@ -173,11 +173,11 @@
     },
     {
       "path": "docs/KIT.md",
-      "sha256": "2787606d26f649eb427762bb1b7767b657e187ecc088a573d366da5f8c624ba7"
+      "sha256": "09bb6f3479ffd3bb31e2a6a374953a99de116f718df601acaf6c93f3d9337657"
     },
     {
       "path": "docs/OPERATOR.md",
-      "sha256": "d496547a1d8d3bbe166c887f3ef8f920cc670bd5cd98a958774e528c7ad7d68f"
+      "sha256": "89b4a2f09b6238857007fdaf4497f1f15270c310c6ff631f927c874453c0147c"
     },
     {
       "path": "docs/PLAYBOOK.md",
@@ -185,7 +185,7 @@
     },
     {
       "path": "docs/product/07-execution-guide.md",
-      "sha256": "a3e411879513db0d7f750686d1b922c517269d232ff1d3a0e8b84ca8be96964c"
+      "sha256": "931154acbf0176f904002fe8dcf4ffb907d44fafaccbed7f715679aeb468b20a"
     },
     {
       "path": "docs/product/08-publication-compiler.md",
@@ -3049,7 +3049,7 @@
     },
     {
       "path": "scripts/launchpad.mjs",
-      "sha256": "c74747dc742fda224cceab938094c153bbe6a24cfef9885e97b3baaa7c24dbbd"
+      "sha256": "5c503e616279c6cd7b8151d3d07f7c55e8b7da78522634400f121f7fe624f8e0"
     },
     {
       "path": "scripts/lib/adjacent-queue.mjs",
@@ -3321,7 +3321,7 @@
     },
     {
       "path": "scripts/lib/git-surface.json",
-      "sha256": "2e74af3dda13d44ef39919295b581a608a6b83a8c13dd37dd465950e44064ca6"
+      "sha256": "b64199ca923bc656e904da5204fc82ae415f6cf8000080190548f3a74b65c536"
     },
     {
       "path": "scripts/lib/git-surface.mjs",
@@ -3361,7 +3361,7 @@
     },
     {
       "path": "scripts/lib/harness.mjs",
-      "sha256": "d75d4d14c99fe636b334f26f5a3f1cf7e1e35edc31782b6761b190b2734cc72b"
+      "sha256": "8f3f4177aa5e48a61ec5bc9da3d24d2ac15fdbf4336a2fdb40a1d0bddc59ac8a"
     },
     {
       "path": "scripts/lib/helpers.mjs",
@@ -3425,7 +3425,7 @@
     },
     {
       "path": "scripts/lib/machinery-sources.mjs",
-      "sha256": "44765d50674f920c185937554fd8d1b25f7f725b2bcecf2e6ce0958fee4f418c"
+      "sha256": "39e3c257935fbb21ffe27939a0730fd95387cce3a3e2e2a1fa911689b189dabe"
     },
     {
       "path": "scripts/lib/markdown-links.mjs",
@@ -3537,7 +3537,7 @@
     },
     {
       "path": "scripts/lib/planning-followups.mjs",
-      "sha256": "21831c5054d0dbe06e74a1e74d9a7ed5d8f4cba9d4f7d36a031ca627f29bc43d"
+      "sha256": "265abf4f02f899429ba5e777013b289a8101ddfe00583f507cf85c1ef8faaa96"
     },
     {
       "path": "scripts/lib/private-paths.mjs",
@@ -4145,7 +4145,7 @@
     },
     {
       "path": "scripts/test-harness.mjs",
-      "sha256": "cd0f29d2a76717d8c5a57977044cd961c8ab72f4ad2efa488970867047378497"
+      "sha256": "1094dfa848c0fc532ebaf83e7b3ef2fdddca07dc5ff1a949cad8c7056621d2fe"
     },
     {
       "path": "scripts/test-helper-reuse.mjs",
@@ -4169,7 +4169,7 @@
     },
     {
       "path": "scripts/test-launchpad-update.mjs",
-      "sha256": "c3ad767be137b4f6e509aa788ec6a52bef55f6c56884e0158541b0bc23fe6e13"
+      "sha256": "aa98319acc2bf331c22bfb79d062439053d9e3667e288bea384c8679d0179295"
     },
     {
       "path": "scripts/test-launchpad.mjs",
@@ -4229,7 +4229,7 @@
     },
     {
       "path": "scripts/test-process-debt.mjs",
-      "sha256": "ce865d4ea4b0f950e424a2eb097c4c8e51421454fae92c11217ef24075ec4d9e"
+      "sha256": "36cb1ba7bb02faa50011255ec620d63db3b95e8ef6dbaf6c3d7e59091dbd5abc"
     },
     {
       "path": "scripts/test-publication.sh",
@@ -4289,7 +4289,7 @@
     },
     {
       "path": "scripts/test-sync.mjs",
-      "sha256": "d07be5ea554d4dc3ba15319dfea3b3841d62ff11dbc0dec9eeed2543b8d69b72"
+      "sha256": "432f44ab74cba89f2236635a0605d0acdaa0dce76a21937afad87f1509583284"
     },
     {
       "path": "scripts/test-target-harness.mjs",
