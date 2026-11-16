@@ -191,9 +191,9 @@ control = recoveryInput ? await (async function operatorControl(input, event) {
         return message(requested && requested !== "normal" ? requested : "unavailable", "Recovery state could not be read or persisted; this hook remains advisory.");
     }
 })({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, event) : null;
-if (control && !control.overrideExit) { try { const { recordOperatorMessage } = await import("../../.runtime/harness/1c29526f5e6dd390/packages/skeleton/dist/src/harness-host.js"); const { fileURLToPath } = await import("node:url"); recordOperatorMessage(fileURLToPath(new URL("../../", import.meta.url)), input); } catch {} process.stdout.write(JSON.stringify(control)); } else {
-const { feedbackBoundary } = await import("../../.runtime/harness/1c29526f5e6dd390/packages/skeleton/dist/src/feedback-boundary.js");
-const { runHarnessHook } = await import("../../.runtime/harness/1c29526f5e6dd390/packages/skeleton/dist/src/harness-host.js");
+if (control && !control.overrideExit) { try { const { recordOperatorMessage } = await import("../../.runtime/harness/72879302474176db/packages/skeleton/dist/src/harness-host.js"); const { fileURLToPath } = await import("node:url"); recordOperatorMessage(fileURLToPath(new URL("../../", import.meta.url)), input); } catch {} process.stdout.write(JSON.stringify(control)); } else {
+const { feedbackBoundary } = await import("../../.runtime/harness/72879302474176db/packages/skeleton/dist/src/feedback-boundary.js");
+const { runHarnessHook } = await import("../../.runtime/harness/72879302474176db/packages/skeleton/dist/src/harness-host.js");
 await runHarnessHook({
   "compilerPackageVersion": "0.44.0",
   "runtime": {
@@ -369,7 +369,7 @@ await runHarnessHook({
         "hash": "fnv1a64:648734592818b19e"
       }
     ],
-    "snapshot": ".runtime/harness/1c29526f5e6dd390"
+    "snapshot": ".runtime/harness/72879302474176db"
   },
   "event": "UserPromptSubmit",
   "tools": {
@@ -910,7 +910,7 @@ const { join } = await import("node:path");
 const { createHash } = await import("node:crypto");
 const { fileURLToPath } = await import("node:url");
 const root = fileURLToPath(new URL("../../", import.meta.url));
-const snapshot = ".runtime/harness/1c29526f5e6dd390";
+const snapshot = ".runtime/harness/72879302474176db";
 let cause = snapshot && !fs.existsSync(join(root, snapshot)) ? "snapshot-missing" : "runtime-unavailable";
 try {
   const hash = (value) => {
@@ -978,7 +978,7 @@ process.stdout.write(JSON.stringify(response)); } } }
 if (process.env.DOTLN_RESIDENT_STORE && (input?.hook_event_name === "SessionStart" ? "SessionStart" : "UserPromptSubmit") === "UserPromptSubmit") {
 try {
 await new Promise((resolve) => process.stdout.write("", resolve));
-const { recordHarnessHeartbeat } = await import("../../.runtime/harness/1c29526f5e6dd390/packages/skeleton/dist/src/presence-heartbeat.js");
+const { recordHarnessHeartbeat } = await import("../../.runtime/harness/72879302474176db/packages/skeleton/dist/src/presence-heartbeat.js");
 await recordHarnessHeartbeat((input?.hook_event_name === "SessionStart" ? "SessionStart" : "UserPromptSubmit"), input);
 } catch { process.stderr.write("DotLn advisory: presence heartbeat unavailable\n"); }
 }
