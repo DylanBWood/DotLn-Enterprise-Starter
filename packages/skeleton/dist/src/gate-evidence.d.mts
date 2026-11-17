@@ -56,9 +56,11 @@ export declare function gateStopRequested(root: string, runIds?: readonly string
  * the markers to clear. The request is a file the running gate reads at its
  * next boundary; a gate that has not reached one yet keeps its request and
  * stays reported as active with its pids. Requests left by dead runs are swept.
- * @param {string} root @param {{waitMs?: number}} [options] */
+ * The wait is the table's evidence.stop-wait, as the root's file sets it;
+ * null, a limit turned off, waits until every run has ended.
+ * @param {string} root @param {{waitMs?: number|null}} [options] */
 export declare function requestGateStop(root: string, { waitMs }?: {
-    waitMs?: number;
+    waitMs?: number | null;
 }): {
     contract: string;
     requestedAt: string;
@@ -133,6 +135,8 @@ export type GateCheck = GateDiagnostic & {
     treeHash: string;
     codeIdentity?: string;
     instanceInputDigest?: string;
+    timeLimitsDigest?: string;
+    timeLimitsUnchanged?: boolean;
     subject: string;
     durationMs: number;
     evidenceRef: string;
@@ -230,6 +234,25 @@ export declare const partialGateCheck: (row: {
 export declare const instanceDigestMismatch: (row: {
     instanceInputDigest?: string;
 }, current: string | undefined) => "different" | "missing" | null;
+/** The time limits a gate run starts under, in the form its row records
+ * them beside its code identity and installed inputs: one digest of every
+ * figure in force, undefined where each is the kit's own.
+ * @param {string} root */
+export declare const gateTimeLimitsDigest: (root: string) => string | undefined;
+/** Whether a row's passes hold under the time limits `current` names: the
+ * row ran under those limits (the digest it recorded at its start is
+ * `current`, both undefined where every figure was the kit's) and they did
+ * not change before it ended. A pass judged under other limits is not
+ * evidence under these: a raised figure was not the one applied, and a
+ * lowered one might have ended a task the row records as passing. A row
+ * that fails this check still displaces an older pass as an execution; it
+ * only supplies none.
+ * @param {{timeLimitsDigest?: string, timeLimitsUnchanged?: boolean}} row
+ * @param {string|undefined} current */
+export declare const ranUnderTimeLimits: (row: {
+    timeLimitsDigest?: string;
+    timeLimitsUnchanged?: boolean;
+}, current: string | undefined) => boolean;
 /** Row integrity applies to executions under every check, including runs
  * that supply no pass to the product gate.
  * @param {GateCheck} row */
@@ -259,12 +282,16 @@ export declare function latestGateExecution(rows: GateCheck[], other: GateCheck[
 };
 /** A complete row stands on the same execution decision used by the runner.
  * A carried main result is revalidated against main only when local history
- * supplies no execution of that task.
+ * supplies no execution of that task. Each task's deciding execution, the
+ * candidate's own included, must have run under the time limits the
+ * candidate recorded; a caller that asks whether the row stands now passes
+ * only a candidate recorded under the limits in force.
  * @param {GateCheck} candidate @param {GateCheck[]} rows @param {string} [root]
  */
 export declare function gateCheckStands(candidate: GateCheck, rows: GateCheck[], root?: string): boolean;
 /** Generic tree checks retain successful evidence; product checks also
- * reject complete rows displaced by a task's later failing execution.
+ * reject complete rows displaced by a task's later failing execution, and
+ * rows recorded under time limits other than those in force.
  * @param {string} root @param {string} checkId @param {string} treeHash
  */
 export declare const findGateCheck: (root: string, checkId: string, treeHash: string) => GateCheck | undefined;

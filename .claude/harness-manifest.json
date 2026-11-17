@@ -282,7 +282,7 @@
               "path": "packages/skeleton/dist/src/feedback-source-comments.js"
             },
             {
-              "hash": "fnv1a64:d29d3f262a382eb2",
+              "hash": "fnv1a64:ffbf46de600746c2",
               "path": "packages/skeleton/dist/src/harness-host.js"
             },
             {
@@ -318,7 +318,7 @@
               "path": "packages/skeleton/dist/src/document-quality.js"
             },
             {
-              "hash": "fnv1a64:940bdf47a60bb3d4",
+              "hash": "fnv1a64:f5a16136a946f49e",
               "path": "packages/skeleton/dist/src/gate-evidence.mjs"
             },
             {
@@ -423,7 +423,7 @@
             }
           ],
           "skeletonVersion": "0.46.0",
-          "snapshot": ".runtime/harness/72879302474176db"
+          "snapshot": ".runtime/harness/7aae638a2c3a62af"
         },
         "settings": {
           "allow": true,
@@ -497,7 +497,7 @@
       "loadout": {
         "id": "contributor",
         "semanticHash": "fnv1a64:f294438e4b870c21",
-        "targetHash": "fnv1a64:15d957067d35aa2d"
+        "targetHash": "fnv1a64:1bb9c9914ad58be9"
       },
       "files": [
         {
@@ -592,7 +592,7 @@
         },
         {
           "path": ".claude/hooks/agent-finished.mjs",
-          "hash": "fnv1a64:8d9bdf5a9593c60f",
+          "hash": "fnv1a64:b0a4fbd7d429292d",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -610,7 +610,7 @@
         },
         {
           "path": ".claude/hooks/commit-msg.mjs",
-          "hash": "fnv1a64:7fe10d7d4aafedaa",
+          "hash": "fnv1a64:5654e20ea37d4fce",
           "origin": {
             "ids": [
               "no-attribution"
@@ -622,7 +622,7 @@
         },
         {
           "path": ".claude/hooks/concurrent-work-requires-worktrees.mjs",
-          "hash": "fnv1a64:8f85a7646a095c72",
+          "hash": "fnv1a64:ef8f3322f18eac80",
           "origin": {
             "ids": [
               "concurrent-work-requires-worktrees",
@@ -640,7 +640,7 @@
         },
         {
           "path": ".claude/hooks/failure-observer.mjs",
-          "hash": "fnv1a64:2b44018f4fc55dfe",
+          "hash": "fnv1a64:e987eb40202d6f60",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -658,7 +658,7 @@
         },
         {
           "path": ".claude/hooks/finish.mjs",
-          "hash": "fnv1a64:6773f3fb9e9815b3",
+          "hash": "fnv1a64:04e16052651caf04",
           "origin": {
             "ids": [
               "anti-oscillation",
@@ -686,7 +686,7 @@
         },
         {
           "path": ".claude/hooks/no-attribution.mjs",
-          "hash": "fnv1a64:d268ff9b3f2f0b34",
+          "hash": "fnv1a64:36e0a5c61e927166",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -704,7 +704,7 @@
         },
         {
           "path": ".claude/hooks/no-lint-type-disables-as-fixes.mjs",
-          "hash": "fnv1a64:457d04aebcf54bb9",
+          "hash": "fnv1a64:d5e71ab0c73b25d3",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -722,7 +722,7 @@
         },
         {
           "path": ".claude/hooks/permission-denied.mjs",
-          "hash": "fnv1a64:70d177fd1509fc6b",
+          "hash": "fnv1a64:efc6559a265292b9",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -740,7 +740,7 @@
         },
         {
           "path": ".claude/hooks/permissions.mjs",
-          "hash": "fnv1a64:c490895fa9962d89",
+          "hash": "fnv1a64:6edfd73f3ae9aa8f",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -758,7 +758,7 @@
         },
         {
           "path": ".claude/hooks/read-observer.mjs",
-          "hash": "fnv1a64:f4385aea42396403",
+          "hash": "fnv1a64:507577d100697bea",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -778,7 +778,7 @@
         },
         {
           "path": ".claude/hooks/session.mjs",
-          "hash": "fnv1a64:567dfe9e93ab0f1b",
+          "hash": "fnv1a64:8e3988d7e55078b1",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -796,7 +796,7 @@
         },
         {
           "path": ".claude/hooks/write-observer.mjs",
-          "hash": "fnv1a64:6d5aa689eb954440",
+          "hash": "fnv1a64:86edc28e533312bf",
           "origin": {
             "ids": [
               "contributor.executor",
@@ -852,7 +852,7 @@
         },
         {
           "path": ".claude/skills/dotln-executor/SKILL.md",
-          "hash": "fnv1a64:99dc4f83fd90bff0",
+          "hash": "fnv1a64:14bdf47197d5a11f",
           "origin": {
             "ids": [
               "adjacent-repair",
@@ -954,7 +954,7 @@
         },
         {
           "path": ".claude/skills/dotln-reviewer/SKILL.md",
-          "hash": "fnv1a64:ec938813bdcd9d79",
+          "hash": "fnv1a64:a7ad29701c046206",
           "origin": {
             "ids": [
               "anti-oscillation",
@@ -1170,7 +1170,7 @@
     },
     {
       "path": ".claude/hooks/agent-finished.mjs",
-      "hash": "fnv1a64:8d9bdf5a9593c60f",
+      "hash": "fnv1a64:b0a4fbd7d429292d",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -1189,7 +1189,7 @@
     },
     {
       "path": ".claude/hooks/commit-msg.mjs",
-      "hash": "fnv1a64:7fe10d7d4aafedaa",
+      "hash": "fnv1a64:5654e20ea37d4fce",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -1202,7 +1202,7 @@
     },
     {
       "path": ".claude/hooks/concurrent-work-requires-worktrees.mjs",
-      "hash": "fnv1a64:8f85a7646a095c72",
+      "hash": "fnv1a64:ef8f3322f18eac80",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -1221,7 +1221,7 @@
     },
     {
       "path": ".claude/hooks/failure-observer.mjs",
-      "hash": "fnv1a64:2b44018f4fc55dfe",
+      "hash": "fnv1a64:e987eb40202d6f60",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -1240,7 +1240,7 @@
     },
     {
       "path": ".claude/hooks/finish.mjs",
-      "hash": "fnv1a64:6773f3fb9e9815b3",
+      "hash": "fnv1a64:04e16052651caf04",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -1269,7 +1269,7 @@
     },
     {
       "path": ".claude/hooks/no-attribution.mjs",
-      "hash": "fnv1a64:d268ff9b3f2f0b34",
+      "hash": "fnv1a64:36e0a5c61e927166",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -1288,7 +1288,7 @@
     },
     {
       "path": ".claude/hooks/no-lint-type-disables-as-fixes.mjs",
-      "hash": "fnv1a64:457d04aebcf54bb9",
+      "hash": "fnv1a64:d5e71ab0c73b25d3",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -1307,7 +1307,7 @@
     },
     {
       "path": ".claude/hooks/permission-denied.mjs",
-      "hash": "fnv1a64:70d177fd1509fc6b",
+      "hash": "fnv1a64:efc6559a265292b9",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -1326,7 +1326,7 @@
     },
     {
       "path": ".claude/hooks/permissions.mjs",
-      "hash": "fnv1a64:c490895fa9962d89",
+      "hash": "fnv1a64:6edfd73f3ae9aa8f",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -1345,7 +1345,7 @@
     },
     {
       "path": ".claude/hooks/read-observer.mjs",
-      "hash": "fnv1a64:f4385aea42396403",
+      "hash": "fnv1a64:507577d100697bea",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -1366,7 +1366,7 @@
     },
     {
       "path": ".claude/hooks/session.mjs",
-      "hash": "fnv1a64:567dfe9e93ab0f1b",
+      "hash": "fnv1a64:8e3988d7e55078b1",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -1385,7 +1385,7 @@
     },
     {
       "path": ".claude/hooks/write-observer.mjs",
-      "hash": "fnv1a64:6d5aa689eb954440",
+      "hash": "fnv1a64:86edc28e533312bf",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -1443,7 +1443,7 @@
     },
     {
       "path": ".claude/skills/dotln-executor/SKILL.md",
-      "hash": "fnv1a64:99dc4f83fd90bff0",
+      "hash": "fnv1a64:14bdf47197d5a11f",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
@@ -1549,7 +1549,7 @@
     },
     {
       "path": ".claude/skills/dotln-reviewer/SKILL.md",
-      "hash": "fnv1a64:ec938813bdcd9d79",
+      "hash": "fnv1a64:a7ad29701c046206",
       "hashScope": "whole-file",
       "origin": {
         "ids": [
