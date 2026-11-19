@@ -1,19 +1,19 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:f294438e4b870c21"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/7aae638a2c3a62af/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/7aae638a2c3a62af/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/88391c7f22b9c1d3/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/88391c7f22b9c1d3/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
-  "compilerPackageVersion": "0.44.0",
+  "compilerPackageVersion": "0.45.0",
   "runtime": {
     "skeletonVersion": "0.46.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
         "path": "packages/compiler/dist/src/artifact-identity.js",
-        "hash": "fnv1a64:c9372b1b0e753387"
+        "hash": "fnv1a64:b0713956b7d4c476"
       },
       {
         "path": "packages/compiler/dist/src/harness.js",
-        "hash": "fnv1a64:9f49a66f0d6556b0"
+        "hash": "fnv1a64:a8f678aed7c5e4c8"
       },
       {
         "path": "packages/compiler/dist/src/codex-continuation.mjs",
@@ -37,11 +37,11 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:ffbf46de600746c2"
+        "hash": "fnv1a64:ce028f30b3fb7374"
       },
       {
         "path": "packages/skeleton/dist/src/subagent-budget.js",
-        "hash": "fnv1a64:a4cd006dd494922c"
+        "hash": "fnv1a64:c123834299c9d406"
       },
       {
         "path": "packages/skeleton/dist/src/observed-facts.js",
@@ -65,7 +65,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
-        "hash": "fnv1a64:16892d88fa5e3a3c"
+        "hash": "fnv1a64:5ceea8c50378c310"
       },
       {
         "path": "packages/skeleton/dist/src/document-quality.js",
@@ -176,11 +176,64 @@ await runCommitMessageHook({
         "hash": "fnv1a64:648734592818b19e"
       }
     ],
-    "snapshot": ".runtime/harness/7aae638a2c3a62af"
+    "snapshot": ".runtime/harness/88391c7f22b9c1d3"
+  },
+  "stops": {
+    "dispatch-bound": "advise",
+    "docs-decision-form": "advise",
+    "docs-entry-point": "advise",
+    "docs-form": "advise",
+    "docs-front-page": "advise",
+    "docs-instance-records": "advise",
+    "docs-links": "advise",
+    "docs-moved-path": "advise",
+    "docs-pattern-reader": "advise",
+    "docs-product-shape": "advise",
+    "docs-red-tag": "advise",
+    "driven-budget": "advise",
+    "driven-helper": "advise",
+    "driven-roots": "advise",
+    "gate-configuration": "advise",
+    "gate-declarations": "advise",
+    "gate-entropy": "advise",
+    "gate-format": "advise",
+    "gate-generated": "advise",
+    "gate-harness": "advise",
+    "gate-harness-context": "advise",
+    "gate-index": "advise",
+    "gate-kit-verify": "advise",
+    "gate-license-surfaces": "advise",
+    "gate-lineage": "advise",
+    "gate-meta": "advise",
+    "gate-plan": "advise",
+    "gate-plan-refutation-current": "advise",
+    "gate-publication": "advise",
+    "gate-reader-profiles": "advise",
+    "gate-registrations": "advise",
+    "gate-release-surfaces": "advise",
+    "gate-siblings": "advise",
+    "hook-input": "advise",
+    "host-confinement": "advise",
+    "host-file-events": "advise",
+    "host-memory": "advise",
+    "host-toolchain": "advise",
+    "live-gate": "advise",
+    "planning-branch": "advise",
+    "router": "advise",
+    "target-classification": "advise",
+    "target-cwd": "advise",
+    "target-delegation": "advise",
+    "target-destinations": "advise",
+    "target-runtime": "advise",
+    "target-unlisted-effect": "advise",
+    "verbatim-operator-words": "advise",
+    "worker-cap": "advise",
+    "worker-gate": "advise",
+    "worker-tasks": "advise"
   },
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.44.0",
+    "compilerPackageVersion": "0.45.0",
     "units": [
       {
         "unitId": "no-attribution",
@@ -233,6 +286,6 @@ await runCommitMessageHook({
         "enforcement": "hard"
       }
     ],
-    "policyHash": "fnv1a64:c2377be767f0a14d"
+    "policyHash": "fnv1a64:701063fc7ef77e76"
   }
 }, feedbackBoundary);

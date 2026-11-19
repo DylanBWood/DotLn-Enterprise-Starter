@@ -717,7 +717,7 @@ test("WO-052 emitted Claude permission hook admits only live host-issued exact c
         writeFileSync(path, JSON.stringify(grant));
         const permissionPath = join(host.tree.path, ".claude/hooks/permissions.mjs");
         const permission = readFileSync(permissionPath, "utf8");
-        const match = /await runTargetHarnessHook\(([\s\S]*?), feedbackBoundary\);/u.exec(permission);
+        const match = /await runTargetHarnessHook\(([\s\S]*?), feedbackBoundary, rawInput\);/u.exec(permission);
         const config = JSON.parse(match[1]);
         config.envelope.deniedEffects.push("git.local");
         writeFileSync(permissionPath, permission.replace(match[1], JSON.stringify(config)));

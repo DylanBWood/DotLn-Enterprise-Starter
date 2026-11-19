@@ -1,4 +1,4 @@
-import { type AuthorityGrant, type AuthorityEnvelope, type CompiledProgram, type HarnessProfile, type HarnessProgram, type HarnessRole, type LoadoutGraph, type PresencePolicy, type PresenceNarrowing } from "@dotln/compiler";
+import { type AuthorityGrant, type AuthorityEnvelope, type CompiledFeedback, type CompiledProgram, type FeedbackUnit, type HarnessProfile, type HarnessProgram, type HarnessRole, type LoadoutGraph, type PresencePolicy, type PresenceNarrowing } from "@dotln/compiler";
 import { type ExecutorSupportSwitches } from "./executor-supports.js";
 import { workerTable } from "../worker-catalog.mjs";
 /** What the emitter supplies of an instance's worker choices: the named
@@ -32,17 +32,28 @@ export declare const reviewBlockingRule = "a finding blocks when it names the ac
  * is written whole below and is no composition of these. */
 export declare const SHARED_RULE_ROLES: readonly ["executor", "verifier", "reviewer", "release-close", "planner", "refuter"];
 export type SharedRuleRole = (typeof SHARED_RULE_ROLES)[number];
+/** Whose a rule is. A `platform` rule says how a kit command, phrase,
+ * record, file, bound or hook works: a session needs it to operate the
+ * lifecycle, and every build carries it. An `author` rule says how the
+ * kit's author wants work conducted: no kit mechanism needs the sentence,
+ * and an instance's owner removes it, or all of them, in the build overlay
+ * (ADR-0006, decisions 1 and 3). */
+export type RuleLayer = "platform" | "author";
 /** A shared rule: text that several roles' roots hold, under an identifier,
- * with the roles it binds. A role's emitted root holds the rules that name
- * it, each whole and once, and no other shared rule. A rule names a role
- * when that role's procedure reaches the command, the phase or the host the
- * rule governs; the reason for each role, kept or left out, is a cell of the
- * rule-by-role table, which an order that adds or edits a record changes
- * with it (WO-276, Part F). A rule is never reworded for one role. */
+ * with the roles it binds and the layer it belongs to. A role's emitted
+ * root holds the rules that name it, each whole and once, and no other
+ * shared rule. A rule names a role when that role's procedure reaches the
+ * command, the phase or the host the rule governs; the reason for each
+ * role, kept or left out, is a cell of the rule-by-role table, which an
+ * order that adds or edits a record changes with it (WO-276, Part F). A
+ * rule is never reworded for one role. `also` names what carries the rule
+ * besides the role's text. */
 export interface SharedRule {
     readonly id: string;
+    readonly layer: RuleLayer;
     readonly roles: readonly SharedRuleRole[];
     readonly text: string;
+    readonly also?: string;
 }
 export declare const browserVerificationGuidance = "Browser verification uses a browser the session launches: inspect structured state, then the DOM and accessibility tree through the Playwright MCP snapshot, then network and event data, then take a screenshot and read it as an image, or use the project's own browser tests; desktop control (the operator's screen, clicks and typing outside that browser) and the operator's own browser sessions (Claude in Chrome or the desktop app's browser pane) are refused unless dotln.config.json elects features.desktop-control (off by default) and the operator explicitly requests their use in this session.";
 /** The parent's steps of a refutation, as the refuter's root states them.
@@ -70,16 +81,72 @@ export declare function contributorWithSupports(supportIds?: readonly string[]):
 /** Every shared rule, in the order a root holds them: the operator's
  * controls, the rules above, the session's boundaries and the corrections. */
 export declare const sharedRules: readonly SharedRule[];
+/** The name an overlay's `equip` and `unequip` give every author-layer
+ * unit and rule at once. */
+export declare const AUTHOR_LAYER = "author";
+/** A feedback unit's layer, read from the scope it declares: a unit of the
+ * personal profile is the author's (product 01's layer labels). */
+export declare const feedbackUnitLayer: (unit: Pick<FeedbackUnit, "scope">) => RuleLayer;
+/** One row for each rule a build puts into a session's instructions beyond
+ * a role's own steps: a feedback unit or a shared role rule, with whose it
+ * is, how it is enforced and, where it also refuses, the stop that refusal
+ * is. */
+export interface ContributorRule {
+    readonly id: string;
+    readonly kind: "unit" | "rule";
+    readonly layer: RuleLayer;
+    readonly enforcement: string;
+    readonly stop?: string;
+}
+export declare const contributorRules: readonly ContributorRule[];
+/** The units and rules a build leaves out. */
+export interface RuleSelection {
+    readonly units: readonly string[];
+    readonly rules: readonly string[];
+}
+/** What an overlay's `equip` and `unequip` leave out of the author's layer.
+ * `author` names every author-layer unit and rule; a single id is the more
+ * specific word, so `unequip: ["author"]` beside `equip: ["durations"]`
+ * leaves out all of them but that one. Only an author-layer id selects
+ * anything here: a support switch, a platform rule and an id this build
+ * does not hold leave every rule in, and the overlay's reader says which
+ * each was. */
+export declare function contributorRuleSelection(overlay?: {
+    readonly equip?: readonly string[];
+    readonly unequip?: readonly string[];
+}): RuleSelection;
+/** The feedback program a build compiles: the units it equips. A program
+ * that leaves none out compiles the ten, as before a unit could be left
+ * out. */
+export declare const contributorFeedback: (program?: Pick<HarnessProgram, "unequipped">) => CompiledFeedback;
+/** A program less the author's units and rules a selection leaves out. A
+ * role keeps its numbered steps and every platform rule; it loses the
+ * handler of a unit left out, so that no root names the unit, and the
+ * sentence of a rule left out, wherever a root holds it (the router's holds
+ * a few inline). The program names what it leaves out, for the bundle's
+ * record and the hooks; a selection that leaves nothing out returns the
+ * program it was given. */
+export declare function withoutRules(program: HarnessProgram, selection: RuleSelection): HarnessProgram;
 export declare function contributorRolesFor(program: CompiledProgram): readonly HarnessRole[];
 export interface ContributorBuildOverlay {
     readonly desktopControl?: boolean;
     readonly planFirst?: boolean;
+    /** Whether the root the build is emitted for is an exported instance,
+     * supplied by the emitter. Its Clean Room section is its owner's own
+     * text, where core's is a locked floor, and the line every instruction
+     * block carries about that section says which. */
+    readonly instance?: boolean;
     /** The instance's named workers and model rows, supplied by the emitter;
      * the worker definitions carry what its table resolves to. */
     readonly workers?: ContributorWorkersDeclared;
     readonly identity?: LoadoutGraph["identity"];
     readonly narrow?: PresenceNarrowing;
     readonly grants?: readonly AuthorityGrant[];
+    /** The overlay's lists as written. The support switches among them are
+     * the caller's to apply; the author-layer units and rules, and `author`,
+     * are read here (`contributorRuleSelection`). */
+    readonly equip?: readonly string[];
+    readonly unequip?: readonly string[];
 }
 export declare const contributorProgram: (supportIds?: readonly string[], overlay?: ContributorBuildOverlay) => HarnessProgram;
 export declare const contributorConfiguredProgram: (switches?: ContributorSupportSwitches, overlay?: ContributorBuildOverlay) => HarnessProgram;

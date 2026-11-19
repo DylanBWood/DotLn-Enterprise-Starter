@@ -19,15 +19,15 @@ export declare const KIT_MODELS: Readonly<{
     }>;
     sol: Readonly<{
         provider: "codex";
-        id: "gpt-6.1-sol";
+        id: "gpt-6.2-sol";
         effort: "max";
-        description: "GPT-6.1 Sol";
+        description: "GPT-6.2 Sol";
     }>;
     astra: Readonly<{
         provider: "codex";
-        id: "gpt-6-astra";
+        id: "gpt-6.2-astra";
         effort: "max";
-        description: "GPT-6 Astra";
+        description: "GPT-6.2 Astra";
     }>;
     sonnet: Readonly<{
         provider: "claude";

@@ -257,6 +257,25 @@ export function subagentUsage(root, directory, session, hashed = false) {
         return unknown(cap, cause(error));
     }
 }
+/** A spawner's own uses in a counter, by the spawner's hash: its spawns, its
+ * re-tasks and its kit launches, so no route lets one driven agent pass its
+ * cap. A spawner cap is judged against this count. */
+const spawnerUseCount = (counter, spawner) => counter.direct.filter((row) => row.spawner === spawner).length +
+    (counter.retasks ?? []).filter((row) => row.spawner === spawner).length +
+    (counter.kits ?? [])
+        .filter((row) => row.spawner === spawner)
+        .reduce((sum, row) => sum + row.uses, 0);
+/** One spawner's uses in a session's counter, counted as its cap is judged,
+ * or null where the counter cannot be read. A driver that learns of a
+ * worker's helpers after they ran reads this to judge the worker's cap. */
+export function subagentSpawnerUses(directory, session, spawner) {
+    try {
+        return spawnerUseCount(readCounter(paths(directory, session).counter), hash(spawner));
+    }
+    catch {
+        return null;
+    }
+}
 export function subagentSummary(row, root) {
     const hosts = row.launchedByHost;
     const breakdown = row.count === null || !hosts
@@ -273,25 +292,25 @@ export function admitSubagentTool(root, directory, input, spawn, options = {}) {
                 : options.cap;
         return transaction(directory, input.session_id, (p) => {
             const counter = readCounter(p.counter);
+            const refusalText = () => `DOTLN_SUBAGENT_CAP_REFUSED: count ${observation(counter, cap).countKind === "minimum-observed" ? "at least " : ""}${observation(counter, cap).count}, cap ${cap}; ${budgetsLabel(root)} subagentCap, or the cap accepted for this dispatch, would be exceeded. Every launch, re-task and kit launch counts one use; batch the remaining work into fewer uses. The operator can state a larger cap for this dispatch in ordinary language; record it with npm run resume -- accept-overrun subagentCap --ceiling <n|unlimited> --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags>, and never by editing the budgets file.`;
             const refuse = () => {
                 save(p.counter, counter);
-                return {
-                    refusal: `DOTLN_SUBAGENT_CAP_REFUSED: count ${observation(counter, cap).countKind === "minimum-observed" ? "at least " : ""}${observation(counter, cap).count}, cap ${cap}; ${budgetsLabel(root)} subagentCap, or the cap accepted for this dispatch, would be exceeded. Every launch, re-task and kit launch counts one use; batch the remaining work into fewer uses. The operator can state a larger cap for this dispatch in ordinary language; record it with npm run resume -- accept-overrun subagentCap --ceiling <n|unlimited> --reason <text> --capture <path> --capture-hash sha256:<digest> <actor-flags>, and never by editing the budgets file.`,
-                    usage: observation(counter, cap),
-                };
+                return { refusal: refusalText(), usage: observation(counter, cap) };
             };
+            // What the refusal would have said of the first use past a cap that
+            // is not enforced, read before that use is counted.
+            let exceeded;
             const spawner = options.spawner ? hash(options.spawner) : undefined;
-            // A driven spawner's own uses: its spawns, its re-tasks and its kit
-            // launches, so no path lets one phase worker pass its cap.
-            const spawnerUses = (candidate) => candidate.direct.filter((row) => row.spawner === spawner).length +
-                (candidate.retasks ?? []).filter((row) => row.spawner === spawner)
-                    .length +
-                (candidate.kits ?? [])
-                    .filter((row) => row.spawner === spawner)
-                    .reduce((sum, row) => sum + row.uses, 0);
-            const fits = (candidate) => (cap === null || observation(candidate, cap).count <= cap) &&
-                (options.spawnerCap == null ||
-                    spawnerUses(candidate) <= options.spawnerCap);
+            const spawnerUses = (candidate) => spawnerUseCount(candidate, spawner);
+            const fits = (candidate) => {
+                const within = (cap === null || observation(candidate, cap).count <= cap) &&
+                    (options.spawnerCap == null ||
+                        spawnerUses(candidate) <= options.spawnerCap);
+                if (within || options.enforce !== false)
+                    return within;
+                exceeded ??= refusalText();
+                return true;
+            };
             const unattributed = (what) => {
                 save(p.counter, counter);
                 return {
@@ -329,8 +348,11 @@ export function admitSubagentTool(root, directory, input, spawn, options = {}) {
                 const invocation = hash(input.tool_use_id);
                 if (input.tool_name === "Workflow") {
                     if (!counter.workflows.includes(invocation)) {
-                        if (cap !== null && observation(counter, cap).count >= cap)
-                            return refuse();
+                        if (cap !== null && observation(counter, cap).count >= cap) {
+                            if (options.enforce !== false)
+                                return refuse();
+                            exceeded ??= refusalText();
+                        }
                         counter.workflows.push(invocation);
                     }
                 }
@@ -397,6 +419,7 @@ export function admitSubagentTool(root, directory, input, spawn, options = {}) {
             const usage = observation(counter, cap);
             return {
                 usage,
+                ...(exceeded === undefined ? {} : { exceeded }),
                 ...(usage.countKind === "minimum-observed"
                     ? { advisory: `DotLn advisory: ${subagentSummary(usage, root)}` }
                     : {}),
@@ -517,12 +540,12 @@ export function admitDrivenTool(input, spawn, use = {}) {
         spawner: mapped.agent_id,
         ...use,
     });
+    const named = (text) => `DOTLN_DRIVEN_BUDGET_REFUSED: spawner cap ${context.cap}, drivenSessionCeiling ${context.ceiling}; ${text}`;
     return result.refusal
-        ? {
-            ...result,
-            refusal: `DOTLN_DRIVEN_BUDGET_REFUSED: spawner cap ${context.cap}, drivenSessionCeiling ${context.ceiling}; ${result.refusal}`,
-        }
-        : result;
+        ? { ...result, refusal: named(result.refusal) }
+        : result.exceeded
+            ? { ...result, exceeded: named(result.exceeded) }
+            : result;
 }
 export function linkDrivenResult(input) {
     const context = drivenWorkerContext();

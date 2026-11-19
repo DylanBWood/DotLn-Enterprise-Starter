@@ -1,5 +1,5 @@
 import { DYNAMIC_SHELL_SUBSTITUTION, HarnessCommandRefused, SHELL_CONTROL_SYNTAX, readShellText, writtenText } from "./shell-reading.mjs";
-import type { ReadHeredoc, ReadWord, ShellReading } from "./shell-reading.mjs";
+import type { ReadHeredoc, ReadWord, ShellInvocation, ShellReading } from "./shell-reading.mjs";
 export { DYNAMIC_SHELL_SUBSTITUTION, HarnessCommandRefused, SHELL_CONTROL_SYNTAX, readShellText, writtenText, };
 export type { ReadHeredoc, ReadWord, ShellReading };
 /** The three shell forms the classifier leaves to the host's permissions on
@@ -49,6 +49,12 @@ export declare const harnessToolEffects: {
 /** Prefix rules name host namespaces; Skill carries its selection in input,
  * judged under every name the host documents for a listed skill. */
 export declare function isDesktopControlTool(name: string, input?: Readonly<Record<string, unknown>>): boolean;
+/** A command's words with their expansion provenance, as the shell module's
+ * word reader splits them; the program behind a wrapper is this module's to
+ * say. */
+export declare const shellWords: (source: string, options?: {
+    simpleLists?: boolean;
+}) => ShellInvocation[];
 /** Public token view for diagnostics; classification uses the provenance above. */
 export declare function shellInvocations(source: string): string[][];
 /** One command a shell line would run, by the words the line wrote. */

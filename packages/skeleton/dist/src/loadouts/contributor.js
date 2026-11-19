@@ -1,4 +1,4 @@
-import { compileLoadout, requireCompiled, outsideWriteEffect, PRESENCE_AXES, operatorWordsRule, workerNoPrintRules, } from "@dotln/compiler";
+import { compileFeedbackUnits, compileLoadout, requireCompiled, outsideWriteEffect, PRESENCE_AXES, operatorWordsRule, workerNoPrintRules, } from "@dotln/compiler";
 import { feedbackUnitToolKinds, personalFeedbackUnits } from "./feedback.js";
 import { harnessToolEffects } from "../harness-command.js";
 import { qualityPassGuidance } from "../document-quality.js";
@@ -7,6 +7,7 @@ import { processCost } from "./process-cost.js";
 import { goalAlignment } from "./goal-alignment.js";
 import { HARNESS_HOST_VERSION } from "../version.js";
 import { resolveWorker, workerTable } from "../worker-catalog.mjs";
+import { STOPS } from "../stops.mjs";
 const sharedSupports = [processCost, goalAlignment];
 /** Operator-authorized policy input; never inferred from a submitted support. */
 export const contributorOutsideAuthority = [
@@ -87,60 +88,89 @@ const workerLaunch = "Launch every adversary, reviewer, refuter and research wor
 const correctionRules = [
     {
         id: "worker-launch",
+        layer: "platform",
         roles: allBut("release-close"),
         text: workerLaunch,
     },
-    { id: "worker-no-print", roles: everyRole, text: workerNoPrintRules },
+    {
+        id: "worker-no-print",
+        layer: "platform",
+        also: "a worker's own prompt",
+        roles: everyRole,
+        text: workerNoPrintRules,
+    },
     {
         id: "bounded-probes",
+        layer: "platform",
         roles: allBut("refuter"),
         text: "Run probes outside gates, one process at a time, under `node scripts/harness.mjs bounded -- <command>`; the host guard also watches attributable session descendants.",
     },
     {
         id: "own-decisions",
+        layer: "author",
         roles: everyRole,
         text: "Resolve routine version, waiver-route, live-episode, regeneration and reinstall questions within existing authority. An executor records an unmet criterion of the five defect classes unmet with its class named for the verifier and asks the operator nothing. Every phase owns decisions, including no-op or deferred outcomes and blockers: record evidence, tradeoffs and reopening conditions in the ADR or decision record; do not ask the operator to arbitrate implementation or change criteria. Preserve scope and authority, and record the safe default for any expressly permitted operator-only packet without demanding a response.",
     },
     {
         id: "operator-aim",
+        layer: "author",
         roles: everyRole,
         text: "Before acting on an operator message, state its aim in one line and act on the evidence-backed reading; record any consequential assumption and its reopening condition.",
     },
-    { id: "operator-words", roles: everyRole, text: operatorWordsRule },
-    { id: "question-pathways", roles: everyRole, text: questionPathways },
+    {
+        id: "operator-words",
+        layer: "author",
+        also: "a worker's own prompt; the document gate's screen of committed text is the stop verbatim-operator-words",
+        roles: everyRole,
+        text: operatorWordsRule,
+    },
+    {
+        id: "question-pathways",
+        layer: "author",
+        also: "the session hook's context on an operator's question",
+        roles: everyRole,
+        text: questionPathways,
+    },
     {
         id: "claims-evidence",
+        layer: "author",
         roles: everyRole,
         text: "Claims of cause, blockers, unreachable services or completion name their supporting command and output; partial searches name their boundary.",
     },
     {
         id: "request-authority",
+        layer: "author",
         roles: everyRole,
         text: "Request needed authority here through the host permission flow; give the operator a command to run in your place only when the order or role names that fallback.",
     },
-    { id: "blocked-turn", roles: everyRole, text: blockedTurn },
+    { id: "blocked-turn", layer: "author", roles: everyRole, text: blockedTurn },
     {
         id: "prune-own",
+        layer: "platform",
         roles: allBut("refuter"),
         text: "When expired or retained temporary roots need removing, run `node scripts/harness.mjs prune --apply` yourself under host permissions and record its receipt; hand the operator the printed command only after a recorded host denial of that exact command, the fallback release close keeps for its publish.",
     },
     {
         id: "runnable-commands",
+        layer: "author",
         roles: everyRole,
         text: "Operator commands must be copy-paste runnable with real paths and no placeholders; questions plainly state what they decide and why.",
     },
     {
         id: "stale-gate-rows",
+        layer: "platform",
         roles: everyRole,
         text: "For stale gate rows, run the gate at the current identity; never restore bytes to match a row or remove a reviewed fix to pass a check.",
     },
     {
         id: "stop-monitors",
+        layer: "author",
         roles: everyRole,
         text: "Stop the background monitors you started before recording your result.",
     },
     {
         id: "safeguard-refusals",
+        layer: "author",
         roles: everyRole,
         text: "After two consecutive provider safeguard refusals, stop retrying, record a decision naming the stop, phase and model, and resume in a fresh session.",
     },
@@ -205,7 +235,7 @@ export const contributorRoles = [
             "Resolve the physical cwd and Git root in main. The entire operator phrase must be drive: WO-NNN. It carries the authority of the lifecycle phrases it dispatches, including final review publication and, on re-entry after the operator merge, release close; never merge.",
             operatorControls,
             noGuessing,
-            "Read only canonical status through `node scripts/drive.mjs status WO-NNN`. The helper selects the order's registered worktree, so the status is that worktree's fold. Read no order, diff, report or worker transcript and edit no project file. A router holds no writer reservation.",
+            "Read canonical status through `node scripts/drive.mjs status WO-NNN` and, after a stop, the drive's own account through `node scripts/drive.mjs why WO-NNN`: what ended the last attempt, which call the host denied and who made it, what the kit's guard refused, whether the phase recorded its completion, what the worker left in the worktree and the next step. The helper selects the order's registered worktree, so the status is that worktree's fold. Read no order, diff, report or worker transcript and edit no project file. A router holds no writer reservation.",
             // The prune belongs to the session that needs it; the router, which
             // writes nothing, names that owner and the operator's only fallback.
             "The router runs no prune: the phase session it launches runs `node scripts/harness.mjs prune --apply` itself under host permissions and records its receipt, handing the operator the printed command only after a recorded host denial of that exact command.",
@@ -213,7 +243,7 @@ export const contributorRoles = [
             "For that single literal driver command, request the host's normal one-invocation outside-sandbox approval: in Claude use Bash dangerouslyDisableSandbox: true; in Codex use its normal tool approval request. This lets native phases initialize their own sandboxes and request their own command permissions. Add no cd, redirect or compound wrapper. Do not edit sandbox settings or persist an allow rule. If the host denies the request, stop; do not retry or choose another launcher. Each native phase keeps its sandbox and approval policy; this request grants no authority to override a host restriction.",
             "The driver uses separate native CLI sessions in the order's worktree (the target worktree for a registered target), with preloaded role skills. Keep the selected host; --host claude|codex is an explicit selection, otherwise the native session selects it. Each phase runs the instance's `default` worker for the selected host and an independent verification its `verifier` worker (`npm run worker -- list` prints both); Claude phases run with project and local hooks, Codex phases with its sandbox and role-text duties. Never substitute a host or claim Codex hook parity.",
             "The router spawn boundary refuses any Agent prompt except an exact lifecycle phrase given to the agent type that phrase names, with DOTLN_ROUTER_SPAWN_REFUSED, and DOTLN_ROUTER_WRITE_REFUSED refuses any router edit and any shell command beyond the live gate's read list, its driver and its usage command. An order identifier belongs to the recorded working directory, never to the worker prompt. The check is only on the router's own spawns; a phase worker's spawns use its ordinary policy.",
-            "Stop for awaiting-merge, awaiting-plan-approval (the operator answers the proposed plan and resumes the executor before driving again), operator-finding, off-ramp, typed-correction, analysis, operator-override, dispatch-refused, three verification failures, two final-review failures, two incomplete endings in the same phase, or budget-exhausted. Report the route's next step. A writer whose owner the process table shows exited or a zombie is no conflict: the phase worker's entry reclaims it with a record. A live or unknown holder stops the drive; never release a foreign reservation yourself.",
+            "Stop for awaiting-merge, awaiting-plan-approval (the operator answers the proposed plan and resumes the executor before driving again), operator-finding, off-ramp, typed-correction, analysis, operator-override, dispatch-refused, three verification failures, two final-review failures, two incomplete endings in the same phase, or budget-exhausted. Report the route's next step, and for any stop but awaiting-merge and a release give the operator the account's lines: the driver's result carries them under `why`, and `node scripts/drive.mjs why WO-NNN` prints them again. Answer a question about why a drive stopped from that account and from status, never with only that a router reads nothing; where the account does not hold the cause, say what it does hold and that an `analysis:` session in the order's worktree reads further. A writer whose owner the process table shows exited or a zombie is no conflict: the phase worker's entry reclaims it with a record. A live or unknown holder stops the drive; never release a foreign reservation yourself.",
             questionPathways,
             blockedTurn,
             operatorWordsRule,
@@ -676,69 +706,93 @@ const offRamps = "Off-ramps (WO-158, WO-249): `npm run resume -- waive <criterio
 const insertedRules = [
     {
         id: "browser-verification",
+        layer: "author",
         roles: everyRole,
         text: browserVerificationGuidance,
     },
-    { id: "session-commands", roles: everyRole, text: sessionCommands },
-    { id: "quality-pass", roles: everyRole, text: qualityPassGuidance },
+    {
+        id: "session-commands",
+        layer: "platform",
+        roles: everyRole,
+        text: sessionCommands,
+    },
+    {
+        id: "quality-pass",
+        layer: "platform",
+        also: "the session hook's context on a `quality pass:` prompt",
+        roles: everyRole,
+        text: qualityPassGuidance,
+    },
     {
         id: "artifact-shape",
+        layer: "author",
         roles: everyRole,
         text: "Derive every artifact's shape from its contract and the check that judges it; a previous instance is evidence of what happened, never the pattern. If the contract is silent, say so and choose the structure that serves the reader's task. Preserve required content and judge usefulness by what the intended reader can understand, answer, decide, do, verify or recover from it. Retain context, evidence, examples and alternatives that serve those needs. Byte counts and structural passes do not establish usefulness or justify removing useful context.",
     },
     {
         id: "document-kinds",
+        layer: "platform",
         roles: everyRole,
         text: "Every committed document is standing, record or generated, derived from its path with the overrides in docs/control/documents.json. A standing document holds the current state for its reader; dated accounts belong in the order's decisions or the pass document. Integrate each change into the affected paragraph or section and link the decision record. Read the resulting passage as a whole; a one-line edit is sufficient when it remains coherent. Rewrite or split accumulated prose when needed, preserving useful information and established structure. Broader restructuring needs a concrete defect or changed reader need and must stay within authorized scope. No sentence count or size target governs this judgment. A record (decisions, evidence, a pass document, a verification, a review, a receipt) is dated and never rewritten; a generated page changes only through its command. Reader entry points name standing documents only. `npm run plan -- documents` adds the journals' read census: a standing document that no entry point, link or program reaches and no session read is red-tagged, and the next planning pass removes or folds it with a disposition. The final reviewer judges each changed standing document's diff: a replacement passes, a dated account added under a standing heading returns to repair, and so does a changed passage its reader cannot follow, which the review names.",
     },
     {
         id: "expected-data",
+        layer: "author",
         roles: allBut("release-close", "refuter"),
         text: "An expected-data update names its cause and provenance in the decisions. The consistency review traces each changed contract through its consumers with file-level source and generated evidence, including adjacent fixture, manifest, dependency, oracle and installed-guidance inputs; a green generator alone is not that review.",
     },
     {
         id: "durations",
+        layer: "author",
         roles: everyRole,
         text: "Present every operator-facing duration in hours and minutes; keep raw numeric units in machine-readable records.",
     },
     {
         id: "dispatch-bounds",
+        layer: "platform",
         roles: everyRole,
         text: "Dispatch bounds live in docs/control/budgets.json. Resolve local-median from each consumer's own completed phase history as max(4 times its median, 8 hours), using 8 hours without history; never export this repository's measured durations as consumer defaults. Read standing with `node scripts/harness.mjs usage <session>`. Infer authorization to proceed from the operator's ordinary language and context; require no exact phrase or command. Capture the actual words and context, record the needed extension yourself with `npm run resume -- accept-overrun` and your actual actor attestation, keep the writer and continue here. When the operator authorizes a run for as long as needed, record --ceiling unlimited for both wallClockMs and completeRuns before work begins, or at any later point; it lasts until this phase completes. Never require a session exit or manual operator script; diagnose and repair recovery-command failures here. Without authorization, admit diagnosis and focused reproductions but start no further complete gate, bounded probe or worker past an exhausted bound.",
     },
-    { id: "off-ramps", roles: everyRole, text: offRamps },
+    { id: "off-ramps", layer: "platform", roles: everyRole, text: offRamps },
     {
         id: "amend-order",
+        layer: "platform",
         roles: allBut("release-close"),
         text: "When an explicit operator scope expansion changes a judged order's text, record its authorization in that order's structured decisions and run `npm run plan -- amend-order WO-NNN WO-NNN-DNNN \"operator authorization and bounded scope\"`. This binds the approved bytes in the existing planning log; it neither grants scope nor discharges a refutation hold. Run the planning check and repair encountered failures within authority instead of repeatedly carrying an inherited failure into review.",
     },
     {
         id: "fan-out",
+        layer: "platform",
         roles: allBut("release-close"),
         text: "Plan fan-out against the spawning worker's remaining `docs/control/budgets.json` `subagentCap` budget (default 20; null disables), and in a driven session against its root-wide `drivenSessionCeiling` (default four times the cap) before the first spawn and state that plan in the response. A cap the operator states for one dispatch is recorded with `npm run resume -- accept-overrun subagentCap --ceiling <n|unlimited>` and read from that acceptance; never edit the budgets file for one order. Count a spawn against the worker making it and include all descendants in the driven total. Separate phase sessions retain their own counters; `harness usage <session>` reports the available local and driven counts. Count descendants in the same plan. Batch review and refutation over groups of items: one agent judges several items, never one agent per item per pass. A use is a launch, a re-task or a kit launch, and the cap compares uses: `harness usage <session>` prints launches by host, re-tasks and the remainder with the unknown remainder. Codex has no spawn hook, so keep an explicit session count and apply this rule as role text. A worker may continue work it holds: re-task one only to recheck what it found, to carry on the research it was given from what it has already read, or to restate in the required form a report that was refused for its form, changing no finding. A re-task is still one use; the worker writes only to session scratch and the parent stays the sole repository writer. A review or a refutation is never continued into a second judgment, and unknown coverage is not a fresh budget.",
     },
     {
         id: "session-readback",
+        layer: "platform",
         roles: everyRole,
         text: "Without a session readback, keep the operator-selected model and effort with `--source operator-attested`; Claude Code roles read `CLAUDE_EFFORT` first. Use `unknown` only for a value nobody supplied. Codex briefings automatically report the active thread model, effort and CLI version, independently of token-counter availability. Never replace a supplied value with unknown or invent effective readback.",
     },
     {
         id: "publication-check",
+        layer: "author",
         roles: everyRole,
         text: "After an authorized product-document edit, run `npm run publication:check`; this grants no editing authority to a read-only role.",
     },
     {
         id: "area-notes",
+        layer: "platform",
         roles: ["executor", "verifier", "reviewer"],
         text: "For a target order, read the area notes the briefing lists whose paths cover what the change touches, and the Rules section of the workstream document it names, before changing or judging those paths; a note states what held at its commit, so where the briefing counts commits since, or prints unknown, check its rule against the code.",
     },
     {
         id: "initiative-layout",
+        layer: "platform",
         roles: ["planner"],
         text: "For a dispatch that describes an initiative, write or revise the workstream document's Layout section first (what exists, what is asked, the way there in phases of planned items, and what is unknown) and file only the orders the next wave needs, the ones whose inputs are known; a planned item is a line of the layout, with no identifier and no order file, until a pass files it.",
     },
     {
         id: "standing-file",
+        layer: "platform",
         roles: ["executor"],
         text: "When a prompt's facts say the day's figure is reached, or you stop with the order unfinished, finish the step in hand, write `docs/evidence/WO-NNN/standing.md` and end the turn: the steps of the execution plan done, the step in hand and its state, what comes next, and what is undecided. Replace the file at the next stop. The figure is advisory and refuses nothing; the next session's briefing names the file while it exists and the phase's completion (`implementation-ready`, or `repair-complete` in a repair) removes it, so it is never committed and never part of the handoff.",
     },
@@ -750,13 +804,109 @@ export const sharedRules = [
     // instruction file's floor admits both controls in every session.
     {
         id: "operator-controls",
+        layer: "platform",
         roles: allBut("release-close"),
         text: operatorControls,
     },
     ...insertedRules,
-    { id: "session-boundaries", roles: everyRole, text: sessionBoundaries },
+    {
+        id: "session-boundaries",
+        layer: "platform",
+        roles: everyRole,
+        text: sessionBoundaries,
+    },
     ...correctionRules,
 ];
+/** The name an overlay's `equip` and `unequip` give every author-layer
+ * unit and rule at once. */
+export const AUTHOR_LAYER = "author";
+/** A feedback unit's layer, read from the scope it declares: a unit of the
+ * personal profile is the author's (product 01's layer labels). */
+export const feedbackUnitLayer = (unit) => unit.scope.includes("personal-profile") ? "author" : "platform";
+const sentence = "a sentence in the role's text";
+/** How a unit reaches a session, read from its own declaration: every
+ * equipped unit is a sentence in each role's text; one that advises with
+ * facts is also an advisory when a session stops; one that judges a tool
+ * call also has a hook on the tools it reads. */
+const unitEnforcement = (unit) => {
+    if (unit.mechanism.kind === "prose")
+        return sentence;
+    if (unit.enforcement === "advisory")
+        return `${sentence} and an advisory when a session stops`;
+    const tools = (feedbackUnitToolKinds[unit.unitId] ?? [])
+        .map((kind) => (kind === "shell" ? "shell commands" : "writes"))
+        .join(" and ");
+    const hook = tools ? `a hook on ${tools}` : "a hook";
+    return unit.trigger === "attribution"
+        ? `${sentence}, ${hook}, the commit-message hook and the host's attribution setting`
+        : `${sentence} and ${hook}`;
+};
+export const contributorRules = [
+    ...personalFeedbackUnits.map((unit) => {
+        const stop = STOPS.find((row) => row.unit === unit.unitId)?.id;
+        return {
+            id: unit.unitId,
+            kind: "unit",
+            layer: feedbackUnitLayer(unit),
+            enforcement: unitEnforcement(unit),
+            ...(stop ? { stop } : {}),
+        };
+    }),
+    ...sharedRules.map((rule) => ({
+        id: rule.id,
+        kind: "rule",
+        layer: rule.layer,
+        enforcement: rule.also ? `${sentence}; ${rule.also}` : sentence,
+    })),
+];
+/** What an overlay's `equip` and `unequip` leave out of the author's layer.
+ * `author` names every author-layer unit and rule; a single id is the more
+ * specific word, so `unequip: ["author"]` beside `equip: ["durations"]`
+ * leaves out all of them but that one. Only an author-layer id selects
+ * anything here: a support switch, a platform rule and an id this build
+ * does not hold leave every rule in, and the overlay's reader says which
+ * each was. */
+export function contributorRuleSelection(overlay) {
+    const equip = overlay?.equip ?? [];
+    const unequip = overlay?.unequip ?? [];
+    const out = contributorRules.filter((rule) => rule.layer === "author" &&
+        (unequip.includes(rule.id) ||
+            (unequip.includes(AUTHOR_LAYER) && !equip.includes(rule.id))));
+    return {
+        units: out.filter((rule) => rule.kind === "unit").map((rule) => rule.id),
+        rules: out.filter((rule) => rule.kind === "rule").map((rule) => rule.id),
+    };
+}
+/** The feedback program a build compiles: the units it equips. A program
+ * that leaves none out compiles the ten, as before a unit could be left
+ * out. */
+export const contributorFeedback = (program) => compileFeedbackUnits(personalFeedbackUnits.filter((unit) => !program?.unequipped?.units.includes(unit.unitId)));
+/** A program less the author's units and rules a selection leaves out. A
+ * role keeps its numbered steps and every platform rule; it loses the
+ * handler of a unit left out, so that no root names the unit, and the
+ * sentence of a rule left out, wherever a root holds it (the router's holds
+ * a few inline). The program names what it leaves out, for the bundle's
+ * record and the hooks; a selection that leaves nothing out returns the
+ * program it was given. */
+export function withoutRules(program, selection) {
+    if (!selection.units.length && !selection.rules.length)
+        return program;
+    const sentences = new Set(sharedRules
+        .filter((rule) => selection.rules.includes(rule.id))
+        .map((rule) => rule.text));
+    const triggers = personalFeedbackUnits
+        .filter((unit) => selection.units.includes(unit.unitId))
+        .map((unit) => unit.trigger);
+    return {
+        ...program,
+        roles: program.roles.map((role) => ({
+            ...role,
+            feedbackHandlers: role.feedbackHandlers.filter((handler) => !triggers.includes(handler)),
+            procedure: role.procedure.filter((line) => !sentences.has(line)),
+        })),
+        unequipped: selection,
+    };
+}
 const boundTo = (role, rules) => rules
     .filter((rule) => rule.roles.includes(role))
     .map((rule) => rule.text);
@@ -1043,7 +1193,7 @@ export const contributorProgram = (supportIds = defaultContributorSupportIds, ov
         });
         return { model: model.id, effort: effort };
     };
-    return {
+    const program = {
         contractVersion: "harness-v1",
         desktopControl: overlay?.desktopControl === true,
         loadout,
@@ -1110,11 +1260,14 @@ export const contributorProgram = (supportIds = defaultContributorSupportIds, ov
             {
                 facetId: "clean-room",
                 kind: "prompt-fragment",
-                text: "Source provenance needs operator judgment; the hand-written Clean Room floor stays locked.",
+                text: overlay?.instance === true
+                    ? "Source provenance needs the owner's judgment; the Clean Room section of this file is the owner's own text."
+                    : "Source provenance needs operator judgment; the hand-written Clean Room floor stays locked.",
             },
         ],
         correctionToken: null,
     };
+    return withoutRules(program, contributorRuleSelection(overlay));
 };
 export const contributorConfiguredProgram = (switches = {}, overlay) => {
     const { "process-cost": cost = true, "goal-alignment": goal = true, ...executor } = switches;
@@ -1284,7 +1437,7 @@ export const targetWorkerProfiles = contributorProfiles
         ? {
             available: false,
             evidence: `${evidence}#C-W4`,
-            reason: "Observed in Claude print mode; deliberately omitted by the PreToolUse-only target profile",
+            reason: "Observed in Claude print mode; deliberately omitted by the target profile, whose guards are PreToolUse hooks",
         }
         : unavailable;
     const skills = {
@@ -1305,8 +1458,11 @@ export const targetWorkerProfiles = contributorProfiles
                 : { ...unavailable, evidence: `${evidence}#X-W3` },
             PostToolUse: lifecycle,
             Stop: lifecycle,
+            // The one prompt hook a target bundle holds records the operator's
+            // analysis: and operator override: for its guards to read; it
+            // dispatches nothing and imports nothing of the runtime.
             UserPromptSubmit: profile.harness === "claude-code"
-                ? lifecycle
+                ? { available: true, evidence: `${evidence}#C-W10` }
                 : { ...unavailable, evidence: `${evidence}#X-W10` },
         },
         skills: {

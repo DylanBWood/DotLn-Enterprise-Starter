@@ -37,6 +37,10 @@ export interface UseAdmission {
         readonly uses: number;
         readonly host: KitHost;
     };
+    /** Whether a use past the cap is refused. Where the cap's stop advises,
+     * the caller passes false: the use is admitted and counted, and what the
+     * refusal would have said comes back as `exceeded`. */
+    readonly enforce?: boolean;
 }
 /** The control budgets file the spawn cap reads, relative to the root: the
  * configured control root's, the same file the process and retention readers
@@ -55,6 +59,10 @@ export declare function initializeSubagentCounter(directory: string, session: st
  * against the cap. */
 export declare function workersLine(row: SubagentObservation): string;
 export declare function subagentUsage(root: string, directory: string, session: string, hashed?: boolean): SubagentObservation;
+/** One spawner's uses in a session's counter, counted as its cap is judged,
+ * or null where the counter cannot be read. A driver that learns of a
+ * worker's helpers after they ran reads this to judge the worker's cap. */
+export declare function subagentSpawnerUses(directory: string, session: string, spawner: string): number | null;
 export declare function subagentSummary(row: SubagentObservation, root?: string): string;
 export declare function admitSubagentTool(root: string, directory: string, input: SpawnInput, spawn: boolean, options?: {
     cap?: number | null;
@@ -62,6 +70,7 @@ export declare function admitSubagentTool(root: string, directory: string, input
     spawner?: string;
 } & UseAdmission): {
     refusal?: string;
+    exceeded?: string;
     advisory?: string;
     usage: SubagentObservation;
 };
@@ -114,6 +123,7 @@ export declare function drivenSubagentUsage(worker?: string): {
 } | null;
 export declare function admitDrivenTool(input: SpawnInput, spawn: boolean, use?: UseAdmission): {
     refusal?: string;
+    exceeded?: string;
     advisory?: string;
     usage: SubagentObservation;
 } | undefined;

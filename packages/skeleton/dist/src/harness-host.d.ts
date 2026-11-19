@@ -148,6 +148,9 @@ interface HarnessByteRead {
 interface HookConfig {
     /** The instance's worker and model names, on the session hook. */
     readonly workerNames?: readonly string[];
+    /** The author's shared rules the build leaves out, on the session hook,
+     * where it leaves any out. */
+    readonly unequippedRules?: readonly string[];
     readonly outsideWriteGrants?: readonly RoleOutsideWriteGrants[];
     readonly grants?: readonly AuthorityGrant[];
     readonly compilerPackageVersion: string;
@@ -161,6 +164,10 @@ interface HookConfig {
             readonly hash: string;
         }[];
     };
+    /** The stops this root does not refuse, by id, as the emit resolved them
+     * from the root's kind and its `stops` section. A stop the map leaves out
+     * refuses, so a hook that carries no map denies as it always did. */
+    readonly stops?: Readonly<Record<string, string>>;
     readonly event: HostHookEvent;
     readonly kind: "feedback" | "permission" | "observe" | "session" | "finish" | "denial" | "agent-finished";
     readonly policy?: CompiledFeedback;
@@ -242,9 +249,10 @@ export declare function harnessControl(root: string, workOrder?: string): Contro
 /**
  * The dispatch is judged by the writer unit the installed writer hook
  * carries. The host compiles that unit from the loadout inventory it ships
- * with and refuses when the inventory's compiled policy is not the one the
- * emitted bundle's manifest recorded, so an inventory that drifted from the
- * bundle cannot admit a dispatch. A bundle without the unit has no writer
+ * with, less the units the bundle's manifest records as left out, and
+ * refuses when that compiled policy is not the one the manifest recorded,
+ * so an inventory that drifted from the bundle cannot admit a dispatch. A
+ * bundle without the unit (a build whose owner left it out) has no writer
  * boundary on the tool path either, so the dispatch takes none.
  */
 export declare function dispatchAdmissionPolicy(root: string): CompiledFeedback | null;
@@ -1025,6 +1033,17 @@ export declare function runHarnessEvidence(root: string, pendingVerdict?: string
 /** Host fact collection is separate from the sole compiled feedback predicate. */
 export declare function harnessFeedbackFacts(policy: CompiledFeedback, input: HarnessInput, root: string, session: HarnessSession): readonly FeedbackBoundaryRequest[];
 export declare function permissionEffect(input: HarnessInput, root: string, tools?: HookConfig["tools"], outsideEffect?: string): string;
+/** Every effect of a call that an authority judges. A shell line may hold
+ * several (`ssh host; cat .env` is a transport and a credentials read), and
+ * a patch one for each target; `permissionEffect` returns the first, which
+ * is enough where the first denial ends the judgment and not where a root
+ * lowers one stop and keeps another. */
+export declare function permissionEffects(input: HarnessInput, root: string, tools?: HookConfig["tools"], outsideEffect?: string): readonly string[];
+/** The stops a hook met and did not refuse, each in the words it advises
+ * with. A stop at `advise` adds its line and the judgment goes on, so a
+ * lowered stop never hides one that still refuses; the lines join the
+ * response the call goes on with. */
+type AdvisedStops = string[];
 /** Recovery is advisory: the host retains its own sandbox and approval. */
 export declare const BOOTSTRAP_HATCH_TEXT = "Run node scripts/bootstrap.mjs to prepare this worktree; host permissions decide tool access.";
 export declare const GATE_STOP_TEXT: string;
@@ -1056,7 +1075,11 @@ export declare function grantedSessionRoot(path: string, prefix: string): {
     readonly physical: string;
     readonly cause?: string;
 };
-export declare function evaluateHarnessHook(config: HookConfig, input: HarnessInput, root: string, boundary: typeof feedbackBoundary, moved?: unknown): Promise<Record<string, unknown>>;
+/** A hook's whole judgment. Each stop it meets answers at the level this
+ * root gives it; the lines of those that advised are collected in `advised`
+ * and joined to the response the call goes on with. A caller that passes
+ * its own list also holds those lines when the judgment throws. */
+export declare function evaluateHarnessHook(config: HookConfig, input: HarnessInput, root: string, boundary: typeof feedbackBoundary, moved?: unknown, advised?: AdvisedStops): Promise<Record<string, unknown>>;
 /** The presence heartbeat of a target worktree, whose bundle holds no
  * observer hook: its permission hook records it, after its decision is
  * written, so that a heartbeat that fails or is slow changes nothing the hook
@@ -1067,7 +1090,7 @@ export declare function evaluateHarnessHook(config: HookConfig, input: HarnessIn
  * nothing; a heartbeat that fails says so on standard error. */
 export declare function rideHeartbeat(event: string, input: unknown, environment?: Readonly<Record<string, string | undefined>>): Promise<void>;
 export declare function runHarnessHook(config: HookConfig, boundary: typeof feedbackBoundary, decodedInput?: unknown, inputText?: string, operatorControl?: unknown): Promise<void>;
-export declare function runCommitMessageHook(config: Pick<HookConfig, "compilerPackageVersion" | "runtime"> & {
+export declare function runCommitMessageHook(config: Pick<HookConfig, "compilerPackageVersion" | "runtime" | "stops"> & {
     readonly policy: CompiledFeedback;
 }, boundary: typeof feedbackBoundary): Promise<void>;
 /** Release only this session's reservation, after the host has observed completion. */
@@ -1118,5 +1141,9 @@ export declare function releaseHarnessWriterByOperator(root: string, force?: boo
     alive: boolean | "unknown";
     released: boolean;
 };
-/** The target's runtime is in the launchpad snapshot; only Git facts use target cwd. */
-export declare function runTargetHarnessHook(config: HookConfig, boundary: typeof feedbackBoundary): Promise<void>;
+/** The target's runtime is in the launchpad snapshot; only Git facts use target cwd.
+ * Every judgment is one stop of the table and answers at the level the
+ * launchpad gave it at the emit: a denial at `refuse`, the call allowed
+ * with the stop's line at `advise`, nothing at `off`. A stop that advises
+ * does not end the judgment, so one that still refuses is still met. */
+export declare function runTargetHarnessHook(config: HookConfig, boundary: typeof feedbackBoundary, inputText?: string): Promise<void>;

@@ -92,6 +92,12 @@ export declare const suiteTimeLimitKey: (name: string) => string;
  * applied, the file that changes it and the command that lists the keys.
  * @param {string} root @param {string} key @param {number|null} [ms] */
 export declare function timeLimitMiss(root: string, key: string, ms?: number | null): string;
+/** Whether a text holds what a step ended for time says (timeLimitMiss,
+ * above). The gate reads a failed task's output with it: a task that ran a
+ * check under a limit of its own, and says that limit ended the check,
+ * judged nothing there.
+ * @param {unknown} text */
+export declare const namesTimeLimitMiss: (text: unknown) => boolean;
 /** The text of a root's file with every key of the table. What its owner
  * wrote is written back as it stood, even where the resolver cannot use it:
  * `enforce`, `scale`, any field of the owner's own, and each entry, of which

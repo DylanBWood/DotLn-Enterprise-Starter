@@ -185,8 +185,13 @@ export declare const operatorWordsRule = "Committed text (a document, record or 
  * journals, ledgers and the private terms list, and a commit header carries an
  * author's name and address. Every role and every worker carries both. */
 export declare const workerNoPrintRules = "A worker never reads or prints the contents of `docs/control/local/` (journals, ledgers, the terms list, the reviews lane beyond the report it was given) and never prints a commit header or an author line: `git log` takes a format naming only the hash and subject (`--format='%h %s'`), and `git show` takes `--format=` so it prints no header.";
-/** The generated Markdown and print-session transport consume one worker contract. */
-export declare function workerSpecification(worker: HarnessWorker): {
+/** The generated Markdown and print-session transport consume one worker
+ * contract. `unequippedRules` names the author's shared rules the root's
+ * build leaves out: a worker is told the paraphrase rule only where the
+ * roles are. */
+export declare function workerSpecification(worker: HarnessWorker, options?: {
+    readonly unequippedRules?: readonly string[] | undefined;
+}): {
     name: string;
     description: string;
     model: string;
@@ -203,6 +208,23 @@ export interface HarnessProgram {
     readonly correctionToken: string | null;
     /** Instance election, supplied by the emitter; the compiler reads no files. */
     readonly desktopControl?: boolean;
+    /** The stops this root does not refuse, by id, supplied by the emitter.
+     * Every hook's configuration carries the map, and a stop it leaves out
+     * refuses. A root that refuses on every stop supplies none. */
+    readonly stops?: HarnessStopLevels;
+    /** The denied effects whose host deny rules the settings leave out,
+     * because the stop that answers for each is lowered: a host rule denies
+     * before any hook can answer. */
+    readonly liftedDenyEffects?: readonly string[];
+    /** The author-layer feedback units and shared rules this build leaves
+     * out, by id, supplied by the composer where an instance's overlay names
+     * any. The bundle's manifest records them, and the session hook gives no
+     * context of a rule the roots do not carry. A build that keeps every rule
+     * supplies none. */
+    readonly unequipped?: {
+        readonly units: readonly string[];
+        readonly rules: readonly string[];
+    };
     /** Compatibility for programs declaring one default worker. */
     readonly worker?: HarnessWorker;
     readonly workers?: readonly HarnessWorker[];
@@ -211,6 +233,8 @@ export interface HarnessProgram {
      * to tell where the lifecycle phrase ends. */
     readonly workerNames?: readonly string[];
 }
+/** The levels below refuse that a root gives its stops, by stop id. */
+export type HarnessStopLevels = Readonly<Record<string, "advise" | "off">>;
 /** Host tool namespaces that act in the operator's desktop or signed-in browser.
  * The hook and host settings share this inventory; unrelated MCP tools keep
  * their existing classification. */
@@ -247,6 +271,10 @@ export interface HarnessBundle {
         readonly contractVersion: "harness-v1";
         readonly compilerPackageVersion: string;
         readonly feedbackPolicyHash: string;
+        /** What the build leaves out of the author's layer, where it leaves
+         * anything out: the units are those `feedbackPolicyHash` was compiled
+         * without. */
+        readonly unequipped?: NonNullable<HarnessProgram["unequipped"]>;
         readonly grants: readonly AuthorityGrant[];
         readonly outsideWriteGrants?: readonly RoleOutsideWriteGrants[];
         readonly authorityGrantRegistryHash: string | null;
@@ -311,41 +339,52 @@ export declare function verifyHarnessBundle(bundle: HarnessBundle): boolean;
  * and a release that changes them says a new session reads the emitted
  * settings. */
 export declare const PUBLISH_HELPER_ALLOW_RULES: readonly ["Bash(node scripts/launchpad.mjs update --publish *)", "Bash(node scripts/refute-plan.mjs publish *)", "Bash(node scripts/worktree.mjs publish *)"];
-/** Each enforced class owns one row, so the count and provenance follow it. */
+/** Each enforced class owns one row, so the count and provenance follow it.
+ * `stop` is the row's id in the table of stops, where its class and the level
+ * a root gives it are kept. */
 export declare const HARNESS_REFUSALS: readonly [{
     readonly id: "writer";
+    readonly stop: "writer-reservation";
     readonly source: "WO-135";
     readonly clause: "reserves one writer per worktree on any branch, including main";
 }, {
     readonly id: "gate";
+    readonly stop: "live-gate";
     readonly source: "WO-135";
     readonly clause: "refuses writes to gate inputs or the success record during a live gate, admitting only the active order's own evidence, verification and final-review directories at the default document roots during a product gate";
 }, {
     readonly id: "planning";
+    readonly stop: "planning-branch";
     readonly source: "WO-135";
     readonly clause: "on planning/ branches refuses repository writes outside docs/ and root Markdown";
 }, {
     readonly id: "subagents";
+    readonly stop: "worker-cap";
     readonly source: "WO-139";
     readonly clause: "refuses observable subagent admissions beyond docs/control/budgets.json subagentCap (default 20; null disables) or the cap the operator's accept-overrun records for the dispatch";
 }, {
     readonly id: "outside-write";
+    readonly stop: "outside-write";
     readonly source: "WO-144";
     readonly clause: "refuses known outside-project write destinations without a containing root granted by the active role or equipped support";
 }, {
     readonly id: "dispatch-bound";
+    readonly stop: "dispatch-bound";
     readonly source: "WO-234";
     readonly clause: "refuses a complete gate, bounded probe or worker launch past the dispatch bound, naming analysis: and the operator's accept-overrun route";
 }, {
     readonly id: "desktop-control";
+    readonly stop: "desktop-control";
     readonly source: "WO-251";
     readonly clause: "refuses desktop control and the operator's own browser sessions unless dotln.config.json elects features.desktop-control; an election still requires the operator's explicit request in the session, and browser verification uses the Playwright MCP in a browser the session launches or the project's browser tests";
 }, {
     readonly id: "worker-gate";
+    readonly stop: "worker-gate";
     readonly source: "WO-250";
     readonly clause: "refuses a review worker's test-runner gate";
 }, {
     readonly id: "gh-repository";
+    readonly stop: "gh-repository";
     readonly source: "WO-246";
     readonly clause: "refuses a gh pr or gh issue command naming no repository in a clone whose origin and upstream differ and whose gh default is unset";
 }];

@@ -275,8 +275,12 @@ export declare const shellPrograms: Set<string>;
  * words.
  * @param {string} source
  * @param {(words: ShellWord[]) => ShellWord[]} programOf
+ * @param {{simpleLists?: boolean}} [options] Require simple command boundaries
+ * for diagnostic output that may expose a word identified as a program.
  * @returns {ShellInvocation[]} */
-export declare function shellWords(source: string, programOf: (words: ShellWord[]) => ShellWord[]): ShellInvocation[];
+export declare function shellWords(source: string, programOf: (words: ShellWord[]) => ShellWord[], { simpleLists }?: {
+    simpleLists?: boolean;
+}): ShellInvocation[];
 export declare const READ_LIMIT = 32768;
 /** Thrown for a text nested deeper than the reader follows. */
 export declare class ShellReadingLimit extends Error {
